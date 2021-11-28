@@ -547,4 +547,4 @@ const arrayPush = (array, key, push) => {
     }
     array[key].push(push);
 }
-module.exports = NiconiComments;
+export default NiconiComments;

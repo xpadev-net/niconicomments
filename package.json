@@ -4,20 +4,26 @@
   "description": "NiconiComments is a comment drawing library that is somewhat compatible with the official Nico Nico Douga player.",
   "main": "src/main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rollup src/main.js --file dist/bundle.js --format umd --name \"myBundle\""
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/xpadev-net/niconicomments.git"
-},
-  "keywords": ["niconico"],
+  },
+  "keywords": [
+    "niconico"
+  ],
   "author": "xpadev(xpadev.net)",
   "bugs": {
     "url": "https://github.com/xpadev-net/niconicomments/issues"
   },
   "files": [
-    "src/main.js"
+    "dist/bundle.js"
   ],
   "homepage": "https://xpadev.net/",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "rollup": "^2.60.1"
+  }
 }

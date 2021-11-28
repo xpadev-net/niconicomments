@@ -104,7 +104,7 @@ class NiconiComments {
         let tmpData = groupBy(this.data, "font", "fontSize");
         for (let i in tmpData) {
             for (let j in tmpData[i]) {
-                this.context.font = parseFont(i, j);
+                this.context.font = parseFont(i, j, this.useLegacy);
                 for (let k in tmpData[i][j]) {
                     let comment = tmpData[i][j][k];
                     let measure = this.measureText(comment);
@@ -114,7 +114,7 @@ class NiconiComments {
                     this.data[comment.index].width_min = measure.width_min;
                     if (measure.resized){
                         this.data[comment.index].fontSize = measure.fontSize;
-                        this.context.font = parseFont(i, j);
+                        this.context.font = parseFont(i, j, this.useLegacy);
                     }
                 }
             }
@@ -292,18 +292,18 @@ class NiconiComments {
         if (height > 1080&&comment.defaultFontSize*0.6<comment.fontSize&&comment.loc === "naka"){
             comment.fontSize-=1;
             comment.resized = true;
-            this.context.font=parseFont(comment.font,comment.fontSize);
+            this.context.font=parseFont(comment.font,comment.fontSize, this.useLegacy);
             return this.measureText(comment);
         }else if(comment.loc !== "naka"&&(lines.length<3||comment.ender)){
             if (comment.full&&width>1920){
                 comment.fontSize-=1;
                 comment.resized = true;
-                this.context.font=parseFont(comment.font,comment.fontSize);
+                this.context.font=parseFont(comment.font,comment.fontSize, this.useLegacy);
                 return this.measureText(comment);
             }else if (!comment.full&&width>1440){
                 comment.fontSize-=1;
                 comment.resized = true;
-                this.context.font=parseFont(comment.font,comment.fontSize);
+                this.context.font=parseFont(comment.font,comment.fontSize, this.useLegacy);
                 return this.measureText(comment);
             }
         }
@@ -477,7 +477,7 @@ class NiconiComments {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
         for (let index in this.timeline[vpos]) {
             let comment = this.data[this.timeline[vpos][index]];
-            this.context.font = parseFont(comment.font, comment.fontSize);
+            this.context.font = parseFont(comment.font, comment.fontSize, this.useLegacy);
             this.context.fillStyle = comment.color;
             this.drawText(comment, vpos);
         }
@@ -516,16 +516,17 @@ const groupBy = (array, key, key2) => {
  * フォント名とサイズをもとにcontextで使えるフォントを生成する
  * @param {string} font
  * @param {number} size
+ * @param {boolean} useLegacy
  * @returns {string}
  */
-const parseFont = (font, size) => {
+const parseFont = (font, size,useLegacy) => {
     switch (font) {
         case "gothic":
             return `normal 400 ${size}px "游ゴシック体", "游ゴシック", "Yu Gothic", YuGothic, yugothic, YuGo-Medium`;
         case "mincho":
             return `normal 400 ${size}px "游明朝体", "游明朝", "Yu Mincho", YuMincho, yumincho, YuMin-Medium`;
         default:
-            if (this.useLegacy){
+            if (useLegacy){
                 return `normal 600 ${size}px Arial, "ＭＳ Ｐゴシック", "MS PGothic", MSPGothic, MS-PGothic`;
             }else{
                 return `normal 600 ${size}px sans-serif, Arial, "ＭＳ Ｐゴシック", "MS PGothic", MSPGothic, MS-PGothic`;

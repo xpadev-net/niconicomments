@@ -6,7 +6,13 @@ Reference： https://xpadev.net/niconicomments/docs/
 Github： https://github.com/xpadev-net/niconicomments  
 
 ## Installation
-`<script>`を用いてCDNから読み込むか、npmから`niconicomments`パッケージをインストールできます
+```html
+<script src="https://cdn.jsdelivr.net/npm/niconicomments@0.0.1/src/main.min.js"></script>
+```
+または
+```
+npm install niconicomments
+```
 
 ## Examples
 ```javascript

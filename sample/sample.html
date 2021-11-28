@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+</head>
+<body>
+<div>
+    <div id="player"></div>
+    <canvas id="canvas" width="1920" height="1080"></canvas>
+</div>
+</body>
+</html>
+<style type="text/css">
+    div{
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        aspect-ratio: 16/9;
+        height: 100vh;
+        width: 100vw;
+    }
+    iframe,canvas{
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 100%;
+        width: 100%;
+        object-fit: contain;
+    }
+    canvas{
+        pointer-events: none;
+    }
+</style>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/niconicomments/src/main.js"></script>
+<script type="text/javascript">
+    let tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    var player;
+    function onYouTubeIframeAPIReady() {
+        player = new YT.Player('player', {
+            height: '360',
+            width: '640',
+            videoId: 'PumFnlu9EIY',
+            events: {
+                'onReady': onPlayerReady
+            }
+        });
+    }
+    async function onPlayerReady() {
+        const canvas = document.getElementById("canvas");
+        const req = await fetch("sample.json");
+        const res = await req.json();
+        const niconiComments = new NiconiComments(canvas, res);
+        setInterval(() => niconiComments.drawCanvas(Math.floor(player.getCurrentTime() * 100)), 10);
+    }
+</script>

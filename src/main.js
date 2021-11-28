@@ -1,4 +1,11 @@
 class NiconiComments {
+    /**
+     * NiconiComments Constructor
+     * @param {HTMLCanvasElement} canvas - 描画対象のキャンバス
+     * @param {[]} data - 描画用のコメント
+     * @param {boolean} useLegacy - defontにsans-serifを適用するか(trueでニコニコ公式に準拠)
+     * @param {boolean} formatted - dataが独自フォーマットに変換されているか
+     */
     constructor(canvas, data, useLegacy=false, formatted=false) {
         this.canvas = canvas;
         this.context = canvas.getContext("2d");
@@ -23,6 +30,11 @@ class NiconiComments {
         this.preRendering();
     }
 
+    /**
+     * ニコニコが吐き出したデータを処理しやすいように変換する
+     * @param {[]} data - ニコニコが吐き出したコメントデータ
+     * @returns {*[]} - 独自フォーマットのコメントデータ
+     */
     parseData(data) {
         let data_ = [];
         for (let i = 0; i < data.length; i++) {
@@ -58,12 +70,18 @@ class NiconiComments {
         return data_;
     }
 
+    /**
+     * 事前に当たり判定を考慮してコメントの描画場所を決定する
+     */
     preRendering() {
         this.getFont();
         this.getCommentSize();
         this.getCommentPos();
     }
 
+    /**
+     * コマンドをもとに各コメントに適用するフォントを決定する
+     */
     getFont() {
         for (let i in this.data) {
             let comment = this.data[i];
@@ -78,6 +96,9 @@ class NiconiComments {
         }
     }
 
+    /**
+     * コメントの描画サイズを計算する
+     */
     getCommentSize() {
         let tmpData = groupBy(this.data, "font", "fontSize");
         for (let i in tmpData) {
@@ -99,6 +120,9 @@ class NiconiComments {
         }
     }
 
+    /**
+     * 計算された描画サイズをもとに各コメントの配置位置を決定する
+     */
     getCommentPos() {
         let data = this.data;
         for (let i in data) {
@@ -242,6 +266,12 @@ class NiconiComments {
         }
     }
 
+    /**
+     * context.measureTextの複数行対応版
+     * 画面外にはみ出すコメントの縮小も行う
+     * @param comment - 独自フォーマットのコメントデータ
+     * @returns {{resized: boolean, width: number, width_max: number, fontSize: number, width_min: number, height: number}} - 描画サイズとリサイズの情報
+     */
     measureText(comment) {
         let msg = comment.content;
         if (!comment.defaultFontSize){
@@ -279,6 +309,11 @@ class NiconiComments {
         return {"width": width, "width_max": width_max, "width_min": width_min, "height": height, "resized":comment.resized, "fontSize": comment.fontSize};
     }
 
+    /**
+     * コマンドをもとに所定の位置にコメントを表示する
+     * @param comment - 独自フォーマットのコメントデータ
+     * @param {number} vpos - 動画の現在位置の100倍 ニコニコから吐き出されるコメントの位置情報は主にこれ
+     */
     drawText(comment, vpos) {
         if (comment.loc === "naka") {
             let posX = 1920 - ((1920 + comment.width_max) * (vpos - comment.vpos) / 500);
@@ -308,6 +343,11 @@ class NiconiComments {
         }
     }
 
+    /**
+     * コメントに含まれるコマンドを解釈する
+     * @param {[]} metadata - コメントのmail(コマンド)を空白で分割した配列
+     * @returns {{loc: string, size: string, color: string, fontSize: number, ender: boolean, font: string, full: boolean}}
+     */
     parseCommand(metadata) {
         let loc = "naka", size = "medium", fontSize = 70, color = "#FFFFFF", font = 'defont', full = false, ender = false;
         for (let i in metadata) {
@@ -427,10 +467,11 @@ class NiconiComments {
         }
         return {loc, size, fontSize, color, font, full, ender};
     }
-    resetFPSCount(){
-        this.fps = this.framecount;
-        this.framecount=0;
-    }
+
+    /**
+     * キャンバスを描画する
+     * @param vpos - 動画の現在位置の100倍 ニコニコから吐き出されるコメントの位置情報は主にこれ
+     */
     drawCanvas(vpos) {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
         for (let index in this.timeline[vpos]) {
@@ -440,11 +481,22 @@ class NiconiComments {
             this.drawText(comment, vpos);
         }
     }
+
+    /**
+     * キャンバスを消去する
+     */
     clear(){
         this.context.clearRect(0, 0, 1920, 1080);
     }
 }
 
+/**
+ * 配列を複数のキーでグループ化する
+ * @param {{}} array
+ * @param {string} key
+ * @param {string} key2
+ * @returns {{}}
+ */
 const groupBy = (array, key, key2) => {
     let data = {};
     for (let i in array) {
@@ -459,6 +511,12 @@ const groupBy = (array, key, key2) => {
     }
     return data;
 }
+/**
+ * フォント名とサイズをもとにcontextで使えるフォントを生成する
+ * @param {string} font
+ * @param {number} size
+ * @returns {string}
+ */
 const parseFont = (font, size) => {
     switch (font) {
         case "gothic":
@@ -473,6 +531,12 @@ const parseFont = (font, size) => {
             }
     }
 }
+/**
+ * phpのarray_push的なあれ
+ * @param array
+ * @param {string} key
+ * @param push
+ */
 const arrayPush = (array, key, push) => {
     if (!array) {
         array = {};

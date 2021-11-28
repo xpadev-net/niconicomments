@@ -1,6 +1,7 @@
 class NiconiComments {
     /**
      * NiconiComments Constructor
+     * @constructor
      * @param {HTMLCanvasElement} canvas - 描画対象のキャンバス
      * @param {[]} data - 描画用のコメント
      * @param {boolean} useLegacy - defontにsans-serifを適用するか(trueでニコニコ公式に準拠)

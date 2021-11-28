@@ -13,3 +13,7 @@ Github： https://github.com/xpadev-net/niconicomments
 const niconiComments = new NiconiComments(canvas, comments);
 niconiComments.drawCanvas(vpos)
 ```
+
+## Sample
+https://xpadev.net/niconicomments/sample.html  
+※レッツゴー陰陽師の動画URLが必要になります。ニコニコで適当にセッションを作成してリンクを取得してください。

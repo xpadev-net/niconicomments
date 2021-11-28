@@ -15,6 +15,9 @@
   "bugs": {
     "url": "https://github.com/xpadev-net/niconicomments/issues"
   },
+  "files": [
+    "src/main.js"
+  ],
   "homepage": "https://xpadev.net/",
   "license": "MIT"
 }

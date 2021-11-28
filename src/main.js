@@ -548,4 +548,6 @@ const arrayPush = (array, key, push) => {
     }
     array[key].push(push);
 }
-export default NiconiComments;
+if (typeof window === 'undefined'){
+    module.exports= NiconiComments;
+}

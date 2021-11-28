@@ -5,6 +5,7 @@
   "main": "dist/bundle.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "prepublishOnly": "npm run build",
     "build": "rollup src/main.js --file dist/bundle.js --format umd --name \"myBundle\""
   },
   "repository": {

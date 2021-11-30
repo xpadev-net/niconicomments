@@ -13,21 +13,31 @@ class NiconiComments {
         this.context.textAlign = "left";
         this.context.textBaseline = "top";
         this.context.lineWidth = "6";
-        this.commentYOffset = 0.1;
-        this.commentYMarginTop = 0.2;
-        this.commentYMarginBottom = 0.1;
+        this.commentYOffset = 0.2;
+        this.commentYMarginTop = 0.05;
         if (formatted) {
             this.data=data;
         }else{
             this.data = this.parseData(data);
         }
+
+        this.showCollision = false;
+        this.showFPS = false;
+
         this.timeline = {};
+        this.nicoScripts = {"reverse":[]};
         this.collision_right = {};
         this.collision_left = {};
         this.collision_ue = {};
         this.collision_shita = {};
         this.useLegacy=useLegacy;
         this.preRendering();
+        this.fpsCount=0;
+        this.fps=0;
+        this.fpsClock = setInterval(()=>{
+            this.fps=this.fpsCount*2;
+            this.fpsCount=0;
+        },500);
     }
 
     /**
@@ -47,7 +57,7 @@ class NiconiComments {
                         "content": value["content"],
                         "date": value["date"],
                         "date_usec": value["date_usec"],
-                        "thread": value["thread"]
+                        "owner": !value["user_id"]
                     };
                     if (value["mail"]) {
                         tmpParam["mail"] = value["mail"].split(" ");
@@ -85,7 +95,7 @@ class NiconiComments {
     getFont() {
         for (let i in this.data) {
             let comment = this.data[i];
-            let command = this.parseCommand(comment.mail);
+            let command = this.parseCommand(comment);
             this.data[i].loc = command.loc;
             this.data[i].size = command.size;
             this.data[i].fontSize = command.fontSize;
@@ -93,6 +103,7 @@ class NiconiComments {
             this.data[i].color = command.color;
             this.data[i].full = command.full;
             this.data[i].ender = command.ender;
+            this.data[i].content = this.data[i].content.replaceAll("\t","       ").replaceAll(/(\n){3,}/g,"\n\n\n");
         }
     }
 
@@ -157,7 +168,7 @@ class NiconiComments {
                         if (left_pos + comment.width_max >= 1880) {
                             for (let k in this.collision_right[vpos]) {
                                 let l = this.collision_right[vpos][k];
-                                if ((posY < data[l].posY + data[l].height && posY + comment.height > data[l].posY) && data[l].thread === comment.thread) {
+                                if ((posY < data[l].posY + data[l].height && posY + comment.height > data[l].posY) && data[l].owner === comment.owner) {
                                     if (data[l].posY + data[l].height > posY) {
                                         posY = data[l].posY + data[l].height;
                                         is_change = true;
@@ -180,7 +191,7 @@ class NiconiComments {
                         if (left_pos <= 40 && is_break === false) {
                             for (let k in this.collision_left[vpos]) {
                                 let l = this.collision_left[vpos][k];
-                                if ((posY < data[l].posY + data[l].height && posY + comment.height > data[l].posY) && data[l].thread === comment.thread) {
+                                if ((posY < data[l].posY + data[l].height && posY + comment.height > data[l].posY) && data[l].owner === comment.owner) {
                                     if (data[l].posY + data[l].height > posY) {
                                         posY = data[l].posY + data[l].height;
                                         is_change = true;
@@ -231,7 +242,7 @@ class NiconiComments {
                         let vpos = comment.vpos + j;
                         for (let k in collision[vpos]) {
                             let l = collision[vpos][k];
-                            if ((posY < data[l].posY + data[l].height && posY + comment.height > data[l].posY) && data[l].thread === comment.thread) {
+                            if ((posY < data[l].posY + data[l].height && posY + comment.height > data[l].posY) && data[l].owner === comment.owner) {
                                 if (data[l].posY + data[l].height > posY) {
                                     posY = data[l].posY + data[l].height;
                                     is_change = true;
@@ -276,6 +287,8 @@ class NiconiComments {
         let msg = comment.content;
         if (!comment.defaultFontSize){
             comment.defaultFontSize=comment.fontSize;
+        }else{
+            this.context.font=parseFont(comment.font,comment.fontSize, this.useLegacy);
         }
 
         let width, width_max, width_min, height, width_arr = [], lines = msg.split("\n");
@@ -287,13 +300,13 @@ class NiconiComments {
         width = width_arr.reduce((p, c) => p + c, 0) / width_arr.length;
         width_max = Math.max(...width_arr);
         width_min = Math.min(...width_arr);
-        height = comment.fontSize*(this.commentYMarginTop + this.commentYMarginBottom+1) * lines.length;
-        if (height > 1080&&comment.defaultFontSize*0.6<comment.fontSize&&comment.loc === "naka"){
+        height = comment.fontSize*(this.commentYMarginTop+1) * lines.length;
+        if (height > 1080){
             comment.fontSize-=1;
             comment.resized = true;
             this.context.font=parseFont(comment.font,comment.fontSize, this.useLegacy);
             return this.measureText(comment);
-        }else if(comment.loc !== "naka"&&(lines.length<3||comment.ender)){
+        }else if(comment.loc !== "naka"&&((lines.length<3&&comment.size==="big")||(lines.length<5&&comment.size==="medium")||(lines.length<7&&comment.size==="small")||comment.ender)){
             if (comment.full&&width>1920){
                 comment.fontSize-=1;
                 comment.resized = true;
@@ -315,25 +328,36 @@ class NiconiComments {
      * @param {number} vpos - 動画の現在位置の100倍 ニコニコから吐き出されるコメントの位置情報は主にこれ
      */
     drawText(comment, vpos) {
+        let reverse = false;
+        for (let i in this.nicoScripts.reverse){
+            let range = this.nicoScripts.reverse[i];
+            if ((range.target==="コメ"&&comment.owner)||(range.target==="投コメ"&&!comment.owner)){
+                break;
+            }
+            if (range.start<vpos&&vpos<range.end){
+                reverse=true;
+            }
+        }
+        let lines = comment.content.split("\n"),posX = (1920 - comment.width_max) / 2;
         if (comment.loc === "naka") {
-            let posX = 1920 - ((1920 + comment.width_max) * (vpos - comment.vpos) / 500);
-            let lines = comment.content.split("\n");
+            if (reverse){
+                posX = ((1920 + comment.width_max) * (vpos - comment.vpos) / 500);
+            }else{
+                posX = 1920 - ((1920 + comment.width_max) * (vpos - comment.vpos) / 500);
+            }
             for (let i in lines) {
                 let line = lines[i];
-                this.context.strokeText(line, posX, comment.posY + (i * comment.fontSize) + this.commentYOffset * comment.fontSize+this.commentYMarginTop* comment.fontSize);
-                this.context.fillText(line, posX, comment.posY + (i * comment.fontSize) + this.commentYOffset * comment.fontSize+this.commentYMarginTop* comment.fontSize);
+                let posY = comment.posY + (i * comment.fontSize * (1+this.commentYMarginTop)) + this.commentYOffset * comment.fontSize;
+                this.context.strokeText(line, posX, posY);
+                this.context.fillText(line, posX, posY);
             }
         } else if (comment.loc === "ue"){
-            let posX = (1920 - comment.width_max) / 2;
-            let lines = comment.content.split("\n");
             for (let i in lines) {
                 let line = lines[i];
                 this.context.strokeText(line, posX, comment.posY + (i * comment.fontSize) + this.commentYOffset * comment.fontSize+this.commentYMarginTop* comment.fontSize);
                 this.context.fillText(line, posX, comment.posY + (i * comment.fontSize) + this.commentYOffset * comment.fontSize+this.commentYMarginTop* comment.fontSize);
             }
         } else if (comment.loc === "shita"){
-            let posX = (1920 - comment.width_max) / 2;
-            let lines = comment.content.split("\n");
             for (let i in lines) {
                 let line = lines[i];
                 let posY = 1080 - (comment.posY + comment.height) + (i * comment.fontSize) + (this.commentYOffset * comment.fontSize) + this.commentYMarginTop* comment.fontSize;
@@ -341,15 +365,42 @@ class NiconiComments {
                 this.context.fillText(line, posX, posY);
             }
         }
+        if (this.showCollision){
+            this.context.strokeStyle = "rgba(255,255,0,1)";
+            if (comment.loc === "shita"){
+                this.context.strokeRect(posX, 1080-comment.posY-comment.height, comment.width_max,comment.height)
+            }else{
+                this.context.strokeRect(posX, comment.posY, comment.width_max,comment.height)
+            }
+            this.context.strokeStyle = "rgba(0,0,0,0.7)";
+        }
     }
 
     /**
      * コメントに含まれるコマンドを解釈する
-     * @param {[]} metadata - コメントのmail(コマンド)を空白で分割した配列
+     * @param comment- 独自フォーマットのコメントデータ
      * @returns {{loc: string, size: string, color: string, fontSize: number, ender: boolean, font: string, full: boolean}}
      */
-    parseCommand(metadata) {
-        let loc = "naka", size = "medium", fontSize = 70, color = "#FFFFFF", font = 'defont', full = false, ender = false;
+    parseCommand(comment) {
+        let metadata=comment.mail,loc = "naka", size = "medium", fontSize = 70, color = "#FFFFFF", font = 'defont', full = false, ender = false,reverse=comment.content.match(/@逆 ?(全|コメ|投コメ)?/);
+        if (reverse){
+            if (!reverse[1]){
+                reverse[1]="全";
+            }
+            let length = false;
+            for (let i in metadata){
+                let match = metadata[i].match(/@([0-9]+)/);
+                if (match){
+                    length = match[1];
+                    break;
+                }
+            }
+            if (!length){
+                length=30;
+            }
+            this.nicoScripts.reverse.push({"start":comment.vpos,"end":comment.vpos+length*100,"target":reverse[1]});
+            fontSize=0;
+        }
         for (let i in metadata) {
             let command = metadata[i];
             if (loc === "naka") {
@@ -441,8 +492,9 @@ class NiconiComments {
                         color = "#666666";
                         break;
                     default:
-                        if (command.match(/#[0-9a-zA-Z]{3,6}/)) {
-                            color = command;
+                        const match = command.match(/#[0-9a-zA-Z]{3,6}/);
+                        if (match) {
+                            color = match[0];
                         }
                 }
             }
@@ -473,12 +525,25 @@ class NiconiComments {
      * @param vpos - 動画の現在位置の100倍 ニコニコから吐き出されるコメントの位置情報は主にこれ
      */
     drawCanvas(vpos) {
+        this.fpsCount++;
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
         for (let index in this.timeline[vpos]) {
             let comment = this.data[this.timeline[vpos][index]];
             this.context.font = parseFont(comment.font, comment.fontSize, this.useLegacy);
             this.context.fillStyle = comment.color;
+            if (comment.color==="#000000"){
+                this.context.strokeStyle = "rgba(255,255,255,0.7)";
+            }
             this.drawText(comment, vpos);
+            if (comment.color==="#000000"){
+                this.context.strokeStyle = "rgba(0,0,0,0.7)";
+            }
+        }
+        if (this.showFPS){
+            this.context.font = parseFont("defont",60, this.useLegacy);
+            this.context.fillStyle = "#00FF00";
+            this.context.strokeText("FPS:"+this.fps,100,100);
+            this.context.fillText("FPS:"+this.fps,100,100);
         }
     }
 

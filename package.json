@@ -1,12 +1,12 @@
 {
-  "name": "niconicomments",
-  "version": "0.1.0",
+  "name": "@xpadev-net/niconicomments",
+  "version": "0.0.1",
   "description": "NiconiComments is a comment drawing library that is somewhat compatible with the official Nico Nico Douga player.",
   "main": "dist/niconicomments.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "rollup src/main.js --file dist/niconicomments.js --format umd --name \"niconicomments\"",
-    "prepublishOnly": "rollup src/main.js --file dist/niconicomments.js --format umd --name \"niconicomments\""
+    "build": "rollup -c rollup.config.js",
+    "prepublishOnly": "rollup -c rollup.config.js"
   },
   "repository": {
     "type": "git",
@@ -25,6 +25,8 @@
   "homepage": "https://xpadev.net/",
   "license": "MIT",
   "devDependencies": {
-    "rollup": "^2.60.1"
+    "babel-preset-es2015-rollup": "^3.0.0",
+    "rollup": "^2.60.2",
+    "rollup-plugin-babel": "^4.4.0"
   }
 }

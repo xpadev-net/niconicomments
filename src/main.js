@@ -13,7 +13,7 @@ class NiconiComments {
         this.context.textAlign = "left";
         this.context.textBaseline = "top";
         this.context.lineWidth = "6";
-        this.commentYOffset = 0.05;
+        this.commentYOffset = 0.25;
         this.commentYMarginTop = 0.05;
         if (formatted) {
             this.data=data;

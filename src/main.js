@@ -13,7 +13,7 @@ class NiconiComments {
         this.context.textAlign = "left";
         this.context.textBaseline = "top";
         this.context.lineWidth = "6";
-        this.commentYOffset = 0.25;
+        this.commentYOffset = 0.05;
         this.commentYMarginTop = 0.05;
         if (formatted) {
             this.data=data;
@@ -360,7 +360,7 @@ class NiconiComments {
         } else if (comment.loc === "shita"){
             for (let i in lines) {
                 let line = lines[i];
-                let posY = 1080 - (comment.posY + comment.height) + (i * comment.fontSize) + (this.commentYOffset * comment.fontSize) + this.commentYMarginTop* comment.fontSize;
+                let posY = 1080 - (comment.posY + comment.height) + (i * comment.fontSize) - this.commentYMarginTop* comment.fontSize+this.commentYMarginTop* comment.fontSize;
                 this.context.strokeText(line, posX, posY);
                 this.context.fillText(line, posX, posY);
             }

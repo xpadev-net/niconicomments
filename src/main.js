@@ -360,7 +360,7 @@ class NiconiComments {
         } else if (comment.loc === "shita"){
             for (let i in lines) {
                 let line = lines[i];
-                let posY = 1080 - (comment.posY + comment.height) + (i * comment.fontSize) + (this.commentYOffset * comment.fontSize) + this.commentYMarginTop* comment.fontSize;
+                let posY = 1080 - (comment.posY + comment.height) + (i * comment.fontSize) + (this.commentYOffset * comment.fontSize);
                 this.context.strokeText(line, posX, posY);
                 this.context.fillText(line, posX, posY);
             }

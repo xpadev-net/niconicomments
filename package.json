@@ -1,6 +1,6 @@
 {
   "name": "@xpadev-net/niconicomments",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "NiconiComments is a comment drawing library that is somewhat compatible with the official Nico Nico Douga player.",
   "main": "dist/bundle.js",
   "scripts": {

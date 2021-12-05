@@ -9,6 +9,10 @@ Github： https://github.com/xpadev-net/niconicomments
 ```html
 <script src="https://cdn.jsdelivr.net/npm/niconicomments@latest/src/main.min.js"></script>
 ```
+or
+```
+npm i @xpadev-net/niconicomments
+```
 
 ## Examples
 ```javascript

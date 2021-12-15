@@ -22,7 +22,7 @@
   "files": [
     "dist/bundle.js"
   ],
-  "homepage": "https://xpadev.net/",
+  "homepage": "https://xpadev.net/niconicomments/docs/",
   "license": "MIT",
   "devDependencies": {
     "babel-preset-es2015-rollup": "^3.0.0",

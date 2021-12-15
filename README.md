@@ -7,7 +7,7 @@ Github： https://github.com/xpadev-net/niconicomments
 
 ## Installation
 ```html
-<script src="https://cdn.jsdelivr.net/npm/niconicomments@latest/src/main.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@xpadev-net/niconicomments@latest/dist/bundle.min.js"></script>
 ```
 or
 ```

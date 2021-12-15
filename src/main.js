@@ -23,6 +23,7 @@ class NiconiComments {
 
         this.showCollision = false;
         this.showFPS = false;
+        this.showCommentCount = false;
 
         this.timeline = {};
         this.nicoScripts = {"reverse":[]};
@@ -544,6 +545,12 @@ class NiconiComments {
             this.context.fillStyle = "#00FF00";
             this.context.strokeText("FPS:"+this.fps,100,100);
             this.context.fillText("FPS:"+this.fps,100,100);
+        }
+        if (this.showCommentCount){
+            this.context.font = parseFont("defont",60, this.useLegacy);
+            this.context.fillStyle = "#00FF00";
+            this.context.strokeText("Count:"+this.timeline[vpos].length,100,200);
+            this.context.fillText("Count:"+this.timeline[vpos].length,100,200);
         }
     }
 

@@ -342,7 +342,7 @@ class NiconiComments {
         let lines = comment.content.split("\n"),posX = (1920 - comment.width_max) / 2;
         if (comment.loc === "naka") {
             if (reverse){
-                posX = ((1920 + comment.width_max) * (vpos - comment.vpos) / 500);
+                posX = ((1920 + comment.width_max) * (vpos - comment.vpos) / 500) - comment.width_max;
             }else{
                 posX = 1920 - ((1920 + comment.width_max) * (vpos - comment.vpos) / 500);
             }

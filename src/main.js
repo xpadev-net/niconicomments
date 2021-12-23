@@ -17,15 +17,15 @@ class NiconiComments {
         this.commentYMarginTop = 10;
         this.fontSize={
             "small":{
-                "default":45,
-                "resized":20
+                "default":55,
+                "resized":18
             },
             "medium":{
-                "default":70,
-                "resized":35
+                "default":85,
+                "resized":32
             },
             "big":{
-                "default":120,
+                "default":128,
                 "resized":57.5
             }
         }
@@ -192,7 +192,7 @@ class NiconiComments {
                                     }
                                     if (posY + comment.height > 1080) {
                                         if (1080 < comment.height) {
-                                            posY = 0;
+                                            posY = (comment.height - 1080) / -2;
                                         } else {
                                             posY = Math.floor(Math.random() * (1080 - comment.height));
                                         }
@@ -320,9 +320,6 @@ class NiconiComments {
                 this.context.font=parseFont(comment.font,comment.fontSize, this.useLegacy);
             }
         }
-
-
-
         for (let i = 0; i < lines.length; i++) {
             let measure = this.context.measureText(lines[i]);
             width_arr.push(measure.width);
@@ -345,13 +342,13 @@ class NiconiComments {
                 this.context.font=parseFont(comment.font,comment.fontSize, this.useLegacy);
                 return this.measureText(comment);
             }
-        }else if (comment.tateRisized&&(comment.full&&width_max>1920||!comment.full&&width_max>1440)&&!comment.yokoResized){
+        }else if (comment.loc !== "naka"&&comment.tateRisized&&(comment.full&&width_max>1920||!comment.full&&width_max>1440)&&!comment.yokoResized){
             comment.fontSize = this.fontSize[comment.size].default;
             comment.resized = true;
             comment.yokoResized = true;
             this.context.font=parseFont(comment.font,comment.fontSize, this.useLegacy);
             return this.measureText(comment);
-        }else if (comment.tateRisized&&comment.yokoResized){
+        }else if (comment.loc !== "naka"&&comment.tateRisized&&comment.yokoResized){
             if (comment.full&&width_max>3420){
                 comment.fontSize-=1;
                 comment.resized = true;

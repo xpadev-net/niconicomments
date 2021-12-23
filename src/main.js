@@ -13,7 +13,11 @@ class NiconiComments {
         this.context.textAlign = "left";
         this.context.textBaseline = "top";
         this.context.lineWidth = "6";
-        this.commentYOffset = 0.25;
+        if (useLegacy){
+            this.commentYOffset = 0.25;
+        }else{
+            this.commentYOffset = 0.125;
+        }
         this.commentYMarginTop = 10;
         this.fontSize={
             "small":{
@@ -27,6 +31,16 @@ class NiconiComments {
             "big":{
                 "default":120,
                 "resized":57.5
+            }
+        }
+        this.doubleResizeMaxWidth={
+            full:{
+                legacy: 3020,
+                default: 3220
+            },
+            normal:{
+                legacy: 2540,
+                default: 2740
             }
         }
         if (formatted) {
@@ -349,16 +363,12 @@ class NiconiComments {
             this.context.font=parseFont(comment.font,comment.fontSize, this.useLegacy);
             return this.measureText(comment);
         }else if (comment.loc !== "naka"&&comment.tateRisized&&comment.yokoResized){
-            if (comment.full&&width_max>3420){
+            if (comment.full&&width_max>this.doubleResizeMaxWidth.full[this.useLegacy?"legacy":"default"]){
                 comment.fontSize-=1;
-                comment.resized = true;
-                comment.yokoResized = true;
                 this.context.font=parseFont(comment.font,comment.fontSize, this.useLegacy);
                 return this.measureText(comment);
-            }else if (!comment.full&&width_max>2940){
-                comment.fontSize-=1;
-                comment.resized = true;
-                comment.yokoResized = true;
+            }else if (!comment.full&&width_max>this.doubleResizeMaxWidth.normal[this.useLegacy?"legacy":"default"]){
+                comment.fontSize-=1.
                 this.context.font=parseFont(comment.font,comment.fontSize, this.useLegacy);
                 return this.measureText(comment);
             }

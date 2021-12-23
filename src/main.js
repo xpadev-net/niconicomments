@@ -17,12 +17,12 @@ class NiconiComments {
         this.commentYMarginTop = 10;
         this.fontSize={
             "small":{
-                "default":55,
+                "default":45,
                 "resized":18
             },
             "medium":{
-                "default":85,
-                "resized":32
+                "default":70,
+                "resized":35
             },
             "big":{
                 "default":128,

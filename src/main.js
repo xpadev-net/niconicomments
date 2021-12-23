@@ -14,7 +14,21 @@ class NiconiComments {
         this.context.textBaseline = "top";
         this.context.lineWidth = "6";
         this.commentYOffset = 0.25;
-        this.commentYMarginTop = 0.05;
+        this.commentYMarginTop = 10;
+        this.fontSize={
+            "small":{
+                "default":45,
+                "resized":20
+            },
+            "medium":{
+                "default":70,
+                "resized":35
+            },
+            "big":{
+                "default":120,
+                "resized":57.5
+            }
+        }
         if (formatted) {
             this.data=data;
         }else{
@@ -51,17 +65,18 @@ class NiconiComments {
         for (let i = 0; i < data.length; i++) {
             for (let key in data[i]) {
                 let value = data[i][key];
-                if (key === "chat") {
+                if (key === "chat"&&value["deleted"]!==1) {
                     let tmpParam = {
                         "id": value["no"],
                         "vpos": value["vpos"],
                         "content": value["content"],
                         "date": value["date"],
                         "date_usec": value["date_usec"],
-                        "owner": !value["user_id"]
+                        "owner": !value["user_id"],
+                        "premium": value["premium"]===1
                     };
                     if (value["mail"]) {
-                        tmpParam["mail"] = value["mail"].split(" ");
+                        tmpParam["mail"] = value["mail"].split(/[\s　]/g);
                     } else {
                         tmpParam["mail"] = [];
                     }
@@ -104,7 +119,8 @@ class NiconiComments {
             this.data[i].color = command.color;
             this.data[i].full = command.full;
             this.data[i].ender = command.ender;
-            this.data[i].content = this.data[i].content.replaceAll("\t","       ").replaceAll(/(\n){3,}/g,"\n\n\n");
+            this.data[i]._live = command._live;
+            this.data[i].content = this.data[i].content.replaceAll("\t","       ");
         }
     }
 
@@ -285,14 +301,27 @@ class NiconiComments {
      * @returns {{resized: boolean, width: number, width_max: number, fontSize: number, width_min: number, height: number}} - 描画サイズとリサイズの情報
      */
     measureText(comment) {
-        let msg = comment.content;
-        if (!comment.defaultFontSize){
-            comment.defaultFontSize=comment.fontSize;
-        }else{
-            this.context.font=parseFont(comment.font,comment.fontSize, this.useLegacy);
+        let width, width_max, width_min, height, width_arr = [], lines = comment.content.split("\n");
+        if (!comment.resized&&!comment.ender){
+            if (comment.size === "big" && lines.length > 2){
+                comment.fontSize = this.fontSize.big.resized;
+                comment.resized = true;
+                comment.tateRisized = true;
+                this.context.font=parseFont(comment.font,comment.fontSize, this.useLegacy);
+            }else if(comment.size === "medium" && lines.length > 4){
+                comment.fontSize = this.fontSize.medium.resized;
+                comment.resized = true;
+                comment.tateRisized = true;
+                this.context.font=parseFont(comment.font,comment.fontSize, this.useLegacy);
+            }else if(comment.size === "small" && lines.length > 6){
+                comment.fontSize = this.fontSize.small.resized;
+                comment.resized = true;
+                comment.tateRisized = true;
+                this.context.font=parseFont(comment.font,comment.fontSize, this.useLegacy);
+            }
         }
 
-        let width, width_max, width_min, height, width_arr = [], lines = msg.split("\n");
+
 
         for (let i = 0; i < lines.length; i++) {
             let measure = this.context.measureText(lines[i]);
@@ -301,25 +330,43 @@ class NiconiComments {
         width = width_arr.reduce((p, c) => p + c, 0) / width_arr.length;
         width_max = Math.max(...width_arr);
         width_min = Math.min(...width_arr);
-        height = comment.fontSize*(this.commentYMarginTop+1) * lines.length;
-        if (height > 1080){
-            comment.fontSize-=1;
-            comment.resized = true;
-            this.context.font=parseFont(comment.font,comment.fontSize, this.useLegacy);
-            return this.measureText(comment);
-        }else if(comment.loc !== "naka"&&((lines.length<3&&comment.size==="big")||(lines.length<5&&comment.size==="medium")||(lines.length<7&&comment.size==="small")||comment.ender)){
-            if (comment.full&&width>1920){
+        height = (comment.fontSize+this.commentYMarginTop) * lines.length;
+        if(comment.loc !== "naka"&&!comment.tateRisized){
+            if (comment.full&&width_max>1920){
                 comment.fontSize-=1;
                 comment.resized = true;
+                comment.yokoResized = true;
                 this.context.font=parseFont(comment.font,comment.fontSize, this.useLegacy);
                 return this.measureText(comment);
-            }else if (!comment.full&&width>1440){
+            }else if (!comment.full&&width_max>1440){
                 comment.fontSize-=1;
                 comment.resized = true;
+                comment.yokoResized = true;
+                this.context.font=parseFont(comment.font,comment.fontSize, this.useLegacy);
+                return this.measureText(comment);
+            }
+        }else if (comment.tateRisized&&(comment.full&&width_max>1920||!comment.full&&width_max>1440)&&!comment.yokoResized){
+            comment.fontSize = this.fontSize[comment.size].default;
+            comment.resized = true;
+            comment.yokoResized = true;
+            this.context.font=parseFont(comment.font,comment.fontSize, this.useLegacy);
+            return this.measureText(comment);
+        }else if (comment.tateRisized&&comment.yokoResized){
+            if (comment.full&&width_max>3420){
+                comment.fontSize-=1;
+                comment.resized = true;
+                comment.yokoResized = true;
+                this.context.font=parseFont(comment.font,comment.fontSize, this.useLegacy);
+                return this.measureText(comment);
+            }else if (!comment.full&&width_max>2940){
+                comment.fontSize-=1;
+                comment.resized = true;
+                comment.yokoResized = true;
                 this.context.font=parseFont(comment.font,comment.fontSize, this.useLegacy);
                 return this.measureText(comment);
             }
         }
+
         return {"width": width, "width_max": width_max, "width_min": width_min, "height": height, "resized":comment.resized, "fontSize": comment.fontSize};
     }
 
@@ -340,28 +387,24 @@ class NiconiComments {
             }
         }
         let lines = comment.content.split("\n"),posX = (1920 - comment.width_max) / 2;
-        if (comment.loc === "naka") {
-            if (reverse){
-                posX = ((1920 + comment.width_max) * (vpos - comment.vpos) / 500) - comment.width_max;
-            }else{
-                posX = 1920 - ((1920 + comment.width_max) * (vpos - comment.vpos) / 500);
-            }
+        if (comment.loc === "shita"){
             for (let i in lines) {
                 let line = lines[i];
-                let posY = comment.posY + (i * comment.fontSize * (1+this.commentYMarginTop)) + this.commentYOffset * comment.fontSize;
+                let posY = 1080 - comment.posY + (i * (comment.fontSize + this.commentYMarginTop)) - comment.height + this.commentYOffset * comment.fontSize;
                 this.context.strokeText(line, posX, posY);
                 this.context.fillText(line, posX, posY);
             }
-        } else if (comment.loc === "ue"){
-            for (let i in lines) {
-                let line = lines[i];
-                this.context.strokeText(line, posX, comment.posY + (i * comment.fontSize) + this.commentYOffset * comment.fontSize+this.commentYMarginTop* comment.fontSize);
-                this.context.fillText(line, posX, comment.posY + (i * comment.fontSize) + this.commentYOffset * comment.fontSize+this.commentYMarginTop* comment.fontSize);
+        }else{
+            if (comment.loc === "naka") {
+                if (reverse) {
+                    posX = ((1920 + comment.width_max) * (vpos - comment.vpos) / 500) - comment.width_max;
+                } else {
+                    posX = 1920 - ((1920 + comment.width_max) * (vpos - comment.vpos) / 500);
+                }
             }
-        } else if (comment.loc === "shita"){
             for (let i in lines) {
                 let line = lines[i];
-                let posY = 1080 - (comment.posY + comment.height) + (i * comment.fontSize) - this.commentYMarginTop* comment.fontSize+this.commentYMarginTop* comment.fontSize;
+                let posY = comment.posY + (i * (comment.fontSize + this.commentYMarginTop)) + this.commentYOffset * comment.fontSize;
                 this.context.strokeText(line, posX, posY);
                 this.context.fillText(line, posX, posY);
             }
@@ -380,10 +423,10 @@ class NiconiComments {
     /**
      * コメントに含まれるコマンドを解釈する
      * @param comment- 独自フォーマットのコメントデータ
-     * @returns {{loc: string, size: string, color: string, fontSize: number, ender: boolean, font: string, full: boolean}}
+     * @returns {{loc: string, size: string, color: string, fontSize: number, ender: boolean, font: string, full: boolean, _live: boolean}}
      */
     parseCommand(comment) {
-        let metadata=comment.mail,loc = "naka", size = "medium", fontSize = 70, color = "#FFFFFF", font = 'defont', full = false, ender = false,reverse=comment.content.match(/@逆 ?(全|コメ|投コメ)?/);
+        let metadata=comment.mail,loc = "naka", size = "medium", fontSize = this.fontSize.medium.default, color = "#ffffff", font = 'defont', full = false, ender = false,reverse=comment.content.match(/@逆 ?(全|コメ|投コメ)?/),_live=false;
         if (reverse){
             if (!reverse[1]){
                 reverse[1]="全";
@@ -403,7 +446,7 @@ class NiconiComments {
             fontSize=0;
         }
         for (let i in metadata) {
-            let command = metadata[i];
+            let command = metadata[i].toLowerCase();
             if (loc === "naka") {
                 switch (command) {
                     case "ue":
@@ -418,16 +461,19 @@ class NiconiComments {
                 switch (command) {
                     case "big":
                         size = "big";
-                        fontSize = 100;
+                        fontSize = this.fontSize.big.default;
                         break;
                     case "small":
                         size = "small";
-                        fontSize = 50;
+                        fontSize = this.fontSize.small.default;
                         break;
                 }
             }
-            if (color === "#FFFFFF") {
+            if (color === "#ffffff") {
                 switch (command) {
+                    case "white":
+                        color = "#FFFFFF";
+                        break;
                     case "red":
                         color = "#FF0000";
                         break;
@@ -493,10 +539,11 @@ class NiconiComments {
                         color = "#666666";
                         break;
                     default:
-                        const match = command.match(/#[0-9a-zA-Z]{3,6}/);
-                        if (match) {
-                            color = match[0];
+                        const match = command.match(/#[0-9a-z]{3,6}/);
+                        if (match&&comment.premium) {
+                            color = match[0].toUpperCase();
                         }
+                        break;
                 }
             }
             if (font === 'defont') {
@@ -516,9 +563,11 @@ class NiconiComments {
                 case "ender":
                     ender = true;
                     break;
+                case "_live":
+                    _live = true;
             }
         }
-        return {loc, size, fontSize, color, font, full, ender};
+        return {loc, size, fontSize, color, font, full, ender, _live};
     }
 
     /**
@@ -531,7 +580,12 @@ class NiconiComments {
         for (let index in this.timeline[vpos]) {
             let comment = this.data[this.timeline[vpos][index]];
             this.context.font = parseFont(comment.font, comment.fontSize, this.useLegacy);
-            this.context.fillStyle = comment.color;
+            if (comment._live){
+                let rgb = hex2rgb(comment.color);
+                this.context.fillStyle = `rgba(${rgb[0]},${rgb[1]},${rgb[2]},0.5)`;
+            }else{
+                this.context.fillStyle = comment.color;
+            }
             if (comment.color==="#000000"){
                 this.context.strokeStyle = "rgba(255,255,255,0.7)";
             }
@@ -619,4 +673,18 @@ const arrayPush = (array, key, push) => {
     }
     array[key].push(push);
 }
+/**
+ * Hexからrgbに変換する(_live用)
+ * @param {string} hex
+ * @return {array} RGB
+ */
+const hex2rgb = ( hex ) => {
+    if ( hex.slice(0, 1) === "#" ) hex = hex.slice(1) ;
+    if ( hex.length === 3 ) hex = hex.slice(0,1) + hex.slice(0,1) + hex.slice(1,2) + hex.slice(1,2) + hex.slice(2,3) + hex.slice(2,3) ;
+
+    return [ hex.slice( 0, 2 ), hex.slice( 2, 4 ), hex.slice( 4, 6 ) ].map( function ( str ) {
+        return parseInt( str, 16 ) ;
+    } ) ;
+}
+
 export default NiconiComments;

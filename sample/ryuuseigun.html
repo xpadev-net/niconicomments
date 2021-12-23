@@ -1,27 +1,37 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title></title>
 </head>
 <body>
-<div>
-    <div id="player"></div>
-    <canvas id="canvas" width="1920" height="1080"></canvas>
+<div class="wrapper">
+    <div class="container">
+        <div id="player"></div>
+        <canvas id="canvas" width="1920" height="1080"></canvas>
+    </div>
 </div>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v652eace1692a40cfa3763df669d7439c1639079717194" integrity="sha512-Gi7xpJR8tSkrpF7aordPZQlW2DLtzUlZcumS8dMQjwDHEnw9I7ZLyiOj/6tZStRBGtGgN6ceN6cMH8z7etPGlw==" data-cf-beacon='{"rayId":"6c2060c478ba8a84","version":"2021.12.0","r":1,"token":"5558b20a5ffb4d7f9e3eea2421d968c8","si":100}' crossorigin="anonymous"></script>
 </body>
 </html>
 <style type="text/css">
-    div{
+    .wrapper{
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
         bottom: 0;
-        aspect-ratio: 16/9;
         height: 100vh;
         width: 100vw;
+    }
+    .container{
+        width: 100%;
+        max-height: 100vh;
+        aspect-ratio: 16/9;
+        position: fixed;
+        top: 50%;
+        transform: translateY(-50%);
     }
     iframe,canvas{
         position: absolute;
@@ -48,7 +58,7 @@
         player = new YT.Player('player', {
             height: '360',
             width: '640',
-            videoId: 'PumFnlu9EIY',
+            videoId: 'pv2IzP2CyRs',
             events: {
                 'onReady': onPlayerReady
             }
@@ -56,9 +66,9 @@
     }
     async function onPlayerReady() {
         const canvas = document.getElementById("canvas");
-        const req = await fetch("sample.json");
+        const req = await fetch("ryuuseigun.json");
         const res = await req.json();
-        const niconiComments = new NiconiComments(canvas, res);
+        const niconiComments = new NiconiComments(canvas, res, false, true);
         setInterval(() => niconiComments.drawCanvas(Math.floor(player.getCurrentTime() * 100)), 10);
     }
 </script>

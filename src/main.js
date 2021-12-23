@@ -21,11 +21,11 @@ class NiconiComments {
                 "resized":18
             },
             "medium":{
-                "default":70,
+                "default":85,
                 "resized":35
             },
             "big":{
-                "default":128,
+                "default":120,
                 "resized":57.5
             }
         }

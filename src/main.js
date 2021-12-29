@@ -12,26 +12,37 @@ class NiconiComments {
         this.context.strokeStyle = "rgba(0,0,0,0.7)";
         this.context.textAlign = "left";
         this.context.textBaseline = "top";
-        this.context.lineWidth = "6";
+        this.context.lineWidth = 2;
         if (useLegacy){
             this.commentYOffset = 0.25;
         }else{
-            this.commentYOffset = 0.125;
+            this.commentYOffset = 0.2;
         }
-        this.commentYMarginTop = 10;
+        this.commentYMarginTop = 0.08;
         this.fontSize={
             "small":{
-                "default":45,
-                "resized":18
+                "default":47,
+                "resized":27.5
             },
             "medium":{
-                "default":85,
-                "resized":35
+                "default":76,
+                "resized":39
             },
             "big":{
-                "default":120,
-                "resized":57.5
+                "default":118,
+                "resized":62.5
             }
+        }
+        this.defaultCommandValue={
+            loc: "naka",
+            size: "medium",
+            fontSize: this.fontSize.medium.default,
+            color: "#ffffff",
+            font: 'defont',
+            full: false,
+            ender: false,
+            _live: false,
+            invisible: false
         }
         this.doubleResizeMaxWidth={
             full:{
@@ -54,7 +65,7 @@ class NiconiComments {
         this.showCommentCount = false;
 
         this.timeline = {};
-        this.nicoScripts = {"reverse":[]};
+        this.nicoScripts = {"reverse":[],"default":[]};
         this.collision_right = {};
         this.collision_left = {};
         this.collision_ue = {};
@@ -125,7 +136,7 @@ class NiconiComments {
     getFont() {
         for (let i in this.data) {
             let comment = this.data[i];
-            let command = this.parseCommand(comment);
+            let command = this.parseCommandAndNicoscript(comment);
             this.data[i].loc = command.loc;
             this.data[i].size = command.size;
             this.data[i].fontSize = command.fontSize;
@@ -134,6 +145,8 @@ class NiconiComments {
             this.data[i].full = command.full;
             this.data[i].ender = command.ender;
             this.data[i]._live = command._live;
+            this.data[i].long = command.long;
+            this.data[i].invisible = command.invisible;
             this.data[i].content = this.data[i].content.replaceAll("\t","       ");
         }
     }
@@ -148,6 +161,9 @@ class NiconiComments {
                 this.context.font = parseFont(i, j, this.useLegacy);
                 for (let k in tmpData[i][j]) {
                     let comment = tmpData[i][j][k];
+                    if (comment.invisible){
+                        continue;
+                    }
                     let measure = this.measureText(comment);
                     this.data[comment.index].height = measure.height;
                     this.data[comment.index].width = measure.width;
@@ -169,6 +185,9 @@ class NiconiComments {
         let data = this.data;
         for (let i in data) {
             let comment = data[i];
+            if (comment.invisible){
+                continue;
+            }
             for (let j = 0; j < 500; j++) {
                 if (!this.timeline[comment.vpos + j]) {
                     this.timeline[comment.vpos + j] = [];
@@ -190,60 +209,64 @@ class NiconiComments {
                 comment.vpos -= 70;
                 this.data[i].vpos -= 70;
                 let posY = 0, is_break = false, is_change = true, count = 0;
-                while (is_change && count < 10) {
-                    is_change = false;
-                    count++;
-                    for (let j = 0; j < 500; j++) {
-                        let vpos = comment.vpos + j;
-                        let left_pos = 1920 - ((1920 + comment.width_max) * j / 500);
-                        if (left_pos + comment.width_max >= 1880) {
-                            for (let k in this.collision_right[vpos]) {
-                                let l = this.collision_right[vpos][k];
-                                if ((posY < data[l].posY + data[l].height && posY + comment.height > data[l].posY) && data[l].owner === comment.owner) {
-                                    if (data[l].posY + data[l].height > posY) {
-                                        posY = data[l].posY + data[l].height;
-                                        is_change = true;
-                                    }
-                                    if (posY + comment.height > 1080) {
-                                        if (1080 < comment.height) {
-                                            posY = (comment.height - 1080) / -2;
-                                        } else {
-                                            posY = Math.floor(Math.random() * (1080 - comment.height));
+                if (1080 < comment.height) {
+                    posY = (comment.height - 1080) / -2;
+                }else{
+                    while (is_change && count < 10) {
+                        is_change = false;
+                        count++;
+                        for (let j = 0; j < 500; j++) {
+                            let vpos = comment.vpos + j;
+                            let left_pos = 1920 - ((1920 + comment.width_max) * j / 500);
+                            if (left_pos + comment.width_max >= 1880) {
+                                for (let k in this.collision_right[vpos]) {
+                                    let l = this.collision_right[vpos][k];
+                                    if ((posY < data[l].posY + data[l].height && posY + comment.height > data[l].posY) && data[l].owner === comment.owner) {
+                                        if (data[l].posY + data[l].height > posY) {
+                                            posY = data[l].posY + data[l].height;
+                                            is_change = true;
                                         }
-                                        is_break = true;
-                                        break;
+                                        if (posY + comment.height > 1080) {
+                                            if (1080 < comment.height) {
+                                                posY = (comment.height - 1080) / -2;
+                                            } else {
+                                                posY = Math.floor(Math.random() * (1080 - comment.height));
+                                            }
+                                            is_break = true;
+                                            break;
+                                        }
                                     }
+                                }
+                                if (is_break) {
+                                    break;
+                                }
+                            }
+                            if (left_pos <= 40 && is_break === false) {
+                                for (let k in this.collision_left[vpos]) {
+                                    let l = this.collision_left[vpos][k];
+                                    if ((posY < data[l].posY + data[l].height && posY + comment.height > data[l].posY) && data[l].owner === comment.owner) {
+                                        if (data[l].posY + data[l].height > posY) {
+                                            posY = data[l].posY + data[l].height;
+                                            is_change = true;
+                                        }
+                                        if (posY + comment.height > 1080) {
+                                            if (1080 < comment.height) {
+                                                posY = 0;
+                                            } else {
+                                                posY = Math.random() * (1080 - comment.height);
+                                            }
+                                            is_break = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (is_break) {
+                                    break;
                                 }
                             }
                             if (is_break) {
                                 break;
                             }
-                        }
-                        if (left_pos <= 40 && is_break === false) {
-                            for (let k in this.collision_left[vpos]) {
-                                let l = this.collision_left[vpos][k];
-                                if ((posY < data[l].posY + data[l].height && posY + comment.height > data[l].posY) && data[l].owner === comment.owner) {
-                                    if (data[l].posY + data[l].height > posY) {
-                                        posY = data[l].posY + data[l].height;
-                                        is_change = true;
-                                    }
-                                    if (posY + comment.height > 1080) {
-                                        if (1080 < comment.height) {
-                                            posY = 0;
-                                        } else {
-                                            posY = Math.random() * (1080 - comment.height);
-                                        }
-                                        is_break = true;
-                                        break;
-                                    }
-                                }
-                            }
-                            if (is_break) {
-                                break;
-                            }
-                        }
-                        if (is_break) {
-                            break;
                         }
                     }
                 }
@@ -294,7 +317,7 @@ class NiconiComments {
                         }
                     }
                 }
-                for (let j = 0; j < 300; j++) {
+                for (let j = 0; j < comment.long; j++) {
                     let vpos = comment.vpos + j;
                     arrayPush(this.timeline, vpos, i);
                     if (comment.loc === "ue"){
@@ -341,7 +364,7 @@ class NiconiComments {
         width = width_arr.reduce((p, c) => p + c, 0) / width_arr.length;
         width_max = Math.max(...width_arr);
         width_min = Math.min(...width_arr);
-        height = (comment.fontSize+this.commentYMarginTop) * lines.length;
+        height = (comment.fontSize+(this.commentYMarginTop*comment.fontSize)) * lines.length;
         if(comment.loc !== "naka"&&!comment.tateRisized){
             if (comment.full&&width_max>1920){
                 comment.fontSize-=1;
@@ -394,67 +417,71 @@ class NiconiComments {
             }
         }
         let lines = comment.content.split("\n"),posX = (1920 - comment.width_max) / 2;
-        if (comment.loc === "shita"){
-            for (let i in lines) {
-                let line = lines[i];
-                let posY = 1080 - comment.posY + (i * (comment.fontSize + this.commentYMarginTop)) - comment.height + this.commentYOffset * comment.fontSize;
-                this.context.strokeText(line, posX, posY);
-                this.context.fillText(line, posX, posY);
-            }
-        }else{
-            if (comment.loc === "naka") {
-                if (reverse) {
-                    posX = ((1920 + comment.width_max) * (vpos - comment.vpos) / 500) - comment.width_max;
-                } else {
-                    posX = 1920 - ((1920 + comment.width_max) * (vpos - comment.vpos) / 500);
-                }
-            }
-            for (let i in lines) {
-                let line = lines[i];
-                let posY = comment.posY + (i * (comment.fontSize + this.commentYMarginTop)) + this.commentYOffset * comment.fontSize;
-                this.context.strokeText(line, posX, posY);
-                this.context.fillText(line, posX, posY);
+        if (comment.loc === "naka") {
+            if (reverse) {
+                posX = ((1920 + comment.width_max) * (vpos - comment.vpos) / 500) - comment.width_max;
+            } else {
+                posX = 1920 - ((1920 + comment.width_max) * (vpos - comment.vpos) / 500);
             }
         }
         if (this.showCollision){
-            this.context.strokeStyle = "rgba(255,255,0,1)";
+            this.context.strokeStyle = "rgba(0,255,255,1)";
             if (comment.loc === "shita"){
                 this.context.strokeRect(posX, 1080-comment.posY-comment.height, comment.width_max,comment.height)
             }else{
                 this.context.strokeRect(posX, comment.posY, comment.width_max,comment.height)
             }
-            this.context.strokeStyle = "rgba(0,0,0,0.7)";
+            if (comment.color==="#000000"){
+                this.context.strokeStyle = "rgba(255,255,255,0.7)";
+            }else{
+                this.context.strokeStyle = "rgba(0,0,0,0.7)";
+            }
+        }
+        for (let i in lines) {
+            let line = lines[i],posY;
+            if (comment.loc === "shita"){
+                posY = 1080 - comment.posY + (i * (comment.fontSize + (this.commentYMarginTop*comment.fontSize))) - comment.height + this.commentYOffset * comment.fontSize;
+            }else{
+                posY = comment.posY + (i * (comment.fontSize + (this.commentYMarginTop*comment.fontSize))) + this.commentYOffset * comment.fontSize;
+            }
+            this.context.strokeText(line, posX, posY);
+            this.context.fillText(line, posX, posY);
+            if (this.showCollision){
+                this.context.strokeStyle = "rgba(255,255,0,0.5)";
+                this.context.strokeRect(posX, posY, comment.width_max,comment.fontSize);
+                if (comment.color==="#000000"){
+                    this.context.strokeStyle = "rgba(255,255,255,0.7)";
+                }else{
+                    this.context.strokeStyle = "rgba(0,0,0,0.7)";
+                }
+            }
         }
     }
 
     /**
      * コメントに含まれるコマンドを解釈する
      * @param comment- 独自フォーマットのコメントデータ
-     * @returns {{loc: string, size: string, color: string, fontSize: number, ender: boolean, font: string, full: boolean, _live: boolean}}
+     * @returns {{loc: string|null, size: string|null, color: string|null, fontSize: number|null, ender: boolean, font: string|null, full: boolean, _live: boolean, invisible: boolean, long:number|null}}
      */
     parseCommand(comment) {
-        let metadata=comment.mail,loc = "naka", size = "medium", fontSize = this.fontSize.medium.default, color = "#ffffff", font = 'defont', full = false, ender = false,reverse=comment.content.match(/@逆 ?(全|コメ|投コメ)?/),_live=false;
-        if (reverse){
-            if (!reverse[1]){
-                reverse[1]="全";
-            }
-            let length = false;
-            for (let i in metadata){
-                let match = metadata[i].match(/@([0-9]+)/);
-                if (match){
-                    length = match[1];
-                    break;
-                }
-            }
-            if (!length){
-                length=30;
-            }
-            this.nicoScripts.reverse.push({"start":comment.vpos,"end":comment.vpos+length*100,"target":reverse[1]});
-            fontSize=0;
-        }
+        let metadata=comment.mail,
+            loc = null,
+            size = null,
+            fontSize = null,
+            color = null,
+            font = null,
+            full = false,
+            ender = false,
+            _live = false,
+            invisible = false,
+            long = null;
         for (let i in metadata) {
             let command = metadata[i].toLowerCase();
-            if (loc === "naka") {
+            const match = command.match(/^@([0-9.]+)/);
+            if (match){
+                long=match[1];
+            }
+            if (loc === null) {
                 switch (command) {
                     case "ue":
                         loc = "ue";
@@ -464,7 +491,7 @@ class NiconiComments {
                         break;
                 }
             }
-            if (size === "medium") {
+            if (size === null) {
                 switch (command) {
                     case "big":
                         size = "big";
@@ -476,7 +503,7 @@ class NiconiComments {
                         break;
                 }
             }
-            if (color === "#ffffff") {
+            if (color === null) {
                 switch (command) {
                     case "white":
                         color = "#FFFFFF";
@@ -553,7 +580,7 @@ class NiconiComments {
                         break;
                 }
             }
-            if (font === 'defont') {
+            if (font === null) {
                 switch (command) {
                     case "gothic":
                         font = "gothic";
@@ -572,9 +599,85 @@ class NiconiComments {
                     break;
                 case "_live":
                     _live = true;
+                    break;
+                case "invisible":
+                    invisible = true;
+                    break;
             }
         }
-        return {loc, size, fontSize, color, font, full, ender, _live};
+        return {loc, size, fontSize, color, font, full, ender, _live, invisible, long};
+    }
+
+    parseCommandAndNicoscript(comment){
+        let data = this.parseCommand(comment),
+            nicoscript=comment.content.match(/^@(デフォルト|置換|逆|コメント禁止|シーク禁止|ジャンプ)/)
+
+        if (nicoscript){
+            switch (nicoscript[1]) {
+                case "デフォルト":
+                    this.nicoScripts.default.push({
+                        start: comment.vpos,
+                        long: data.long===null?null:Math.floor(data.long*100),
+                        color: data.color,
+                        size: data.size,
+                        font: data.font,
+                        loc: data.loc
+                    });
+                    break;
+                case "逆":
+                    let reverse = comment.content.match(/^@逆 ?(全|コメ|投コメ)?/);
+                    if (!reverse[1]){
+                        reverse[1]="全";
+                    }
+                    if (data.long===null){
+                        data.long=30;
+                    }
+                    this.nicoScripts.reverse.push({"start":comment.vpos,"end":comment.vpos+(data.long*100),"target":reverse[1]});
+                    break;
+            }
+            data.invisible=true;
+        }
+        let color="#FFFFFF",size="medium",font="defont",loc="naka";
+        for (let i in this.nicoScripts.default){
+            if (this.nicoScripts.default[i].long!==null&&this.nicoScripts.default[i].start+this.nicoScripts.default[i].long<comment.vpos){
+                this.nicoScripts.default = this.nicoScripts.default.splice(Number(i),1);
+                continue;
+            }
+            if (this.nicoScripts.default[i].loc){
+                loc=this.nicoScripts.default[i].loc
+            }
+            if (this.nicoScripts.default[i].color){
+                color=this.nicoScripts.default[i].color
+            }
+            if (this.nicoScripts.default[i].size){
+                size=this.nicoScripts.default[i].size
+            }
+            if (this.nicoScripts.default[i].font){
+                font=this.nicoScripts.default[i].font
+            }
+        }
+        if (!data.loc){
+            data.loc=loc;
+        }
+        if (!data.color){
+            data.color=color;
+        }
+        if (!data.size){
+            data.size=size;
+            data.fontSize=this.fontSize[data.size].default;
+        }
+        if (!data.font){
+            data.font=font;
+        }
+        if (data.loc!=="naka"){
+            if (!data.long){
+                data.long=300;
+            }else{
+                data.long=Math.floor(data.long*100);
+            }
+        }
+        return data;
+
     }
 
     /**
@@ -584,21 +687,26 @@ class NiconiComments {
     drawCanvas(vpos) {
         this.fpsCount++;
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        for (let index in this.timeline[vpos]) {
-            let comment = this.data[this.timeline[vpos][index]];
-            this.context.font = parseFont(comment.font, comment.fontSize, this.useLegacy);
-            if (comment._live){
-                let rgb = hex2rgb(comment.color);
-                this.context.fillStyle = `rgba(${rgb[0]},${rgb[1]},${rgb[2]},0.5)`;
-            }else{
-                this.context.fillStyle = comment.color;
-            }
-            if (comment.color==="#000000"){
-                this.context.strokeStyle = "rgba(255,255,255,0.7)";
-            }
-            this.drawText(comment, vpos);
-            if (comment.color==="#000000"){
-                this.context.strokeStyle = "rgba(0,0,0,0.7)";
+        if (this.timeline[vpos]){
+            for (let index in this.timeline[vpos]) {
+                let comment = this.data[this.timeline[vpos][index]];
+                if (comment.invisible){
+                    continue;
+                }
+                this.context.font = parseFont(comment.font, comment.fontSize, this.useLegacy);
+                if (comment._live){
+                    let rgb = hex2rgb(comment.color);
+                    this.context.fillStyle = `rgba(${rgb[0]},${rgb[1]},${rgb[2]},0.5)`;
+                }else{
+                    this.context.fillStyle = comment.color;
+                }
+                if (comment.color==="#000000"){
+                    this.context.strokeStyle = "rgba(255,255,255,0.7)";
+                }
+                this.drawText(comment, vpos);
+                if (comment.color==="#000000"){
+                    this.context.strokeStyle = "rgba(0,0,0,0.7)";
+                }
             }
         }
         if (this.showFPS){

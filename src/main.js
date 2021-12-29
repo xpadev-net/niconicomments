@@ -335,11 +335,13 @@ class NiconiComments {
     sortComment(){
         for (let vpos in this.timeline){
             this.timeline[vpos].sort((a,b)=>{
-                if (!a.owner&&b.owner){
+                const A = this.data[a];
+                const B = this.data[b];
+                if (!A.owner && B.owner) {
                     return -1;
-                }else if(a.owner&&!b.owner){
-                    return 1
-                }else{
+                } else if (A.owner && !B.owner) {
+                    return 1;
+                } else {
                     return 0;
                 }
             })

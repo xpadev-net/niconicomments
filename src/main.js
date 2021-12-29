@@ -128,6 +128,7 @@ class NiconiComments {
         this.getFont();
         this.getCommentSize();
         this.getCommentPos();
+        this.sortComment();
     }
 
     /**
@@ -328,6 +329,20 @@ class NiconiComments {
                 }
                 this.data[i].posY = posY;
             }
+        }
+    }
+
+    sortComment(){
+        for (let vpos in this.timeline){
+            this.timeline[vpos].sort((a,b)=>{
+                if (!a.owner&&b.owner){
+                    return -1;
+                }else if(a.owner&&!b.owner){
+                    return 1
+                }else{
+                    return 0;
+                }
+            })
         }
     }
 
@@ -689,6 +704,7 @@ class NiconiComments {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
         if (this.timeline[vpos]){
             for (let index in this.timeline[vpos]) {
+
                 let comment = this.data[this.timeline[vpos][index]];
                 if (comment.invisible){
                     continue;

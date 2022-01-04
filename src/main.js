@@ -12,7 +12,7 @@ class NiconiComments {
         this.context.strokeStyle = "rgba(0,0,0,0.7)";
         this.context.textAlign = "left";
         this.context.textBaseline = "top";
-        this.context.lineWidth = 2;
+        this.context.lineWidth = 4;
         if (useLegacy){
             this.commentYOffset = 0.25;
         }else{

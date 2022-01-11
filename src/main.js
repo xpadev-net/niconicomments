@@ -3,17 +3,16 @@ class NiconiComments {
      * NiconiComments Constructor
      * @param {HTMLCanvasElement} canvas - 描画対象のキャンバス
      * @param {[]} data - 描画用のコメント
-     * @param {boolean} useLegacy - defontにsans-serifを適用するか(trueでニコニコ公式に準拠)
-     * @param {boolean} formatted - dataが独自フォーマットに変換されているか
+     * @param {{useLegacy: boolean, formatted: boolean, video: HTMLVideoElement|null}} options - 細かい設定類
      */
-    constructor(canvas, data, useLegacy=false, formatted=false) {
+    constructor(canvas, data, options={useLegacy:false, formatted:false, video:null}) {
         this.canvas = canvas;
         this.context = canvas.getContext("2d");
         this.context.strokeStyle = "rgba(0,0,0,0.7)";
         this.context.textAlign = "left";
         this.context.textBaseline = "top";
         this.context.lineWidth = 4;
-        if (useLegacy){
+        if (options.useLegacy){
             this.commentYOffset = 0.25;
         }else{
             this.commentYOffset = 0.2;
@@ -54,12 +53,12 @@ class NiconiComments {
                 default: 2740
             }
         }
-        if (formatted) {
+        if (options.formatted) {
             this.data=data;
         }else{
             this.data = this.parseData(data);
         }
-
+        this.video = options.video?options.video:null;
         this.showCollision = false;
         this.showFPS = false;
         this.showCommentCount = false;
@@ -70,7 +69,7 @@ class NiconiComments {
         this.collision_left = {};
         this.collision_ue = {};
         this.collision_shita = {};
-        this.useLegacy=useLegacy;
+        this.useLegacy=options.useLegacy;
         this.preRendering();
         this.fpsCount=0;
         this.fps=0;
@@ -704,6 +703,17 @@ class NiconiComments {
     drawCanvas(vpos) {
         this.fpsCount++;
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        if (this.video){
+            let offsetX,offsetY, scale,height=this.canvas.height/this.video.videoHeight,width=this.canvas.width/this.video.videoWidth;
+            if (height>width){
+                scale = width;
+            }else{
+                scale = height;
+            }
+            offsetX = (this.canvas.width - this.video.videoWidth * scale) * 0.5;
+            offsetY = (this.canvas.height - this.video.videoHeight * scale) * 0.5;
+            this.context.drawImage(this.video,offsetX,offsetY,this.video.videoWidth * scale,this.video.videoHeight * scale);
+        }
         if (this.timeline[vpos]){
             for (let index in this.timeline[vpos]) {
 

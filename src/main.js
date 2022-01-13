@@ -89,7 +89,7 @@ class NiconiComments {
         for (let i = 0; i < data.length; i++) {
             for (let key in data[i]) {
                 let value = data[i][key];
-                if (key === "chat"&&value["deleted"]!==1) {
+                if (key === "chat"&&value["deleted"]!==1&&!value["content"].startsWith("/")) {
                     let tmpParam = {
                         "id": value["no"],
                         "vpos": value["vpos"],

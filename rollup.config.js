@@ -2,7 +2,7 @@ import babel from "@rollup/plugin-babel"
 import pkg from "./package.json";
 const banner = `/*!
   niconicomments.js v${pkg.version}
-  (c) 2021 xpadev-net https://xpadevn.et
+  (c) 2021 xpadev-net https://xpadev.net
   Released under the ${pkg.license} License.
 */`;
 

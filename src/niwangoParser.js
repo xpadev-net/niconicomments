@@ -2,6 +2,7 @@ class NiwangoParser{
     constructor() {
         this.scripts = {};
         this.functions = ["drawShape","drawText","dt","commentTrigger","ctrig","if","timer","jump","jumpCancel","seek","addMarker","getMarker","sum","showResult","replace","rand","distance","screenWidth","screenHeight","addButton","playStartTime","BGM","playBGM","stopBGM","addAtPausePoint","addPostRoute","CM","playCM"];
+        this.userFunc = {};
     }
     parse(script,vpos){
         if (!script.startsWith("/")){
@@ -9,22 +10,45 @@ class NiwangoParser{
         }
         script = script.slice(1);
 
-        let regexp = new RegExp("^("+this.functions.join("|")+")");
-        let match = script.match(regexp);
-        if (match){
-            let {func,arg,after} = parseFunc(script);
-            if (func!==match[1]){
-                return false;
+        for (let i = 0; i < 1; i++){
+            let regexp = new RegExp("^("+this.functions.join("|")+")\\(");
+            let match = script.match(regexp);
+            if (match){
+                let {func,arg,after} = parseFunc(script);
+                if (func!==match[1]){
+                    return false;
+                }
+                arg = parseArg(arg);
+                switch (func){
+                    case "timer":
+                        this.parse(arg.default,vpos+Number(arg.timer)*100);
+                        break;
+                    default:
+                        console.log(func,arg);
+                }
+                script=after;
+                continue;
             }
-            arg = parseArg(arg);
-            let _uuid = uuid();
-            this.scripts[_uuid]={
-                script:match[1],
-                start:vpos,
-                options:arg
+            match = script.match(/^(def|def_kari)\(/);
+            if (match){
+                let {func,arg,after} = parseFunc(script);
+                if (func!==match[1]){
+                    return false;
+                }
+                arg = parseArg(arg,true);
+                this.userFunc[arg.default.replace(/^(?:"|')(.*)(?:"|')$/,"$1")] = arg.default0;
+
+                console.log(this.userFunc)
+                script=after;
+                continue;
             }
-            script=after;
+            regexp = new RegExp("^("+this.userFunc.keys().join("|")+")\\(");
+            match = script.match(regexp);
+            if (match){
+
+            }
         }
+
     }
 }
 
@@ -47,9 +71,9 @@ const uuid = () => {
     return chars.join("");
 }
 
-const parseArg = (input) => {
+const parseArg = (input,isScript=false) => {
     let arr = Array.from(input),deps=0,char=null;
-    let tmp = [],arg = {},left="undefined";
+    let tmp = [],arg = {},left="default";
     for (let i in arr){
         let value = arr[i];
         if (value === '"'||value==="'"){
@@ -69,10 +93,15 @@ const parseArg = (input) => {
             }
         }
         if (deps===0&&value===","){
+            let _left = left, i = 0;
+            while(arg[left]){
+                left = _left+i;
+                i++;
+            }
             arg[left]=tmp.join("");
-            left="undefined";
+            left="default";
             tmp=[];
-        }else if(deps===0&&value===":"){
+        }else if(deps===0&&value===":"&&!isScript){
             left = tmp.join("");
             tmp=[];
         }else{
@@ -80,6 +109,11 @@ const parseArg = (input) => {
         }
     }
     if (tmp!==[]){
+        let _left = left, i = 0;
+        while(arg[left]){
+            left = _left+i;
+            i++;
+        }
         arg[left]=tmp.join("");
     }
     return arg;

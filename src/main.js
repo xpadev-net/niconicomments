@@ -147,7 +147,7 @@ class NiconiComments {
             this.data[i]._live = command._live;
             this.data[i].long = command.long;
             this.data[i].invisible = command.invisible;
-            this.data[i].content = this.data[i].content.replaceAll("\t","       ");
+            this.data[i].content = this.data[i].content.replaceAll("\t","        ");
         }
     }
 
@@ -746,8 +746,13 @@ class NiconiComments {
         if (this.showCommentCount){
             this.context.font = parseFont("defont",60, this.useLegacy);
             this.context.fillStyle = "#00FF00";
-            this.context.strokeText("Count:"+this.timeline[vpos].length,100,200);
-            this.context.fillText("Count:"+this.timeline[vpos].length,100,200);
+            if (this.timeline[vpos]){
+                this.context.strokeText("Count:"+this.timeline[vpos].length,100,200);
+                this.context.fillText("Count:"+this.timeline[vpos].length,100,200);
+            }else{
+                this.context.strokeText("Count:0",100,200);
+                this.context.fillText("Count:0",100,200);
+            }
         }
     }
 

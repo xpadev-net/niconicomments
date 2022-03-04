@@ -58,7 +58,7 @@ class NiconiComments {
         }else{
             this.data = this.parseData(data);
         }
-        this.video = options.video||null;
+        this.video = options.video?options.video:null;
         this.showCollision = false;
         this.showFPS = false;
         this.showCommentCount = false;
@@ -158,7 +158,7 @@ class NiconiComments {
         let tmpData = groupBy(this.data, "font", "fontSize");
         for (let i in tmpData) {
             for (let j in tmpData[i]) {
-                this.context.font = parseFont("defont", j, this.useLegacy);
+                this.context.font = parseFont(i, j, this.useLegacy);
                 for (let k in tmpData[i][j]) {
                     let comment = tmpData[i][j][k];
                     if (comment.invisible){
@@ -171,7 +171,7 @@ class NiconiComments {
                     this.data[comment.index].width_min = measure.width_min;
                     if (measure.resized){
                         this.data[comment.index].fontSize = measure.fontSize;
-                        this.context.font = parseFont("defont", j, this.useLegacy);
+                        this.context.font = parseFont(i, j, this.useLegacy);
                     }
                 }
             }
@@ -360,17 +360,17 @@ class NiconiComments {
                 comment.fontSize = this.fontSize.big.resized;
                 comment.resized = true;
                 comment.tateRisized = true;
-                this.context.font=parseFont("defont",comment.fontSize, this.useLegacy);
+                this.context.font=parseFont(comment.font,comment.fontSize, this.useLegacy);
             }else if(comment.size === "medium" && lines.length > 4){
                 comment.fontSize = this.fontSize.medium.resized;
                 comment.resized = true;
                 comment.tateRisized = true;
-                this.context.font=parseFont("defont",comment.fontSize, this.useLegacy);
+                this.context.font=parseFont(comment.font,comment.fontSize, this.useLegacy);
             }else if(comment.size === "small" && lines.length > 6){
                 comment.fontSize = this.fontSize.small.resized;
                 comment.resized = true;
                 comment.tateRisized = true;
-                this.context.font=parseFont("defont",comment.fontSize, this.useLegacy);
+                this.context.font=parseFont(comment.font,comment.fontSize, this.useLegacy);
             }
         }
         for (let i = 0; i < lines.length; i++) {
@@ -386,29 +386,29 @@ class NiconiComments {
                 comment.fontSize-=1;
                 comment.resized = true;
                 comment.yokoResized = true;
-                this.context.font=parseFont("defont",comment.fontSize, this.useLegacy);
+                this.context.font=parseFont(comment.font,comment.fontSize, this.useLegacy);
                 return this.measureText(comment);
             }else if (!comment.full&&width_max>1440){
                 comment.fontSize-=1;
                 comment.resized = true;
                 comment.yokoResized = true;
-                this.context.font=parseFont("defont",comment.fontSize, this.useLegacy);
+                this.context.font=parseFont(comment.font,comment.fontSize, this.useLegacy);
                 return this.measureText(comment);
             }
         }else if (comment.loc !== "naka"&&comment.tateRisized&&(comment.full&&width_max>1920||!comment.full&&width_max>1440)&&!comment.yokoResized){
             comment.fontSize = this.fontSize[comment.size].default;
             comment.resized = true;
             comment.yokoResized = true;
-            this.context.font=parseFont("defont",comment.fontSize, this.useLegacy);
+            this.context.font=parseFont(comment.font,comment.fontSize, this.useLegacy);
             return this.measureText(comment);
         }else if (comment.loc !== "naka"&&comment.tateRisized&&comment.yokoResized){
             if (comment.full&&width_max>this.doubleResizeMaxWidth.full[this.useLegacy?"legacy":"default"]){
                 comment.fontSize-=1;
-                this.context.font=parseFont("defont",comment.fontSize, this.useLegacy);
+                this.context.font=parseFont(comment.font,comment.fontSize, this.useLegacy);
                 return this.measureText(comment);
             }else if (!comment.full&&width_max>this.doubleResizeMaxWidth.normal[this.useLegacy?"legacy":"default"]){
                 comment.fontSize-=1.
-                this.context.font=parseFont("defont",comment.fontSize, this.useLegacy);
+                this.context.font=parseFont(comment.font,comment.fontSize, this.useLegacy);
                 return this.measureText(comment);
             }
         }

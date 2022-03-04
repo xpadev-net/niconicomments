@@ -69,6 +69,7 @@ class NiconiComments {
         this.collision_left = {};
         this.collision_ue = {};
         this.collision_shita = {};
+        this.lastVpos = null;
         this.useLegacy=options.useLegacy;
         this.preRendering();
         this.fpsCount=0;
@@ -147,7 +148,7 @@ class NiconiComments {
             this.data[i]._live = command._live;
             this.data[i].long = command.long;
             this.data[i].invisible = command.invisible;
-            this.data[i].content = this.data[i].content.replaceAll("\t","        ");
+            this.data[i].content = this.data[i].content.replaceAll("\t","  ");
         }
     }
 
@@ -701,6 +702,8 @@ class NiconiComments {
      * @param vpos - 動画の現在位置の100倍 ニコニコから吐き出されるコメントの位置情報は主にこれ
      */
     drawCanvas(vpos) {
+        if (this.lastVpos===vpos)return;
+        this.lastVpos=vpos;
         this.fpsCount++;
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
         if (this.video){

@@ -9,29 +9,30 @@ class NiconiComments {
         this.canvas = canvas;
         this.context = canvas.getContext("2d");
         this.context.strokeStyle = "rgba(0,0,0,0.7)";
-        this.context.textAlign = "left";
-        this.context.textBaseline = "top";
+        this.context.textAlign = "start";
+        this.context.textBaseline = "alphabetic";
         this.context.lineWidth = 4;
         if (options.useLegacy){
-            this.commentYOffset = 0.25;
+            this.commentYOffset = 0.0;
         }else{
-            this.commentYOffset = 0.2;
+            this.commentYOffset = 0.0;
         }
-        this.commentYMarginTop = 0.08;
-        this.fontSize={
-            "small":{
-                "default":47,
-                "resized":27.5
+        this.commentYPaddingTop = 0.08;
+        this.commentYMarginBottom = 0.24;
+        this.fontSize = {
+            "small": {
+                "default": 47,
+                "resized": 26.1
             },
-            "medium":{
-                "default":76,
-                "resized":39
+            "medium": {
+                "default": 74,
+                "resized": 38.7
             },
-            "big":{
-                "default":118,
-                "resized":62.5
+            "big": {
+                "default": 111,
+                "resized": 61
             }
-        }
+        };
         this.defaultCommandValue={
             loc: "naka",
             size: "medium",
@@ -381,9 +382,9 @@ class NiconiComments {
         width = width_arr.reduce((p, c) => p + c, 0) / width_arr.length;
         width_max = Math.max(...width_arr);
         width_min = Math.min(...width_arr);
-        height = (comment.fontSize+(this.commentYMarginTop*comment.fontSize)) * lines.length;
+        height = (comment.fontSize*(1+this.commentYPaddingTop) * lines.length) + (this.commentYMarginBottom * comment.fontSize);
         if(comment.loc !== "naka"&&!comment.tateRisized){
-            if (comment.full&&width_max>1920){
+            if (comment.full&&width_max>1840){
                 comment.fontSize-=1;
                 comment.resized = true;
                 comment.yokoResized = true;
@@ -457,15 +458,15 @@ class NiconiComments {
         for (let i in lines) {
             let line = lines[i],posY;
             if (comment.loc === "shita"){
-                posY = 1080 - comment.posY + (i * (comment.fontSize + (this.commentYMarginTop*comment.fontSize))) - comment.height + this.commentYOffset * comment.fontSize;
-            }else{
-                posY = comment.posY + (i * (comment.fontSize + (this.commentYMarginTop*comment.fontSize))) + this.commentYOffset * comment.fontSize;
+                posY = 1080 - comment.posY - comment.height + ( (Number(i)+1) * (comment.fontSize)*(1+this.commentYPaddingTop));
+            } else {
+                posY = comment.posY + (Number(i)+1) * (comment.fontSize)*(1+this.commentYPaddingTop);
             }
             this.context.strokeText(line, posX, posY);
             this.context.fillText(line, posX, posY);
             if (this.showCollision){
                 this.context.strokeStyle = "rgba(255,255,0,0.5)";
-                this.context.strokeRect(posX, posY, comment.width_max,comment.fontSize);
+                this.context.strokeRect(posX, posY, comment.width_max,comment.fontSize*-1);
                 if (comment.color==="#000000"){
                     this.context.strokeStyle = "rgba(255,255,255,0.7)";
                 }else{

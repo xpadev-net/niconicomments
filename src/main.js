@@ -28,17 +28,6 @@ class NiconiComments {
                 "resized": 61
             }
         };
-        this.defaultCommandValue={
-            loc: "naka",
-            size: "medium",
-            fontSize: this.fontSize.medium.default,
-            color: "#ffffff",
-            font: 'defont',
-            full: false,
-            ender: false,
-            _live: false,
-            invisible: false
-        }
         this.doubleResizeMaxWidth={
             full:{
                 legacy: 3020,
@@ -725,7 +714,7 @@ class NiconiComments {
      * @param vpos - 動画の現在位置の100倍 ニコニコから吐き出されるコメントの位置情報は主にこれ
      */
     drawCanvas(vpos) {
-        //if (this.lastVpos===vpos)return;
+        if (this.lastVpos===vpos)return;
         this.lastVpos=vpos;
         this.fpsCount++;
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);

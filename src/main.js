@@ -3,20 +3,15 @@ class NiconiComments {
      * NiconiComments Constructor
      * @param {HTMLCanvasElement} canvas - 描画対象のキャンバス
      * @param {[]} data - 描画用のコメント
-     * @param {{useLegacy: boolean, formatted: boolean, video: HTMLVideoElement|null}} options - 細かい設定類
+     * @param {{useLegacy: boolean, formatted: boolean, video: HTMLVideoElement|null}, showCollision: boolean, showFPS: boolean, showCommentCount: boolean} options - 細かい設定類
      */
-    constructor(canvas, data, options={useLegacy:false, formatted:false, video:null}) {
+    constructor(canvas, data, options={useLegacy:false, formatted:false, video:null,showCollision: false, showFPS: false, showCommentCount: false}) {
         this.canvas = canvas;
         this.context = canvas.getContext("2d");
         this.context.strokeStyle = "rgba(0,0,0,0.7)";
         this.context.textAlign = "start";
         this.context.textBaseline = "alphabetic";
         this.context.lineWidth = 4;
-        if (options.useLegacy){
-            this.commentYOffset = 0.0;
-        }else{
-            this.commentYOffset = 0.0;
-        }
         this.commentYPaddingTop = 0.08;
         this.commentYMarginBottom = 0.24;
         this.fontSize = {
@@ -60,9 +55,9 @@ class NiconiComments {
             this.data = this.parseData(data);
         }
         this.video = options.video?options.video:null;
-        this.showCollision = false;
-        this.showFPS = false;
-        this.showCommentCount = false;
+        this.showCollision = options.showCollision;
+        this.showFPS = options.showFPS;
+        this.showCommentCount = options.showCommentCount;
 
         this.timeline = {};
         this.nicoScripts = {"reverse":[],"default":[]};
@@ -333,6 +328,9 @@ class NiconiComments {
         }
     }
 
+    /**
+     * 投稿者コメントを前に移動
+     */
     sortComment(){
         for (let vpos in this.timeline){
             this.timeline[vpos].sort((a,b)=>{
@@ -419,7 +417,7 @@ class NiconiComments {
     }
 
     /**
-     * コマンドをもとに所定の位置にコメントを表示する
+     * コマンドをもとに所定の位置に事前に生成したコメントを表示する
      * @param comment - 独自フォーマットのコメントデータ
      * @param {number} vpos - 動画の現在位置の100倍 ニコニコから吐き出されるコメントの位置情報は主にこれ
      */
@@ -434,7 +432,7 @@ class NiconiComments {
                 reverse=true;
             }
         }
-        let lines = comment.content.split("\n"),posX = (1920 - comment.width_max) / 2;
+        let posX = (1920 - comment.width_max) / 2;
         if (comment.loc === "naka") {
             if (reverse) {
                 posX = ((1920 + comment.width_max) * (vpos - comment.vpos) / 500) - comment.width_max;
@@ -442,38 +440,62 @@ class NiconiComments {
                 posX = 1920 - ((1920 + comment.width_max) * (vpos - comment.vpos) / 500);
             }
         }
+        this.context.drawImage(comment.image,posX,comment.posY);
+    }
+
+    /**
+     * drawTextで毎回fill/strokeすると重いので画像化して再利用できるようにする
+     * @param {number} i - コメントデータのインデックス
+     */
+    getTextImage(i){
+        let value = this.data[i];
+        if (value.invisible){
+            return
+        }
+        let image = document.createElement("canvas");
+        image.width = value.width_max;
+        image.height = value.height;
+        let context = image.getContext("2d");
+        context.strokeStyle = "rgba(0,0,0,0.7)";
+        context.textAlign = "start";
+        context.textBaseline = "alphabetic";
+        context.lineWidth = 4;
+        context.font = parseFont(value.font, value.fontSize, this.useLegacy);
+        if (value._live){
+            let rgb = hex2rgb(value.color);
+            context.fillStyle = `rgba(${rgb[0]},${rgb[1]},${rgb[2]},0.5)`;
+        }else{
+            context.fillStyle = value.color;
+        }
+        if (value.color==="#000000"){
+            context.strokeStyle = "rgba(255,255,255,0.7)";
+        }
         if (this.showCollision){
-            this.context.strokeStyle = "rgba(0,255,255,1)";
-            if (comment.loc === "shita"){
-                this.context.strokeRect(posX, 1080-comment.posY-comment.height, comment.width_max,comment.height)
+            context.strokeStyle = "rgba(0,255,255,1)";
+            context.strokeRect(0, 0, value.width_max,value.height)
+            if (value.color==="#000000"){
+                context.strokeStyle = "rgba(255,255,255,0.7)";
             }else{
-                this.context.strokeRect(posX, comment.posY, comment.width_max,comment.height)
-            }
-            if (comment.color==="#000000"){
-                this.context.strokeStyle = "rgba(255,255,255,0.7)";
-            }else{
-                this.context.strokeStyle = "rgba(0,0,0,0.7)";
+                context.strokeStyle = "rgba(0,0,0,0.7)";
             }
         }
+        let lines = value.content.split("\n");
         for (let i in lines) {
             let line = lines[i],posY;
-            if (comment.loc === "shita"){
-                posY = 1080 - comment.posY - comment.height + ( (Number(i)+1) * (comment.fontSize)*(1+this.commentYPaddingTop));
-            } else {
-                posY = comment.posY + (Number(i)+1) * (comment.fontSize)*(1+this.commentYPaddingTop);
-            }
-            this.context.strokeText(line, posX, posY);
-            this.context.fillText(line, posX, posY);
+            posY = (Number(i)+1) * (value.fontSize)*(1+this.commentYPaddingTop);
+            context.strokeText(line, 0, posY);
+            context.fillText(line, 0, posY);
             if (this.showCollision){
-                this.context.strokeStyle = "rgba(255,255,0,0.5)";
-                this.context.strokeRect(posX, posY, comment.width_max,comment.fontSize*-1);
-                if (comment.color==="#000000"){
-                    this.context.strokeStyle = "rgba(255,255,255,0.7)";
+                context.strokeStyle = "rgba(255,255,0,0.5)";
+                context.strokeRect(0, posY, value.width_max,value.fontSize*-1);
+                if (value.color==="#000000"){
+                    context.strokeStyle = "rgba(255,255,255,0.7)";
                 }else{
-                    this.context.strokeStyle = "rgba(0,0,0,0.7)";
+                    context.strokeStyle = "rgba(0,0,0,0.7)";
                 }
             }
         }
+        this.data[i].image = image;
     }
 
     /**
@@ -703,7 +725,7 @@ class NiconiComments {
      * @param vpos - 動画の現在位置の100倍 ニコニコから吐き出されるコメントの位置情報は主にこれ
      */
     drawCanvas(vpos) {
-        if (this.lastVpos===vpos)return;
+        //if (this.lastVpos===vpos)return;
         this.lastVpos=vpos;
         this.fpsCount++;
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -725,20 +747,10 @@ class NiconiComments {
                 if (comment.invisible){
                     continue;
                 }
-                this.context.font = parseFont(comment.font, comment.fontSize, this.useLegacy);
-                if (comment._live){
-                    let rgb = hex2rgb(comment.color);
-                    this.context.fillStyle = `rgba(${rgb[0]},${rgb[1]},${rgb[2]},0.5)`;
-                }else{
-                    this.context.fillStyle = comment.color;
-                }
-                if (comment.color==="#000000"){
-                    this.context.strokeStyle = "rgba(255,255,255,0.7)";
+                if (!comment.image){
+                    this.getTextImage(this.timeline[vpos][index])
                 }
                 this.drawText(comment, vpos);
-                if (comment.color==="#000000"){
-                    this.context.strokeStyle = "rgba(0,0,0,0.7)";
-                }
             }
         }
         if (this.showFPS){

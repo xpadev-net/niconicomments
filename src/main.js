@@ -451,7 +451,7 @@ class NiconiComments {
 				posX = 1920 - ((1920 + comment.width_max) * (vpos - comment.vpos) / 500);
 			}
 		}else if(comment.loc === "shita"){
-			posY = comment.posY = 1080 - comment.posY - comment.height;
+			posY = 1080 - comment.posY - comment.height;
 		}
 		this.context.drawImage(comment.image, posX, posY);
 	}

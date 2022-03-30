@@ -443,15 +443,17 @@ class NiconiComments {
 				reverse = true;
 			}
 		}
-		let posX = (1920 - comment.width_max) / 2;
+		let posX = (1920 - comment.width_max) / 2,posY = comment.posY;
 		if (comment.loc === "naka") {
 			if (reverse) {
 				posX = ((1920 + comment.width_max) * (vpos - comment.vpos) / 500) - comment.width_max;
 			} else {
 				posX = 1920 - ((1920 + comment.width_max) * (vpos - comment.vpos) / 500);
 			}
+		}else if(comment.loc === "shita"){
+			posY = comment.posY = 1080 - comment.posY - comment.height;
 		}
-		this.context.drawImage(comment.image, posX, comment.posY);
+		this.context.drawImage(comment.image, posX, posY);
 	}
 
 	/**

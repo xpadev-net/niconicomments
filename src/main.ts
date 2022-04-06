@@ -1,11 +1,63 @@
-import "@types/main.d.ts";
+type InitOptions = {
+	useLegacy: boolean,
+	formatted: boolean,
+	video: HTMLVideoElement | null,
+	showCollision: boolean,
+	showFPS: boolean,
+	showCommentCount: boolean,
+	drawAllImageOnLoad: boolean
+}
+type parsedComment = {
+	id: number,
+	vpos: number,
+	content: string,
+	date: number,
+	date_usec: number,
+	owner: boolean,
+	premium: boolean,
+	mail: string[],
+	loc: string,
+	size: string,
+	fontSize: number,
+	font: string,
+	color: string,
+	full: boolean,
+	ender: boolean,
+	_live: boolean,
+	invisible: boolean,
+	long: number,
+	posY: number,
+	height: number,
+	width_max: number,
+	image?: HTMLCanvasElement
+}
+type measureTextResult = {
+	"width": number,
+	"width_max": number,
+	"width_min": number,
+	"height": number,
+	"resized": boolean,
+	"fontSize": number
+}
+type T_fontSize = {
+	[key: string]: {
+		"default": number,
+		"resized": number
+	}
+}
+type T_doubleResizeMaxWidth = {
+	[key: string]: {
+		"legacy": number,
+		"default": number
+	}
+}
 class NiconiComments {
 	private canvas: HTMLCanvasElement;
 	private context: CanvasRenderingContext2D;
 	private readonly commentYPaddingTop: number;
 	private readonly commentYMarginBottom: number;
-	private readonly fontSize: fontSize;
-	private readonly doubleResizeMaxWidth: {};
+	private readonly fontSize: T_fontSize;
+	private readonly doubleResizeMaxWidth: T_doubleResizeMaxWidth;
 	private video: HTMLVideoElement | null;
 	private showCollision: boolean;
 	public showFPS: boolean;
@@ -29,7 +81,7 @@ class NiconiComments {
 	 * @param {[]} data - 描画用のコメント
 	 * @param {{useLegacy: boolean, formatted: boolean, video: HTMLVideoElement|null}, showCollision: boolean, showFPS: boolean, showCommentCount: boolean, drawAllImageOnLoad: boolean} options - 細かい設定類
 	 */
-	constructor(canvas: HTMLCanvasElement, data:any[], options: Options = {
+	constructor(canvas: HTMLCanvasElement, data:any[], options: InitOptions = {
 		useLegacy: false,
 		formatted: false,
 		video: null,
@@ -87,7 +139,7 @@ class NiconiComments {
 		this.preRendering(parsedData,options.drawAllImageOnLoad);
 		this.fpsCount = 0;
 		this.fps = 0;
-		this.fpsClock = setInterval(() => {
+		this.fpsClock = window.setInterval(() => {
 			this.fps = this.fpsCount * 2;
 			this.fpsCount = 0;
 		}, 500);
@@ -146,7 +198,7 @@ class NiconiComments {
 		this.data = this.sortComment(parsedData);
         if (drawAll){
             for (let i in parsedData){
-                this.getTextImage(i);
+                this.getTextImage(Number(i));
             }
         }
 	}
@@ -456,7 +508,7 @@ class NiconiComments {
 	 * @param comment - 独自フォーマットのコメントデータ
 	 * @param {number} vpos - 動画の現在位置の100倍 ニコニコから吐き出されるコメントの位置情報は主にこれ
 	 */
-	drawText(comment, vpos) {
+	drawText(comment: parsedComment, vpos: number) {
 		let reverse = false;
 		for (let i in this.nicoScripts.reverse) {
 			let range = this.nicoScripts.reverse[i];
@@ -484,7 +536,7 @@ class NiconiComments {
 	 * drawTextで毎回fill/strokeすると重いので画像化して再利用できるようにする
 	 * @param {number} i - コメントデータのインデックス
 	 */
-	getTextImage(i) {
+	getTextImage(i: number) {
 		let value = this.data[i];
 		if (value.invisible) {
 			return
@@ -540,7 +592,7 @@ class NiconiComments {
 	 * @param comment- 独自フォーマットのコメントデータ
 	 * @returns {{loc: string|null, size: string|null, color: string|null, fontSize: number|null, ender: boolean, font: string|null, full: boolean, _live: boolean, invisible: boolean, long:number|null}}
 	 */
-	parseCommand(comment) {
+	parseCommand(comment: any) {
 		let metadata = comment.mail,
 			loc = null,
 			size = null,
@@ -685,7 +737,7 @@ class NiconiComments {
 		return {loc, size, fontSize, color, font, full, ender, _live, invisible, long};
 	}
 
-	parseCommandAndNicoscript(comment) {
+	parseCommandAndNicoscript(comment:any) {
 		let data = this.parseCommand(comment),
 			nicoscript = comment.content.match(/^@(デフォルト|置換|逆|コメント禁止|シーク禁止|ジャンプ)/)
 
@@ -765,7 +817,7 @@ class NiconiComments {
 	 * キャンバスを描画する
 	 * @param vpos - 動画の現在位置の100倍 ニコニコから吐き出されるコメントの位置情報は主にこれ
 	 */
-	drawCanvas(vpos) {
+	drawCanvas(vpos: number) {
 		if (this.lastVpos === vpos) return;
 		this.lastVpos = vpos;
 		this.fpsCount++;
@@ -829,8 +881,8 @@ class NiconiComments {
  * @param {string} key2
  * @returns {{}}
  */
-const groupBy = (array: {}, key: string, key2: string): {} => {
-	let data = {};
+const groupBy = (array: any, key: string, key2: string): {} => {
+	let data: any = {};
 	for (let i in array) {
 		if (!data[array[i][key]]) {
 			data[array[i][key]] = {};
@@ -846,11 +898,11 @@ const groupBy = (array: {}, key: string, key2: string): {} => {
 /**
  * フォント名とサイズをもとにcontextで使えるフォントを生成する
  * @param {string} font
- * @param {number} size
+ * @param {string|number} size
  * @param {boolean} useLegacy
  * @returns {string}
  */
-const parseFont = (font, size, useLegacy) => {
+const parseFont = (font: string, size: string|number, useLegacy: boolean): string => {
 	switch (font) {
 		case "gothic":
 			return `normal 400 ${size}px "游ゴシック体", "游ゴシック", "Yu Gothic", YuGothic, yugothic, YuGo-Medium`;
@@ -867,10 +919,10 @@ const parseFont = (font, size, useLegacy) => {
 /**
  * phpのarray_push的なあれ
  * @param array
- * @param {string} key
+ * @param {string|number} key
  * @param push
  */
-const arrayPush = (array, key, push) => {
+const arrayPush = (array: any, key: string|number, push: any) => {
 	if (!array) {
 		array = {};
 	}
@@ -884,7 +936,7 @@ const arrayPush = (array, key, push) => {
  * @param {string} hex
  * @return {array} RGB
  */
-const hex2rgb = (hex) => {
+const hex2rgb = (hex: string) => {
 	if (hex.slice(0, 1) === "#") hex = hex.slice(1);
 	if (hex.length === 3) hex = hex.slice(0, 1) + hex.slice(0, 1) + hex.slice(1, 2) + hex.slice(1, 2) + hex.slice(2, 3) + hex.slice(2, 3);
 

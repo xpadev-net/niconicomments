@@ -413,8 +413,8 @@ class NiconiComments {
 	sortComment(parsedData: any[]) {
 		for (let vpos in this.timeline) {
 			this.timeline[vpos].sort((a, b) => {
-				const A = this.data[a];
-				const B = this.data[b];
+				const A = parsedData[a];
+				const B = parsedData[b];
 				if (!A.owner && B.owner) {
 					return -1;
 				} else if (A.owner && !B.owner) {

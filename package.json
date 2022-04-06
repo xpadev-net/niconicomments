@@ -5,7 +5,7 @@
   "main": "dist/bundle.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "rollup -c rollup.config.js && npm run typedoc",
+    "build": "rollup -c rollup.config.js",
     "watch": "rollup -c rollup.config.js -w",
     "typedoc": "typedoc --options tsdoc.json --out ./docs/ ./src/main.ts",
     "prepublishOnly": "npm run build"

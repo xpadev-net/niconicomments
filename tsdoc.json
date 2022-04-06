@@ -3,7 +3,7 @@
   "entryPoints": [
     "./src/main.ts"
   ],
-  "out": "./docs",
+  "out": "./docs/type/",
   "excludeExternals": true,
   "excludePrivate": false,
   "excludeProtected": false,

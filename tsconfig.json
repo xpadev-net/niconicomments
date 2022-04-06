@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "outDir": "./build/",
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "target": "es6",
+    "jsx": "react",
+    "declaration": true,
+    "moduleResolution": "Node"
+  },
+  "include": [
+    "src",
+    "env.d.ts"
+  ],
+  "baseUrl": "./src"
+}

@@ -1,11 +1,87 @@
+type InitOptions = {
+	useLegacy: boolean,
+	formatted: boolean,
+	video: HTMLVideoElement | null,
+	showCollision: boolean,
+	showFPS: boolean,
+	showCommentCount: boolean,
+	drawAllImageOnLoad: boolean
+}
+type parsedComment = {
+	id: number,
+	vpos: number,
+	content: string,
+	date: number,
+	date_usec: number,
+	owner: boolean,
+	premium: boolean,
+	mail: string[],
+	loc: string,
+	size: string,
+	fontSize: number,
+	font: string,
+	color: string,
+	full: boolean,
+	ender: boolean,
+	_live: boolean,
+	invisible: boolean,
+	long: number,
+	posY: number,
+	height: number,
+	width_max: number,
+	image?: HTMLCanvasElement
+}
+type measureTextResult = {
+	"width": number,
+	"width_max": number,
+	"width_min": number,
+	"height": number,
+	"resized": boolean,
+	"fontSize": number
+}
+type T_fontSize = {
+	[key: string]: {
+		"default": number,
+		"resized": number
+	}
+}
+type T_doubleResizeMaxWidth = {
+	[key: string]: {
+		"legacy": number,
+		"default": number
+	}
+}
 class NiconiComments {
+	private canvas: HTMLCanvasElement;
+	private context: CanvasRenderingContext2D;
+	private readonly commentYPaddingTop: number;
+	private readonly commentYMarginBottom: number;
+	private readonly fontSize: T_fontSize;
+	private readonly doubleResizeMaxWidth: T_doubleResizeMaxWidth;
+	private video: HTMLVideoElement | null;
+	private showCollision: boolean;
+	public showFPS: boolean;
+	public showCommentCount: boolean;
+	private data: parsedComment[];
+	private timeline: { [key: number]: number[] };
+	private nicoScripts: { default: any[]; reverse: any[] };
+	private collision_right: any;
+	private collision_left: any;
+	private collision_ue: any;
+	private collision_shita: any;
+	private lastVpos: number;
+	private useLegacy: boolean;
+	private fpsCount: number;
+	private fps: number;
+	private fpsClock: number;
+
 	/**
 	 * NiconiComments Constructor
 	 * @param {HTMLCanvasElement} canvas - 描画対象のキャンバス
 	 * @param {[]} data - 描画用のコメント
 	 * @param {{useLegacy: boolean, formatted: boolean, video: HTMLVideoElement|null}, showCollision: boolean, showFPS: boolean, showCommentCount: boolean, drawAllImageOnLoad: boolean} options - 細かい設定類
 	 */
-	constructor(canvas, data, options = {
+	constructor(canvas: HTMLCanvasElement, data:any[], options: InitOptions = {
 		useLegacy: false,
 		formatted: false,
 		video: null,
@@ -46,11 +122,7 @@ class NiconiComments {
 				default: 2740
 			}
 		}
-		if (options.formatted) {
-			this.data = data;
-		} else {
-			this.data = this.parseData(data);
-		}
+		let parsedData = options.formatted?data:this.parseData(data);
 		this.video = options.video ? options.video : null;
 		this.showCollision = options.showCollision;
 		this.showFPS = options.showFPS;
@@ -62,12 +134,12 @@ class NiconiComments {
 		this.collision_left = {};
 		this.collision_ue = {};
 		this.collision_shita = {};
-		this.lastVpos = null;
+		this.lastVpos = -1;
 		this.useLegacy = options.useLegacy;
-		this.preRendering(options.drawAllImageOnLoad);
+		this.preRendering(parsedData,options.drawAllImageOnLoad);
 		this.fpsCount = 0;
 		this.fps = 0;
-		this.fpsClock = setInterval(() => {
+		this.fpsClock = window.setInterval(() => {
 			this.fps = this.fpsCount * 2;
 			this.fpsCount = 0;
 		}, 500);
@@ -78,25 +150,24 @@ class NiconiComments {
 	 * @param {[]} data - ニコニコが吐き出したコメントデータ
 	 * @returns {*[]} - 独自フォーマットのコメントデータ
 	 */
-	parseData(data) {
+	parseData(data: any[]) {
 		let data_ = [];
 		for (let i = 0; i < data.length; i++) {
 			for (let key in data[i]) {
 				let value = data[i][key];
 				if (key === "chat" && value["deleted"] !== 1 && !value["content"].startsWith("/")) {
-					let tmpParam = {
+					let tmpParam: any = {
 						"id": value["no"],
 						"vpos": value["vpos"],
 						"content": value["content"],
 						"date": value["date"],
 						"date_usec": value["date_usec"],
 						"owner": !value["user_id"],
-						"premium": value["premium"] === 1
+						"premium": value["premium"] === 1,
+						"mail": []
 					};
 					if (value["mail"]) {
 						tmpParam["mail"] = value["mail"].split(/[\s　]/g);
-					} else {
-						tmpParam["mail"] = [];
 					}
 					data_.push(tmpParam);
 				}
@@ -115,18 +186,19 @@ class NiconiComments {
 	}
 
     /**
-     * 事前に当たり判定を考慮してコメントの描画場所を決定する
-     * @param {boolean} drawAll - 読み込み時にすべてのコメント画像を生成する
-     * ※読み込み時めちゃくちゃ重くなるので途中で絶対にカクついてほしくないという場合以外は非推奨
-     */
-	preRendering(drawAll) {
-		this.getFont();
-		this.getCommentSize();
-		this.getCommentPos();
-		this.sortComment();
+	 * 事前に当たり判定を考慮してコメントの描画場所を決定する
+	 * @param {any[]} rawData
+	 * @param {boolean} drawAll - 読み込み時にすべてのコメント画像を生成する
+	 * ※読み込み時めちゃくちゃ重くなるので途中で絶対にカクついてほしくないという場合以外は非推奨
+	 */
+	preRendering(rawData:any[],drawAll: boolean) {
+		rawData = this.getFont(rawData);
+		rawData = this.getCommentSize(rawData);
+		let parsedData: parsedComment[] = this.getCommentPos(rawData);
+		this.data = this.sortComment(parsedData);
         if (drawAll){
-            for (let i in this.data){
-                this.getTextImage(i);
+            for (let i in parsedData){
+                this.getTextImage(Number(i));
             }
         }
 	}
@@ -134,29 +206,30 @@ class NiconiComments {
 	/**
 	 * コマンドをもとに各コメントに適用するフォントを決定する
 	 */
-	getFont() {
-		for (let i in this.data) {
-			let comment = this.data[i];
+	getFont(parsedData: any[]) {
+		for (let i in parsedData) {
+			let comment = parsedData[i];
 			let command = this.parseCommandAndNicoscript(comment);
-			this.data[i].loc = command.loc;
-			this.data[i].size = command.size;
-			this.data[i].fontSize = command.fontSize;
-			this.data[i].font = command.font;
-			this.data[i].color = command.color;
-			this.data[i].full = command.full;
-			this.data[i].ender = command.ender;
-			this.data[i]._live = command._live;
-			this.data[i].long = command.long;
-			this.data[i].invisible = command.invisible;
-			this.data[i].content = this.data[i].content.replaceAll("\t", "  ");
+			parsedData[i].loc = command.loc;
+			parsedData[i].size = command.size;
+			parsedData[i].fontSize = command.fontSize;
+			parsedData[i].font = command.font;
+			parsedData[i].color = command.color;
+			parsedData[i].full = command.full;
+			parsedData[i].ender = command.ender;
+			parsedData[i]._live = command._live;
+			parsedData[i].long = command.long;
+			parsedData[i].invisible = command.invisible;
+			parsedData[i].content = parsedData[i].content.replaceAll("\t", "  ");
 		}
+		return parsedData
 	}
 
 	/**
 	 * コメントの描画サイズを計算する
 	 */
-	getCommentSize() {
-		let tmpData = groupBy(this.data, "font", "fontSize");
+	getCommentSize(parsedData: any[]) {
+		let tmpData: any = groupBy(parsedData, "font", "fontSize");
 		for (let i in tmpData) {
 			for (let j in tmpData[i]) {
 				this.context.font = parseFont(i, j, this.useLegacy);
@@ -166,24 +239,25 @@ class NiconiComments {
 						continue;
 					}
 					let measure = this.measureText(comment);
-					this.data[comment.index].height = measure.height;
-					this.data[comment.index].width = measure.width;
-					this.data[comment.index].width_max = measure.width_max;
-					this.data[comment.index].width_min = measure.width_min;
+					parsedData[comment.index].height = measure.height;
+					parsedData[comment.index].width = measure.width;
+					parsedData[comment.index].width_max = measure.width_max;
+					parsedData[comment.index].width_min = measure.width_min;
 					if (measure.resized) {
-						this.data[comment.index].fontSize = measure.fontSize;
+						parsedData[comment.index].fontSize = measure.fontSize;
 						this.context.font = parseFont(i, j, this.useLegacy);
 					}
 				}
 			}
 		}
+		return parsedData;
 	}
 
 	/**
 	 * 計算された描画サイズをもとに各コメントの配置位置を決定する
 	 */
-	getCommentPos() {
-		let data = this.data;
+	getCommentPos(parsedData: parsedComment[]) {
+		let data = parsedData;
 		for (let i in data) {
 			let comment = data[i];
 			if (comment.invisible) {
@@ -208,7 +282,7 @@ class NiconiComments {
 			}
 			if (comment.loc === "naka") {
 				comment.vpos -= 70;
-				this.data[i].vpos -= 70;
+				parsedData[i].vpos -= 70;
 				let posY = 0, is_break = false, is_change = true, count = 0;
 				if (1080 < comment.height) {
 					posY = (comment.height - 1080) / -2;
@@ -282,7 +356,7 @@ class NiconiComments {
 						arrayPush(this.collision_left, vpos, i);
 					}
 				}
-				this.data[i].posY = posY;
+				parsedData[i].posY = posY;
 			} else {
 				let posY = 0, is_break = false, is_change = true, count = 0, collision;
 				if (comment.loc === "ue") {
@@ -327,19 +401,20 @@ class NiconiComments {
 						arrayPush(this.collision_shita, vpos, i);
 					}
 				}
-				this.data[i].posY = posY;
+				parsedData[i].posY = posY;
 			}
 		}
+		return parsedData;
 	}
 
 	/**
 	 * 投稿者コメントを前に移動
 	 */
-	sortComment() {
+	sortComment(parsedData: any[]) {
 		for (let vpos in this.timeline) {
 			this.timeline[vpos].sort((a, b) => {
-				const A = this.data[a];
-				const B = this.data[b];
+				const A = parsedData[a];
+				const B = parsedData[b];
 				if (!A.owner && B.owner) {
 					return -1;
 				} else if (A.owner && !B.owner) {
@@ -349,6 +424,7 @@ class NiconiComments {
 				}
 			})
 		}
+		return parsedData;
 	}
 
 	/**
@@ -357,7 +433,7 @@ class NiconiComments {
 	 * @param comment - 独自フォーマットのコメントデータ
 	 * @returns {{resized: boolean, width: number, width_max: number, fontSize: number, width_min: number, height: number}} - 描画サイズとリサイズの情報
 	 */
-	measureText(comment) {
+	measureText(comment: { content: string; resized: boolean; ender: any; size: string; fontSize: number; tateRisized: boolean; font: any; loc: string; full: any; yokoResized: boolean; }): measureTextResult {
 		let width, width_max, width_min, height, width_arr = [], lines = comment.content.split("\n");
 		if (!comment.resized && !comment.ender) {
 			if (comment.size === "big" && lines.length > 2) {
@@ -432,7 +508,7 @@ class NiconiComments {
 	 * @param comment - 独自フォーマットのコメントデータ
 	 * @param {number} vpos - 動画の現在位置の100倍 ニコニコから吐き出されるコメントの位置情報は主にこれ
 	 */
-	drawText(comment, vpos) {
+	drawText(comment: parsedComment, vpos: number) {
 		let reverse = false;
 		for (let i in this.nicoScripts.reverse) {
 			let range = this.nicoScripts.reverse[i];
@@ -460,7 +536,7 @@ class NiconiComments {
 	 * drawTextで毎回fill/strokeすると重いので画像化して再利用できるようにする
 	 * @param {number} i - コメントデータのインデックス
 	 */
-	getTextImage(i) {
+	getTextImage(i: number) {
 		let value = this.data[i];
 		if (value.invisible) {
 			return
@@ -516,7 +592,7 @@ class NiconiComments {
 	 * @param comment- 独自フォーマットのコメントデータ
 	 * @returns {{loc: string|null, size: string|null, color: string|null, fontSize: number|null, ender: boolean, font: string|null, full: boolean, _live: boolean, invisible: boolean, long:number|null}}
 	 */
-	parseCommand(comment) {
+	parseCommand(comment: any) {
 		let metadata = comment.mail,
 			loc = null,
 			size = null,
@@ -661,7 +737,7 @@ class NiconiComments {
 		return {loc, size, fontSize, color, font, full, ender, _live, invisible, long};
 	}
 
-	parseCommandAndNicoscript(comment) {
+	parseCommandAndNicoscript(comment:any) {
 		let data = this.parseCommand(comment),
 			nicoscript = comment.content.match(/^@(デフォルト|置換|逆|コメント禁止|シーク禁止|ジャンプ)/)
 
@@ -741,7 +817,7 @@ class NiconiComments {
 	 * キャンバスを描画する
 	 * @param vpos - 動画の現在位置の100倍 ニコニコから吐き出されるコメントの位置情報は主にこれ
 	 */
-	drawCanvas(vpos) {
+	drawCanvas(vpos: number) {
 		if (this.lastVpos === vpos) return;
 		this.lastVpos = vpos;
 		this.fpsCount++;
@@ -805,8 +881,8 @@ class NiconiComments {
  * @param {string} key2
  * @returns {{}}
  */
-const groupBy = (array, key, key2) => {
-	let data = {};
+const groupBy = (array: any, key: string, key2: string): {} => {
+	let data: any = {};
 	for (let i in array) {
 		if (!data[array[i][key]]) {
 			data[array[i][key]] = {};
@@ -822,11 +898,11 @@ const groupBy = (array, key, key2) => {
 /**
  * フォント名とサイズをもとにcontextで使えるフォントを生成する
  * @param {string} font
- * @param {number} size
+ * @param {string|number} size
  * @param {boolean} useLegacy
  * @returns {string}
  */
-const parseFont = (font, size, useLegacy) => {
+const parseFont = (font: string, size: string|number, useLegacy: boolean): string => {
 	switch (font) {
 		case "gothic":
 			return `normal 400 ${size}px "游ゴシック体", "游ゴシック", "Yu Gothic", YuGothic, yugothic, YuGo-Medium`;
@@ -843,10 +919,10 @@ const parseFont = (font, size, useLegacy) => {
 /**
  * phpのarray_push的なあれ
  * @param array
- * @param {string} key
+ * @param {string|number} key
  * @param push
  */
-const arrayPush = (array, key, push) => {
+const arrayPush = (array: any, key: string|number, push: any) => {
 	if (!array) {
 		array = {};
 	}
@@ -860,7 +936,7 @@ const arrayPush = (array, key, push) => {
  * @param {string} hex
  * @return {array} RGB
  */
-const hex2rgb = (hex) => {
+const hex2rgb = (hex: string) => {
 	if (hex.slice(0, 1) === "#") hex = hex.slice(1);
 	if (hex.length === 3) hex = hex.slice(0, 1) + hex.slice(0, 1) + hex.slice(1, 2) + hex.slice(1, 2) + hex.slice(2, 3) + hex.slice(2, 3);
 

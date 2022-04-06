@@ -1,5 +1,5 @@
 {
-  "name": "NiconiComments",
+  "name": "niconicomments",
   "entryPoints": [
     "./src/main.ts"
   ],

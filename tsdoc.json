@@ -1,0 +1,14 @@
+{
+  "name": "NiconiComments",
+  "entryPoints": [
+    "./src/main.ts"
+  ],
+  "out": "./docs",
+  "excludeExternals": true,
+  "excludePrivate": false,
+  "excludeProtected": false,
+  "disableSources": false,
+  "markedOptions": {
+    "mangle": false
+  }
+}

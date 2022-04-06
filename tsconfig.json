@@ -1,18 +1,13 @@
 {
   "compilerOptions": {
-    "outDir": "./build/",
-    "sourceMap": true,
+    "outDir": "./dist/",
+    "module": "commonjs",
+    "target": "es5",
     "noImplicitAny": true,
-    "esModuleInterop": true,
-    "module": "esnext",
-    "target": "es6",
-    "jsx": "react",
-    "declaration": true,
-    "moduleResolution": "Node"
+    "removeComments": false,
+    "preserveConstEnums": true,
+    "sourceMap": true
   },
-  "include": [
-    "src",
-    "env.d.ts"
-  ],
-  "baseUrl": "./src"
+  "exclude": ["node_modules"],
+  "baseUrl": "./src",
 }

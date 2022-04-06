@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rollup -c rollup.config.js",
     "watch": "rollup -c rollup.config.js -w",
-    "typedoc": "typedoc --options tsdoc.json --out ./docs/type/ ./src/main.ts",
+    "typedoc": "typedoc --options tsdoc.json --out ./docs_type/ ./src/main.ts",
     "prepublishOnly": "npm run build"
   },
   "repository": {

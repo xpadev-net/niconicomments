@@ -108,7 +108,7 @@ class NiconiComments {
     private data: parsedComment[];
     private timeline: { [key: number]: number[] };
     private nicoScripts: {
-        replace: any[];
+        replace: any[]; ban: any[];
         default: any[]; reverse: any[] };
     private collision_right: any;
     private collision_left: any;
@@ -174,7 +174,7 @@ class NiconiComments {
         this.showCommentCount = options.showCommentCount;
 
         this.timeline = {};
-        this.nicoScripts = {"reverse": [], "default": [],"replace":[]};
+        this.nicoScripts = {reverse: [], default: [],replace:[], ban:[]};
         this.collision_right = {};
         this.collision_left = {};
         this.collision_ue = {};
@@ -556,6 +556,12 @@ class NiconiComments {
                 reverse = true;
             }
         }
+        for (let i in this.nicoScripts.ban) {
+            let range = this.nicoScripts.ban[i];
+            if (range.start < vpos && vpos < range.end) {
+                return;
+            }
+        }
         let posX = (1920 - comment.width_max) / 2, posY = comment.posY;
         if (comment.loc === "naka") {
             if (reverse) {
@@ -803,6 +809,15 @@ class NiconiComments {
                         start: comment.vpos,
                         end: comment.vpos + (data.long * 100),
                         target: reverse[1]
+                    });
+                    break;
+                case "コメント禁止":
+                    if (data.long === null) {
+                        data.long = 30;
+                    }
+                    this.nicoScripts.reverse.push({
+                        start: comment.vpos,
+                        end: comment.vpos + (data.long * 100),
                     });
                     break;
                 case "置換":

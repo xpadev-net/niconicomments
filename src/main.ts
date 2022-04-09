@@ -822,15 +822,15 @@ class NiconiComments {
                     break;
                 case "置換":
                     let content = comment.content.split(""),
-                    quote = "",
-                    last_i = "",
-                    string = "",
-                    result = [];
+                        quote = "",
+                        last_i = "",
+                        string = "",
+                        result = [];
                     for (let i of content.slice(4)){
                         if (i.match(/["'「]/) && quote === ""){
                             quote = i;
                         }else if(i.match(/["']/) && quote === i && last_i !== "\\"){
-                            result.push(string.replace("\\n","\n"));
+                            result.push(replaceAll(string,"\\n","\n"));
                             quote = "";
                             string = "";
                         }else if(i.match(/」/) && quote === "「"){
@@ -893,13 +893,11 @@ class NiconiComments {
             const item = this.nicoScripts.replace[i];
             if ((item.target==="コメ"&&comment.owner)||(item.target==="投コメ"&&!comment.owner)||(item.target==="含まない"&&comment.owner))continue;
             if ((item.condition==="完全一致"&&comment.content === item.keyword)||(item.condition==="部分一致"&&comment.content.indexOf(item.keyword)!==-1)){
-                console.log(item,comment);
                 if (item.range === "単"){
-                    comment.content = comment.content.replace(new RegExp(item.keyword,"g"),item.replace);
+                    comment.content = replaceAll(comment.content,item.keyword,item.replace);
                 }else{
                     comment.content = item.replace;
                 }
-                console.log(comment);
                 if (item.loc) {
                     loc = item.loc
                 }
@@ -1070,8 +1068,15 @@ const hex2rgb = (hex: string) => {
     });
 }
 /**
- * typeGuard
+ * replaceAll
  */
-
+const replaceAll = (string: string, target: string, replace: string) => {
+    let count = 0;
+    while(string.indexOf(target)!==-1&&count<100){
+        string = string.replace(target,replace)
+        count++;
+    }
+    return string;
+}
 
 export default NiconiComments;

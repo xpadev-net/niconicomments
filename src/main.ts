@@ -107,7 +107,9 @@ class NiconiComments {
     public showCommentCount: boolean;
     private data: parsedComment[];
     private timeline: { [key: number]: number[] };
-    private nicoScripts: { default: any[]; reverse: any[] };
+    private nicoScripts: {
+        replace: any[];
+        default: any[]; reverse: any[] };
     private collision_right: any;
     private collision_left: any;
     private collision_ue: any;
@@ -172,7 +174,7 @@ class NiconiComments {
         this.showCommentCount = options.showCommentCount;
 
         this.timeline = {};
-        this.nicoScripts = {"reverse": [], "default": []};
+        this.nicoScripts = {"reverse": [], "default": [],"replace":[]};
         this.collision_right = {};
         this.collision_left = {};
         this.collision_ue = {};
@@ -198,7 +200,7 @@ class NiconiComments {
         for (let i = 0; i < data.length; i++) {
             for (let key in data[i]) {
                 let value = data[i][key];
-                if (key === "chat" && value["deleted"] !== 1 && !value["content"].startsWith("/")) {
+                if (key === "chat" && value["deleted"] !== 1) {
                     let tmpParam: any = {
                         "id": value["no"],
                         "vpos": value["vpos"],
@@ -211,6 +213,9 @@ class NiconiComments {
                     };
                     if (value["mail"]) {
                         tmpParam["mail"] = value["mail"].split(/[\s　]/g);
+                    }
+                    if (value["content"].startsWith("/")&&!value["user_id"]){
+                        tmpParam["mail"].push("invisible");
                     }
                     data_.push(tmpParam);
                 }
@@ -250,19 +255,7 @@ class NiconiComments {
     getFont(parsedData: formattedComment[]): formattedCommentWithFont[] {
 		const result: formattedCommentWithFont[] = [];
         for (let i in parsedData) {
-            let command = this.parseCommandAndNicoscript(parsedData[i]);
-            result[i] = parsedData[i] as formattedCommentWithFont;
-            result[i].loc = command.loc;
-            result[i].size = command.size;
-            result[i].fontSize = command.fontSize;
-            result[i].font = command.font;
-            result[i].color = command.color;
-            result[i].full = command.full;
-            result[i].ender = command.ender;
-            result[i]._live = command._live;
-            result[i].long = command.long;
-            result[i].invisible = command.invisible;
-            result[i].content = parsedData[i].content.replace("/\t/g", "  ");
+            result[i] = this.parseCommandAndNicoscript(parsedData[i]);
         }
         return result
     }
@@ -781,7 +774,8 @@ class NiconiComments {
         return {loc, size, fontSize, color, font, full, ender, _live, invisible, long};
     }
 
-    parseCommandAndNicoscript(comment: any) {
+    parseCommandAndNicoscript(comment: formattedComment):formattedCommentWithFont {
+        comment.content = comment.content.replace("/\t/g", "  ")
         let data = this.parseCommand(comment),
             nicoscript = comment.content.match(/^@(デフォルト|置換|逆|コメント禁止|シーク禁止|ジャンプ)/)
 
@@ -806,9 +800,52 @@ class NiconiComments {
                         data.long = 30;
                     }
                     this.nicoScripts.reverse.push({
-                        "start": comment.vpos,
-                        "end": comment.vpos + (data.long * 100),
-                        "target": reverse[1]
+                        start: comment.vpos,
+                        end: comment.vpos + (data.long * 100),
+                        target: reverse[1]
+                    });
+                    break;
+                case "置換":
+                    let content = comment.content.split(""),
+                    quote = "",
+                    last_i = "",
+                    string = "",
+                    result = [];
+                    for (let i of content.slice(4)){
+                        if (i.match(/["'「]/) && quote === ""){
+                            quote = i;
+                        }else if(i.match(/["']/) && quote === i && last_i !== "\\"){
+                            result.push(string.replace("\\n","\n"));
+                            quote = "";
+                            string = "";
+                        }else if(i.match(/」/) && quote === "「"){
+                            result.push(string);
+                            quote = "";
+                            string = "";
+                        }else if(quote===""&&i.match(/[\s　]/)){
+                            if (string){
+                                result.push(string);
+                                string = "";
+                            }
+                        }else{
+                            string+=i
+                        }
+
+                        last_i = i;
+                    }
+                    result.push(string);
+                    this.nicoScripts.replace.push({
+                        start: comment.vpos,
+                        long: data.long === null ? null : Math.floor(data.long * 100),
+                        keyword: result[0],
+                        replace: result[1] || "",
+                        range: result[2] || "単",
+                        target: result[3] || "コメ",
+                        condition: result[4] || "部分一致",
+                        color: data.color,
+                        size: data.size,
+                        font: data.font,
+                        loc: data.loc
                     });
                     break;
             }
@@ -833,6 +870,35 @@ class NiconiComments {
                 font = this.nicoScripts.default[i].font
             }
         }
+        for (let i in this.nicoScripts.replace) {
+            if (this.nicoScripts.replace[i].long !== null && this.nicoScripts.replace[i].start + this.nicoScripts.replace[i].long < comment.vpos) {
+                this.nicoScripts.default = this.nicoScripts.default.splice(Number(i), 1);
+                continue;
+            }
+            const item = this.nicoScripts.replace[i];
+            if ((item.target==="コメ"&&comment.owner)||(item.target==="投コメ"&&!comment.owner)||(item.target==="含まない"&&comment.owner))continue;
+            if ((item.condition==="完全一致"&&comment.content === item.keyword)||(item.condition==="部分一致"&&comment.content.indexOf(item.keyword)!==-1)){
+                console.log(item,comment);
+                if (item.range === "単"){
+                    comment.content = comment.content.replace(new RegExp(item.keyword,"g"),item.replace);
+                }else{
+                    comment.content = item.replace;
+                }
+                console.log(comment);
+                if (item.loc) {
+                    loc = item.loc
+                }
+                if (item.color) {
+                    color = item.color
+                }
+                if (item.size) {
+                    size = item.size
+                }
+                if (item.font) {
+                    font = item.font
+                }
+            }
+        }
         if (!data.loc) {
             data.loc = loc;
         }
@@ -853,7 +919,7 @@ class NiconiComments {
                 data.long = Math.floor(data.long * 100);
             }
         }
-        return data;
+        return {...comment,...data};
 
     }
 

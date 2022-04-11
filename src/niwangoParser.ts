@@ -118,7 +118,6 @@ class NiwangoParser{
         }
     }
 }
-export default NiwangoParser;
 const parseFunc = (str,isScript=false) => {
     let arr = Array.from(str),deps=0,char=null;
     let func = [],arg = [];
@@ -239,3 +238,4 @@ const splitWithDeps = (string,separator) => {
     }
     return res;
 }
+export default NiwangoParser;

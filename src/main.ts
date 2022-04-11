@@ -780,10 +780,17 @@ class NiconiComments {
         return {loc, size, fontSize, color, font, full, ender, _live, invisible, long};
     }
 
+    /**
+     * ニコスクリプトを処理する
+     * @param {formattedComment}comment
+     * @return formattedCommentWithFont
+     */
     parseCommandAndNicoscript(comment: formattedComment):formattedCommentWithFont {
         comment.content = comment.content.replace("/\t/g", "  ")
         let data = this.parseCommand(comment),
             nicoscript = comment.content.match(/^@(デフォルト|置換|逆|コメント禁止|シーク禁止|ジャンプ)/)
+
+        this.parseNiwango(comment);
 
         if (nicoscript) {
             switch (nicoscript[1]) {
@@ -933,6 +940,10 @@ class NiconiComments {
             }
         }
         return {...comment,...data};
+
+    }
+
+    parseNiwango(comment: formattedComment){
 
     }
 

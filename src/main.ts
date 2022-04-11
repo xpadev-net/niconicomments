@@ -1,3 +1,4 @@
+import NiwangoParser from "./niwangoParser";
 type InitOptions = {
     useLegacy: boolean,
     formatted: boolean,
@@ -120,6 +121,8 @@ class NiconiComments {
     private fps: number;
     private fpsClock: number;
 
+    private niwango: NiwangoParser;
+
     /**
      * NiconiComments Constructor
      * @param {HTMLCanvasElement} canvas - 描画対象のキャンバス
@@ -172,6 +175,8 @@ class NiconiComments {
         this.showCollision = options.showCollision;
         this.showFPS = options.showFPS;
         this.showCommentCount = options.showCommentCount;
+
+        this.niwango = new NiwangoParser();
 
         this.timeline = {};
         this.nicoScripts = {reverse: [], default: [],replace:[], ban:[]};
@@ -790,8 +795,9 @@ class NiconiComments {
         let data = this.parseCommand(comment),
             nicoscript = comment.content.match(/^@(デフォルト|置換|逆|コメント禁止|シーク禁止|ジャンプ)/)
 
-        this.parseNiwango(comment);
-
+        if (comment.content.startsWith("/")){
+            this.parseNiwango(comment);
+        }
         if (nicoscript) {
             switch (nicoscript[1]) {
                 case "デフォルト":
@@ -944,7 +950,7 @@ class NiconiComments {
     }
 
     parseNiwango(comment: formattedComment){
-
+        this.niwango.parse(comment);
     }
 
     /**

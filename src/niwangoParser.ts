@@ -1,16 +1,24 @@
 class NiwangoParser{
-    private scripts: any;
+    private timeline: any;
     private variable: any;
+    private queue: any;
     constructor() {
-        this.scripts = {};
+        this.timeline = {};
         this.variable = {};
-        console.log(this.parse("timer(timer:0.5,then:drawShape(x:50,y:80,shape:'circle',width:100,height:60,color:0xff0000,pos:'ue hidari',alpha:50))",0));
+        this.queue = {};
     }
-    parse(string,vpos){
+    parse(arg1,arg2=0){
+        let string, vpos;
+        if (typeof arg1 == "object"){
+            string = arg1.content.substring(1);
+            vpos = arg1.vpos;
+        }else{
+            string = arg1;
+            vpos = arg2
+        }
         let scripts = splitWithDeps(string,";"),tmp=[];
         for (let i in scripts){
             let result = this.parseLine(scripts[i],vpos);
-            console.log(result);
             if (result){
                 tmp.push(result);
             }
@@ -46,6 +54,9 @@ class NiwangoParser{
                     case "addPostRoute":
                     case "CM":
                     case "playCM":
+                    case "def":
+                    case "def_kari":
+                        console.log(string)
                         res = parseFunc(string);
                         if (res.after){
                             console.log(res.after);

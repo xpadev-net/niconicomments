@@ -21,6 +21,7 @@ class Niwango {
     parse(comment:formattedComment){
         if (comment.content.startsWith("/")) {
             let script = this.parser.parse(comment);
+
             console.log(script,comment.content);
         }
         this.last_chat = comment;

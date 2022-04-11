@@ -112,6 +112,12 @@ class NiwangoParser{
                             res.arg.id=res.arg.default0;
                         }
                         return {type:left,arg:res.arg,vpos:vpos};
+                    default:
+                        res = parseFunc(string);
+                        if (res.after){
+                            console.log(res.after);
+                        }
+                        return {type:left,arg:res.arg,vpos:vpos};
                 }
             }
             leftArr.push(value);

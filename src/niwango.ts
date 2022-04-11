@@ -1,19 +1,31 @@
+import NiwangoParser from "./niwangoParser";
+type formattedComment = {
+    "id": number,
+    "vpos": number,
+    "content": string,
+    "date": number,
+    "date_usec": number,
+    "owner": boolean,
+    "premium": boolean,
+    "mail": string[]
+}
+
 class Niwango {
-    private isWide: boolean;
+    private last_chat: formattedComment;
+    private parser: NiwangoParser;
     constructor() {
-        this.isWide=false;
+        this.last_chat = null;
+        this.parser = new NiwangoParser();
     }
-    _screenWidth(){
-        if (this.isWide){
-            return 640;
+
+    parse(comment:formattedComment){
+        if (comment.content.startsWith("/")) {
+            let script = this.parser.parse(comment);
+            console.log(script,comment.content);
         }
-        return 512;
+        this.last_chat = comment;
     }
-    _screenHeight(){
-        return 384;
-    }
-    sd2fhd(pixel){
-        return pixel*1080/384;
-    }
+
+
 }
 export default Niwango;

@@ -1,4 +1,4 @@
-import NiwangoParser from "./niwangoParser";
+import Niwango from "./niwango";
 type InitOptions = {
     useLegacy: boolean,
     formatted: boolean,
@@ -121,7 +121,7 @@ class NiconiComments {
     private fps: number;
     private fpsClock: number;
 
-    private niwango: NiwangoParser;
+    private niwango: Niwango;
 
     /**
      * NiconiComments Constructor
@@ -176,7 +176,7 @@ class NiconiComments {
         this.showFPS = options.showFPS;
         this.showCommentCount = options.showCommentCount;
 
-        this.niwango = new NiwangoParser();
+        this.niwango = new Niwango();
 
         this.timeline = {};
         this.nicoScripts = {reverse: [], default: [],replace:[], ban:[]};
@@ -795,9 +795,7 @@ class NiconiComments {
         let data = this.parseCommand(comment),
             nicoscript = comment.content.match(/^@(デフォルト|置換|逆|コメント禁止|シーク禁止|ジャンプ)/)
 
-        if (comment.content.startsWith("/")){
-            this.parseNiwango(comment);
-        }
+        this.niwango.parse(comment);
         if (nicoscript) {
             switch (nicoscript[1]) {
                 case "デフォルト":
@@ -947,10 +945,6 @@ class NiconiComments {
         }
         return {...comment,...data};
 
-    }
-
-    parseNiwango(comment: formattedComment){
-        this.niwango.parse(comment);
     }
 
     /**

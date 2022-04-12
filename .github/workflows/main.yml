@@ -49,5 +49,4 @@ jobs:
           git checkout -b typedoc
           git add .
           git commit -m "auto generate"
-          git push origin --delete typedoc
-          git push origin typedoc
+          git push -f origin typedoc

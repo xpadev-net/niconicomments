@@ -154,7 +154,7 @@ class NiconiComments {
             },
             "big": {
                 "default": 111,
-                "resized": 61
+                "resized": 62
             }
         };
         this.doubleResizeMaxWidth = {

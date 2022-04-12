@@ -25,6 +25,11 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
+      - name: setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10.x
+          registry-url: 'https://registry.npmjs.org'
       # Runs a single command using the runners shell
       - name: init
         run: npm i
@@ -32,3 +37,10 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: generate typedoc
         run: npm run typedoc
+
+      - name: Create new Branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git checkout -b typedoc
+          git push origin typedoc

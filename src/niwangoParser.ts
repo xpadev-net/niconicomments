@@ -1,8 +1,20 @@
+type formattedComment = {
+    "id": number,
+    "vpos": number,
+    "content": string,
+    "date": number,
+    "date_usec": number,
+    "owner": boolean,
+    "premium": boolean,
+    "mail": string[]
+}
+
 class NiwangoParser{
     private timeline: any;
     private functions: any;
     private variable: any;
     private queue: any;
+    private last_chat: formattedComment;
     constructor() {
         this.timeline = {};
         this.queue = {};
@@ -23,23 +35,35 @@ class NiwangoParser{
         };
     }
 
+    exec(comment: formattedComment) {
+        if (comment.content.startsWith("/")) {
+            let scripts = this.parse(comment);
+            for (const key in scripts) {
+                let value = scripts[key];
+                switch (value.type) {
+                    case "setVar":
+                        //this.variable[value.name] = value.value.content;
+                }
+            }
+        }
+        this.last_chat = comment;
+    }
+
     /**
      * コメントデータを分割して投げる
      * @param arg1
-     * @param arg2
      */
-    parse(arg1,arg2=0){
-        let string, vpos;
+    parse(arg1){
+        let string;
         if (typeof arg1 == "object"){
             string = arg1.content.substring(1);
-            vpos = arg1.vpos;
         }else{
             string = arg1;
-            vpos = arg2
         }
-        let scripts = splitWithDeps(string,";"),tmp=[];
+        let scripts = splitWithDeps(string,/;/),tmp=[];
         for (let i in scripts){
-            let result = this.parseLine(scripts[i],vpos);
+            let result = this.parseLine(scripts[i], true);
+            console.log(result,scripts[i]);
             if (result){
                 tmp.push(result);
             }
@@ -50,18 +74,65 @@ class NiwangoParser{
     /**
      * 文字列をスクリプトとしてパース
      * @param string
-     * @param vpos
+     * @param root
      */
-    parseLine(string,vpos){
-        let str = Array.from(string),leftArr = [];
+    parseLine(string,root=false){
+        let str: string[] = Array.from(string),leftArr = [];
+        if (string.match(/^(true|false|[0-9]+)$/)||isString(string)){
+            if (root)return {type: "ExpressionStatement",expression: this.parseLine(string)};
+            return {
+                type: "Literal",
+                value: string
+            }
+        }else if(string.match(/^[a-zA-Z0-9_$]+$/)){
+            if (root)return {type: "ExpressionStatement",expression: this.parseLine(string)};
+            return {
+                type: "Identifier",
+                name: string
+            }
+        }
         for (let i in str){
-            let value = str[i], left = leftArr.join("").trim();
-            if (value==="="&&left.match(/^[0-9a-zA-Z_]+$/)){
-                return {type:"setVar",name:leftArr.join(""),value:this.parseLine(string.substring(Number(i)+1),vpos),vpos:vpos}
+            let value = str[i], left = leftArr.join("").trim(), next_value = str[Number(i)+1], last_value = str[Number(i)-1], right_value = string.slice(Number(i)+1);
+            if ((value+next_value).match(/==|!=|>=|<=/))continue;
+            if ((last_value+value).match(/==|!=|>=|<=/)){
+                if (root)return {type: "ExpressionStatement",expression: this.parseLine(string)};
+                return {
+                    type: "BinaryExpression",
+                    left: this.parseLine(left.slice(0,-1)),
+                    operator: last_value+value,
+                    right: this.parseLine(right_value)
+                }
+            }
+            if(value.match(/[+\-*\/%<>]/)){
+                if (root)return {type: "ExpressionStatement",expression: this.parseLine(string)};
+                return {
+                    type: "BinaryExpression",
+                    left: this.parseLine(left),
+                    operator: last_value+value,
+                    right: this.parseLine(right_value)
+                }
             }else if (value==="="&&left.match(/^[0-9a-zA-Z_]+:$/)){
-                return {type:"initLocalVar",name:leftArr.join("").slice(0,-1),value:string.substring(Number(i)+1),vpos:vpos}
+                return {
+                    type: "VariableDeclaration",
+                    declarations: [{
+                        type: "VariableDeclarator",
+                        id: {
+                            type: "Identifier",
+                            name: left.slice(0,-1)
+                        },
+                        init: this.parseLine(right_value)
+                    }]
+                }
+            }else if (value==="="){
+                if (root)return {type: "ExpressionStatement",expression: this.parseLine(string)};
+                return {
+                    type: "AssignmentExpression",
+                    operator: value,
+                    left: this.parseLine(left),
+                    right: this.parseLine(right_value)
+                }
             }else if(value==="("){
-                let res;
+/*                let res;
                 switch (left){
                     case "drawShape":
                     case "jumpCancel":
@@ -153,11 +224,12 @@ class NiwangoParser{
                             }
                             return {type:left,arg:res.arg,vpos:vpos};
                         }
-                }
+                        console.log(string)
+                }*/
             }
             leftArr.push(value);
         }
-        return {type:"unknown",arg: leftArr.join(""), vpos:vpos}
+//        return this.eval(string);
     }
 
     /**
@@ -165,12 +237,24 @@ class NiwangoParser{
      * @param script
      */
     eval(script:string){
-        let str = Array.from(script),leftArr = [];
+        let str = Array.from(script),leftArr = [],quote = ["0"], tmp = [];
         for(let i in str){
             let value = str[i];
-            leftArr.push(value)
+            if (quote[0].match(/[0(]/) && value.match(/["'(]/)){
+                quote.unshift(value);
+            }else if ((quote[0]===value && value.match(/["']/))||quote[0]==="("&&value===")"){
+                quote.shift();
+                tmp.push(leftArr.join(""));
+            }else{
+                leftArr.push(value)
+            }
         }
+        console.log(tmp,script)
         return leftArr.join("")
+    }
+
+    format(string:string){
+
     }
 }
 
@@ -251,7 +335,6 @@ const parseArg = (input,isScript=false) => {
             left="default";
             tmp=[];
         }else if(deps===0&&value===":"&&(!isScript||(isScript&&tmp.join("").match(/^then|else|timer$/)))){
-            console.log(tmp.join(""));
             left = tmp.join("");
             tmp=[];
         }else{
@@ -269,15 +352,34 @@ const parseArg = (input,isScript=false) => {
         }
         arg[left]=tmp.join("");
     }
-    console.log(arg)
     return arg;
 }
+/**
+ * クォートで囲われた文字列か判定
+ */
+const isString = (string:string) => {
+    if (!(
+        (string.startsWith('"')&&string.endsWith('"'))||
+        (string.startsWith("'")&&string.endsWith("'"))||
+        (string.startsWith("「")&&string.endsWith("」"))
+    )){
+        return false;
+    }
+    let str:string[] = Array.from(string.slice(1,-1)),quote = string.slice(0,1);
+    for (const i in str) {
+        if (str[i]===quote&&str[Number(i)-1]!=="\\"){
+            return false;
+        }
+    }
+    return true;
+}
+
 /**
  * クォートを考慮して文字列を分割
  * @param string
  * @param separator
  */
-const splitWithDeps = (string,separator) => {
+const splitWithDeps = (string: string,separator: RegExp) => {
     let arr = Array.from(string),deps=0,char=null;
     let res = [],tmp = [];
     for (let i in arr){
@@ -298,7 +400,7 @@ const splitWithDeps = (string,separator) => {
                 deps--;
             }
         }
-        if (deps===0&&value===separator){
+        if (deps===0&&value.match(separator)){
             res.push(tmp.join(""));
             tmp=[];
         }else{

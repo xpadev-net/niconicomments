@@ -36,6 +36,8 @@ jobs:
 
       # Runs a set of commands using the runners shell
       - name: generate typedoc
+        run: ls -l
+      - name: generate typedoc
         run: npx typedoc --options tsdoc.json --out ./docs/type/ ./src/main.ts
 
       - name: Create new Branch

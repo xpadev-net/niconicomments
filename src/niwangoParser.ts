@@ -76,7 +76,7 @@ class NiwangoParser{
      * @param string
      * @param root
      */
-    parseLine(string,root=false){
+    parseLine(string: string,root:boolean=false){
         let str: string[] = Array.from(string),leftArr = [];
         if (string.match(/^(true|false|[0-9]+)$/)||isString(string)){
             if (root)return {type: "ExpressionStatement",expression: this.parseLine(string)};
@@ -89,6 +89,20 @@ class NiwangoParser{
             return {
                 type: "Identifier",
                 name: string
+            }
+        }else if(string.match(/^[a-zA-Z0-9_$]+((\[([a-zA-Z0-9_$]+|["'].+["'])])|\.[a-zA-Z0-9_$]+)+$/)){
+            if (root)return {type: "ExpressionStatement",expression: this.parseLine(string)};
+            if (string.match(/^[a-zA-Z0-9_$]+((\[([a-zA-Z0-9_$]+|["'].+["'])])|\.[a-zA-Z0-9_$]+)*\.[a-zA-Z0-9_$]+$/)){
+                return {
+                    type: "MemberExpression",
+                    object: this.parseLine(string.slice(0,string.lastIndexOf("."))),
+                    property: this.parseLine(string.slice(string.lastIndexOf(".")+1))
+                }
+            }
+            return {
+                type: "MemberExpression",
+                object: this.parseLine(string.slice(0,string.lastIndexOf("["))),
+                property: this.parseLine(string.slice(string.lastIndexOf("[")+1,-1))
             }
         }
         for (let i in str){
@@ -108,7 +122,7 @@ class NiwangoParser{
                 return {
                     type: "BinaryExpression",
                     left: this.parseLine(left),
-                    operator: last_value+value,
+                    operator:  value,
                     right: this.parseLine(right_value)
                 }
             }else if (value==="="&&left.match(/^[0-9a-zA-Z_]+:$/)){
@@ -116,10 +130,7 @@ class NiwangoParser{
                     type: "VariableDeclaration",
                     declarations: [{
                         type: "VariableDeclarator",
-                        id: {
-                            type: "Identifier",
-                            name: left.slice(0,-1)
-                        },
+                        id: this.parseLine(left.slice(0,-1)),
                         init: this.parseLine(right_value)
                     }]
                 }
@@ -132,129 +143,9 @@ class NiwangoParser{
                     right: this.parseLine(right_value)
                 }
             }else if(value==="("){
-/*                let res;
-                switch (left){
-                    case "drawShape":
-                    case "jumpCancel":
-                    case "seek":
-                    case "addMarker":
-                    case "getMarker":
-                    case "sum":
-                    case "showResult":
-                    case "replace":
-                    case "rand":
-                    case "distance":
-                    case "screenWidth":
-                    case "screenHeight":
-                    case "addButton":
-                    case "BGM":
-                    case "playBGM":
-                    case "stopBGM":
-                    case "addAtPausePoint":
-                    case "addPostRoute":
-                    case "CM":
-                    case "playCM":
-                        res = parseFunc(string);
-                        if (res.after){
-                            console.log(res.after);
-                        }
-                        return {type:left,arg:res.arg,vpos:vpos};
-                    case "drawText":
-                    case "dt":
-                        res = parseFunc(string);
-                        if (res.after){
-                            console.log(res.after);
-                        }
-                        if(res.arg.default0){
-                            res.arg.text=res.arg.default0;
-                        }
-                        return {type:left,arg:res.arg,vpos:vpos};
-                    case "commentTrigger":
-                    case "ctrig":
-                        res = parseFunc(string,true);
-                        if (res.after){
-                            console.log(res.after);
-                        }
-                        if (res.arg.default0){
-                            res.arg.then = res.arg.default0;
-                        }
-                        res.arg.then=this.parse(res.arg.then,vpos);
-                        return {type:left,arg:res.arg,vpos:vpos};
-                    case "timer":
-                        res = parseFunc(string,true);
-                        if (res.after){
-                            console.log(res.after);
-                        }
-                        if (res.arg.default0){
-                            res.arg.then = res.arg.default0;
-                        }
-                        res.arg.then = this.parse(res.arg.then,vpos+=res.arg.timer*100);
-                        return {type:left,arg:res.arg,vpos:vpos};
-                    case "if":
-                        res = parseFunc(string,true);
-                        if (res.after){
-                            console.log(res.after);
-                        }
-                        if (res.arg.default0){
-                            res.arg.when = res.arg.default0;
-                        }
-                        res.arg.when=this.parse(res.arg.when,vpos);
-                        return {type:left,arg:res.arg,vpos:vpos};
-                    case "jump":
-                        res = parseFunc(string);
-                        if (res.after){
-                            console.log(res.after);
-                        }
-                        if(res.arg.default0){
-                            res.arg.id=res.arg.default0;
-                        }
-                        return {type:left,arg:res.arg,vpos:vpos};
-                    case "def":
-                    case "def_kari":
-                        res = parseFunc(string,true);
-                        if (res.after){
-                            console.log(res.after);
-                        }
-                        return {type:left,arg:res.arg,vpos:vpos};
-                    default:
-                        if (left in Object.keys(this.functions)){
-                            res = parseFunc(string);
-                            if (res.after){
-                                console.log(res.after);
-                            }
-                            return {type:left,arg:res.arg,vpos:vpos};
-                        }
-                        console.log(string)
-                }*/
             }
             leftArr.push(value);
         }
-//        return this.eval(string);
-    }
-
-    /**
-     * 計算式の処理とかstringへの変換とか
-     * @param script
-     */
-    eval(script:string){
-        let str = Array.from(script),leftArr = [],quote = ["0"], tmp = [];
-        for(let i in str){
-            let value = str[i];
-            if (quote[0].match(/[0(]/) && value.match(/["'(]/)){
-                quote.unshift(value);
-            }else if ((quote[0]===value && value.match(/["']/))||quote[0]==="("&&value===")"){
-                quote.shift();
-                tmp.push(leftArr.join(""));
-            }else{
-                leftArr.push(value)
-            }
-        }
-        console.log(tmp,script)
-        return leftArr.join("")
-    }
-
-    format(string:string){
-
     }
 }
 

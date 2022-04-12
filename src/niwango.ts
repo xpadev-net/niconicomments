@@ -1,4 +1,5 @@
 import NiwangoParser from "./niwangoParser";
+
 type formattedComment = {
     "id": number,
     "vpos": number,
@@ -13,20 +14,21 @@ type formattedComment = {
 class Niwango {
     private last_chat: formattedComment;
     private parser: NiwangoParser;
+
     constructor() {
         this.last_chat = null;
         this.parser = new NiwangoParser();
     }
 
-    parse(comment:formattedComment){
+    parse(comment: formattedComment) {
         if (comment.content.startsWith("/")) {
-            let script = this.parser.parse(comment);
-
-            console.log(script,comment.content);
+            let scripts = this.parser.parse(comment);
+            console.log(scripts, comment.content);
         }
         this.last_chat = comment;
     }
 
 
 }
+
 export default Niwango;

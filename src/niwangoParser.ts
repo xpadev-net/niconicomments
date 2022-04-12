@@ -1,12 +1,33 @@
 class NiwangoParser{
     private timeline: any;
+    private functions: any;
     private variable: any;
     private queue: any;
     constructor() {
         this.timeline = {};
-        this.variable = {};
         this.queue = {};
+        this.functions = {};
+        this.variable = {
+            chat: null,
+            commentColor: undefined, //0xffffff
+            commentPlace: undefined, //naka
+            commentSize: undefined,  //medium
+            commentInvisible: undefined, //false
+            commentReverse: undefined,//0
+            defaultSage: undefined,  //false
+            postDisabled: undefined, //false
+            seekDisabled: undefined, //false
+            isLoaded: undefined,     //true
+            isWide: undefined,       //false
+            lastVideo: "sm1",        //sm1
+        };
     }
+
+    /**
+     * コメントデータを分割して投げる
+     * @param arg1
+     * @param arg2
+     */
     parse(arg1,arg2=0){
         let string, vpos;
         if (typeof arg1 == "object"){
@@ -25,12 +46,20 @@ class NiwangoParser{
         }
         return tmp;
     }
+
+    /**
+     * 文字列をスクリプトとしてパース
+     * @param string
+     * @param vpos
+     */
     parseLine(string,vpos){
         let str = Array.from(string),leftArr = [];
         for (let i in str){
-            let value = str[i], left = leftArr.join("");
+            let value = str[i], left = leftArr.join("").trim();
             if (value==="="&&left.match(/^[0-9a-zA-Z_]+$/)){
-                return {type:"setVar",name:leftArr.join(""),value:string.substring(Number(i)+1),vpos:vpos}
+                return {type:"setVar",name:leftArr.join(""),value:this.parseLine(string.substring(Number(i)+1),vpos),vpos:vpos}
+            }else if (value==="="&&left.match(/^[0-9a-zA-Z_]+:$/)){
+                return {type:"initLocalVar",name:leftArr.join("").slice(0,-1),value:string.substring(Number(i)+1),vpos:vpos}
             }else if(value==="("){
                 let res;
                 switch (left){
@@ -54,9 +83,6 @@ class NiwangoParser{
                     case "addPostRoute":
                     case "CM":
                     case "playCM":
-                    case "def":
-                    case "def_kari":
-                        console.log(string)
                         res = parseFunc(string);
                         if (res.after){
                             console.log(res.after);
@@ -112,18 +138,47 @@ class NiwangoParser{
                             res.arg.id=res.arg.default0;
                         }
                         return {type:left,arg:res.arg,vpos:vpos};
-                    default:
-                        res = parseFunc(string);
+                    case "def":
+                    case "def_kari":
+                        res = parseFunc(string,true);
                         if (res.after){
                             console.log(res.after);
                         }
                         return {type:left,arg:res.arg,vpos:vpos};
+                    default:
+                        if (left in Object.keys(this.functions)){
+                            res = parseFunc(string);
+                            if (res.after){
+                                console.log(res.after);
+                            }
+                            return {type:left,arg:res.arg,vpos:vpos};
+                        }
                 }
             }
             leftArr.push(value);
         }
+        return {type:"unknown",arg: leftArr.join(""), vpos:vpos}
+    }
+
+    /**
+     * 計算式の処理とかstringへの変換とか
+     * @param script
+     */
+    eval(script:string){
+        let str = Array.from(script),leftArr = [];
+        for(let i in str){
+            let value = str[i];
+            leftArr.push(value)
+        }
+        return leftArr.join("")
     }
 }
+
+/**
+ * 関数をパースして関数名と引数を返す
+ * @param str
+ * @param isScript
+ */
 const parseFunc = (str,isScript=false) => {
     let arr = Array.from(str),deps=0,char=null;
     let func = [],arg = [];
@@ -158,8 +213,12 @@ const parseFunc = (str,isScript=false) => {
     }
 
 }
+/**
+ * 引数をパースする
+ * @param input
+ * @param isScript
+ */
 const parseArg = (input,isScript=false) => {
-    console.log(input);
     let arr = Array.from(input),deps=0,char=null,tmp = [],arg = {},left="default";
     for (let i in arr){
         let value = arr[i];
@@ -192,6 +251,7 @@ const parseArg = (input,isScript=false) => {
             left="default";
             tmp=[];
         }else if(deps===0&&value===":"&&(!isScript||(isScript&&tmp.join("").match(/^then|else|timer$/)))){
+            console.log(tmp.join(""));
             left = tmp.join("");
             tmp=[];
         }else{
@@ -209,8 +269,14 @@ const parseArg = (input,isScript=false) => {
         }
         arg[left]=tmp.join("");
     }
+    console.log(arg)
     return arg;
 }
+/**
+ * クォートを考慮して文字列を分割
+ * @param string
+ * @param separator
+ */
 const splitWithDeps = (string,separator) => {
     let arr = Array.from(string),deps=0,char=null;
     let res = [],tmp = [];

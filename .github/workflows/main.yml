@@ -44,7 +44,8 @@ jobs:
         run: |
           git config user.email "github-actions@xpadev.net"
           git config user.name "github-actions"
+          git checkout -b typedoc
           git add .
           git commit -m "auto generate"
-          git checkout -b typedoc
+          git push origin --delete typedoc
           git push origin typedoc

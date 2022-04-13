@@ -1,3 +1,5 @@
+import {parseFunc, parseBrackets, isString, splitWithDeps, arrayPush} from "./Utils";
+
 type formattedComment = {
     "id": number,
     "vpos": number,
@@ -13,13 +15,17 @@ class NiwangoParser {
     private timeline: any;
     private functions: any;
     private variable: any;
-    private queue: any;
+    private scripts: any;
     private last_chat: formattedComment;
+    private last_vpos: number;
+    private rollback: any;
 
     constructor() {
         this.timeline = {};
-        this.queue = {};
+        this.scripts = {};
         this.functions = {};
+        this.rollback = {};
+        this.last_vpos = -1;
         this.variable = {
             chat: null,
             commentColor: undefined, //0xffffff
@@ -36,18 +42,67 @@ class NiwangoParser {
         };
     }
 
-    exec(comment: formattedComment) {
+    /**
+     * パース処理のみ
+     * execは後で消す
+     * @param comment
+     */
+    init(comment: formattedComment) {
         if (comment.content.startsWith("/")) {
             let scripts = this.parse(comment);
-            for (const key in scripts) {
-                let value = scripts[key];
-                switch (value.type) {
-                    case "setVar":
-                    //this.variable[value.name] = value.value.content;
-                }
+            arrayPush(this.scripts, comment.vpos, scripts);
+            for (const item of scripts) {
+                this.exec(item);
             }
         }
         this.last_chat = comment;
+    }
+
+    /**
+     * vpos時点の処理を実行
+     * 場合によってはロルバ
+     * @param vpos
+     */
+    run(vpos: number) {
+        if (this.last_vpos < vpos) {
+            for (let i = this.last_vpos; i <= vpos; i++) {
+                if (this.scripts[i]) {
+                    for (let j in this.scripts[i]) {
+                        this.exec(this.scripts[i][j]);
+                    }
+                    this.rollback[i] = {
+                        functions: JSON.parse(JSON.stringify(this.functions)),
+                        timeline: JSON.parse(JSON.stringify(this.timeline)),
+                        variable: JSON.parse(JSON.stringify(this.variable)),
+                    }
+                }
+            }
+        } else if (this.last_vpos > vpos) {
+            for (let i = vpos; i >= 0; i--) {
+                if (this.rollback[i]) {
+                    this.functions = JSON.parse(JSON.stringify(this.rollback[i].functions));
+                    this.timeline = JSON.parse(JSON.stringify(this.rollback[i].timeline));
+                    this.variable = JSON.parse(JSON.stringify(this.rollback[i].variable));
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     * 関数実行
+     * @param script
+     */
+    exec(script: any) {
+        switch (script.type) {
+            case "ExpressionStatement":
+                this.exec(script.expression);
+                break;
+            case "AssignmentExpression":
+
+            default:
+                console.log(script);
+        }
     }
 
     /**
@@ -69,7 +124,6 @@ class NiwangoParser {
                 tmp.push(result);
             }
         }
-        console.log(tmp);
         return tmp;
     }
 
@@ -217,194 +271,4 @@ class NiwangoParser {
     }
 }
 
-/**
- * 関数をパースして関数名と引数を返す
- * @param str
- * @param isScript
- */
-const parseFunc = (str, isScript = false) => {
-    let arr = Array.from(str), deps = 0, char = null;
-    let func = [], arg = [];
-    for (let i in arr) {
-        let value = arr[i];
-        if (value === '"' || value === "'") {
-            if (arr[Number(i) - 1] !== "\\") {
-                if (char) {
-                    char = null;
-                } else {
-                    char = value;
-                }
-            }
-        }
-        if (!char) {
-            if (value === "(") {
-                deps++;
-            } else if (value === ")") {
-                deps--;
-                if (deps === 0) {
-                    arg.splice(0, 1);
-                    arr.splice(0, Number(i) + 1);
-                    return {func: func.join(""), arg: parseArg(arg.join(""), isScript), after: arr.join("")};
-                }
-            }
-        }
-        if (deps > 0) {
-            arg.push(value);
-        } else {
-            func.push(value);
-        }
-    }
-
-}
-/**
- * 引数をパースする
- * @param input
- * @param isScript
- */
-const parseArg = (input, isScript = false) => {
-    let arr = Array.from(input), deps = 0, char = null, tmp = [], arg = {}, left = "default";
-    for (let i in arr) {
-        let value = arr[i];
-        if (value === '"' || value === "'") {
-            if (arr[Number(i) - 1] !== "\\") {
-                if (char) {
-                    char = null;
-                } else {
-                    char = value;
-                }
-            }
-        }
-        if (!char) {
-            if (value === "(" || value === "[") {
-                deps++;
-            } else if (value === ")" || value === "]") {
-                deps--;
-            }
-        }
-        if (deps === 0 && value === ",") {
-            let _left = left, i = 0;
-            if (left === "default") {
-                left += i;
-            }
-            while (arg[left]) {
-                left = _left + i;
-                i++;
-            }
-            arg[left] = tmp.join("");
-            left = "default";
-            tmp = [];
-        } else if (deps === 0 && value === ":" && (!isScript || (isScript && tmp.join("").match(/^then|else|timer$/)))) {
-            left = tmp.join("");
-            tmp = [];
-        } else {
-            tmp.push(value)
-        }
-    }
-    if (tmp !== []) {
-        let _left = left, i = 0;
-        if (left === "default") {
-            left += i;
-        }
-        while (arg[left]) {
-            left = _left + i;
-            i++;
-        }
-        arg[left] = tmp.join("");
-    }
-    return arg;
-}
-/**
- * カッコを含むものを処理
- */
-const parseBrackets = (string) => {
-    let str = Array.from(string), deps = 0, leftArr = [], brackets = [], args = [];
-    for (let i in str) {
-        let value = str[i], left = leftArr.join("").trim();
-        if (deps === 0) {
-            brackets.push(value);
-        }
-        leftArr.push(value);
-        if (value === "(") {
-            deps++;
-            if (deps === 1) {
-                leftArr = [];
-            }
-        } else if (value === ")") {
-            deps--;
-            if (deps === 0) {
-                leftArr.pop();
-                left = leftArr.join("");
-                args.push(left.trim());
-                leftArr = [];
-                brackets.push(value);
-            }
-        } else if (value === ",") {
-            if (deps === 1) {
-                leftArr.pop();
-                left = leftArr.join("");
-                args.push(left.trim());
-                leftArr = [];
-            }
-        }
-    }
-    return {brackets: brackets.join("").trim(), args: args};
-}
-/**
- * クォートで囲われた文字列か判定
- */
-const isString = (string: string) => {
-    if (!(
-        (string.startsWith('"') && string.endsWith('"')) ||
-        (string.startsWith("'") && string.endsWith("'")) ||
-        (string.startsWith("「") && string.endsWith("」"))
-    )) {
-        return false;
-    }
-    let str: string[] = Array.from(string.slice(1, -1)), quote = string.slice(0, 1);
-    for (const i in str) {
-        if (str[i] === quote && str[Number(i) - 1] !== "\\") {
-            return false;
-        }
-    }
-    return true;
-}
-
-/**
- * クォートを考慮して文字列を分割
- * @param string
- * @param separator
- */
-const splitWithDeps = (string: string, separator: RegExp) => {
-    let arr = Array.from(string), deps = 0, char = null;
-    let res = [], tmp = [];
-    for (let i in arr) {
-        let value = arr[i];
-        if (value === '"' || value === "'") {
-            if (arr[Number(i) - 1] !== "\\") {
-                if (char) {
-                    char = null;
-                } else {
-                    char = value;
-                }
-            }
-        }
-        if (!char) {
-            if (value === "(") {
-                deps++;
-            } else if (value === ")") {
-                deps--;
-            }
-        }
-        if (deps === 0 && value.match(separator)) {
-            res.push(tmp.join(""));
-            tmp = [];
-        } else {
-            tmp.push(value);
-        }
-    }
-    if (tmp) {
-        res.push(tmp.join(""));
-    }
-    return res;
-}
 export default NiwangoParser;

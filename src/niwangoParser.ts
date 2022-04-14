@@ -92,16 +92,32 @@ class NiwangoParser {
     /**
      * 関数実行
      * @param script
+     * @param root
      */
-    exec(script: any) {
+    exec(script: any,root = false) {
         switch (script.type) {
             case "ExpressionStatement":
                 this.exec(script.expression);
                 break;
             case "AssignmentExpression":
-
+                switch (script.operator) {
+                    case "=":
+                        let tmp =this.exec(script.left);
+                        this.variable[this.exec(script.left)] =this.exec(script.right);
+                        if (typeof tmp === "undefined")return;
+                        tmp = this.exec(script.right);
+                        console.log(this.variable);
+                        break;
+                }
+                break;
+            case "Identifier":
+                return script.name;
+            case "MemberExpression":
+                let left = this.exec(script.object),right=this.exec(script.property);
+                if (typeof left === "string")return this.variable[left][right];
+                return left[right];
             default:
-                console.log(script);
+                //console.log(script);
         }
     }
 

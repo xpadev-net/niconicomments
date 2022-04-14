@@ -1,4 +1,4 @@
-import {parseFunc, parseBrackets, isString, splitWithDeps, arrayPush} from "./Utils";
+import {parseFunc, parseBrackets, isString, splitWithDeps, arrayPush, unQuote} from "./Utils";
 
 type formattedComment = {
     "id": number,
@@ -52,6 +52,7 @@ class NiwangoParser {
             let scripts = this.parse(comment);
             arrayPush(this.scripts, comment.vpos, scripts);
             for (const item of scripts) {
+                if (!item)continue;
                 this.exec(item);
             }
         }
@@ -94,7 +95,8 @@ class NiwangoParser {
      * @param script
      * @param root
      */
-    exec(script: any,root = false) {
+    exec(script: any, root = false) {
+        if (!script)return
         switch (script.type) {
             case "ExpressionStatement":
                 this.exec(script.expression);
@@ -102,22 +104,38 @@ class NiwangoParser {
             case "AssignmentExpression":
                 switch (script.operator) {
                     case "=":
-                        let tmp =this.exec(script.left);
-                        this.variable[this.exec(script.left)] =this.exec(script.right);
-                        if (typeof tmp === "undefined")return;
-                        tmp = this.exec(script.right);
-                        console.log(this.variable);
+                        let left = this.exec(script.left), right = this.exec(script.right);
+                        if (typeof left === "string") {
+                            this.variable[left] = right;
+                        } else {
+                            left = right;
+                        }
                         break;
                 }
                 break;
+            case "BinaryExpression":
+                switch (script.operator) {
+                    case "+":
+                        let left = this.exec(script.left), right = this.exec(script.right);
+                        return left + right;
+                }
+                break;
+            case "CallExpression":
+                console.info("name:", this.exec(script.callee), "args:", script.arguments);
+                break;
+            case "IfStatement":
+                console.log(script);
+                break;
             case "Identifier":
                 return script.name;
+            case "Literal":
+                return unQuote(script.value);
             case "MemberExpression":
-                let left = this.exec(script.object),right=this.exec(script.property);
-                if (typeof left === "string")return this.variable[left][right];
+                let left = this.exec(script.object), right = this.exec(script.property);
+                if (typeof left === "string") return this.variable[left][right];
                 return left[right];
             default:
-                //console.log(script);
+                console.log(script);
         }
     }
 
@@ -149,6 +167,7 @@ class NiwangoParser {
      * @param root
      */
     parseLine(string: string, root: boolean = false) {
+        string = string.trim();
         let tmp = splitWithDeps(string, /;/);
         if (tmp.length > 1) {
             let result = [];
@@ -161,21 +180,21 @@ class NiwangoParser {
             string = string.slice(1);
         }
         let str: string[] = Array.from(string), leftArr = [];
-        if (string.match(/^(true|false|[0-9.]+)$/) || isString(string)) {
+        if (string.match(/^(true|false|[\d.]+)$/) || isString(string)) {
             if (root) return {type: "ExpressionStatement", expression: this.parseLine(string)};
             return {
                 type: "Literal",
                 value: string
             }
-        } else if (string.match(/^[a-zA-Z0-9_$]+$/)) {
+        } else if (string.match(/^[a-zA-Z\d_$]+$/)) {
             if (root) return {type: "ExpressionStatement", expression: this.parseLine(string)};
             return {
                 type: "Identifier",
                 name: string
             }
-        } else if (string.match(/^[a-zA-Z0-9_$]+((\[([a-zA-Z0-9_$]+|["'].+["'])])|\.[a-zA-Z0-9_$]+)+$/)) {
+        } else if (string.match(/^[a-zA-Z\d_$]+((\[([a-zA-Z\d_$]+|["'].+["'])])|\.[a-zA-Z\d_$]+)+$/)) {
             if (root) return {type: "ExpressionStatement", expression: this.parseLine(string)};
-            if (string.match(/^[a-zA-Z0-9_$]+((\[([a-zA-Z0-9_$]+|["'].+["'])])|\.[a-zA-Z0-9_$]+)*\.[a-zA-Z0-9_$]+$/)) {
+            if (string.match(/^[a-zA-Z\d_$]+((\[([a-zA-Z\d_$]+|["'].+["'])])|\.[a-zA-Z\d_$]+)*\.[a-zA-Z\d_$]+$/)) {
                 return {
                     type: "MemberExpression",
                     object: this.parseLine(string.slice(0, string.lastIndexOf("."))),
@@ -188,20 +207,54 @@ class NiwangoParser {
                 property: this.parseLine(string.slice(string.lastIndexOf("[") + 1, -1))
             }
         }
+        let deps = 0, char = null;
         for (let i in str) {
             let value = str[i], left = leftArr.join("").trim(), next_value = str[Number(i) + 1],
                 last_value = str[Number(i) - 1], right_value = string.slice(Number(i) + 1);
-            if ((value + next_value).match(/[=!<>+\-*\/%]=/)) continue;
-            if ((last_value + value).match(/[=!<>+\-*\/%]=/)) {
-                if (root) return {type: "ExpressionStatement", expression: this.parseLine(string)};
-                return {
-                    type: "BinaryExpression",
-                    left: this.parseLine(left),
-                    operator: last_value + value,
-                    right: this.parseLine(right_value)
+            if (value === '"' || value === "'") {
+                if (last_value !== "\\") {
+                    if (char) {
+                        char = null;
+                    } else {
+                        char = value;
+                    }
                 }
             }
-            if (value.match(/[+\-*\/%<>]/)) {
+            if (!char) {
+                if (value === "(") {
+                    deps++;
+                } else if (value === ")") {
+                    deps--;
+                }
+            }
+            if (deps===0&&char===null) {
+                if ((value + next_value).match(/[=!<>+\-*\/%]=/)) continue;
+                if ((last_value + value).match(/[=!<>+\-*\/%]=/)) {
+                    if (root) return {type: "ExpressionStatement", expression: this.parseLine(string)};
+                    return {
+                        type: "BinaryExpression",
+                        left: this.parseLine(left),
+                        operator: last_value + value,
+                        right: this.parseLine(right_value)
+                    }
+                }
+                if (value.match(/[*\/]/)) {
+                    if (root) return {type: "ExpressionStatement", expression: this.parseLine(string)};
+                    return {
+                        type: "BinaryExpression",
+                        left: this.parseLine(left),
+                        operator: value,
+                        right: this.parseLine(right_value)
+                    }
+                }
+            }
+            leftArr.push(value);
+        }
+        leftArr = [];
+        for (let i in str){
+            let value = str[i], left = leftArr.join("").trim(), next_value = str[Number(i) + 1],
+                last_value = str[Number(i) - 1], right_value = string.slice(Number(i) + 1);
+            if (value.match(/[+\-<>]/)) {
                 if (root) return {type: "ExpressionStatement", expression: this.parseLine(string)};
                 return {
                     type: "BinaryExpression",
@@ -209,7 +262,7 @@ class NiwangoParser {
                     operator: value,
                     right: this.parseLine(right_value)
                 }
-            } else if (value === "=" && left.match(/^[0-9a-zA-Z_]+:$/)) {
+            } else if (value === "=" && left.match(/^\w+:$/)) {
                 return {
                     type: "VariableDeclaration",
                     declarations: [{
@@ -284,6 +337,7 @@ class NiwangoParser {
             }
             leftArr.push(value);
         }
+        //console.log(string);
     }
 }
 

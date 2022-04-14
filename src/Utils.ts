@@ -273,5 +273,11 @@ const splitWithDeps = (string: string, separator: RegExp) => {
     }
     return res;
 }
+const unQuote = (string:string) => {
+    if (string.match(/^["'「][\s\S]*["'」]$/)){
+        return string.slice(1,-1);
+    }
+    return string
+}
 
-export {groupBy,parseFont,arrayPush,hex2rgb,replaceAll,parseFunc,parseArg,parseBrackets,isString,splitWithDeps};
+export {groupBy,parseFont,arrayPush,hex2rgb,replaceAll,parseFunc,parseArg,parseBrackets,isString,splitWithDeps,unQuote};

@@ -117,10 +117,15 @@ class NiwangoParser {
                 switch (script.operator) {
                     case "+":
                         let left = this.exec(script.left), right = this.exec(script.right);
+
                         return left + right;
                 }
                 break;
             case "CallExpression":
+                switch (this.exec(script.callee)) {
+                    case "def_kari":
+                        
+                }
                 console.info("name:", this.exec(script.callee), "args:", script.arguments);
                 break;
             case "IfStatement":
@@ -132,7 +137,15 @@ class NiwangoParser {
                 return unQuote(script.value);
             case "MemberExpression":
                 let left = this.exec(script.object), right = this.exec(script.property);
-                if (typeof left === "string") return this.variable[left][right];
+                if (typeof left === "string") {
+                    if (left.match(/^[\d]+$/)&&right==="times"){
+                        return {
+                            type:"loop",
+                            count:left
+                        }
+                    }
+                    return this.variable[left][right];
+                }
                 return left[right];
             default:
                 console.log(script);

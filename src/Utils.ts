@@ -1,4 +1,3 @@
-
 /**
  * 配列を複数のキーでグループ化する
  * @param {{}} array
@@ -74,13 +73,12 @@ const hex2rgb = (hex: string) => {
  */
 const replaceAll = (string: string, target: string, replace: string) => {
     let count = 0;
-    while(string.indexOf(target)!==-1&&count<100){
-        string = string.replace(target,replace)
+    while (string.indexOf(target) !== -1 && count < 100) {
+        string = string.replace(target, replace)
         count++;
     }
     return string;
 }
-
 
 
 /**
@@ -204,6 +202,10 @@ const parseBrackets = (string) => {
                 leftArr = [];
                 brackets.push(value);
             }
+        } else if (value === "[") {
+            deps++;
+        } else if (value === "]") {
+            deps--;
         } else if (value === ",") {
             if (deps === 1) {
                 leftArr.pop();
@@ -255,9 +257,9 @@ const splitWithDeps = (string: string, separator: RegExp) => {
             }
         }
         if (!char) {
-            if (value === "(") {
+            if (value.match(/[(\[]/)) {
                 deps++;
-            } else if (value === ")") {
+            } else if (value.match(/[)\]]/)) {
                 deps--;
             }
         }
@@ -273,11 +275,23 @@ const splitWithDeps = (string: string, separator: RegExp) => {
     }
     return res;
 }
-const unQuote = (string:string) => {
-    if (string.match(/^["'「][\s\S]*["'」]$/)){
-        return string.slice(1,-1);
+const unQuote = (string: string) => {
+    if (string.match(/^["'「][\s\S]*["'」]$/)) {
+        return string.slice(1, -1);
     }
     return string
 }
 
-export {groupBy,parseFont,arrayPush,hex2rgb,replaceAll,parseFunc,parseArg,parseBrackets,isString,splitWithDeps,unQuote};
+export {
+    groupBy,
+    parseFont,
+    arrayPush,
+    hex2rgb,
+    replaceAll,
+    parseFunc,
+    parseArg,
+    parseBrackets,
+    isString,
+    splitWithDeps,
+    unQuote
+};

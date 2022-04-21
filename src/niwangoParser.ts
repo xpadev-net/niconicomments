@@ -53,7 +53,7 @@ class NiwangoParser {
             arrayPush(this.scripts, comment.vpos, scripts);
             for (const item of scripts) {
                 if (!item)continue;
-                this.exec(item);
+                //this.exec(item);
             }
         }
         this.last_chat = comment;
@@ -148,7 +148,7 @@ class NiwangoParser {
                 }
                 return left[right];
             default:
-                console.log(script);
+                console.log("unknown:",script);
         }
     }
 
@@ -193,21 +193,21 @@ class NiwangoParser {
             string = string.slice(1);
         }
         let str: string[] = Array.from(string), leftArr = [];
-        if (string.match(/^(true|false|[\d.]+)$/) || isString(string)) {
+        if (string.match(/^(true|false|[\d.]+|0x[\da-fA-F]+)$/) || isString(string)) {
             if (root) return {type: "ExpressionStatement", expression: this.parseLine(string)};
             return {
                 type: "Literal",
                 value: string
             }
-        } else if (string.match(/^[a-zA-Z\d_$]+$/)) {
+        } else if (string.match(/^[a-zA-Z\d_@$]+$/)) {
             if (root) return {type: "ExpressionStatement", expression: this.parseLine(string)};
             return {
                 type: "Identifier",
                 name: string
             }
-        } else if (string.match(/^[a-zA-Z\d_$]+((\[([a-zA-Z\d_$]+|["'].+["'])])|\.[a-zA-Z\d_$]+)+$/)) {
+        } else if (string.match(/^[a-zA-Z\d_@$]+((\[([a-zA-Z\d_@$]+|["'].+["'])])|\.[a-zA-Z\d_@$]+)+$/)) {
             if (root) return {type: "ExpressionStatement", expression: this.parseLine(string)};
-            if (string.match(/^[a-zA-Z\d_$]+((\[([a-zA-Z\d_$]+|["'].+["'])])|\.[a-zA-Z\d_$]+)*\.[a-zA-Z\d_$]+$/)) {
+            if (string.match(/^[a-zA-Z\d_@$]+((\[([a-zA-Z\d_@$]+|["'].+["'])])|\.[a-zA-Z\d_@$]+)*\.[a-zA-Z\d_@$]+$/)) {
                 return {
                     type: "MemberExpression",
                     object: this.parseLine(string.slice(0, string.lastIndexOf("."))),
@@ -234,9 +234,9 @@ class NiwangoParser {
                 }
             }
             if (!char) {
-                if (value === "(") {
+                if (value.match(/[(\[]/)) {
                     deps++;
-                } else if (value === ")") {
+                } else if (value.match(/[)\]]/)) {
                     deps--;
                 }
             }
@@ -292,7 +292,23 @@ class NiwangoParser {
                     left: this.parseLine(left),
                     right: this.parseLine(right_value)
                 }
-            } else if (value === "(") {
+            } else if (value === "[" && left === ""){
+                if (string.match(/]\[/)){
+                    return {
+                        type: "MemberExpression",
+                        object: this.parseLine(string.slice(0, string.lastIndexOf("["))),
+                        property: this.parseLine(string.slice(string.lastIndexOf("[") + 1, -1))
+                    }
+                }
+                let elements = [],items = splitWithDeps(string.slice(1,-1),/,/);
+                for (let item of items){
+                    elements.push(this.parseLine(item));
+                }
+                return {
+                    type: "ArrayExpression",
+                    elements: elements
+                }
+            }else if (value === "(") {
                 if (left === "") {
                     let brackets = parseBrackets(string)
                     if (brackets.brackets === "().alt()" || brackets.brackets === "().alternative()") {

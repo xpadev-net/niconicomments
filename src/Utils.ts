@@ -281,6 +281,14 @@ const unQuote = (string: string) => {
     }
     return string
 }
+const getByName = (args: any,name: string) => {
+    for (let arg of args){
+        if (arg.name === name){
+            return arg;
+        }
+    }
+    return false;
+}
 
 export {
     groupBy,
@@ -293,5 +301,6 @@ export {
     parseBrackets,
     isString,
     splitWithDeps,
-    unQuote
+    unQuote,
+    getByName
 };

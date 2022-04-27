@@ -1,4 +1,4 @@
-import {parseFunc, parseBrackets, isString, splitWithDeps, arrayPush, unQuote} from "./Utils";
+import {parseFunc, parseBrackets, isString, splitWithDeps, arrayPush, unQuote, getByName} from "./Utils";
 
 type formattedComment = {
     "id": number,
@@ -68,12 +68,14 @@ class NiwangoParser {
         if (this.last_vpos < vpos) {
             for (let i = this.last_vpos; i <= vpos; i++) {
                 if (this.scripts[i]) {
+                    this.last_vpos = i;
                     for (let j in this.scripts[i]) {
                         this.exec(this.scripts[i][j]);
                     }
                     this.rollback[i] = {
                         functions: JSON.parse(JSON.stringify(this.functions)),
                         timeline: JSON.parse(JSON.stringify(this.timeline)),
+                        scripts: JSON.parse(JSON.stringify(this.scripts)),
                         variable: JSON.parse(JSON.stringify(this.variable)),
                     }
                 }
@@ -83,6 +85,7 @@ class NiwangoParser {
                 if (this.rollback[i]) {
                     this.functions = JSON.parse(JSON.stringify(this.rollback[i].functions));
                     this.timeline = JSON.parse(JSON.stringify(this.rollback[i].timeline));
+                    this.scripts = JSON.parse(JSON.stringify(this.rollback[i].scripts));
                     this.variable = JSON.parse(JSON.stringify(this.rollback[i].variable));
                     break;
                 }
@@ -114,6 +117,12 @@ class NiwangoParser {
                         break;
                 }
                 break;
+            case "ArrayExpression":
+                let array = [];
+                for(let item of script.elements){
+                    array.push(this.exec(item));
+                }
+                return array;
             case "BinaryExpression":
                 switch (script.operator) {
                     case "+":
@@ -126,27 +135,37 @@ class NiwangoParser {
                 switch (this.exec(script.callee)) {
                     case "def_kari":
                         this.functions[this.exec(script.arguments[0])] = script.arguments[1];
-                        console.log("define:",this.exec(script.arguments[0]));
+                        console.info("define:",this.exec(script.arguments[0]));
+                        break;
+                    case "timer":
+                        console.info("called timer:",script);
+                        arrayPush(this.scripts, this.last_vpos+getByName(script.arguments,"timer")*100, getByName(script.arguments,"default0"));
                         break;
                     default:
-                        if (this.functions[this.exec(script.arguments[0])]){
+                        if (this.functions[this.exec(script.callee)]){
+                            console.info("called func:", this.exec(script.callee),"func:",this.functions[this.exec(script.callee)], "args:", script.arguments);
                             this.exec(this.functions[this.exec(script.arguments[0])],false,script.arguments);
                         }else{
-                            console.info("name:", this.exec(script.callee), "args:", script.arguments);
+                            console.warn("unknown func:", this.exec(script.callee), "args:", script.arguments,"funcs:",this.functions);
                         }
                 }
                 break;
+            case "EmptyStatement":
+                return ;
             case "IfStatement":
                 console.log("ifstate:" ,script);
                 break;
             case "Identifier":
+                let arg = getByName(args,script.name);
+                if (arg!==false)return arg;
                 return script.name;
             case "Literal":
                 return unQuote(script.value);
             case "MemberExpression":
                 let left = this.exec(script.object), right = this.exec(script.property);
+                if (!left)console.log(script,this.variable);
                 if (typeof left === "string") {
-                    if (left.match(/^[\d]+$/)&&right==="times"){
+                    if (left.match(/^\d+$/)&&right==="times"){
                         return {
                             type:"loop",
                             count:left
@@ -278,6 +297,24 @@ class NiwangoParser {
                 last_value = str[Number(i) - 1], right_value = string.slice(Number(i) + 1);
             if (value.match(/[+\-<>]/)) {
                 if (root) return {type: "ExpressionStatement", expression: this.parseLine(string)};
+                if (next_value&&next_value.match(/[+\-]/)&&value==next_value)continue;
+                if (last_value&&last_value.match(/[+\-]/)&&value==last_value){
+                    if (left===""){
+                        return {
+                            type: "UpdateExpression",
+                            argument: this.parseLine(right_value),
+                            operator: value,
+                            prefix: true,
+                        }
+                    }else if(right_value===""){
+                        return {
+                            type: "UpdateExpression",
+                            argument: this.parseLine(left),
+                            operator: value,
+                            prefix: false,
+                        }
+                    }
+                }
                 return {
                     type: "BinaryExpression",
                     left: this.parseLine(left),
@@ -375,7 +412,10 @@ class NiwangoParser {
             }
             leftArr.push(value);
         }
-        //console.log(string);
+        return {
+            type: "EmptyStatement",
+            raw: string
+        }
     }
 }
 

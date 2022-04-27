@@ -53,7 +53,7 @@ class NiwangoParser {
             arrayPush(this.scripts, comment.vpos, scripts);
             for (const item of scripts) {
                 if (!item)continue;
-                //this.exec(item);
+                this.exec(item);
             }
         }
         this.last_chat = comment;
@@ -94,8 +94,9 @@ class NiwangoParser {
      * 関数実行
      * @param script
      * @param root
+     * @param args
      */
-    exec(script: any, root = false) {
+    exec(script: any, root = false,args={}) {
         if (!script)return
         switch (script.type) {
             case "ExpressionStatement":
@@ -124,12 +125,19 @@ class NiwangoParser {
             case "CallExpression":
                 switch (this.exec(script.callee)) {
                     case "def_kari":
-                        
+                        this.functions[this.exec(script.arguments[0])] = script.arguments[1];
+                        console.log("define:",this.exec(script.arguments[0]));
+                        break;
+                    default:
+                        if (this.functions[this.exec(script.arguments[0])]){
+                            this.exec(this.functions[this.exec(script.arguments[0])],false,script.arguments);
+                        }else{
+                            console.info("name:", this.exec(script.callee), "args:", script.arguments);
+                        }
                 }
-                console.info("name:", this.exec(script.callee), "args:", script.arguments);
                 break;
             case "IfStatement":
-                console.log(script);
+                console.log("ifstate:" ,script);
                 break;
             case "Identifier":
                 return script.name;
@@ -144,6 +152,7 @@ class NiwangoParser {
                             count:left
                         }
                     }
+                    if (!this.variable[left])console.log(left,right);
                     return this.variable[left][right];
                 }
                 return left[right];

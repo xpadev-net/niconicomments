@@ -130,7 +130,6 @@ class NiwangoParser {
      */
     exec(script: any, options={root:false, argument:{}}) {
         try {
-
             if (!script)return
             switch (script.type) {
                 case "ExpressionStatement":
@@ -159,9 +158,18 @@ class NiwangoParser {
                 case "BinaryExpression":
                     switch (script.operator) {
                         case "+":
-                            let left = this.exec(script.left,options), right = this.exec(script.right,options);
-
-                            return left + right;
+                            return this.exec(script.left,options) + this.exec(script.right,options);
+                        case ">=":
+                            return this.exec(script.left,options) >= this.exec(script.right,options);
+                        case "<=":
+                            return this.exec(script.left,options) <= this.exec(script.right,options);
+                        case ">":
+                            return this.exec(script.left,options) > this.exec(script.right,options);
+                        case "<":
+                            return this.exec(script.left,options) < this.exec(script.right,options);
+                        case "!=":
+                            console.log(options);
+                            return this.exec(script.left,options) != this.exec(script.right,options);
                     }
                     break;
                 case "BlockStatement":
@@ -199,7 +207,7 @@ class NiwangoParser {
                     return ;
                 case "IfStatement":
                     let test = this.exec(script.test,options);
-                    console.log("ifstate:",script.test,test ,script);
+                    console.log("ifstate:",script.test,test ,script,options);
                     break;
                 case "Identifier":
                     let arg = getByName(options.argument,script.name);
@@ -217,6 +225,11 @@ class NiwangoParser {
                             return {
                                 type:"loop",
                                 count:left
+                            }
+                        }else if(right==="indexOf"){
+                            return {
+                                type:"indexOf",
+                                target: this.exec(left)
                             }
                         }
                         if (!this.variable[left])console.log(left,right);

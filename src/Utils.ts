@@ -282,6 +282,8 @@ const unQuote = (string: string) => {
     return string
 }
 const getByName = (args: any,name: string) => {
+    let default_value = name.match(/^\$(\d+)$/);
+    if (default_value)name="default"+(Number(default_value[1])-1);
     for (let arg of args){
         if (arg.name === name){
             return arg;

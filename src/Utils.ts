@@ -261,6 +261,8 @@ const splitWithDeps = (string: string, separator: RegExp) => {
                 deps++;
             } else if (value.match(/[)\]]/)) {
                 deps--;
+            } else if (value === "#"){
+                break;
             }
         }
         if (deps === 0 && value.match(separator)) {
@@ -277,20 +279,22 @@ const splitWithDeps = (string: string, separator: RegExp) => {
 }
 const unQuote = (string: string) => {
     if (string.match(/^["'「][\s\S]*["'」]$/)) {
-        return string.slice(1, -1);
+        string = string.slice(1, -1);
     }
+    if (string.match(/^-?[\d.]+|0x[\da-fA-F]+$/))return Number(string);
     return string
 }
 const getByName = (args: any,name: string) => {
     let default_value = name.match(/^\$(\d+)$/);
     if (default_value)name="default"+(Number(default_value[1])-1);
     for (let arg of args){
-        if (arg.name === name){
+        if (arg.id === name){
             return arg;
         }
     }
     return false;
 }
+
 
 export {
     groupBy,

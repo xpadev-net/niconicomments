@@ -29,4 +29,4 @@ setInterval(() => niconiComments.drawCanvas(Math.floor(video.currentTime * 100))
 ## Sample
 [レッツゴー！陰陽師](https://xpadev.net/niconicomments/sample.html)  
 [レッツゴー！陰陽師(CodePen)](https://codepen.io/xpadev-net/pen/mdBdQmX)  
-[ニコニコ動画流星群](https://xpadev.net/niconicomments/ryuuseigun.html)  
+[ニコニコ動画流星群](https://xpadev.net/niconicomments/ryuuseigun.html)

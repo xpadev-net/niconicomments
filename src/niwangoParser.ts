@@ -44,11 +44,8 @@ class NiwangoParser {
         };
 
         this.locals = {
-            window: {
-
-            },
-            document: {
-            }
+            window: {},
+            document: {}
         };
 
         this.that = Object.create(null);
@@ -82,7 +79,7 @@ class NiwangoParser {
             let scripts = this.parse(comment);
             arrayPush(this.scripts, comment.vpos, scripts);
             for (const item of scripts) {
-                if (!item)continue;
+                if (!item) continue;
                 this.exec(item);
             }
         }
@@ -128,17 +125,17 @@ class NiwangoParser {
      * @param script
      * @param options
      */
-    exec(script: any, options={root:false, argument:{}}) {
+    exec(script: any, options = {root: false, argument: {}}) {
         try {
-            if (!script)return
+            if (!script) return
             switch (script.type) {
                 case "ExpressionStatement":
-                    this.exec(script.expression,options);
+                    this.exec(script.expression, options);
                     break;
                 case "AssignmentExpression":
                     switch (script.operator) {
                         case "=":
-                            let left = this.exec(script.left,options), right = this.exec(script.right,options);
+                            let left = this.exec(script.left, options), right = this.exec(script.right, options);
                             if (typeof left === "string") {
                                 this.variable[left] = right;
                             } else {
@@ -149,110 +146,206 @@ class NiwangoParser {
                     break;
                 case "ArrayExpression":
                     let array = [];
-                    for(let item of script.elements){
-                        array.push(this.exec(item,options));
+                    for (let item of script.elements) {
+                        array.push(this.exec(item, options));
                     }
                     return array;
                 case "ArrowFunctionExpression":
-                    return this.exec(script.body,options);
+                    return this.exec(script.body, options);
                 case "BinaryExpression":
+                    let left_var;
                     switch (script.operator) {
-                        case "+":
-                            return this.exec(script.left,options) + this.exec(script.right,options);
                         case ">=":
-                            return this.exec(script.left,options) >= this.exec(script.right,options);
+                            return this.exec(script.left, options) >= this.exec(script.right, options);
                         case "<=":
-                            return this.exec(script.left,options) <= this.exec(script.right,options);
+                            return this.exec(script.left, options) <= this.exec(script.right, options);
                         case ">":
-                            return this.exec(script.left,options) > this.exec(script.right,options);
+                            return this.exec(script.left, options) > this.exec(script.right, options);
                         case "<":
-                            return this.exec(script.left,options) < this.exec(script.right,options);
+                            return this.exec(script.left, options) < this.exec(script.right, options);
                         case "!=":
-                            console.log(options);
-                            return this.exec(script.left,options) != this.exec(script.right,options);
+                            return this.exec(script.left, options) != this.exec(script.right, options);
+                        case "+=":
+                            left_var = this.exec(script.left, options);
+                            if (typeof left_var === "string") {
+                                return this.variable[left_var] += this.exec(script.right, options);
+                            } else {
+                                return left_var += this.exec(script.right, options);
+                            }
+                        case "-=":
+                            left_var = this.exec(script.left, options);
+                            if (typeof left_var === "string") {
+                                return this.variable[left_var] -= this.exec(script.right, options);
+                            } else {
+                                return left_var -= this.exec(script.right, options);
+                            }
+                        case "+":
+                            return this.exec(script.left, options) + this.exec(script.right, options);
+                        case "-":
+                            return this.exec(script.left, options) - this.exec(script.right, options);
+                        default:
+                            console.warn("unknown binary expression:", script, options);
                     }
                     break;
                 case "BlockStatement":
-                    for (let item of script.body){
-                        this.exec(item,options);
+                    for (let item of script.body) {
+                        this.exec(item, options);
                     }
                     break;
                 case "CallExpression":
-                    let callee=this.exec(script.callee,options);
-                    switch (callee) {
+                    let callee = this.exec(script.callee, options);
+                    if (callee.type !== "Identifier") {
+                        console.warn("invalid identifier:", script, options)
+                        break;
+                    }
+                    switch (callee.raw) {
                         case "def_kari":
-                            this.functions[this.exec(script.arguments[0],options)] = script.arguments[1];
-                            console.info("define:",this.exec(script.arguments[0],options));
+                            this.functions[this.exec(script.arguments[0], options).raw] = script.arguments[1];
+                            console.info("define:", this.exec(script.arguments[0], options).raw);
                             break;
+                        case "drawText":
+                        case "dt":
+                            let args = this.execArg({
+                                text: null,
+                                x: null,
+                                y: null,
+                                z: null,
+                                size: null,
+                                pos: null,
+                                color: null,
+                                bold: null,
+                                visible: null,
+                                filter: null,
+                                alpha: null,
+                                mover: null
+                            }, script.arguments, options);
+                            console.log("[drawText] text:", args, script.arguments);
+                            let DrawText = {
+                                type: "DrawText",
+                                ...args
+                            }
+                            arrayPush(this.timeline,this.last_vpos,DrawText);
+                            return DrawText;
                         case "timer":
-                            console.info("called timer:",script);
-                            arrayPush(this.scripts, this.last_vpos+getByName(script.arguments,"timer")*100, getByName(script.arguments,"default0"));
+                            console.info("called timer:", script);
+                            arrayPush(this.scripts, this.last_vpos + getByName(script.arguments, "timer") * 100, getByName(script.arguments, "default0"));
+                            break;
+                        case "ZEN__loop":
+                            console.log("ZEN__loop:", script);
+                            for (let i = 0; i < callee.count; i++) {
+                                this.exec(script.arguments[0], {...options, root: false});
+                            }
                             break;
                         default:
-                            if (this.functions[callee]){
-                                console.info("called func:", callee,"func:",this.functions[callee], "args:", script.arguments);
-                                this.exec(this.functions[callee],{...options,argument: script.arguments});
-                            }else{
-                                if (callee.type==="loop"){
-                                    for (let i = 0;i < callee.count;i++){
-                                        this.exec(this.functions[callee],{...options,root: false});
-                                    }
-                                    break;
-                                }
-                                console.warn("unknown func:", this.exec(script.callee), "args:", script.arguments,"funcs:",this.functions);
+                            if (this.functions[callee.raw]) {
+                                console.info("called func:", callee, "func:", this.functions[callee.raw], "args:", script.arguments);
+                                this.exec(this.functions[callee], {...options, argument: script.arguments});
+                            } else {
+                                console.warn("unknown func:", this.exec(script.callee), script, "funcs:", this.functions);
                             }
                     }
                     break;
                 case "EmptyStatement":
-                    return ;
+                    return;
                 case "IfStatement":
-                    let test = this.exec(script.test,options);
-                    console.log("ifstate:",script.test,test ,script,options);
+                    let test = this.exec(script.test, options);
+                    console.log("ifstate:", script.test, test, script, options);
                     break;
                 case "Identifier":
-                    let arg = getByName(options.argument,script.name);
-                    if (arg!==false) {
-                        return arg
+                    let arg = getByName(options.argument, script.name);
+                    if (script.name.startsWith("$")) console.info("parse args:", options.argument, script.name, arg)
+                    if (arg !== false) {
+                        return this.exec(arg, options);
                     }
-                    return script.name;
+                    return {
+                        type: "Identifier",
+                        raw: script.name
+                    };
                 case "Literal":
-                    return unQuote(script.value);
+                    return {
+                        type: "Literal",
+                        raw: unQuote(script.value)
+                    };
                 case "MemberExpression":
-                    let left = this.exec(script.object,options), right = this.exec(script.property,options);
-                    if (!left)console.log(script,this.variable);
-                    if (typeof left === "string") {
-                        if (left.match(/^\d+$/)&&right==="times"){
+                    let left = this.exec(script.object, options).raw, right = this.exec(script.property, options).raw;
+                    if (typeof left !== "object") {
+                        if (typeof left === "number" && right === "times") {
                             return {
-                                type:"loop",
-                                count:left
+                                type: "Identifier",
+                                raw: "ZEN__loop",
+                                count: left
                             }
-                        }else if(right==="indexOf"){
+                        } else if (right === "indexOf") {
                             return {
-                                type:"indexOf",
-                                target: this.exec(left)
+                                type: "Identifier",
+                                raw: "indexOf",
+                                target: this.exec(left, options)
                             }
                         }
-                        if (!this.variable[left])console.log(left,right);
+                        if (!this.variable[left]) {
+                            console.warn("undefined left:", left, right);
+                            break;
+                        }
                         return this.variable[left][right];
                     }
                     return left[right];
+                case "UpdateExpression":
+
+                    break;
                 case "VariableDeclaration":
-                    for (let item of script.declarations){
-                        let left = this.exec(item.id,options), right = this.exec(item.init,options);
+                    for (let item of script.declarations) {
+                        let left = this.exec(item.id, options), right = this.exec(item.init, options);
                         if (typeof left === "string") {
                             this.variable[left] = right;
                         } else {
                             left = right;
                         }
-                        console.info("init var:",left,right,item);
+                        console.info("init var:", left, right, item);
                     }
                     break;
                 default:
-                    console.log("unknown:",script);
+                    console.log("unknown:", script);
+                    debugger;
             }
-        }catch (e){
-            console.warn(e,script);
+        } catch (e) {
+            console.error(e.name + ":" + e.message, script, this);
         }
+    }
+
+    /**
+     * 名前付き・無名引数をテンプレートに割り当てる
+     * @param template
+     * @param args
+     * @param options
+     * @return any
+     */
+    execArg(template: any, args: any, options: any) {
+        for (let key in args) {
+            if (template[args[key].id] === null) {
+                let value = this.exec(args[key], options);
+
+                /*if (typeof value === "string") {
+                    value = this.variable[value];
+                }*/
+                template[args[key].id] = value;
+            }
+        }
+        for (let key in args) {
+            if (args[key].id.match(/^default\d+$/)) {
+                for (let key2 in template) {
+                    if (template[key2] === null) {
+                        let value = this.exec(args[key], options);
+
+                        /*if (typeof value === "string") {
+                            value = this.variable[value];
+                        }*/
+                        template[key2] = value;
+                        break;
+                    }
+                }
+            }
+        }
+        return template;
     }
 
     /**
@@ -290,7 +383,10 @@ class NiwangoParser {
             for (const tmpKey in tmp) {
                 result.push(this.parseLine(tmp[tmpKey], false));
             }
-            return result;
+            return {
+                type: "BlockStatement",
+                body: result
+            };
         }
         if (string.startsWith("\\")) {
             string = string.slice(1);
@@ -343,7 +439,7 @@ class NiwangoParser {
                     deps--;
                 }
             }
-            if (deps===0&&char===null) {
+            if (deps === 0 && char === null) {
                 if ((value + next_value).match(/[=!<>+\-*\/%]=/)) continue;
                 if ((last_value + value).match(/[=!<>+\-*\/%]=/)) {
                     if (root) return {type: "ExpressionStatement", expression: this.parseLine(string)};
@@ -367,18 +463,18 @@ class NiwangoParser {
             leftArr.push(value);
         }
         leftArr = [];
-        for (let i in str){
+        for (let i in str) {
             let value = str[i], left = leftArr.join("").trim(), next_value = str[Number(i) + 1],
                 last_value = str[Number(i) - 1], right_value = string.slice(Number(i) + 1);
             if (value.match(/[+\-<>]/)) {
                 if (root) return {type: "ExpressionStatement", expression: this.parseLine(string)};
-                if (next_value&&next_value.match(/[+\-]/)&&value==next_value)continue;
-                if (last_value&&last_value.match(/[+\-]/)&&value==last_value){
+                if (next_value && next_value.match(/[+\-]/) && value == next_value) continue;
+                if (last_value && last_value.match(/[+\-]/) && value == last_value) {
                     return {
                         type: "UpdateExpression",
-                        argument: this.parseLine(left||right_value),
-                        operator: last_value+value,
-                        prefix: left==="",
+                        argument: this.parseLine(left || right_value),
+                        operator: last_value + value,
+                        prefix: left === "",
                     }
                 }
                 return {
@@ -404,23 +500,23 @@ class NiwangoParser {
                     left: this.parseLine(left),
                     right: this.parseLine(right_value)
                 }
-            } else if (value === "[" && left === ""){
-                if (string.match(/]\[/)){
+            } else if (value === "[" && left === "") {
+                if (string.match(/]\[/)) {
                     return {
                         type: "MemberExpression",
                         object: this.parseLine(string.slice(0, string.lastIndexOf("["))),
                         property: this.parseLine(string.slice(string.lastIndexOf("[") + 1, -1))
                     }
                 }
-                let elements = [],items = splitWithDeps(string.slice(1,-1),/,/);
-                for (let item of items){
+                let elements = [], items = splitWithDeps(string.slice(1, -1), /,/);
+                for (let item of items) {
                     elements.push(this.parseLine(item));
                 }
                 return {
                     type: "ArrayExpression",
                     elements: elements
                 }
-            }else if (value === "(") {
+            } else if (value === "(") {
                 if (left === "") {
                     let brackets = parseBrackets(string)
                     if (brackets.brackets === "().alt()" || brackets.brackets === "().alternative()") {
@@ -463,10 +559,10 @@ class NiwangoParser {
                                     type: "BlockStatement",
                                     body: src
                                 },
-                                name: i
+                                id: i
                             });
                         } else {
-                            args.push({...this.parseLine(value), name: i});
+                            args.push({...this.parseLine(value), id: i});
                         }
                     }
                     return {

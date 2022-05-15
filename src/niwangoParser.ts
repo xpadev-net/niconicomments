@@ -290,7 +290,7 @@ class NiwangoParser {
                     }
                     return left[right];
                 case "UpdateExpression":
-
+                    console.warn("unknown update expression:", script, options);
                     break;
                 case "VariableDeclaration":
                     for (let item of script.declarations) {
@@ -322,24 +322,14 @@ class NiwangoParser {
     execArg(template: any, args: any, options: any) {
         for (let key in args) {
             if (template[args[key].id] === null) {
-                let value = this.exec(args[key], options);
-
-                /*if (typeof value === "string") {
-                    value = this.variable[value];
-                }*/
-                template[args[key].id] = value;
+                template[args[key].id] = this.exec(args[key], options);
             }
         }
         for (let key in args) {
             if (args[key].id.match(/^default\d+$/)) {
                 for (let key2 in template) {
                     if (template[key2] === null) {
-                        let value = this.exec(args[key], options);
-
-                        /*if (typeof value === "string") {
-                            value = this.variable[value];
-                        }*/
-                        template[key2] = value;
+                        template[key2] = this.exec(args[key], options);
                         break;
                     }
                 }

@@ -52,6 +52,7 @@ class NiwangoParser {
 
     }
 
+    //todo: 使わなかったら消す
     eval(code) {
         const params = [], args = [];
 
@@ -80,7 +81,7 @@ class NiwangoParser {
             arrayPush(this.scripts, comment.vpos, scripts);
             for (const item of scripts) {
                 if (!item) continue;
-                this.exec(item);
+                this.exec(item);//todo: 実装完了したら消す
             }
         }
         this.last_chat = comment;
@@ -250,6 +251,15 @@ class NiwangoParser {
                             }
                             arrayPush(this.timeline,this.last_vpos,DrawShape);
                             return DrawShape;
+                        case "rand":
+                            if (script.arguments[0].raw){
+                                let num = 0,str = script.arguments[0].raw;
+                                for (let i = 0; i < str.length; ++i) {
+                                    num+=str.charCodeAt(i);
+                                }
+                                return num;
+                            }
+                            return Math.round(Math.random()*100000);
                         case "timer":
                             console.info("called timer:", script);
                             arrayPush(this.scripts, this.last_vpos + getByName(script.arguments, "timer") * 100, getByName(script.arguments, "default0"));
@@ -259,6 +269,9 @@ class NiwangoParser {
                             for (let i = 0; i < callee.count; i++) {
                                 this.exec(script.arguments[0], {argument: {...options.argument,tmp0:i}, root: false});
                             }
+                            break;
+                        case "@":
+                            //todo: @関数実装(引数にtmpを代入)
                             break;
                         default:
                             if (this.functions[callee.raw]) {
@@ -309,7 +322,7 @@ class NiwangoParser {
                             }
                         }
                         if (!this.variable[left]) {
-                            console.warn("undefined left:", left, right);
+                            console.warn("undefined left:", left, right, script);
                             break;
                         }
                         return this.variable[left][right];

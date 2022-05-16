@@ -193,7 +193,7 @@ class NiwangoParser {
                     }
                     break;
                 case "CallExpression":
-                    let callee = this.exec(script.callee, options);
+                    let callee = this.exec(script.callee, options),args;
                     if (callee.type !== "Identifier") {
                         console.warn("invalid identifier:", script, options)
                         break;
@@ -205,7 +205,7 @@ class NiwangoParser {
                             break;
                         case "drawText":
                         case "dt":
-                            let args = this.execArg({
+                            args = this.execArg({
                                 text: null,
                                 x: null,
                                 y: null,
@@ -226,14 +226,38 @@ class NiwangoParser {
                             }
                             arrayPush(this.timeline,this.last_vpos,DrawText);
                             return DrawText;
+                        case "drawShape":
+                            args = this.execArg({
+                                x: null,
+                                y: null,
+                                z: null,
+                                shape: null,
+                                width: null,
+                                height: null,
+                                color: null,
+                                visible: null,
+                                pos: null,
+                                mask: null,
+                                commentmask: null,
+                                alpha: null,
+                                rotation: null,
+                                mover: null
+                            }, script.arguments, options);
+                            console.log("[DrawShape] shape:", args, script.arguments);
+                            let DrawShape = {
+                                type: "DrawShape",
+                                ...args
+                            }
+                            arrayPush(this.timeline,this.last_vpos,DrawShape);
+                            return DrawShape;
                         case "timer":
                             console.info("called timer:", script);
                             arrayPush(this.scripts, this.last_vpos + getByName(script.arguments, "timer") * 100, getByName(script.arguments, "default0"));
                             break;
-                        case "ZEN__loop":
-                            console.log("ZEN__loop:", script);
+                        case "ZEN::loop":
+                            console.info("ZEN::loop:", script,callee.count);
                             for (let i = 0; i < callee.count; i++) {
-                                this.exec(script.arguments[0], {...options, root: false});
+                                this.exec(script.arguments[0], {argument: {...options.argument,tmp0:i}, root: false});
                             }
                             break;
                         default:
@@ -253,7 +277,7 @@ class NiwangoParser {
                     break;
                 case "Identifier":
                     let arg = getByName(options.argument, script.name);
-                    if (script.name.startsWith("$")) console.info("parse args:", options.argument, script.name, arg)
+                    if (script.name.match(/^\$|@/)) console.info("parse args:", options.argument, script.name, arg)
                     if (arg !== false) {
                         return this.exec(arg, options);
                     }
@@ -267,12 +291,14 @@ class NiwangoParser {
                         raw: unQuote(script.value)
                     };
                 case "MemberExpression":
-                    let left = this.exec(script.object, options).raw, right = this.exec(script.property, options).raw;
+                    let left = this.exec(script.object, options), right = this.exec(script.property, options);
+                    if (left?.type.match(/Literal|Identifier/))left = left.raw;
+                    if (right?.type.match(/Literal|Identifier/))right = right.raw;
                     if (typeof left !== "object") {
                         if (typeof left === "number" && right === "times") {
                             return {
                                 type: "Identifier",
-                                raw: "ZEN__loop",
+                                raw: "ZEN::loop",
                                 count: left
                             }
                         } else if (right === "indexOf") {
@@ -304,11 +330,11 @@ class NiwangoParser {
                     }
                     break;
                 default:
-                    console.log("unknown:", script);
+                    console.warn("unknown:", script);
                     debugger;
             }
         } catch (e) {
-            console.error(e.name + ":" + e.message, script, this);
+            console.error(e.name + ": " + e.message, script, this);
         }
     }
 
@@ -442,6 +468,13 @@ class NiwangoParser {
                 }
                 if (value.match(/[*\/]/)) {
                     if (root) return {type: "ExpressionStatement", expression: this.parseLine(string)};
+                    if (left==="") {
+                        console.warn("unknown script:", string);
+                        return {
+                            type: "EmptyStatement",
+                            raw: string
+                        }
+                    }
                     return {
                         type: "BinaryExpression",
                         left: this.parseLine(left),
@@ -564,6 +597,7 @@ class NiwangoParser {
             }
             leftArr.push(value);
         }
+        if (string!=="")console.warn("unknown script: ",string);
         return {
             type: "EmptyStatement",
             raw: string

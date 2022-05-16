@@ -287,6 +287,8 @@ const unQuote = (string: string) => {
 const getByName = (args: any,name: string) => {
     let default_value = name.match(/^\$(\d+)$/);
     if (default_value)name="default"+(Number(default_value[1])-1);
+    let tmp_value = name.match(/^@(\d+)$/);
+    if (tmp_value)name="tmp"+(Number(tmp_value[1])-1);
     for (let arg of args){
         if (arg.id === name){
             return arg;

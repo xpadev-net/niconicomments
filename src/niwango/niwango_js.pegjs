@@ -661,10 +661,16 @@ Arguments
     }
 
 ArgumentList
-  = head:AssignmentExpression tail:(__ "," __ (AssignmentExpression))* {
+  = head:ArgumentWithName tail:(__ "," __ ArgumentWithName)* {
       return buildList(head, tail, 3);
     }
-
+ArgumentWithName =identifier:ArgumentName? __ argument:(AssignmentExpression / FunctionBody){
+  return {
+    ...argument,
+    NIWANGO_Identifier:identifier
+  }
+}
+ArgumentName = identifier:Identifier":"{return identifier}
 LeftHandSideExpression
   = CallExpression
   / NewExpression
@@ -980,7 +986,7 @@ StatementList
   = head:Statement tail:(__ Statement)* { return buildList(head, tail, 1); }
 
 VariableStatement
-  = VarToken __ declarations:VariableDeclarationList EOS {
+  = declarations:VariableDeclarationList EOS {
       return {
         type: "VariableDeclaration",
         declarations: declarations,
@@ -1017,7 +1023,7 @@ VariableDeclarationNoIn
     }
 
 Initialiser
-  = "=" !"=" __ expression:AssignmentExpression { return expression; }
+  = ":=" __ expression:AssignmentExpression { return expression; }
 
 InitialiserNoIn
   = "=" !"=" __ expression:AssignmentExpressionNoIn { return expression; }

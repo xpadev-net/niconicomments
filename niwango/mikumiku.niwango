@@ -1,0 +1,861 @@
+"// ----------------------------------"
+"// NIVAスクリプト v1.0.5"
+"// 【作成者】青野はるみ"
+"// 【作成日】2011/07/17"
+"// ----------------------------------"
+"// ＜スクリプトについて＞"
+"// NIVAスクリプトに興味を持って下さり、ありがとうございますm(_ _)m"
+"// これはニコニコにアップした動画をDIVA風音ゲー化（以下、NIVA化）するためのスクリプトです"
+"// ゲーム化するための作業は全てスクリプト側で行っているので、このスクリプトを貼ることで既存の任意のPV動画をNIVA化することができます"
+"// スクリプトは基本的に【修正すべき場所★】と記した部分のパラメータを修正するだけで、あとはそのままで動きますので、プログラムに関する知識がない方でも簡単にいじれます"
+"// むしろどちらかというと譜面作成が主な修正作業です"
+"// スクリプトの利用、修正の仕方は、以下のサイトにて説明しています"
+"// http://nivascript.web.fc2.com/"
+"// --------------------------定数定義 --------------------------"
+"// ↓【修正すべき場所★】↓"
+"// 動画のサイズ。16:9の場合1、4:3の場合2、4:3だけど上下に黒帯が入っている（実際のコンテンツは16:9）場合は3、16:9だけど上下に黒帯が入っている（実際のコンテンツは16:7）場合は4、4:3だけど上下に黒帯が入っている（実際のコンテンツの高さは下記のMOVIE_HEIGHTで指定）場合は5、16:9だけど上下に黒帯が入っている（実際のコンテンツの高さは下記のMOVIE_HEIGHTで指定）場合は6を指定します"
+MOVIE_SIZE = 1;
+"// 動画の実際のコンテンツの高さ。すなわち黒帯部分を除いた高さ。↑のMOVIE_SIZEで5または6を指定した場合のみ指定します"
+MOVIE_HEIGHT = 0;
+"// 動画の長さ。単位は秒（小数点（2桁まで）でミリ秒も指定可。ただしそこまで厳密に指定する必要はありません）"
+MOVIE_LENGTH = 99.75;
+"// 歌のタイトル"
+SONG_TITLE = "みくみくにしてあげる♪【してやんよ】";
+"// コメント制御。コメントを制限しない場合は0、上下コメントのみ禁止する場合は1、それプラス大小コメント、色コメントも禁止する場合は2を指定します。これは公開後に設定を変更した場合も、制御設定前のコメントにも適用されます"
+"// コメントの投稿自体を禁止する場合は下の方の【修正すべき場所★】にあるpostDisabledを変更します。これは禁止設定後のコメントにのみ適用されます"
+"// 不適切なコメントでゲームに支障が出ることを避けたい場合にこれら設定を変更して対処します"
+COMMENT_CONTROLL = 0;
+"// ↑【修正すべき場所★】↑"
+MOVIE_SIZE_16_9 = 1;
+MOVIE_SIZE_4_3 = 2;
+MOVIE_SIZE_4_3_LB = 3;
+MOVIE_SIZE_16_9_LB = 4;
+MOVIE_SIZE_4_3_LB_ARBITRARILY = 5;
+MOVIE_SIZE_16_9_LB_ARBITRARILY = 6;
+NICO_LB_WIDTH = 16;
+MOVIE_HEIGHT_16_9 = 360;
+MOVIE_HEIGHT_4_3 = 384;
+MOVIE_HEIGHT_4_3_LB = 288;
+MOVIE_HEIGHT_16_9_LB = 280;
+COMMENT_FREE = 0;
+COMMENT_UE_SHITA_NG = 1;
+COMMENT_SIZE_COLOR_NG = 2;
+COMMENT_COLOR_DEFAULT = 0xffffff;
+BASE_POSITION = "hidari ue";
+FPS_DEFAULT = 15;	"// 【メモ】このFPSはゲーム部分のFPS（≠PVのFPS）。最大15FPS。ニコニコの仕様上、それ以上を指定しても無効"
+FPS_LIGHT = 10;
+MODE_NORMAL = 0;
+MODE_LIGHT = 1;
+MODE_AUTO = 2;
+MODE_NAME = ["通常モード", "軽量モード", "自動モード"];
+SET_RHYTHM_TIME = 8.50;
+GAME_START_TIME = 10.00;
+GAME_END_TIME = MOVIE_LENGTH - 2.00;
+SEQ = -1;
+MELODY_ICON_TYPE = ["○", "×", "□", "△"];
+MELODY_ICON_COLOR = [0xff0000, 0x00CCff, 0xff66ff, 0x00ff00];
+MELODY_ICON_LENGTH = 16;
+MELODY_ICON_FILTER_DEFAULT = "fuchi";
+MELODY_ICON_FILTER_MISS1 = "";
+MELODY_ICON_FILTER_MISS2 = "kasumi";
+MELODY_ICON_SIZE = 36;
+MELODY_ICON_SIZE_BATSU = 66;	"// 【メモ】×だけ異常にフォントが小さいことへの反則対応"
+MELODY_ICON_BATSU_VALIGN = -14;	"// 【メモ】×だけ異常にフォントが小さいことへの反則対応"
+MELODY_ICON_HIT_SCALE = 1.5;
+TARGET_TYPE = ["●", "×", "■", "▲"];
+TARGET_LENGTH = MELODY_ICON_LENGTH;
+TARGET_SIZE = 42;
+TARGET_SIZE_BATSU = 72;	"// 【メモ】×だけ異常にフォントが小さいことへの反則対応"
+TARGET_BATSU_VALIGN = -14;	"// 【メモ】×だけ異常にフォントが小さいことへの反則対応"
+TARGET_COLOR = 0x999999;
+TARGET_FILTER = "fuchi";
+TARGET_DISPLAY_TIMESPAN_RATE = 3.50;	"// 【メモ】ターゲットが表示される時間のレート。表示時間＝レート／メロディアイコンスピード"
+HIT_EFFECT_TIMESPAN = 0.30;
+HIT_JUDGE_TIMESPAN = [0.18, 0.26, 0.34, 0.42];	"// 【メモ】処理落ちやマウスのクリック性能の関係上、ヒット判定は甘め"
+MISS_EFFECT_TIMESPAN = 0.20;
+TIMING_TYPE = ["COOL", "FINE", "SAFE", "SAD", "WORST"];
+TIMING_COLOR = [0xCCCC00, 0xC0C0C0, 0x00FF00, 0x3333FF, 0xFF00FF];
+TIMING_SCORE = [500, 300, 100, 50, 0];
+CHANCE_TIME_RATE = 2;
+TIMING_FILTER = "fuchi";
+TIMING_SIZE = 24;
+TIMING_DISPlAY_TIMESPAN = 1.00;
+COMBO_COLOR = 0xCCCC00;
+COMBO_FILTER = TIMING_FILTER;
+COMBO_SIZE = 30;
+COMBO_DISPlAY_TIMESPAN = TIMING_DISPlAY_TIMESPAN;
+COMBO_LENGTH = 3;
+COMBO_BONUS_BORDER = [10, 20, 30, 40, 50];
+COMBO_BONUS_SCORE = [50, 100, 150, 200, 250];
+CHANCE_TIME_BONUS_BORDER = [0, 1, 4, 7, 10, 13];
+CHANCE_TIME_BONUS_SCORE = [50000, 40000, 30000, 15000, 10000, 0];
+TIMING_COMBO_GAP = 80;
+UPPER_WINDOW_HEIGHT = 30;
+UPPER_WINDOW_COLOR = 0x000000;
+UPPER_WINDOW_ALPHA = 75;
+UPPER_WINDOW_CHANCE_TIME_ALPHA = 0;
+UPPER_WINDOW_APPEAR_TIMESPAN = 1.5;	"// 【メモ】退場も同じ時間を使う"
+UPPER_WINDOW_CHANCE_TIME_APPEAR_TIMESPAN = UPPER_WINDOW_APPEAR_TIMESPAN / 2;
+SONG_TITLE_SIZE = 18;
+SONG_TITLE_COLOR = 0xFFFFFF;
+SONG_TITLE_SHADOW_COLOR = 0x000000;
+SONG_TITLE_SHADOW_DISTANCE = 1.5;
+LEVEL_EASY = 1;
+LEVEL_NORMAL = 2;
+LEVEL_HARD = 3;
+LEVEL_PV = 0;
+LEVEL_NAME = ["PV鑑賞", "EASY", "NORMAL", "HARD"];
+LEVEL_SIZE = 16;
+LEVEL_COLOR = 0x30E1F0;
+LEVEL_SHADOW_COLOR = 0x000000;
+LEVEL_SHADOW_DISTANCE = 1.5;
+SCORE_PANEL_SIZE = 24;
+SCORE_PANEL_COLOR = 0xFFFFFF;
+SCORE_PANEL_FILTER = "fuchi";
+SCORE_PANEL_LENGTH = 7;
+LEVEL_SCORE_GAP = 50;
+UNDER_WINDOW_HEIGHT = UPPER_WINDOW_HEIGHT;
+UNDER_WINDOW_COLOR = UPPER_WINDOW_COLOR;
+UNDER_WINDOW_ALPHA = UPPER_WINDOW_ALPHA;
+UNDER_WINDOW_CHANCE_TIME_ALPHA = UPPER_WINDOW_CHANCE_TIME_ALPHA;
+UNDER_WINDOW_APPEAR_TIMESPAN = UPPER_WINDOW_APPEAR_TIMESPAN;
+UNDER_WINDOW_CHANCE_TIME_APPEAR_TIMESPAN = UPPER_WINDOW_CHANCE_TIME_APPEAR_TIMESPAN;
+CHANCE_TIME_TEXT_SIZE = 16;
+CHANCE_TIME_TEXT_COLOR = 0xEE4488;
+LYRICS_SIZE = 16;
+LYRICS_COLOR = 0xFFFFFF;
+LYRICS_SHADOW_COLOR = 0x000000;
+LYRICS_SHADOW_DISTANCE = 1.5;
+CHANCE_TIME_LYRICS_GAP = 40;
+CHANCE_TIME_MESSAGE_SIZE = 24;
+CHANCE_TIME_MESSAGE_COLOR = CHANCE_TIME_TEXT_COLOR;
+CHANCE_TIME_MESSAGE_POS = "naka ue";
+CHANCE_TIME_MESSAGE_TIMESPAN = 3.00;
+CHANCE_TIME_WINDOW_WIDTH = 300;
+CHANCE_TIME_WINDOW_HEIGHT = 30;
+CHANCE_TIME_WINDOW_COLOR = CHANCE_TIME_TEXT_COLOR;
+CHANCE_TIME_WINDOW_ALPHA = 65;
+CHANCE_TIME_WINDOW_UNDER_WINDOW_GAP = 8;
+CHANCE_TIME_BONUS_SIZE = CHANCE_TIME_MESSAGE_SIZE;
+CHANCE_TIME_BONUS_COLOR = CHANCE_TIME_TEXT_COLOR;
+CHANCE_TIME_BONUS_POS = CHANCE_TIME_MESSAGE_POS;
+CHANCE_TIME_BONUS_WINDOW_GAP = 8;
+CHANCE_TIME_SCORE_COLOR = 0xC0C0C0;
+CHANCE_TIME_SCORE_FILTER = TIMING_FILTER;
+CHANCE_TIME_SCORE_SIZE = 24;
+CHANCE_TIME_SCORE_DISPlAY_TIMESPAN = TIMING_DISPlAY_TIMESPAN;
+SELECT_WINDOW_WIDTH = 400;
+SELECT_WINDOW_HEIGHT = 250;
+SELECT_WINDOW_AREA_COLOR = 0x10C1D0;
+SELECT_WINDOW_AREA_ALPHA = 25;
+SELECT_WINDOW_BORDER_COLOR = 0xFFFFFF;
+SELECT_WINDOW_BORDER_ALPHA = 0;
+SELECT_WINDOW_BORDER_SIZE = 4;
+SELECT_WINDOW_TEXT_COLOR = 0xFFFFFF;
+SELECT_WINDOW_TEXT_SIZE = 20;
+SELECT_WINDOW_TEXT_LINE_SPACE = 12;
+SELECT_WINDOW_TEXT_POS = "naka ue";
+SELECT_WINDOW_APPEAR_TIMESPAN = 1.00;
+SELECT_WINDOW_TRIGGER_TIMESPAN = 8;
+SCORE_BORAD_WIDTH = 450;
+SCORE_BORAD_HEIGHT = 250;
+SCORE_BORAD_AREA_COLOR = 0x10C1D0;
+SCORE_BORAD_AREA_ALPHA = 25;
+SCORE_BORAD_AREA_MARGIN = 5;
+SCORE_BORAD_BORDER_COLOR = 0xFFFFFF;
+SCORE_BORAD_BORDER_ALPHA = 0;
+SCORE_BORAD_BORDER_SIZE = 4;
+SCORE_BORAD_TEXT_COLOR = 0xFFFFFF;
+SCORE_BORAD_TEXT_SIZE_RATING = 30;
+SCORE_BORAD_TEXT_SIZE_LEVEL = 24;
+SCORE_BORAD_TEXT_SIZE_DEFAULT = 16;
+SCORE_BORAD_TEXT_LINE_SPACE = 12;
+SCORE_BORAD_TEXT_POS_RATING = "naka ue";
+SCORE_BORAD_LEFT_VALUE_LENGTH = 4;
+SCORE_BORAD_RIGHT_VALUE_LENGTH = 7;
+SCORE_BORAD_HIDE_TIMESPAN = 0.10;
+RATING_TYPE = ["PERFECT", "EXCELLENT", "GREAT", "STANDARD", "CHEAP"];
+RATING_BORDER = [100, 97, 95, 85, 0];
+RATING_COLOR = [0xCCCC00, 0x00FFFF, 0x00FF00, 0x3333FF, 0xFF00FF];
+SCORE_BARCODE_SIZE = 3;
+SCORE_BARCODE_LEFT_COLOR = 0xFEFEFE;
+SCORE_BARCODE_RIGHT_COLOR = 0x010101;
+SCORE_BARCODE_RESET_COLOR = 0x898989;
+"// --------------------------関数定義 --------------------------"
+"// 【メモ】特定クラスに限らない汎用的な関数をここで定義"
+"// オブジェクトの色を暗く変換"
+def(dark(obj), obj.color = ((obj.color / 0x10000 / 4).floor * 0x10000) + ((obj.color % 0x10000 / 0x100 / 4).floor * 0x100) + ((obj.color % 0x100) / 4).floor);
+"// オブジェクトを表示"
+def(show(obj), obj.visible = true);
+"// オブジェクトを一定時間表示"
+def(showTimespan(obj, timespan), show(obj); timer(timer:timespan, then:hide(obj)));
+"// オブジェクトを非表示"
+def(hide(obj), obj.visible = false);
+"// オブジェクトの位置を絶対的に設定"
+def(setPosition(obj, x, y), obj.x = x; obj.y = y);
+"// オブジェクトの位置を相対的に設定"
+def(setPositionRelative(obj, dx, dy), obj.x += dx; obj.y += dy);
+"// オブジェクトの縦横サイズを設定"
+def(setLargeness(obj, width, height), obj.width = width; obj.height = height);
+"// オブジェクトの位置と縦横サイズを設定"
+def(setRect(obj, x, y, width, height), setPosition(obj, x, y); setLargeness(obj, width, height));
+"// オブジェクトを定速移動"
+"// 【メモ】moverは余計に扱いが難しくなるので使わない"
+"// 【メモ】端数の関係上、最後の一フレームで直接絶対位置を指定して移動させる"
+def(move(obj, goalX, goalY, timeSpan), timeStep := timeSpan / GameInfo.getInterval(); dx := (goalX - obj.x) / timeStep; dy := (goalY - obj.y) / timeStep; i := 0; while_kari(i < timeStep - 1, timer(timer:i * GameInfo.getInterval(), then:setPositionRelative(obj, dx, dy)); i++); timer(timer:timeSpan, then:setPosition(obj, goalX, goalY)));
+"// オブジェクトを定速移動（相対指定）"
+def(moveRelative(obj, dx, dy, timeSpan), move(obj, obj.x + dx, obj.y + dy, timeSpan));
+"// 指定桁数に長さを調整した数字文字列を取得（右寄せ）"
+"// 【メモ】半角スペース二つ分が数字一文字分の幅として調整。そのため数字以外には使わないこと！"
+"// 【メモ】厳密には桁によって実際の文字列幅は微妙にずれてしまう"
+def(getPrefixedNumber(num, length), numStr := num + ""; prefixedStr = numStr; i := 0; while_kari(i < length - numStr.size, prefixedStr = "  " + prefixedStr; i++); prefixedStr);
+"// 指定桁数にゼロパディングした数字文字列を取得"
+def(getZeroPaddingNumber(num, length), numStr := num + ""; paddingStr = numStr; i := 0; while_kari(i < length - numStr.size, paddingStr = "0" + paddingStr; i++); paddingStr);
+"// 角度をラジアンに変換"
+def(getRadian(theta), radian := theta * 3.14 / 180; radian);
+"// --------------------------クラス定義（擬似的な） --------------------------"
+"// 【メモ】ニワン語の言語仕様上、擬似的なことをしてクラス定義、インスタンス化を実現している"
+"// 【メモ】本来アクセス制御のないニワン語では全てのクラス、関数がグローバル変数を直接扱えるが、クラス化を明確にするために、主処理クラスを除き、定数以外の変数は直接使わない（引数で事前に渡す）ようにしている"
+"// ＜主処理クラス＞======================================"
+"// 【メモ】主処理内で使用する関数を扱うstatic的なクラス"
+"// 【メモ】このクラスはインスタンス化せずに使用する"
+"// 【メモ】このクラスのみ特殊扱いで、グローバル変数（＝主処理内のローカル変数）も直接扱わせる"
+Main = Object.clone;
+"// 難易度、動作モードの選択を反映"
+Main.def(reflectLevelMode(), levelText.body.text = levelText.shadow.text = LEVEL_NAME[GameInfo.level]; levelX := scorePanel.panel.x - (LEVEL_NAME[GameInfo.level].size * LEVEL_SIZE) / 2 - LEVEL_SCORE_GAP; levelText.setPositionRelative(levelX, 0); if(GameInfo.isLight(), then:songTitleText.hide(); lyricsText.hide()));
+"// 上部、下部ウィンドウフレームイン"
+"// 【メモ】CHANCE TIME終了時の事後フレームアウトの場合（＝歌タイトルは移動しない）はafterChanceTimeにtrueを、そうでない場合はfalseを指定"
+Main.def(appearUpperUnderWindow(time, timespan, afterChanceTime), timer(timer:time, then:if(GameInfo.isLight(), then:setPositionRelative(upperWindow.area, 0, UPPER_WINDOW_HEIGHT); if(afterChanceTime == false, then:songTitleText.setPositionRelative(0, UPPER_WINDOW_HEIGHT)); setPositionRelative(scorePanel.panel, 0, UPPER_WINDOW_HEIGHT); levelText.setPositionRelative(0, UPPER_WINDOW_HEIGHT); setPositionRelative(underWindow.area, 0, -UNDER_WINDOW_HEIGHT), else:moveRelative(upperWindow.area, 0, UPPER_WINDOW_HEIGHT, timespan); if(afterChanceTime == false, then:songTitleText.moveRelative(0, UPPER_WINDOW_HEIGHT, timespan)); moveRelative(scorePanel.panel, 0, UPPER_WINDOW_HEIGHT, timespan); levelText.moveRelative(0, UPPER_WINDOW_HEIGHT, timespan); moveRelative(underWindow.area, 0, -UNDER_WINDOW_HEIGHT, timespan))));
+"// 上部、下部ウィンドウフレームアウト"
+"// 【メモ】CHANCE TIME導入時の事前フレームアウトの場合（＝歌タイトルは移動しない＆CHANCE TIME STARTのメッセージが表示される）はpreChanceTimeにtrueを、そうでない場合はfalseを指定"
+Main.def(disappearUpperUnderWindow(time, timespan, preChanceTime), timer(timer:time, then:if(GameInfo.isLight(), then:setPositionRelative(upperWindow.area, 0, -UPPER_WINDOW_HEIGHT); if(preChanceTime == false, then:songTitleText.setPositionRelative(0, -UPPER_WINDOW_HEIGHT), else:showChanceTimeMessageStart()); setPositionRelative(scorePanel.panel, 0, -UPPER_WINDOW_HEIGHT); levelText.setPositionRelative(0, -UPPER_WINDOW_HEIGHT); setPositionRelative(underWindow.area, 0, UNDER_WINDOW_HEIGHT), else:moveRelative(upperWindow.area, 0, -UPPER_WINDOW_HEIGHT, timespan); if(preChanceTime == false, then:songTitleText.moveRelative(0, -UPPER_WINDOW_HEIGHT, timespan), else:showChanceTimeMessageStart()); moveRelative(scorePanel.panel, 0, -UPPER_WINDOW_HEIGHT, timespan); levelText.moveRelative(0, -UPPER_WINDOW_HEIGHT, timespan); moveRelative(underWindow.area, 0, UNDER_WINDOW_HEIGHT, timespan))));
+"// 上部、下部ウィンドウフレームイン（CHANCE TIME版のそれ）"
+Main.def(appearUpperUnderWindowChanceTime(time), timer(timer:time, then:upperWindow.setAlpha(UPPER_WINDOW_CHANCE_TIME_ALPHA); underWindow.setAlpha(UNDER_WINDOW_CHANCE_TIME_ALPHA); if(GameInfo.isLight(), then: setPositionRelative(upperWindow.area, 0, UPPER_WINDOW_HEIGHT); setPositionRelative(underWindow.area, 0, -UNDER_WINDOW_HEIGHT); setPositionRelative(chanceTimeText.body, 0, -UNDER_WINDOW_HEIGHT), else:moveRelative(upperWindow.area, 0, UPPER_WINDOW_HEIGHT, UPPER_WINDOW_CHANCE_TIME_APPEAR_TIMESPAN); moveRelative(underWindow.area, 0, -UNDER_WINDOW_HEIGHT, UNDER_WINDOW_CHANCE_TIME_APPEAR_TIMESPAN); moveRelative(chanceTimeText.body, 0, -UNDER_WINDOW_HEIGHT, UNDER_WINDOW_CHANCE_TIME_APPEAR_TIMESPAN))));
+"// 上部、下部ウィンドウフレームアウト（CHANCE TIME版のそれ）"
+Main.def(disappearUpperUnderWindowChanceTime(time), timer(timer:time, then:showChanceTimeMessageEnd(); if(GameInfo.isLight(), then:setPositionRelative(upperWindow.area, 0, -UPPER_WINDOW_HEIGHT); setPositionRelative(underWindow.area, 0, UNDER_WINDOW_HEIGHT); setPositionRelative(chanceTimeText.body, 0, UNDER_WINDOW_HEIGHT), else:moveRelative(upperWindow.area, 0, -UPPER_WINDOW_HEIGHT, UPPER_WINDOW_CHANCE_TIME_APPEAR_TIMESPAN); moveRelative(underWindow.area, 0, UNDER_WINDOW_HEIGHT, UNDER_WINDOW_CHANCE_TIME_APPEAR_TIMESPAN); moveRelative(chanceTimeText.body, 0, UNDER_WINDOW_HEIGHT, UNDER_WINDOW_CHANCE_TIME_APPEAR_TIMESPAN))); timer(timer:time + UPPER_WINDOW_CHANCE_TIME_APPEAR_TIMESPAN, then:upperWindow.setAlpha(UPPER_WINDOW_ALPHA); underWindow.setAlpha(UNDER_WINDOW_ALPHA)));
+"// CHANCE TIMEメッセージの表示（開始時）"
+Main.def(showChanceTimeMessageStart(), showTimespan(chanceTimeWindow.area, CHANCE_TIME_MESSAGE_TIMESPAN); chanceTimeMessage.body.text = "CHANCE TIME START"; showTimespan(chanceTimeMessage.body, CHANCE_TIME_MESSAGE_TIMESPAN));
+"// CHANCE TIMEメッセージの表示（終了時）"
+Main.def(showChanceTimeMessageEnd(), showTimespan(chanceTimeWindow.area, CHANCE_TIME_MESSAGE_TIMESPAN); chanceTimeMessage.body.text = "CHANCE TIME END"; showTimespan(chanceTimeMessage.body, CHANCE_TIME_MESSAGE_TIMESPAN); chanceTimeBonusText.body.text = score.chanceTimeBonus; showTimespan(chanceTimeBonusText.body, CHANCE_TIME_MESSAGE_TIMESPAN));
+"// スコアボード表示"
+Main.def(showScoreBoard(time), hideAllObject(time); timer(timer:time, scoreBoard.init(score); scoreBoard.showAll()));
+"// 全オブジェクト非表示"
+Main.def(hideAllObject(time), timer(timer:time, scoreBoard.hideAll(); maskTop.hide(); maskBottom.hide(); maskLeft.hide(); maskRight.hide(); upperWindow.hide(); underWindow.hide(); songTitleText.hide(); levelText.hide(); hide(scorePanel.panel); lyricsText.hide(); hide(chanceTimeText.body)));
+"// 下部ウィンドウを非表示（not フレームアウト）"
+Main.def(hideUnderWindow(time), timer(timer:time, then:maskBottom.hide(); hide(chanceTimeText.body)));
+"// ＜動画情報クラス＞======================================"
+"// 【メモ】動画に関わる情報、計算を管理するstatic的なクラス"
+"// 【メモ】そのため、このクラスはインスタンス化せずに使用する"
+MovieInfo = Object.clone;
+"// ニコニコのプレイヤーサイズに対する動画の描画領域のマージン（X方向）を取得"
+MovieInfo.def(getDisplayAreaMarginX(), NICO_LB_WIDTH);
+"// ニコニコのプレイヤーサイズに対する動画の描画領域のマージン（Y方向）を取得"
+MovieInfo.def(getDisplayAreaMarginY(), displayAreaMarginY := 0; if(MOVIE_SIZE == MOVIE_SIZE_16_9, then:displayAreaMarginY = (screenHeight - MOVIE_HEIGHT_16_9) / 2, else:if(MOVIE_SIZE == MOVIE_SIZE_4_3, then:displayAreaMarginY = screenHeight - MOVIE_HEIGHT_4_3, else:if(MOVIE_SIZE == MOVIE_SIZE_16_9_LB, then:displayAreaMarginY = (screenHeight - MOVIE_HEIGHT_16_9_LB) / 2, else:if(MOVIE_SIZE == MOVIE_SIZE_4_3_LB_ARBITRARILY || MOVIE_SIZE == MOVIE_SIZE_16_9_LB_ARBITRARILY, then:displayAreaMarginY = (screenHeight - MOVIE_HEIGHT) / 2)))); displayAreaMarginY);
+"// テキストを描画する場合に指定位置と実際の描画位置の間に生じるY方向のギャップ（フォントサイズ依存）を計算"
+"// 【メモ】isHankakuは半角文字の場合true、全角文字の場合falseを渡す"
+MovieInfo.def(getFontGapY(size, isHankaku), if(isHankaku, then:gap := 4 + (size / 6).floor, else:gap := 4 + (size / 16).floor); gap);
+"// 指定フォントサイズに対する実際の文字の大きさを計算"
+"// 【メモ】各文字ごとの大きさではなく、半角、全角の総合的な大きさ。すなわちAとaは同じ「実際の大きさ」となる（Aとaは同じフォントサイズであることと同様）"
+"// 【メモ】半角の場合アセンドの大きさ"
+"// 【メモ】isHankakuは半角文字の場合true、全角文字の場合falseを渡す"
+MovieInfo.def(getActualFontSize(size, isHankaku), if(isHankaku, then:actualSize := (size * 0.72).floor, else:actualSize := (size * 0.90).floor); actualSize);
+"// ＜ゲーム情報クラス＞======================================"
+"// 【メモ】ゲームに関わる情報、計算を管理するstatic的なクラス"
+"// 【メモ】そのため、このクラスはインスタンス化せずに使用する"
+GameInfo = Object.clone;
+"// 難易度を設定"
+GameInfo.def(setLevel(level), self.level = level);
+"// 動作モードを設定"
+GameInfo.def(setMode(mode), self.mode = mode; if(isLight(), then:self.fps = FPS_LIGHT, else:self.fps = FPS_DEFAULT));
+"// 更新間隔時間を取得"
+GameInfo.def(getInterval(), 1 / fps);
+"// 軽量モードかどうかを取得"
+GameInfo.def(isLight(), mode == MODE_LIGHT);
+"// 自動モードかどうかを取得"
+GameInfo.def(isAuto(), mode == MODE_AUTO);
+"// ＜リズムクラス＞======================================"
+"// 【メモ】リズムを管理するstatic的なクラス"
+"// 【メモ】そのため、このクラスはインスタンス化せずに使用する"
+Rhythm = Object.clone;
+"// 初期化"
+Rhythm.def(init(targets, melodyIcons, timing, scorePanel, score, lyricsText), self.targets = targets; self.melodyIcons = melodyIcons; self.timing = timing; self.scorePanel = scorePanel; self.score = score; self.lyricsText = lyricsText; self.rhythmIndex = 0; self.melodyIconSpeed = 0; self.bpm = 0; self.noteLength = 0; self.masterTime = 0; self.nextX = 0; self.nextY = 0);
+"// これから配置するリズムの難易度を設定"
+Rhythm.def(setLevel(level), self.level = level);
+"// メロディアイコンの移動速度（単位はpixel/10ms）を設定"
+Rhythm.def(setMelodyIconSpeed(melodyIconSpeed), if(level == GameInfo.level, then:self.melodyIconSpeed = melodyIconSpeed));
+"// BPMを設定"
+Rhythm.def(setBpm(bpm), if(level == GameInfo.level, then:self.bpm = bpm));
+"// 音符単位の長さ（四分音符なら4）を設定"
+Rhythm.def(setNoteLength(noteLength), if(level == GameInfo.level, then:self.noteLength = noteLength));
+"// 最初のリズムを配置する時間を設定"
+Rhythm.def(setMasterTime(masterTime), if(level == GameInfo.level, then:self.masterTime = masterTime));
+"// 譜面シーケンス配置"
+"// 【メモ】firstXおよびfirstYは動画コンテンツ領域内の座標"
+Rhythm.def(setRhythmSequence(sequence, firstX, firstY, sequenceAngle, melodyIconAngle), if(level == GameInfo.level, then:if(firstX == SEQ, then:firstX = nextX); if(firstY == SEQ, then:firstY = nextY); sequenceAngleRadian := getRadian(sequenceAngle); melodyIconAngleRadian := getRadian(melodyIconAngle); i := 0; while_kari(i < sequence.size, typeChar := sequence[i]; if(typeChar != "-", then:dTime := ((60 / bpm) * 4 / noteLength) * i; typeIndex := typeChar.toInteger; targetX := firstX + (dTime * 100) * sequenceAngleRadian.cos; targetY := firstY + (dTime * 100) * -sequenceAngleRadian.sin + MovieInfo.getDisplayAreaMarginY(); melodyIconStartPosition := getMelodyIconStartPosition(targetX, targetY, melodyIconAngleRadian); melodyIconStartX := melodyIconStartPosition[0]; melodyIconStartY := melodyIconStartPosition[1]; time := masterTime + dTime; setRhythm(typeIndex, targetX, targetY, melodyIconStartX, melodyIconStartY, time));  i++); ajustMaster(sequence.size, firstX, firstY, sequenceAngleRadian)));
+"// マスター時間およびネクスト座標を調整"
+Rhythm.def(ajustMaster(sequenceLength, firstX, firstY, sequenceAngleRadian), sequenceTime := ((60 / bpm) * 4 / noteLength) * sequenceLength; masterTime += sequenceTime; nextX = firstX + sequenceTime * 100 * sequenceAngleRadian.cos; nextY = firstY + sequenceTime * 100 * -sequenceAngleRadian.sin);
+"// メロディアイコン移動開始位置を取得（配列でX、Yを返す）"
+"// 【メモ】ターゲットの位置指定が画面外になっている（本来これは指定ミス）場合はターゲットと同じ位置を返す（フリーズ回避のため）"
+Rhythm.def(getMelodyIconStartPosition(targetX, targetY, melodyIconAngleRadian), dx := 0; dy := 0; if((-MELODY_ICON_SIZE <= targetX && targetX <= screenWidth) && (MovieInfo.getDisplayAreaMarginY() - MELODY_ICON_SIZE <= targetY && targetY <= screenHeight - MovieInfo.getDisplayAreaMarginY()), then:if(melodyIconAngleRadian.cos != 0, then:if(melodyIconAngleRadian.cos > 0, then:dx = screenWidth - targetX, else:dx = -MELODY_ICON_SIZE - targetX)); dy = dx * -(melodyIconAngleRadian.sin / melodyIconAngleRadian.cos); if (melodyIconAngleRadian.cos == 0 || targetY + dy < MovieInfo.getDisplayAreaMarginY() - MELODY_ICON_SIZE || targetY + dy > screenHeight - MovieInfo.getDisplayAreaMarginY(), then:if(melodyIconAngleRadian.sin > 0, then:dy = MovieInfo.getDisplayAreaMarginY() - MELODY_ICON_SIZE - targetY, else:dy = screenHeight - MovieInfo.getDisplayAreaMarginY() - targetY); dx = dy / -(melodyIconAngleRadian.sin / melodyIconAngleRadian.cos))); ret := [targetX + dx, targetY + dy]; ret);
+"// 譜面個別配置"
+"// 【メモ】このメソッド以降はtargetX、targetY、melodyIconStartX、melodyIconStartYはスクリーン領域の座標"
+Rhythm.def(setRhythm(typeIndex, targetX, targetY, melodyIconStartX, melodyIconStartY, time), if(level == GameInfo.level, then:dTime := time - SET_RHYTHM_TIME; score.countUpTotalNotes(); i := getRhythmIndex(); melodyIconSpeedCopy := melodyIconSpeed; deployTarget(dTime, melodyIconSpeedCopy, targets[i], typeIndex, targetX, targetY); deployMelodyIcon(time, dTime, melodyIconSpeedCopy, melodyIcons[i], typeIndex, melodyIconStartX, melodyIconStartY, targetX, targetY)));
+"// リズム用インデックスを取得"
+Rhythm.def(getRhythmIndex(), i := rhythmIndex; rhythmIndex++; if(rhythmIndex >= MELODY_ICON_LENGTH, then:rhythmIndex = 0); i);
+"// ターゲットの表示時間を取得"
+Rhythm.def(getTargetDisplayTimeSpan(melodyIconSpeedCopy), targetDisplayTimeSpan := TARGET_DISPLAY_TIMESPAN_RATE / melodyIconSpeedCopy; targetDisplayTimeSpan);
+"// メロディアイコンの移動時間を取得"
+Rhythm.def(getMoveTimeSpan(melodyIconStartX, melodyIconStartY, targetX, targetY, melodyIconSpeedCopy), moveTimeSpan := (distance(melodyIconStartX, melodyIconStartY, targetX, targetY) / (melodyIconSpeedCopy * GameInfo.getInterval() * 100)).floor * GameInfo.getInterval(); moveTimeSpan);
+"// ターゲットを配置"
+Rhythm.def(deployTarget(dTime, melodyIconSpeedCopy, target, typeIndex, targetX, targetY), targetDisplayTimeSpan := getTargetDisplayTimeSpan(melodyIconSpeedCopy); timer(timer:dTime - targetDisplayTimeSpan, then:target.deploy(TARGET_TYPE[typeIndex], targetX, targetY, targetDisplayTimeSpan)));
+"// メロディアイコンを配置"
+Rhythm.def(deployMelodyIcon(time, dTime, melodyIconSpeedCopy, melodyIcon, typeIndex, melodyIconStartX, melodyIconStartY, targetX, targetY), moveTimeSpan := getMoveTimeSpan(melodyIconStartX, melodyIconStartY, targetX, targetY, melodyIconSpeedCopy); timer(timer:dTime - moveTimeSpan, then:melodyIcon.deploy(MELODY_ICON_TYPE[typeIndex], MELODY_ICON_COLOR[typeIndex], melodyIconStartX, melodyIconStartY, targetX, targetY, melodyIconSpeedCopy, time)); timer(timer:dTime - HIT_JUDGE_TIMESPAN[HIT_JUDGE_TIMESPAN.size - 1] / 2, then:melodyIcon.setInJudgeSpan(true)); if(GameInfo.isAuto(), then:timer(timer:dTime, then:hit(melodyIcon, time))); timer(timer:dTime + HIT_JUDGE_TIMESPAN[HIT_JUDGE_TIMESPAN.size - 1] / 2, then:melodyIcon.setInJudgeSpan(false); judgeMiss(melodyIcon)));
+"// CHANCE TIME開始"
+"// 【メモ】CHANCE TIME開始と同時に配置されるメロディアイコンに確実に対応するため、1フレーム分ずらして開始する"
+Rhythm.def(startChanceTime(time), if(level == GameInfo.level, then:if(time == undefined, then:time = masterTime); dTime := time - SET_RHYTHM_TIME - GameInfo.getInterval(); timer(timer:dTime, then:score.startChanceTime()); Main.disappearUpperUnderWindow(dTime, UPPER_WINDOW_CHANCE_TIME_APPEAR_TIMESPAN, true); Main.appearUpperUnderWindowChanceTime(dTime + UPPER_WINDOW_CHANCE_TIME_APPEAR_TIMESPAN + 0.01)));
+"// CHANCE TIME終了"
+"// 【メモ】CHANCE TIME終了と同時に配置されるメロディアイコンに確実に対応するため、1フレーム分ずらして終了する"
+Rhythm.def(endChanceTime(time), if(level == GameInfo.level, then:if(time == undefined, then:time = masterTime); dTime := time - SET_RHYTHM_TIME - GameInfo.getInterval(); timer(timer:dTime, then:score.endChanceTime(); scorePanel.reflesh()); Main.disappearUpperUnderWindowChanceTime(dTime); Main.appearUpperUnderWindow(dTime + UPPER_WINDOW_CHANCE_TIME_APPEAR_TIMESPAN + 0.01, UPPER_WINDOW_CHANCE_TIME_APPEAR_TIMESPAN, true)));
+"// 歌詞の設定"
+Rhythm.def(setLyrics(lyrics, time), if(level == GameInfo.level, then:if(!GameInfo.isLight(), then:if(time == undefined, then:time = masterTime - ((60 / bpm) * 4 / noteLength)); dTime := time - SET_RHYTHM_TIME; timer(timer:dTime, then:if(lyrics == "", then:lyricsText.hide(), else:lyricsText.body.text = lyricsText.shadow.text = lyrics; lyricsText.show())))));
+"// コメントトリガーをセット"
+Rhythm.def(setCommentTrigger(), commentTrigger(if(chat.isYourPost == true && chat.fromButton == true && isButtonComment(chat.message), then:judgeHit(chat)), timer:GAME_END_TIME - GAME_START_TIME));
+"// コメントがボタンのどれか（＝○×△□のどれか）かを取得"
+Rhythm.def(isButtonComment(comment), buttonComment := false; i := 0; while_kari(i < MELODY_ICON_TYPE.size && buttonComment == false, if(comment == MELODY_ICON_TYPE[i], then:buttonComment = true); i++); buttonComment);
+"// ヒットの判定"
+Rhythm.def(judgeHit(chat), melodyIcon := getEventCatchMelodyIcon(); if(melodyIcon != undefined, then:if(melodyIcon.body.text == chat.message, then:hit(melodyIcon, chat.vpos))));
+"// イベントを拾うメロディアイコンを取得"
+"// 【メモ】全てのメロディアイコンがイベント拾い対象ではない（最低一つはイベント対象外のメロディアイコンがある）ことを前提"
+Rhythm.def(getEventCatchMelodyIcon(), melodyIcon := undefined; i := 0; firstNotInEventIndex := -1; while_kari(i < melodyIcons.size && firstNotInEventIndex == -1, if(melodyIcons[i].body.visible == false || !melodyIcons[i].isInJudgeSpan() || melodyIcons[i].isClicked(), then:firstNotInEventIndex = i); i++); eventCatchIndex := -1; i = firstNotInEventIndex + 1; while_kari(i < melodyIcons.size && eventCatchIndex == -1, if(melodyIcons[i].body.visible == true && melodyIcons[i].isInJudgeSpan() && !melodyIcons[i].isClicked(), then:eventCatchIndex = i); i++); if(firstNotInEventIndex != 0 && eventCatchIndex == -1, then:eventCatchIndex = 0); if(eventCatchIndex != -1, then:melodyIcon = melodyIcons[eventCatchIndex]); melodyIcon);
+"// ヒットの処理"
+Rhythm.def(hit(melodyIcon, clickTime), melodyIcon.scaleUp(); timingIndex := judgeHitType(melodyIcon.time, clickTime); score.calculate(timingIndex); scorePanel.reflesh(); melodyIcon.setClicked(true);  timing.display(timingIndex, melodyIcon.body.x, melodyIcon.body.y); timer(timer:HIT_EFFECT_TIMESPAN, then:hide(melodyIcon.body)));
+"// ヒットの種類を判定"
+"// 【メモ】WORSTはhitの対象外なのでTIMING_TYPE配列は[TIMING_TYPE.size - 2]までしか使わない"
+"// 【メモ】この判定に来ている時点で確実にSAD以上"
+Rhythm.def(judgeHitType(correctTime, clickTime), i := 0; timingIndex := TIMING_TYPE.size - 2; while_kari(i < TIMING_TYPE.size - 2 && timingIndex == TIMING_TYPE.size - 2, if((correctTime - HIT_JUDGE_TIMESPAN[i] / 2) <= clickTime && clickTime <= (correctTime + HIT_JUDGE_TIMESPAN[i] / 2), then:timingIndex = i); i++); timingIndex);
+"// ミスの判定"
+Rhythm.def(judgeMiss(melodyIcon), if(melodyIcon.body.visible == true && !melodyIcon.isClicked(), then:miss(melodyIcon)));
+"// ミスの処理"
+Rhythm.def(miss(melodyIcon), score.calculate(TIMING_TYPE.size - 1); scorePanel.reflesh(); dark(melodyIcon.body); melodyIcon.body.filter = MELODY_ICON_FILTER_MISS1; timing.display(TIMING_TYPE.size - 1, melodyIcon.body.x, melodyIcon.body.y); timer(timer:MISS_EFFECT_TIMESPAN / 2, then:melodyIcon.body.filter = MELODY_ICON_FILTER_MISS2); timer(timer:MISS_EFFECT_TIMESPAN, then:hide(melodyIcon.body)));
+"// ＜ターゲットクラス＞======================================"
+Target = Object.clone;
+"// 初期化"
+Target.def(init(), self.body = drawText("", z:layerZ++); body.pos = BASE_POSITION; body.color = TARGET_COLOR; body.filter = TARGET_FILTER; body.visible = false);
+"// 配置"
+Target.def(deploy(text, x, y, timeSpan), body.text = text; bodySize := TARGET_SIZE; bodyValign := 0; if(text == "×", then:bodySize := TARGET_SIZE_BATSU; bodyValign := TARGET_BATSU_VALIGN); body.size = bodySize; setPosition(body, x, y - MovieInfo.getFontGapY(body.size, false) + bodyValign); show(body); timer(timer:timeSpan + HIT_JUDGE_TIMESPAN[HIT_JUDGE_TIMESPAN.size - 1] / 2, then:hide(body)));
+"// ＜メロディアイコンクラス＞======================================"
+MelodyIcon = Object.clone;
+"// 初期化"
+MelodyIcon.def(init(), self.body = drawText("", z:layerZ++); self.inJudgeSpan = false; self.clicked = false; body.pos = BASE_POSITION; body.visible = false);
+"// 配置"
+MelodyIcon.def(deploy(text, color, startX, startY, goalX, goalY, melodyIconSpeed, time), inJudgeSpan = false; clicked = false; body.text = text; if(body.text == "×", then:body.size = MELODY_ICON_SIZE_BATSU, else:body.size = MELODY_ICON_SIZE); setPosition(body, startX, startY - MovieInfo.getFontGapY(body.size, false)); if(body.text == "×", then:setPositionRelative(body, 0, MELODY_ICON_BATSU_VALIGN)); body.scale = 1; body.color = color; body.filter = MELODY_ICON_FILTER_DEFAULT; self.time = time; show(body); start(startX, startY, goalX, goalY, melodyIconSpeed));
+"// 移動開始"
+MelodyIcon.def(start(startX, startY, goalX, goalY, melodyIconSpeed), timeStep := (distance(startX, startY, goalX, goalY) / (melodyIconSpeed * GameInfo.getInterval() * 100)).floor; dx := (goalX - startX) / timeStep; dy := (goalY - startY) / timeStep; timeStepAll := timeStep + (HIT_JUDGE_TIMESPAN[HIT_JUDGE_TIMESPAN.size - 1] / 2 + MISS_EFFECT_TIMESPAN) / GameInfo.getInterval();i := 0; while_kari(i < timeStepAll, timer(timer:i * GameInfo.getInterval(), then:if(clicked == false && body.visible == true, then:setPositionRelative(body, dx, dy))); i++));
+"// クリック判定期間中フラグの取得"
+MelodyIcon.def(isInJudgeSpan(), inJudgeSpan);
+"// クリック判定期間中フラグの設定"
+MelodyIcon.def(setInJudgeSpan(inJudgeSpan), self.inJudgeSpan = inJudgeSpan);
+"// クリック済みフラグの取得"
+MelodyIcon.def(isClicked(), clicked);
+"// クリック済みフラグの設定"
+MelodyIcon.def(setClicked(clicked), self.clicked = clicked);
+"// 拡大"
+MelodyIcon.def(scaleUp(), align := -(body.size * (MELODY_ICON_HIT_SCALE - 1) / 2); setPositionRelative(body, align, align); body.scale = MELODY_ICON_HIT_SCALE);
+"// ＜タイミングクラス＞======================================"
+Timing = Object.clone;
+"// 初期化"
+Timing.def(init(comboPanel, chanceTimeScorePanel), self.body = drawText("", z:layerZ++); body.size = TIMING_SIZE; body.pos = BASE_POSITION; body.bold = true; body.visible = false; body.filter = TIMING_FILTER; self.comboPanel = comboPanel; self.chanceTimeScorePanel = chanceTimeScorePanel);
+"// 表示"
+"// 【メモ】表示位置の調整には、後ろに続くコンボ数分、CHANCE TIME時のスコア分も含む"
+Timing.def(display(timingIndex, x, y), body.text = TIMING_TYPE[timingIndex]; body.color = TIMING_COLOR[timingIndex]; ajustX := getAjustX(x); ajustY := getAjustY(y); setPosition(body, ajustX, ajustY - MovieInfo.getFontGapY(body.size, true)); if(comboPanel.score.combo > 1, then:comboPanel.display(ajustX + TIMING_COMBO_GAP, ajustY - (MovieInfo.getActualFontSize(comboPanel.panel.size, true) - MovieInfo.getActualFontSize(body.size, true)) / 2), else:hide(comboPanel.panel)); if(comboPanel.score.isChanceTime == true && timingIndex < TIMING_TYPE.size - 1, then:chanceTimeScorePanel.display(ajustX, ajustY - CHANCE_TIME_SCORE_SIZE, TIMING_SCORE[timingIndex] * CHANCE_TIME_RATE)); show(body); thisX := body.x; thisY := body.y; timer(timer:TIMING_DISPlAY_TIMESPAN, then:if(body.x == thisX && body.y == thisY, then:hide(body))));
+"// 指定X座標を表示可能範囲内に収まるよう調整"
+Timing.def(getAjustX(x), ajustX := x; xMin := 0; xMax := screenWidth - body.text.size * body.size / 2 - (COMBO_LENGTH + 1) * comboPanel.panel.size / 2; if(ajustX < xMin, then:ajustX = xMin); if(ajustX > xMax, then:ajustX = xMax); ajustX);
+"// 指定Y座標を表示可能範囲内に収まるよう調整"
+Timing.def(getAjustY(y), ajustY := y; yMin := MovieInfo.getDisplayAreaMarginY() + CHANCE_TIME_SCORE_SIZE; yMax := screenHeight - MovieInfo.getDisplayAreaMarginY(); if(body.size >= comboPanel.panel.size, then:yMax -= MovieInfo.getActualFontSize(body.size, true), else:yMax -= MovieInfo.getActualFontSize(comboPanel.panel.size, true)); if(ajustY < yMin, then:ajustY = yMin); if(ajustY > yMax, then:ajustY = yMax); ajustY);
+"// ＜コンボパネルクラス＞======================================"
+ComboPanel = Object.clone;
+"// 初期化"
+ComboPanel.def(init(score), self.score = score; self.panel = drawText("", z:layerZ++); panel.size = COMBO_SIZE; panel.pos = BASE_POSITION; panel.color = COMBO_COLOR; panel.bold = true; panel.visible = false; panel.filter = COMBO_FILTER);
+"// 表示"
+"// 【メモ】表示位置の調整はTiming任せなのでこちらではしていない"
+ComboPanel.def(display(x, y), panel.text = score.combo; setPosition(panel, x, y - MovieInfo.getFontGapY(panel.size, true)); show(panel); thisX := panel.x; thisY := panel.y; timer(timer:TIMING_DISPlAY_TIMESPAN, then:if(panel.x == thisX && panel.y == thisY, then:hide(panel))));
+"// ＜CHANCE TIMEスコアパネルクラス＞======================================"
+ChanceTimeScorePanel = Object.clone;
+"// 初期化"
+ChanceTimeScorePanel.def(init(), self.panel = drawText("", z:layerZ++); panel.size = CHANCE_TIME_SCORE_SIZE; panel.pos = BASE_POSITION; panel.color = CHANCE_TIME_SCORE_COLOR; panel.bold = true; panel.visible = false; panel.filter = CHANCE_TIME_SCORE_FILTER);
+"// 表示"
+"// 【メモ】表示位置の調整はTiming任せなのでこちらではしていない"
+ChanceTimeScorePanel.def(display(x, y, chanceTimeScore), panel.text = "+" + chanceTimeScore; setPosition(panel, x, y - MovieInfo.getFontGapY(panel.size, true)); show(panel); thisX := panel.x; thisY := panel.y; timer(timer:CHANCE_TIME_SCORE_DISPlAY_TIMESPAN, then:if(panel.x == thisX && panel.y == thisY, then:hide(panel))));
+"// ＜ウィンドウクラス＞======================================"
+Window = Object.clone;
+"// 初期化"
+Window.def(init(x, y, width, height, color, alpha), self.area = drawShape(width:0, z:layerZ++); area.shape = "rect"; setRect(area, x, y, width, height); area.pos = BASE_POSITION; area.color = color; area.alpha = alpha);
+"// 境界線オブジェクト設定"
+Window.def(setBorder(size, color, alpha), self.borderTop = drawShape(shape:"rect", z:layerZ++); self.borderBottom = drawShape(shape:"rect", z:layerZ++); self.borderLeft = drawShape(shape:"rect", z:layerZ++); self.borderRight = drawShape(shape:"rect", z:layerZ++); setRect(borderTop, area.x - size, area.y - size, area.width + size * 2, size); setRect(borderBottom, area.x - size, area.y + area.height, area.width + size * 2, size); setRect(borderLeft, area.x - size, area.y, size, area.height); setRect(borderRight, area.x + area.width, area.y, size, area.height); borderTop.pos = borderBottom.pos = borderLeft.pos = borderRight.pos = BASE_POSITION; borderTop.color = borderBottom.color = borderLeft.color = borderRight.color = color; borderTop.alpha = borderBottom.alpha = borderLeft.alpha = borderRight.alpha = alpha);
+"// 表示"
+Window.def(show(), show(area); if(self.borderTop != undefined, then:show(borderTop); show(borderBottom); show(borderLeft); show(borderRight)));
+"// 非表示"
+Window.def(hide(), hide(area); if(self.borderTop != undefined, then:hide(borderTop); hide(borderBottom); hide(borderLeft); hide(borderRight)));
+"// 透過度設定（境界線は対象外）"
+Window.def(setAlpha(alpha), area.alpha = alpha);
+"// ＜テキストクラス＞======================================"
+"// 【メモ】ほぼdrawText()と同機能だが、一応クラス化"
+Text = Object.clone;
+"// 初期化"
+Text.def(init(text, x, y, size, color, bold), self.body = drawText("", z:layerZ++); body.text = text; setPosition(body, x, y); body.size = size; body.color = color; body.pos = BASE_POSITION; body.bold = bold);
+"// テキスト設定"
+"// 【メモ】このメソッドは非常に怪しい挙動をするので封印。使用禁止"
+Text.def(setText(text), body.text = text);
+"// 位置基準設定"
+Text.def(setPos(pos), body.pos = pos);
+"// ＜影付きテキストクラス＞======================================"
+ShadowText = Object.clone;
+"// 初期化"
+ShadowText.def(init(text, x, y, dist, size, bodyColor, shadowColor, bold), self.dist = dist; self.shadow = drawText("", z:layerZ++); self.body = drawText("", z:layerZ++); body.text = shadow.text = text; self.setPosition(x, y); body.size = shadow.size = size; body.color = bodyColor; shadow.color = shadowColor; body.pos = shadow.pos = BASE_POSITION; body.bold = shadow.bold = bold);
+"// テキスト設定"
+"// 【メモ】このメソッドは非常に怪しい挙動をするので封印。使用禁止"
+ShadowText.def(setText(text), body.text = shadow.text = text);
+"// 表示"
+ShadowText.def(show(), show(body); show(shadow));
+"// 非表示"
+ShadowText.def(hide(), hide(body); hide(shadow));
+"// 位置指定"
+ShadowText.def(setPosition(x, y), setPosition(body, x, y); setPosition(shadow, x + dist, y + dist));
+"// 位置指定（相対指定）"
+ShadowText.def(setPositionRelative(dx, dy), self.setPosition(body.x + dx, body.y + dy));
+"// 定速移動"
+ShadowText.def(move(goalX, goalY, timeSpan), move(body, goalX, goalY, timeSpan); move(shadow, goalX + dist, goalY + dist, timeSpan));
+"// 定速移動（相対指定）"
+ShadowText.def(moveRelative(dx, dy, timeSpan), self.move(body.x + dx, body.y + dy, timeSpan));
+"// ＜スコアクラス＞======================================"
+Score = Object.clone;
+"// 初期化"
+Score.def(init(), self.stageScore = 0; self.comboBonus = 0; self.chanceTimeScore = 0; self.chanceTimeBonus = 0; self.totalScore = 0; self.totalNotes = 0; self.combo = 0; self.maxCombo = 0; self.timingCounters = []; i := 0; while_kari(i < TIMING_TYPE.size, timingCounters[i] = 0; i++); self.isChanceTime = false; self.chanceTimeMiss = 0);
+"// ヒットorミス時の計算処理"
+Score.def(calculate(timingIndex), countUpTiming(timingIndex); if(timingIndex <= 1, then:countUpCombo(), else:resetCombo(); if(isChanceTime == true, then:chanceTimeMiss++)); addScore(timingIndex));
+"// 全ノート数カウントアップ"
+Score.def(countUpTotalNotes(), totalNotes++);
+"// コンボリセット"
+Score.def(resetCombo(), combo = 0);
+"// コンボカウントアップ"
+Score.def(countUpCombo(), combo++; if(combo > maxCombo, then:maxCombo = combo));
+"// タイミングカウントアップ"
+Score.def(countUpTiming(timingIndex), timingCounters[timingIndex]++);
+"// CHANCE TIME開始"
+Score.def(startChanceTime(), isChanceTime = true);
+"// CHANCE TIME終了"
+Score.def(endChanceTime(), isChanceTime = false; chanceTimeBonus = -1; i := CHANCE_TIME_BONUS_BORDER.size - 1; while_kari(i >= 0 && chanceTimeBonus == -1, if(chanceTimeMiss >= CHANCE_TIME_BONUS_BORDER[i], then:chanceTimeBonus = CHANCE_TIME_BONUS_SCORE[i]); i--); chanceTimeScore += chanceTimeBonus; chanceTimeMiss = 0);
+"// コンボボーナス点を取得"
+Score.def(getBonusScore(), i:= COMBO_BONUS_BORDER.size - 1; bonusScore := 0; while_kari(i >= 0 && bonusScore == 0, if(combo >= COMBO_BONUS_BORDER[i], then:bonusScore = COMBO_BONUS_SCORE[i]); i--); bonusScore);
+"// スコア加算"
+Score.def(addScore(timingIndex), if(isChanceTime == true, then:addScoreChanceTime(timingIndex), else:addScoreNormal(timingIndex)));
+"// スコア加算（通常）"
+Score.def(addScoreNormal(timingIndex), stageScore += TIMING_SCORE[timingIndex]; comboBonus += getBonusScore());
+"// スコア加算（CHANCE TIME）"
+Score.def(addScoreChanceTime(timingIndex), chanceTimeScore += TIMING_SCORE[timingIndex] * CHANCE_TIME_RATE; comboBonus += getBonusScore());
+"// 合計スコアを取得"
+Score.def(getTotalScore(), stageScore + comboBonus + chanceTimeScore);
+"// 評価を取得"
+Score.def(getRatingIndex(), percent := (timingCounters[0] + timingCounters[1]) * 100 / totalNotes; i := 0; ratingIndex := RATING_TYPE.size - 1; while_kari(i < RATING_TYPE.size - 1 && ratingIndex == RATING_TYPE.size - 1, if(percent >= RATING_BORDER[i], then:ratingIndex = i); i++); ratingIndex);
+"// ＜スコアパネルクラス＞======================================"
+"// 【メモ】このクラスはインスタンスが一つだけなので初期化時のパラメータは内包"
+ScorePanel = Object.clone;
+"// 初期化"
+ScorePanel.def(init(score), self.score = score; self.panel = drawText("", z:layerZ++); convertScoreToString(); setPosition(panel, screenWidth - (SCORE_PANEL_SIZE * panel.text.size / 2), MovieInfo.getDisplayAreaMarginY() + (UPPER_WINDOW_HEIGHT - MovieInfo.getActualFontSize(SCORE_PANEL_SIZE, true)) / 2 - MovieInfo.getFontGapY(SCORE_PANEL_SIZE, true)); panel.pos = BASE_POSITION; panel.size = SCORE_PANEL_SIZE; panel.color = SCORE_PANEL_COLOR; panel.bold = true; panel.filter = SCORE_PANEL_FILTER);
+"// スコア　→　スコア文字列変換"
+ScorePanel.def(convertScoreToString(),  str := ""; tempScore := score.getTotalScore(); i := 0; while_kari(i < SCORE_PANEL_LENGTH, str = " " + tempScore % 10 + str; tempScore = (tempScore / 10).floor; i++); panel.text = str);
+"// 更新"
+ScorePanel.def(reflesh(), convertScoreToString());
+"// ＜選択ウィンドウクラス＞======================================"
+"// 【メモ】このクラスはインスタンスが一つだけなので初期化時のパラメータは内包"
+SelectWindow = Object.clone;
+"// 初期化"
+SelectWindow.def(init(), initWindow(); initTextItem(); initBarcode());
+"// ウィンドウ領域初期化"
+SelectWindow.def(initWindow(), self.window = Window.clone; x := (screenWidth - SELECT_WINDOW_WIDTH) / 2; y := ((screenHeight - MovieInfo.getDisplayAreaMarginY() * 2) - SELECT_WINDOW_HEIGHT) / 2 + MovieInfo.getDisplayAreaMarginY(); window.init(x, y, SELECT_WINDOW_WIDTH, SELECT_WINDOW_HEIGHT, SELECT_WINDOW_AREA_COLOR, SELECT_WINDOW_AREA_ALPHA); window.setBorder(SELECT_WINDOW_BORDER_SIZE, SELECT_WINDOW_BORDER_COLOR, SELECT_WINDOW_BORDER_ALPHA); window.hide());
+"// 表示テキストオブジェクト初期化"
+SelectWindow.def(initTextItem(), self.message = drawText("", z:layerZ++);  message.x = 0; message.y = window.area.y + SCORE_BORAD_TEXT_LINE_SPACE; message.size = SELECT_WINDOW_TEXT_SIZE; message.color = SELECT_WINDOW_TEXT_COLOR; message.pos = SELECT_WINDOW_TEXT_POS; message.bold = true; message.visible = false);
+"// バーコードオブジェクト初期化"
+SelectWindow.def(initBarcode(), self.barcodeLeft = Window.clone; self.barcodeBody = Window.clone; self.barcodeRight = Window.clone; barcodeLeft.init(window.area.x + window.area.width - (3 * SCORE_BARCODE_SIZE), window.area.y, SCORE_BARCODE_SIZE, SCORE_BARCODE_SIZE, SCORE_BARCODE_LEFT_COLOR, 0); barcodeBody.init(window.area.x + window.area.width - (2 * SCORE_BARCODE_SIZE), window.area.y, SCORE_BARCODE_SIZE, SCORE_BARCODE_SIZE, SCORE_BARCODE_RESET_COLOR, 0); barcodeRight.init(window.area.x + window.area.width - (1 * SCORE_BARCODE_SIZE), window.area.y, SCORE_BARCODE_SIZE, SCORE_BARCODE_SIZE, SCORE_BARCODE_RIGHT_COLOR, 0); barcodeLeft.hide(); barcodeBody.hide(); barcodeRight.hide());
+"// メッセージ設定"
+SelectWindow.def(setText(text), message.text = text);
+"// 全オブジェクトを表示"
+SelectWindow.def(showAll(), window.show(); show(message); barcodeLeft.show(); barcodeBody.show(); barcodeRight.show());
+"// 全オブジェクトを非表示"
+SelectWindow.def(hideAll(), window.hide(); hide(message); barcodeLeft.hide(); barcodeBody.hide(); barcodeRight.hide());
+"// 位置設定（相対指定）"
+SelectWindow.def(setPositionRelative(dx, dy), setPositionRelative(window.area, dx, dy); setPositionRelative(window.borderTop, dx, dy); setPositionRelative(window.borderBottom, dx, dy); setPositionRelative(window.borderLeft, dx, dy); setPositionRelative(window.borderRight, dx, dy); setPositionRelative(message, dx, dy); setPositionRelative(barcodeLeft.area, dx, dy); setPositionRelative(barcodeBody.area, dx, dy); setPositionRelative(barcodeRight.area, dx, dy));
+"// 定速移動（相対指定）"
+SelectWindow.def(moveRelative(dx, dy, timeSpan), moveRelative(window.area, dx, dy, timeSpan); moveRelative(window.borderTop, dx, dy, timeSpan); moveRelative(window.borderBottom, dx, dy, timeSpan); moveRelative(window.borderLeft, dx, dy, timeSpan); moveRelative(window.borderRight, dx, dy, timeSpan); moveRelative(message, dx, dy, timeSpan); moveRelative(barcodeLeft.area, dx, dy, timeSpan); moveRelative(barcodeBody.area, dx, dy, timeSpan); moveRelative(barcodeRight.area, dx, dy, timeSpan));
+"// コメントトリガーをセット"
+SelectWindow.def(setCommentTrigger(), commentTrigger(if(chat.isYourPost == true && chat.fromButton == true, then:if(chat.message == "L" + LEVEL_EASY || chat.message == "L" + LEVEL_NORMAL || chat.message == "L" + LEVEL_HARD || chat.message == "L" + LEVEL_PV, then:Bgm.play(0, 2.00); level := chat.message[1].toInteger; GameInfo.setLevel(level)); if(chat.message == "M" + MODE_NORMAL || chat.message == "M" + MODE_LIGHT || chat.message == "M" + MODE_AUTO, then:Bgm.play(1, 2.00); mode := chat.message[1].toInteger; GameInfo.setMode(mode))), timer:SELECT_WINDOW_TRIGGER_TIMESPAN));
+"// ロード中のメッセージ設定"
+SelectWindow.def(loadingMessage(), message.text = "\n\nRhythm data loading . . .\n\n難易度　　 ：" + LEVEL_NAME[GameInfo.level] + "\n動作モード：" + MODE_NAME[GameInfo.mode]);
+"// ＜スコアボードクラス＞======================================"
+"// 【メモ】このクラスはインスタンスが一つだけなので初期化時のパラメータは内包"
+ScoreBoard = Object.clone;
+"// 初期化"
+ScoreBoard.def(init(score), self.socre = score; initWindow(); initTextItems(); initBarcode());
+"// ウィンドウ領域初期化"
+ScoreBoard.def(initWindow(), self.window = Window.clone; x := (screenWidth - SCORE_BORAD_WIDTH) / 2; y := ((screenHeight - MovieInfo.getDisplayAreaMarginY() * 2) - SCORE_BORAD_HEIGHT) / 2 + MovieInfo.getDisplayAreaMarginY(); window.init(x, y, SCORE_BORAD_WIDTH, SCORE_BORAD_HEIGHT, SCORE_BORAD_AREA_COLOR, SCORE_BORAD_AREA_ALPHA); window.setBorder(SCORE_BORAD_BORDER_SIZE, SCORE_BORAD_BORDER_COLOR, SCORE_BORAD_BORDER_ALPHA); window.hide());
+"// 表示テキストオブジェクト初期化"
+"// 【メモ】スクリプト文字数制限のため、init呼び出しは二つの関数に分ける"
+ScoreBoard.def(initTextItems(), self.rating = drawText("", z:layerZ++); self.levelStr = drawText("", z:layerZ++); self.leftText = drawText("", z:layerZ++); self.leftValue = drawText("", z:layerZ++); self.rightText = drawText("", z:layerZ++); self.rightValue = drawText("", z:layerZ++); initTextItemsUpper(); initTextItemsUnder());
+"// 表示テキストオブジェクト初期化（上部用）"
+ScoreBoard.def(initTextItemsUpper(), ratingIndex := score.getRatingIndex(); initTextItem(rating, RATING_TYPE[ratingIndex], 0, window.area.y + SCORE_BORAD_TEXT_LINE_SPACE, SCORE_BORAD_TEXT_SIZE_RATING, RATING_COLOR[ratingIndex], SCORE_BORAD_TEXT_POS_RATING); initTextItem(levelStr, LEVEL_NAME[GameInfo.level], 0, rating.y + rating.size + SCORE_BORAD_TEXT_LINE_SPACE, SCORE_BORAD_TEXT_SIZE_LEVEL, SCORE_BORAD_TEXT_COLOR, SCORE_BORAD_TEXT_POS_RATING));
+"// 表示テキストオブジェクト初期化（下部用）"
+ScoreBoard.def(initTextItemsUnder(), initTextItem(leftText, "", window.area.x + SCORE_BORAD_AREA_MARGIN, levelStr.y + levelStr.size + SCORE_BORAD_TEXT_LINE_SPACE, SCORE_BORAD_TEXT_SIZE_DEFAULT, SCORE_BORAD_TEXT_COLOR, BASE_POSITION); initTextItem(leftValue, "", window.area.x + window.area.width * 30 / 100, leftText.y, SCORE_BORAD_TEXT_SIZE_DEFAULT, SCORE_BORAD_TEXT_COLOR, BASE_POSITION); makeLeftText(); initTextItem(rightText, "", window.area.x + window.area.width * 42 / 100, leftText.y, SCORE_BORAD_TEXT_SIZE_DEFAULT, SCORE_BORAD_TEXT_COLOR, BASE_POSITION); initTextItem(rightValue, "", window.area.x + window.area.width * 84 / 100, leftText.y, SCORE_BORAD_TEXT_SIZE_DEFAULT, SCORE_BORAD_TEXT_COLOR, BASE_POSITION); makeTextContent());
+"// 表示テキストオブジェクト初期化（個々用）"
+ScoreBoard.def(initTextItem(textItem, text, x, y, size, color, pos), textItem.text = text; textItem.x = x; textItem.y = y; textItem.size = size; textItem.color = color; textItem.pos = pos; textItem.bold = true; textItem.visible = false);
+"// バーコードオブジェクト初期化"
+ScoreBoard.def(initBarcode(), self.barcodeLeft = Window.clone; self.barcodeBody = Window.clone; self.barcodeRight = Window.clone; barcodeLeft.init(window.area.x + window.area.width - (3 * SCORE_BARCODE_SIZE), window.area.y, SCORE_BARCODE_SIZE, SCORE_BARCODE_SIZE, SCORE_BARCODE_LEFT_COLOR, 0); barcodeBody.init(window.area.x + window.area.width - (2 * SCORE_BARCODE_SIZE), window.area.y, SCORE_BARCODE_SIZE, SCORE_BARCODE_SIZE, (score.getTotalScore() + score.getRatingIndex()) * 10 + GameInfo.level, 0); barcodeRight.init(window.area.x + window.area.width - (1 * SCORE_BARCODE_SIZE), window.area.y, SCORE_BARCODE_SIZE, SCORE_BARCODE_SIZE, SCORE_BARCODE_RIGHT_COLOR, 0); barcodeLeft.hide(); barcodeBody.hide(); barcodeRight.hide());
+"// 表示テキストの内容を作成"
+ScoreBoard.def(makeTextContent(), leftText.text = ""; leffValue.text = ""; leftItemTexts := ["TOTAL NOTES", "COMBO", TIMING_TYPE[0], TIMING_TYPE[1], TIMING_TYPE[2], TIMING_TYPE[3], TIMING_TYPE[4]]; leftItemValues = [score.totalNotes, score.maxCombo, score.timingCounters[0], score.timingCounters[1], score.timingCounters[2], score.timingCounters[3], score.timingCounters[4]]; i := 0; while_kari(i < leftItemTexts.size, leftText.text += leftItemTexts[i] + "\n"; leftValue.text += getPrefixedNumber(leftItemValues[i], SCORE_BORAD_LEFT_VALUE_LENGTH) + "\n"; i++); rightText.text = ""; rightValue.text = ""; rightItemTexts := ["STAGE SCORE", "COMBO BONUS", "CHANCE TIME SCORE", "TOTAL SCORE"]; rightItemValues = [score.stageScore, score.comboBonus, score.chanceTimeScore, score.getTotalScore()]; i := 0; while_kari(i < rightItemTexts.size, rightText.text += rightItemTexts[i] + "\n"; rightValue.text += getPrefixedNumber(rightItemValues[i], SCORE_BORAD_RIGHT_VALUE_LENGTH) + "\n"; i++));
+"// 全オブジェクトを表示"
+"// 【メモ】自動モードの時はスコアバーコードを表示しない"
+ScoreBoard.def(showAll(), window.show(); show(rating); show(levelStr); show(leftText); show(leftValue); show(rightText); show(rightValue); if(!GameInfo.isAuto(), then:barcodeLeft.show(); barcodeBody.show(); barcodeRight.show()));
+"// 全オブジェクトを非表示"
+ScoreBoard.def(hideAll(), window.hide(); hide(rating); hide(levelStr); hide(leftText); hide(leftValue); hide(rightText); hide(rightValue); barcodeLeft.hide(); barcodeBody.hide(); barcodeRight.hide());
+"// ＜BGMクラス＞======================================"
+"// 【メモ】BGMを管理するstatic的なクラス"
+"// 【メモ】そのため、このクラスはインスタンス化せずに使用する"
+Bgm = Object.clone;
+"// BGMを登録"
+"// 【メモ】不安定なため封印。直接同命令を記述すること"
+Bgm.def(regist(bgmId, volume), BGM(id:bgmId, width:0, height:0, visual:false, volume:volume));
+"// BGMを指定時間一回再生"
+Bgm.def(play(bgmIndex, length), stopBGM(bgmIndex); playBGM(bgmIndex); if(length != undefined, then:timer(timer:length, then:stopBGM(bgmIndex))));
+"// ＜コメント制御クラス＞======================================"
+"// 【メモ】コメントを制御するstatic的なクラス"
+"// 【メモ】そのため、このクラスはインスタンス化せずに使用する"
+CommentController = Object.clone;
+"// 制御を適用"
+CommentController.def(apply(), if(COMMENT_CONTROLL == COMMENT_UE_SHITA_NG, then:replace(target:"user", pos:"naka"), else:if(COMMENT_CONTROLL == COMMENT_SIZE_COLOR_NG, then:replace(target:"user", color:COMMENT_COLOR_DEFAULT,size:"medium",pos:"naka"))));
+"// ＜デバッグ用クラス＞======================================"
+"// 【メモ】インスタンス化せずに、単にDebug.out(xxx)として対象データを出力する"
+Debug = Object.clone;
+Debug.y = 0;
+"// 変数の値を出力"
+"// 【メモ】表示オブジェクト数上限の関係上乱発不可。ループ内やイベントで使うときは注意"
+Debug.def(out(data), size := 30; drawText(text:data, size:size, x:0, y:y, pos:"hidari ue", color:0x00FF00); y += size);
+"// --------------------------主処理 --------------------------"
+"// ↓【修正すべき場所★】↓"
+"// 動画のサイズ。16:9の場合true、4:3の場合falseを指定します"
+isWide = true;
+"// コメントの禁止設定。コメントの投稿を禁止する場合はtrue、しない場合はfalseを指定します"
+postDisabled = false;
+"// シークの禁止設定。シークを禁止する場合はtrue、しない場合はfalseを指定します"
+"// シークによる「インチキ」を避ける目的で使用しますが、同時に気軽なプレイや練習もしづらくなるので一長一短です"
+seekDisabled = false;
+"// ↑【修正すべき場所★】↑"
+"// レイヤーカウンタ"
+layerZ = 0;	"// 【メモ】 この変数のみ、全てのクラスからグローバル使用される"
+"// ゲーム情報初期化（選択前のデフォルト設定）"
+GameInfo.setLevel(LEVEL_NORMAL);	"// 【メモ】 デフォルトでNORMAL"
+GameInfo.setMode(MODE_NORMAL);	"// 【メモ】 デフォルトで通常モード"
+"// ターゲットオブジェクト配列"
+targets = []; i = 0; while_kari(i < TARGET_LENGTH, targets[i] = Target.clone; targets[i].init(); i++);
+"// メロディアイコンオブジェクト配列"
+melodyIcons = []; i = 0; while_kari(i < MELODY_ICON_LENGTH, melodyIcons[i] = MelodyIcon.clone; melodyIcons[i].init(); i++);
+"// 上部ウィンドウオブジェクト"
+upperWindow = Window.clone; upperWindow.init(0, MovieInfo.getDisplayAreaMarginY() - UPPER_WINDOW_HEIGHT, screenWidth, UPPER_WINDOW_HEIGHT, UPPER_WINDOW_COLOR, UPPER_WINDOW_ALPHA);
+"// 下部ウィンドウオブジェクト"
+underWindow = Window.clone; underWindow.init(0, screenHeight - MovieInfo.getDisplayAreaMarginY(), screenWidth, UNDER_WINDOW_HEIGHT, UNDER_WINDOW_COLOR, UNDER_WINDOW_ALPHA);
+"// 歌タイトルオブジェクト"
+songTitleText = ShadowText.clone; songTitleText.init("♪ " + SONG_TITLE, 0, MovieInfo.getDisplayAreaMarginY() + (UPPER_WINDOW_HEIGHT - MovieInfo.getActualFontSize(SONG_TITLE_SIZE, true)) / 2 - MovieInfo.getFontGapY(SONG_TITLE_SIZE, true) - UPPER_WINDOW_HEIGHT, SONG_TITLE_SHADOW_DISTANCE, SONG_TITLE_SIZE, SONG_TITLE_COLOR, SONG_TITLE_SHADOW_COLOR, true);
+"// スコアオブジェクト"
+score = Score.clone; score.init();
+"// スコアパネルオブジェクト"
+scorePanel = ScorePanel.clone; scorePanel.init(score); setPositionRelative(scorePanel.panel, 0, -UPPER_WINDOW_HEIGHT);
+"// 難易度オブジェクト"
+levelText = ShadowText.clone; levelText.init("", 0, MovieInfo.getDisplayAreaMarginY() + (UPPER_WINDOW_HEIGHT - MovieInfo.getActualFontSize(LEVEL_SIZE, true)) / 2 - MovieInfo.getFontGapY(LEVEL_SIZE, true) - UPPER_WINDOW_HEIGHT, LEVEL_SHADOW_DISTANCE, LEVEL_SIZE, LEVEL_COLOR, LEVEL_SHADOW_COLOR, true);
+"// CHANCE TIMEオブジェクト"
+chanceTimeText = Text.clone; chanceTimeText.init("CHANCE TIME", 0, screenHeight - MovieInfo.getDisplayAreaMarginY() - UNDER_WINDOW_HEIGHT + (UNDER_WINDOW_HEIGHT - MovieInfo.getActualFontSize(CHANCE_TIME_TEXT_SIZE, true)) / 2 - MovieInfo.getFontGapY(CHANCE_TIME_TEXT_SIZE, true) + UNDER_WINDOW_HEIGHT, CHANCE_TIME_TEXT_SIZE, CHANCE_TIME_TEXT_COLOR, true);
+"// 歌詞オブジェクト"
+lyricsText = ShadowText.clone; lyricsText.init("", chanceTimeText.body.x + chanceTimeText.body.text.size * chanceTimeText.body.size / 2 + CHANCE_TIME_LYRICS_GAP, screenHeight - MovieInfo.getDisplayAreaMarginY() - UNDER_WINDOW_HEIGHT + (UNDER_WINDOW_HEIGHT - MovieInfo.getActualFontSize(LYRICS_SIZE, false)) / 2 - MovieInfo.getFontGapY(LYRICS_SIZE, true), LYRICS_SHADOW_DISTANCE, LYRICS_SIZE, LYRICS_COLOR, LYRICS_SHADOW_COLOR, true); lyricsText.hide();
+"// CHANCE TIME開始終了ウィンドウオブジェクト"
+chanceTimeWindow = Window.clone; chanceTimeWindow.init((screenWidth - CHANCE_TIME_WINDOW_WIDTH) / 2, screenHeight - MovieInfo.getDisplayAreaMarginY() - UNDER_WINDOW_HEIGHT - CHANCE_TIME_WINDOW_HEIGHT - CHANCE_TIME_WINDOW_UNDER_WINDOW_GAP, CHANCE_TIME_WINDOW_WIDTH, CHANCE_TIME_WINDOW_HEIGHT, CHANCE_TIME_WINDOW_COLOR, CHANCE_TIME_WINDOW_ALPHA); chanceTimeWindow.hide();
+"// CHANCE TIME開始終了オブジェクト"
+chanceTimeMessage = Text.clone; chanceTimeMessage.init("", 0, chanceTimeWindow.area.y + (chanceTimeWindow.area.height - MovieInfo.getActualFontSize(CHANCE_TIME_MESSAGE_SIZE, true)) / 2 - MovieInfo.getFontGapY(CHANCE_TIME_MESSAGE_SIZE, true), CHANCE_TIME_MESSAGE_SIZE, CHANCE_TIME_MESSAGE_COLOR, true); chanceTimeMessage.setPos(CHANCE_TIME_MESSAGE_POS); hide(chanceTimeMessage.body);
+"// CHANCE TIMEボーナスオブジェクト"
+chanceTimeBonusText = Text.clone; chanceTimeBonusText.init("", 0, chanceTimeWindow.area.y - CHANCE_TIME_BONUS_SIZE - CHANCE_TIME_BONUS_WINDOW_GAP, CHANCE_TIME_BONUS_SIZE, CHANCE_TIME_BONUS_COLOR, true); chanceTimeBonusText.setPos(CHANCE_TIME_BONUS_POS); hide(chanceTimeBonusText.body);
+"// コンボ数パネルオブジェクト"
+comboPanel = ComboPanel.clone; comboPanel.init(score);
+"// CHANCE TIMEスコアパネルオブジェクト"
+chanceTimeScorePanel = ChanceTimeScorePanel.clone; chanceTimeScorePanel.init();
+"// タイミングオブジェクト"
+timing = Timing.clone; timing.init(comboPanel, chanceTimeScorePanel);
+"// 選択ウィンドウオブジェクト"
+selectWindow = SelectWindow.clone; selectWindow.init(); dy := (MovieInfo.getDisplayAreaMarginY() - selectWindow.window.area.height - selectWindow.window.borderBottom.height) - selectWindow.window.area.y; selectWindow.setPositionRelative(0, dy);
+"// スコアボードオブジェクト"
+scoreBoard = ScoreBoard.clone; scoreBoard.init(score);
+"// 黒枠上部オブジェクト"
+maskTop = Window.clone; maskTop.init(0, 0, screenWidth, MovieInfo.getDisplayAreaMarginY(), 0x000000, 0);
+"// 黒枠下部オブジェクト"
+maskBottom = Window.clone; maskBottom.init(0, screenHeight - MovieInfo.getDisplayAreaMarginY(), screenWidth, MovieInfo.getDisplayAreaMarginY(), 0x000000, 0);
+"// 黒枠左部オブジェクト"
+maskLeft = Window.clone; maskLeft.init(-MovieInfo.getDisplayAreaMarginX(), 0, MovieInfo.getDisplayAreaMarginX(), screenHeight, 0x000000, 0);
+"// 黒枠右部オブジェクト"
+maskRight = Window.clone; maskRight.init(screenWidth, 0, MovieInfo.getDisplayAreaMarginX(), screenHeight, 0x000000, 0);
+"// リズムの準備"
+Rhythm.init(targets, melodyIcons, timing, scorePanel, score, lyricsText);
+"// ↓【修正すべき場所★】↓"
+"// 決定音の登録"
+"// 音量（BGM(～, volume:xx)のxxの部分）をPV動画の音量に合わせて調整します（0～100）"
+BGM(id:"nm14042798", width:0, height:0, visual:false, volume:80);
+BGM(id:"nm14042802", width:0, height:0, visual:false, volume:80);
+"// ↑【修正すべき場所★】↑"
+"// コメントの制御"
+CommentController.apply();
+"// ↓【修正すべき場所★】↓"
+"// リズム（譜面）の配置。ここがメインの制作作業です"
+"// 書き方の詳細はhttp://nivascript.web.fc2.com/をご参照ください"
+Rhythm.setLevel(LEVEL_EASY);
+"// 以下にEASYの譜面を記述してください"
+Rhythm.setMelodyIconSpeed(2.20);
+Rhythm.setBpm(160);
+Rhythm.setNoteLength(8);
+Rhythm.setMasterTime(13.97);
+Rhythm.setLyrics("科学の限界を超えて私は来たんだよ");
+Rhythm.setRhythmSequence("0-----0-----0-0-", 50, 100, 0, 260);	"// 科学の限界を超えて"
+Rhythm.setRhythmSequence("0-----0---0-0---", 150, 200, 0, 260);	"// 私は来たんだよ"
+Rhythm.setLyrics("ネギはついてないけどできれば欲しいな");
+Rhythm.setRhythmSequence("0---0--0----0---0-0---0-----", 500, 80, 210, 300);	"// ネギはついてないけどできれば欲しいな"
+Rhythm.setLyrics("あのね、早くパソコンに入れてよ");
+Rhythm.setRhythmSequence("0--0--0-------", 85, 50, 270, 150);	"// あのね早く"
+Rhythm.setRhythmSequence("0----0--0-------", 170, 120, 270, 150);	"// パソコンに入れてよ"
+Rhythm.setLyrics("どうしたの？");
+Rhythm.setRhythmSequence("0----", 280, 160, 0, 100);	"// どうしたの？"
+Rhythm.setLyrics("パッケージずっと見つめてる");
+Rhythm.setRhythmSequence("0-------0-------0---0------", 240, 300, 30, 100);	"// パッケージずっと見つめてる"
+Rhythm.setLyrics("君のこと");
+Rhythm.setRhythmSequence("0--0-", 100, 100, 0, 225);	"// 君のこと"
+Rhythm.setLyrics("みくみくにしてあげる");
+Rhythm.setRhythmSequence("1--1---1----1---", 150, 200, 0, 270);	"// みくみくにしてあげる"
+Rhythm.setLyrics("歌はまだね、頑張るから");
+Rhythm.setRhythmSequence("0--0----0--0----", 378, 100, 180, 90);	"// 歌はまだね頑張るから"
+Rhythm.setLyrics("みくみくにしてあげる");
+Rhythm.setRhythmSequence("1--1---1----1", 150, 200, 0, 270);	"// みくみくにしてあげる"
+Rhythm.setLyrics("だからちょっと覚悟をしててよね");
+Rhythm.setRhythmSequence("---0--0----0--0----0-------", 500, 100, 210, 120);	"// だからちょっと覚悟をしててよね"
+Rhythm.setLyrics("");
+Rhythm.setRhythmSequence("0---", 182, 100, 0, 180);	"// ※間奏"
+Rhythm.setRhythmSequence("0---", 422, 180, 0, 0);	"// ※間奏"
+Rhythm.setRhythmSequence("0-------", 182, 260, 0, 180);	"// ※間奏"
+Rhythm.setLyrics("してあげるから");
+Rhythm.setRhythmSequence("0--0----0-------", 302, 100, 270, 0);	"// してあげるから"
+Rhythm.setLyrics("");
+Rhythm.setRhythmSequence("0---", 182, 100, 0, 180);	"// ※間奏"
+Rhythm.setRhythmSequence("0---", 422, 180, 0, 0);	"// ※間奏"
+Rhythm.setRhythmSequence("0-----", 182, 260, 0, 180);	"// ※間奏"
+Rhythm.setRhythmSequence("0-0--0-0--", 302, 240, 90, 0);	"// ※間奏"
+Rhythm.startChanceTime();
+Rhythm.setLyrics("みくみくにしてやんよ");
+Rhythm.setRhythmSequence("1--1---1----1---", 500, 220, 150, 240);	"// みくみくにしてやんよ"
+Rhythm.setLyrics("最後までね、頑張るから");
+Rhythm.setRhythmSequence("0--0----0--0----", 240, 70, 180, 270);	"// 最後までね頑張るから"
+Rhythm.setLyrics("みくみくにしてやんよ");
+Rhythm.setRhythmSequence("1--1---1----1", 50, 120, 315, 60);	"// みくみくにしてやんよ"
+Rhythm.setLyrics("だからちょっと油断をしてあげて");
+Rhythm.setRhythmSequence("---0--0----0--0----", 262, 332, 30, 110);	"// だからちょっと油断をしてあげ（て）"
+Rhythm.setLyrics("みくみくにしてあげる");
+Rhythm.setRhythmSequence("1--1---1----1---", 60, 60, 0, 250);	"// みくみくにしてあげる"
+Rhythm.setLyrics("世界中の誰、誰より");
+Rhythm.setRhythmSequence("0--0----0--0----", 360, 60, 340, 250);	"// 世界中の誰誰より"
+Rhythm.setLyrics("みくみくにしてあげる");
+Rhythm.setRhythmSequence("1--1---1----1", 554, 190, 200, 120);	"// みくみくにしてあげる"
+Rhythm.setLyrics("だからもっと私に歌わせてね");
+Rhythm.setRhythmSequence("---0--0----0--0----0-------", 0, 50, 330, 240);	"// だからもっと私に歌わせてね"
+Rhythm.endChanceTime();
+Rhythm.setLyrics("");
+Rhythm.setRhythmSequence("0---", 182, 100, 0, 180);	"// ※間奏"
+Rhythm.setRhythmSequence("0---", 422, 180, 0, 0);	"// ※間奏"
+Rhythm.setRhythmSequence("0-----", 182, 260, 0, 180);	"// ※間奏"
+Rhythm.setRhythmSequence("0-0--0-0--0-------", 302, 280, 90, 0);	"// ※間奏"
+Rhythm.setRhythmSequence("0---", 182, 100, 0, 180);	"// ※間奏"
+Rhythm.setRhythmSequence("0---", 422, 180, 0, 0);	"// ※間奏"
+Rhythm.setRhythmSequence("0-----", 182, 260, 0, 180);	"// ※間奏"
+Rhythm.setRhythmSequence("0-0--0-0--", 302, 120, 270, 0);	"// ※間奏"
+Rhythm.setLevel(LEVEL_NORMAL);
+"// 以下にNORMALの譜面を記述してください"
+Rhythm.setMelodyIconSpeed(2.20);
+Rhythm.setBpm(160);
+Rhythm.setNoteLength(8);
+Rhythm.setMasterTime(13.97);
+Rhythm.setLyrics("科学の限界を超えて私は来たんだよ");
+Rhythm.setRhythmSequence("0---0-0---0-0-0-", 50, 250, 0, 100);	"// 科学の限界を超えて"
+Rhythm.setRhythmSequence("0---0-0---0-0---", 345, 231, 30, 120);	"// 私は来たんだよ"
+Rhythm.setLyrics("ネギはついてないけどできれば欲しいな");
+Rhythm.setRhythmSequence("1---1--1----111-1-1-111-----", 500, 80, 180, 300);	"// ネギはついてないけどできれば欲しいな"
+Rhythm.setLyrics("あのね、早くパソコンに入れてよ");
+Rhythm.setRhythmSequence("0--0--00------", 85, 140, 270, 150);	"// あのね早く"
+Rhythm.setRhythmSequence("0--0-0--00------", 160, 271, 45, 330);	"// パソコンに入れてよ"
+Rhythm.setLyrics("どうしたの？");
+Rhythm.setRhythmSequence("1-1--", 400, 300, 180, 80);	"// どうしたの？"
+Rhythm.setLyrics("パッケージずっと見つめてる");
+Rhythm.setRhythmSequence("1-------1-------1--11------", 200, 150, 0, 80);	"// パッケージずっと見つめてる"
+Rhythm.setLyrics("君のこと");
+Rhythm.setRhythmSequence("0--0-", 100, 100, 0, 225);	"// 君のこと"
+Rhythm.setLyrics("みくみくにしてあげる");
+Rhythm.setRhythmSequence("0-00-000-0000---", 150, 200, 0, 270);	"// みくみくにしてあげる"
+Rhythm.setLyrics("歌はまだね、頑張るから");
+Rhythm.setRhythmSequence("1--1----1--1----", 378, 100, 180, 90);	"// 歌はまだね頑張るから"
+Rhythm.setLyrics("みくみくにしてあげる");
+Rhythm.setRhythmSequence("0-00-000-0000", 150, 200, 0, 270);	"// みくみくにしてあげる"
+Rhythm.setLyrics("だからちょっと覚悟をしててよね");
+Rhythm.setRhythmSequence("---", 0, 0, 0, 0);	"// だから"
+Rhythm.setRhythmSequence("0--0--", 375, 125, 90, 340);	"// ちょっと"
+Rhythm.setRhythmSequence("0-0--0----0-------", 326, 97, 210, 135);	"// 覚悟をしててよね"
+Rhythm.setLyrics("");
+Rhythm.setRhythmSequence("1---", 182, 100, 0, 180);	"// ※間奏"
+Rhythm.setRhythmSequence("1---", 422, 180, 0, 0);	"// ※間奏"
+Rhythm.setRhythmSequence("1-------", 182, 260, 0, 180);	"// ※間奏"
+Rhythm.setLyrics("してあげるから");
+Rhythm.setRhythmSequence("0-00-00-0-------", 302, 100, 270, 0);	"// してあげるから"
+Rhythm.setLyrics("");
+Rhythm.setRhythmSequence("1---", 182, 100, 0, 180);	"// ※間奏"
+Rhythm.setRhythmSequence("1---", 422, 180, 0, 0);	"// ※間奏"
+Rhythm.setRhythmSequence("1-----", 182, 260, 0, 180);	"// ※間奏"
+Rhythm.setRhythmSequence("1-1--1-1--", 302, 300, 45, 135);	"// ※間奏"
+Rhythm.startChanceTime();
+Rhythm.setLyrics("みくみくにしてやんよ");
+Rhythm.setRhythmSequence("0-00-000-", 500, 140, 150, 240);	"// みくみくにし"
+Rhythm.setRhythmSequence("0000---", 349, 74, 180, 270);	"// てやんよ"
+Rhythm.setLyrics("最後までね、頑張るから");
+Rhythm.setRhythmSequence("1--1----1--1----", 217, 74, 180, 270);	"// 最後までね頑張るから"
+Rhythm.setLyrics("みくみくにしてやんよ");
+Rhythm.setRhythmSequence("0-00-000-", 50, 140, 315, 225);	"// みくみくにし"
+Rhythm.setRhythmSequence("0000", 179, 232, 0, 90);	"// てやんよ"
+Rhythm.setLyrics("だからちょっと油断をしてあげて");
+Rhythm.setRhythmSequence("---", 0, 0, 0, 0);	"// だから"
+Rhythm.setRhythmSequence("1--1--1-1--1----", 311, 232, 30, 110);	"// ちょっと油断をしてあげ（て）"
+Rhythm.setLyrics("みくみくにしてあげる");
+Rhythm.setRhythmSequence("0-00-000-", 100, 60, 0, 250);	"// みくみくにし"
+Rhythm.setRhythmSequence("0000---", 264, 79, 330, 250);	"// てあげる"
+Rhythm.setLyrics("世界中の誰、誰より");
+Rhythm.setRhythmSequence("1--1----1--1----", 150, 160, 330, 250);	"// 世界中の誰誰より"
+Rhythm.setLyrics("みくみくにしてあげる");
+Rhythm.setRhythmSequence("0-00-000-", 440, 60, 270, 10);	"// みくみくにし"
+Rhythm.setRhythmSequence("0000", 405, 204, 200, 290);	"// てあげる"
+Rhythm.setLyrics("だからもっと私に歌わせてね");
+Rhythm.setRhythmSequence("---", 0, 0, 0, 0);	"// だから"
+Rhythm.setRhythmSequence("1--1--1-1--1----1-------", 371, 120, 200, 120);	"// もっと私に歌わせてね"
+Rhythm.endChanceTime();
+Rhythm.setLyrics("");
+Rhythm.setRhythmSequence("0---", 182, 100, 0, 180);	"// ※間奏"
+Rhythm.setRhythmSequence("0---", 422, 180, 0, 0);	"// ※間奏"
+Rhythm.setRhythmSequence("0-----", 182, 260, 0, 180);	"// ※間奏"
+Rhythm.setRhythmSequence("1-", 362, 100, 0, 0);	"// ※間奏"
+Rhythm.setRhythmSequence("1--", 242, 140, 0, 180);	"// ※間奏"
+Rhythm.setRhythmSequence("1-", 362, 180, 0, 0);	"// ※間奏"
+Rhythm.setRhythmSequence("1--", 242, 220, 0, 180);	"// ※間奏"
+Rhythm.setRhythmSequence("1-------", 362, 260, 0, 0);	"// ※間奏"
+Rhythm.setRhythmSequence("0---", 182, 100, 0, 180);	"// ※間奏"
+Rhythm.setRhythmSequence("0---", 422, 180, 0, 0);	"// ※間奏"
+Rhythm.setRhythmSequence("0-----", 182, 260, 0, 180);	"// ※間奏"
+Rhythm.setRhythmSequence("1-", 362, 120, 0, 0);	"// ※間奏"
+Rhythm.setRhythmSequence("1--", 242, 160, 0, 180);	"// ※間奏"
+Rhythm.setRhythmSequence("1-", 362, 200, 0, 0);	"// ※間奏"
+Rhythm.setRhythmSequence("1--", 242, 240, 0, 180);	"// ※間奏"
+Rhythm.setLevel(LEVEL_HARD);
+"// 以下にHARDの譜面を記述してください"
+Rhythm.setMelodyIconSpeed(2.20);
+Rhythm.setBpm(160);
+Rhythm.setNoteLength(8);
+Rhythm.setMasterTime(13.97);
+Rhythm.setLyrics("科学の限界を超えて私は来たんだよ");
+Rhythm.setRhythmSequence("000-0-00000-000-", 50, 250, 0, 100);	"// 科学の限界を超えて"
+Rhythm.setRhythmSequence("111-1-1-111-1---", 345, 231, 30, 120);	"// 私は来たんだよ"
+Rhythm.setLyrics("ネギはついてないけどできれば欲しいな");
+Rhythm.setRhythmSequence("222-2222-22-333-3-3-333-----", 500, 80, 180, 300);	"// ネギはついてないけどできれば欲しいな"
+Rhythm.setLyrics("あのね、早くパソコンに入れてよ");
+Rhythm.setRhythmSequence("0000--00------", 85, 140, 270, 150);	"// あのね早く"
+Rhythm.setRhythmSequence("111111--11------", 160, 271, 45, 330);	"// パソコンに入れてよ"
+Rhythm.setLyrics("どうしたの？");
+Rhythm.setRhythmSequence("3-333", 400, 300, 180, 80);	"// どうしたの？"
+Rhythm.setLyrics("パッケージずっと見つめてる");
+Rhythm.setRhythmSequence("3--3-3-33--3-3-33--33------", 200, 150, 0, 80);	"// パッケージずっと見つめてる"
+Rhythm.setLyrics("君のこと");
+Rhythm.setRhythmSequence("2--2-", 100, 100, 0, 225);	"// 君のこと"
+Rhythm.setLyrics("みくみくにしてあげる");
+Rhythm.setRhythmSequence("1-11-111-1111---", 150, 200, 0, 270);	"// みくみくにしてあげる"
+Rhythm.setLyrics("歌はまだね、頑張るから");
+Rhythm.setRhythmSequence("0-00-0000--0-000", 378, 100, 180, 90);	"// 歌はまだね頑張るから"
+Rhythm.setLyrics("みくみくにしてあげる");
+Rhythm.setRhythmSequence("2-22-222-2222", 150, 200, 0, 270);	"// みくみくにしてあげる"
+Rhythm.setLyrics("だからちょっと覚悟をしててよね");
+Rhythm.setRhythmSequence("3333--3--", 375, 161, 90, 340);	"// だからちょっと"
+Rhythm.setRhythmSequence("0000-0-0000-------", 326, 77, 210, 135);	"// 覚悟をしててよね"
+Rhythm.setLyrics("");
+Rhythm.setRhythmSequence("0---", 182, 100, 0, 180);	"// ※間奏"
+Rhythm.setRhythmSequence("1---", 422, 180, 0, 0);	"// ※間奏"
+Rhythm.setRhythmSequence("2-------", 182, 260, 0, 180);	"// ※間奏"
+Rhythm.setLyrics("してあげるから");
+Rhythm.setRhythmSequence("0-22-3333-------", 302, 100, 270, 0);	"// してあげるから"
+Rhythm.setLyrics("");
+Rhythm.setRhythmSequence("0---", 182, 100, 0, 180);	"// ※間奏"
+Rhythm.setRhythmSequence("1---", 422, 180, 0, 0);	"// ※間奏"
+Rhythm.setRhythmSequence("2-----", 182, 260, 0, 180);	"// ※間奏"
+Rhythm.setRhythmSequence("3-0--1-2--", 302, 300, 45, 135);	"// ※間奏"
+Rhythm.startChanceTime();
+Rhythm.setLyrics("みくみくにしてやんよ");
+Rhythm.setRhythmSequence("2-22-222-", 580, 140, 150, 240);	"// みくみくにし"
+Rhythm.setRhythmSequence("1111---", 429, 74, 180, 270);	"// てやんよ"
+Rhythm.setLyrics("最後までね、頑張るから");
+Rhythm.setRhythmSequence("3-33-3330--0-000", 297, 74, 180, 270);	"// 最後までね頑張るから"
+Rhythm.setLyrics("みくみくにしてやんよ");
+Rhythm.setRhythmSequence("3-33-333-", 20, 140, 315, 240);	"// みくみくにし"
+Rhythm.setRhythmSequence("2222", 149, 232, 0, 90);	"// てやんよ"
+Rhythm.setLyrics("だからちょっと油断をしてあげて");
+Rhythm.setRhythmSequence("0000--0--1111-1-111", 281, 232, 30, 300);	"// だからちょっと油断をしてあげ（て）"
+Rhythm.setLyrics("みくみくにしてあげる");
+Rhythm.setRhythmSequence("0-00-000-", 100, 60, 0, 250);	"// みくみくにし"
+Rhythm.setRhythmSequence("2222---", 264, 79, 330, 250);	"// てあげる"
+Rhythm.setLyrics("世界中の誰、誰より");
+Rhythm.setRhythmSequence("1-11-1113--3-333", 150, 120, 330, 250);	"// 世界中の誰誰より"
+Rhythm.setLyrics("みくみくにしてあげる");
+Rhythm.setRhythmSequence("1-11-111-", 440, 60, 270, 10);	"// みくみくにし"
+Rhythm.setRhythmSequence("0000", 405, 204, 200, 290);	"// てあげる"
+Rhythm.setLyrics("だからもっと私に歌わせてね");
+Rhythm.setRhythmSequence("2222--2--3333-3-3333-------", 371, 120, 200, 120);	"// だからもっと私に歌わせてね"
+Rhythm.endChanceTime();
+Rhythm.setLyrics("");
+Rhythm.setRhythmSequence("3---", 182, 100, 0, 180);	"// ※間奏"
+Rhythm.setRhythmSequence("2---", 422, 180, 0, 0);	"// ※間奏"
+Rhythm.setRhythmSequence("1-----", 182, 260, 0, 180);	"// ※間奏"
+Rhythm.setRhythmSequence("0-", 362, 100, 0, 0);	"// ※間奏"
+Rhythm.setRhythmSequence("3--", 242, 140, 0, 180);	"// ※間奏"
+Rhythm.setRhythmSequence("0-", 362, 180, 0, 0);	"// ※間奏"
+Rhythm.setRhythmSequence("2--", 242, 220, 0, 180);	"// ※間奏"
+Rhythm.setRhythmSequence("1-------", 362, 260, 0, 0);	"// ※間奏"
+Rhythm.setRhythmSequence("3---", 182, 100, 0, 180);	"// ※間奏"
+Rhythm.setRhythmSequence("2---", 422, 180, 0, 0);	"// ※間奏"
+Rhythm.setRhythmSequence("1-----", 182, 260, 0, 180);	"// ※間奏"
+Rhythm.setRhythmSequence("0-", 362, 120, 0, 0);	"// ※間奏"
+Rhythm.setRhythmSequence("3--", 242, 160, 0, 180);	"// ※間奏"
+Rhythm.setRhythmSequence("0-", 362, 200, 0, 0);	"// ※間奏"
+Rhythm.setRhythmSequence("2--", 242, 240, 0, 180);	"// ※間奏"
+"// ↑【修正すべき場所★】↑"
+selectWindow.showAll();
+selectWindow.moveRelative(0, ((screenHeight - selectWindow.window.area.height) / 2) - selectWindow.window.area.y, SELECT_WINDOW_APPEAR_TIMESPAN);
+selectWindow.setText("難易度と動作モードを選択してください");
+"// ↓【修正すべき場所★】↓"
+"// 難易度選択ボタンの設置"
+"// EASYやHARDを実装しない場合は、該当の「1.02:ue #10C1D0 @7 local:＠ボタン　～」の＠ボタン以降を半角スペース一つに置き換えます。（すなわち、「1.02:ue #10C1D0 @7 local: 」とする）"
+"// ↑【修正すべき場所★】↑"
+selectWindow.setCommentTrigger();
+Main.reflectLevelMode();
+selectWindow.loadingMessage();
+selectWindow.setText("\n\n\n\nRhythm game start!");
+selectWindow.moveRelative(0, (MovieInfo.getDisplayAreaMarginY() - selectWindow.window.area.height - selectWindow.window.borderBottom.height) - selectWindow.window.area.y, SELECT_WINDOW_APPEAR_TIMESPAN);
+selectWindow.hideAll();
+if(GameInfo.level != LEVEL_PV, then:Main.appearUpperUnderWindow(0, UPPER_WINDOW_APPEAR_TIMESPAN, false); Main.disappearUpperUnderWindow(MOVIE_LENGTH - UPPER_WINDOW_APPEAR_TIMESPAN - GAME_START_TIME, UPPER_WINDOW_APPEAR_TIMESPAN, false); Main.showScoreBoard(MOVIE_LENGTH - GAME_START_TIME); Main.hideScoreBoard(MOVIE_LENGTH + SCORE_BORAD_HIDE_TIMESPAN - GAME_START_TIME); Rhythm.setCommentTrigger(), else:Main.hideUnderWindow(MOVIE_LENGTH - GAME_START_TIME));
+"// ↓【修正すべき場所★】↓"
+"// ボタンの配置"
+"// 一連の@xxxの部分に、上でMOVIE_LENGTHで指定した動画の長さからおよそ12を引いた値を指定します"
+"// （注意）ここは小数での指定はできません"
+"// ↑【修正すべき場所★】↑"
+"// ↓【修正すべき場所★】↓"
+"// スコアボード表示用の一時停止"
+"// 左の数値（「〇〇:small #30E1F0:＠ポーズ～」の〇〇の部分）に、上でMOVIE_LENGTHで指定した動画の長さを指定します"
+"// ↑【修正すべき場所★】↑"

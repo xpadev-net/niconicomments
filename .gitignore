@@ -2,3 +2,5 @@
 /niconicomments.js.iml
 /node_modules
 /dist
+/test
+/.DS_Store

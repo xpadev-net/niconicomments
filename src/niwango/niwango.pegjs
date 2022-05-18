@@ -665,7 +665,15 @@ ArgumentList
   = head:ArgumentWithName tail:(__ "," __ ArgumentWithName)* {
       return buildList(head, tail, 3);
     }
-ArgumentWithName =identifier:ArgumentName? __ head:AssignmentExpression tail:( __ ";"?__ AssignmentExpression)*{
+ArgumentWithName =identifier:ArgumentName? __ argument:AssignmentExpressions{
+    return {
+        ...argument,
+        NIWANGO_Identifier:identifier
+    }
+}
+AssignmentExpressions
+  = head:AssignmentExpression tail:( __ ";"?__ AssignmentExpression)*
+{
     let list = buildList(head, tail, 3);
     if(list.length>1){
         return {
@@ -674,15 +682,28 @@ ArgumentWithName =identifier:ArgumentName? __ head:AssignmentExpression tail:( _
       };
     }
     return {
-        ...list[0],
-        NIWANGO_Identifier:identifier
+        ...list[0]
     }
 }
-
+/AssignmentExpressionsWithBracket
+AssignmentExpressionsWithBracket="\\"?"("__ head:AssignmentExpression tail:( __ ";"? __ AssignmentExpression)* __")"
+{
+    let list = buildList(head, tail, 3);
+    if(list.length>1){
+        return {
+        type: "BlockStatement",
+        body: list
+      };
+    }
+    return {
+        ...list[0]
+    }
+}
 
 ArgumentName = identifier:Identifier":"{return identifier}
 LeftHandSideExpression
   = CallExpression
+  / VariableStatement
   / NewExpression
 
 PostfixExpression
@@ -795,6 +816,7 @@ EqualityOperator
   / "!=="
   / "=="
   / "!="
+  / "<>"
 
 BitwiseANDExpression
   = head:EqualityExpression
@@ -912,7 +934,6 @@ AssignmentExpression
         right: right
       };
     }
-  / VariableStatement
   / ConditionalExpression
 
 AssignmentExpressionNoIn
@@ -991,7 +1012,6 @@ Block
         body: optionalList(extractOptional(body, 0))
       };
     }
-
 StatementList
   = head:Statement tail:(__ Statement)* { return buildList(head, tail, 1); }
 

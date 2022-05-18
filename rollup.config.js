@@ -1,5 +1,7 @@
 import babel from "@rollup/plugin-babel";
 import typescript from "@rollup/plugin-typescript";
+import commonjs from '@rollup/plugin-commonjs';
+import nodeResolve from "@rollup/plugin-node-resolve";
 import pkg from "./package.json";
 const banner = `/*!
   niconicomments.js v${pkg.version}
@@ -19,6 +21,8 @@ export default {
         typescript({
             tsconfig: 'tsconfig.json',
         }),
+        commonjs(),
+        nodeResolve(),
         babel()
     ]
 }

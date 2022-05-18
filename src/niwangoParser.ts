@@ -1,4 +1,5 @@
 import {parseFunc, parseBrackets, isString, splitWithDeps, arrayPush, unQuote, getByName} from "./Utils";
+import {parse} from "./niwango.js";
 
 type formattedComment = {
     "id": number,
@@ -389,14 +390,9 @@ class NiwangoParser {
         } else {
             string = arg1;
         }
-        let scripts = splitWithDeps(string, /;/), tmp = [];
-        for (let i in scripts) {
-            let result = this.parseLine(scripts[i], root);
-            if (result) {
-                tmp.push(result);
-            }
-        }
-        return tmp;
+        let ast = parse(string);
+        console.log(ast);
+        return ast;
     }
 
     /**

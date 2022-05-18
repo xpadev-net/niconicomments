@@ -115,7 +115,7 @@ SingleLineComment
   = "#" (!LineTerminator SourceCharacter)*
 
 Identifier
-  = !ReservedWord name:IdentifierName { return name; }
+  = !ReservedWord "\\"? name:IdentifierName { return name; }
 
 IdentifierName "identifier"
   = head:IdentifierStart tail:IdentifierPart* {
@@ -129,6 +129,7 @@ IdentifierStart
   = UnicodeLetter
   / "$"
   / "_"
+  / "@"
   / "\\" sequence:UnicodeEscapeSequence { return sequence; }
 
 IdentifierPart
@@ -172,11 +173,9 @@ Keyword
   / DefaultToken
   / DeleteToken
   / DoToken
-  / ElseToken
   / FinallyToken
   / ForToken
   / FunctionToken
-  / IfToken
   / InstanceofToken
   / InToken
   / NewToken
@@ -433,7 +432,6 @@ DebuggerToken   = "debugger"   !IdentifierPart
 DefaultToken    = "default"    !IdentifierPart
 DeleteToken     = "delete"     !IdentifierPart
 DoToken         = "do"         !IdentifierPart
-ElseToken       = "else"       !IdentifierPart
 EnumToken       = "enum"       !IdentifierPart
 ExportToken     = "export"     !IdentifierPart
 ExtendsToken    = "extends"    !IdentifierPart
@@ -442,7 +440,6 @@ FinallyToken    = "finally"    !IdentifierPart
 ForToken        = "for"        !IdentifierPart
 FunctionToken   = "function"   !IdentifierPart
 GetToken        = "get"        !IdentifierPart
-IfToken         = "if"         !IdentifierPart
 ImportToken     = "import"     !IdentifierPart
 InstanceofToken = "instanceof" !IdentifierPart
 InToken         = "in"         !IdentifierPart
@@ -593,6 +590,10 @@ MemberExpression
   = head:(
         PrimaryExpression
       / FunctionExpression
+      / value:$(Nd+){return {
+            "type": "Literal",
+            "value": value
+         }}
       / NewToken __ callee:MemberExpression __ args:Arguments {
           return { type: "NewExpression", callee: callee, arguments: args };
         }
@@ -664,12 +665,21 @@ ArgumentList
   = head:ArgumentWithName tail:(__ "," __ ArgumentWithName)* {
       return buildList(head, tail, 3);
     }
-ArgumentWithName =identifier:ArgumentName? __ argument:(AssignmentExpression / FunctionBody){
-  return {
-    ...argument,
-    NIWANGO_Identifier:identifier
-  }
+ArgumentWithName =identifier:ArgumentName? __ head:AssignmentExpression tail:( __ ";"?__ AssignmentExpression)*{
+    let list = buildList(head, tail, 3);
+    if(list.length>1){
+        return {
+        type: "BlockStatement",
+        body: list
+      };
+    }
+    return {
+        ...list[0],
+        NIWANGO_Identifier:identifier
+    }
 }
+
+
 ArgumentName = identifier:Identifier":"{return identifier}
 LeftHandSideExpression
   = CallExpression
@@ -902,6 +912,7 @@ AssignmentExpression
         right: right
       };
     }
+  / VariableStatement
   / ConditionalExpression
 
 AssignmentExpressionNoIn
@@ -963,7 +974,6 @@ Statement
   / VariableStatement
   / EmptyStatement
   / ExpressionStatement
-  / IfStatement
   / IterationStatement
   / ContinueStatement
   / BreakStatement
@@ -1039,28 +1049,6 @@ ExpressionStatement
       };
     }
 
-IfStatement
-  = IfToken __ "(" __ test:Expression __ ")" __
-    consequent:Statement __
-    ElseToken __
-    alternate:Statement
-    {
-      return {
-        type: "IfStatement",
-        test: test,
-        consequent: consequent,
-        alternate: alternate
-      };
-    }
-  / IfToken __ "(" __ test:Expression __ ")" __
-    consequent:Statement {
-      return {
-        type: "IfStatement",
-        test: test,
-        consequent: consequent,
-        alternate: null
-      };
-    }
 
 IterationStatement
   = DoToken __

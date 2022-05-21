@@ -114,7 +114,7 @@ Comment "comment"
 SingleLineComment
   = "#" (!LineTerminator SourceCharacter)*
 
-Identifier
+Identifier "identifier"
   = !ReservedWord "\\"? name:IdentifierName { return name; }
 
 IdentifierName "identifier"
@@ -152,7 +152,7 @@ UnicodeCombiningMark
   = Mn
   / Mc
 
-UnicodeDigit
+UnicodeDigit "number"
   = Nd
 
 UnicodeConnectorPunctuation
@@ -172,7 +172,6 @@ Keyword
   / DebuggerToken
   / DefaultToken
   / DeleteToken
-  / DoToken
   / FinallyToken
   / ForToken
   / FunctionToken
@@ -443,6 +442,8 @@ GetToken        = "get"        !IdentifierPart
 ImportToken     = "import"     !IdentifierPart
 InstanceofToken = "instanceof" !IdentifierPart
 InToken         = "in"         !IdentifierPart
+LambdaToken     = "lambda"     !IdentifierPart
+                / "\\"         !IdentifierPart
 NewToken        = "new"        !IdentifierPart
 NullToken       = "null"       !IdentifierPart
 ReturnToken     = "return"     !IdentifierPart
@@ -474,6 +475,7 @@ EOS
   / _ SingleLineComment? LineTerminatorSequence
   / _ &"}"
   / __ EOF
+  / _ &")"
 
 EOF
   = !.
@@ -590,7 +592,7 @@ MemberExpression
   = head:(
         PrimaryExpression
       / FunctionExpression
-      / value:$(Nd+){return {
+      / value:$(UnicodeDigit+){return {
             "type": "Literal",
             "value": value
          }}
@@ -672,21 +674,7 @@ ArgumentWithName =identifier:ArgumentName? __ argument:AssignmentExpressions{
     }
 }
 AssignmentExpressions
-  = head:AssignmentExpression tail:( __ ";"?__ AssignmentExpression)*
-{
-    let list = buildList(head, tail, 3);
-    if(list.length>1){
-        return {
-        type: "BlockStatement",
-        body: list
-      };
-    }
-    return {
-        ...list[0]
-    }
-}
-/AssignmentExpressionsWithBracket
-AssignmentExpressionsWithBracket="\\"?"("__ head:AssignmentExpression tail:( __ ";"? __ AssignmentExpression)* __")"
+  = ";"? __ head:AssignmentExpression tail:( __ ";"?__ AssignmentExpression)*
 {
     let list = buildList(head, tail, 3);
     if(list.length>1){
@@ -700,11 +688,12 @@ AssignmentExpressionsWithBracket="\\"?"("__ head:AssignmentExpression tail:( __ 
     }
 }
 
-ArgumentName = identifier:Identifier":"{return identifier}
+ArgumentName = identifier:Identifier":"!"="{return identifier}
 LeftHandSideExpression
   = CallExpression
-  / VariableStatement
   / NewExpression
+  / VariableStatement
+  / LambdaDeclaration
 
 PostfixExpression
   = argument:LeftHandSideExpression _ operator:PostfixOperator {
@@ -922,6 +911,20 @@ AssignmentExpression
         left: left,
         right: right
       };
+    }
+  / id:Identifier __ init:Initialiser
+    {
+      return {
+        type: "VariableDeclaration",
+        declarations: [
+          {
+            type: "VariableDeclarator",
+            id: id,
+            init: init
+          }
+        ],
+        kind: "var"
+      }
     }
   / left:LeftHandSideExpression __
     operator:AssignmentOperator __
@@ -1280,6 +1283,15 @@ FunctionDeclaration
       };
     }
 
+LambdaDeclaration
+  = LambdaToken __ "(" __ body:FunctionBody __ ")"
+    {
+      return {
+        type: "ArrowFunctionExpression",
+        body: body
+      };
+    }
+
 FunctionExpression
   = FunctionToken __ id:(Identifier __)?
     "(" __ params:(FormalParameterList __)? ")" __
@@ -1321,6 +1333,7 @@ SourceElements
 
 SourceElement
   = Statement
+  / LambdaDeclaration
   / FunctionDeclaration
 
 // ----- A.6 Universal Resource Identifier Character Classes -----

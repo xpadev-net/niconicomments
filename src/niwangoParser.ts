@@ -1,5 +1,5 @@
 import {parseFunc, parseBrackets, isString, splitWithDeps, arrayPush, unQuote, getByName} from "./Utils";
-import {parse} from "./niwango.js";
+import {parse} from "./niwango";
 
 type formattedComment = {
     "id": number,

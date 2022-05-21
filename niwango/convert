@@ -1,0 +1,23 @@
+#!/usr/bin/env php
+<?php
+$filename = @$argv[1];
+if (!file_exists(__DIR__."/$filename.json")){
+    echo "root/niwango以下に「動画番号.json」というファイル名でニワン語を含むコメントを保存し、「convert 動画番号」と実行してください\n";
+    exit(1);
+}
+if (file_exists(__DIR__."/$filename.niwango")){
+    echo "すでに同名のniwangoファイルが存在しますが、上書きしてもよろしいですか？(y/N)";
+    $input = trim(fgets(STDIN));
+    if(!preg_match("/y(?:es)?/i",$input)){
+        exit(0);
+    }
+}
+$json = json_decode(file_get_contents(__DIR__."/$filename.json"),true);
+$data = [];
+foreach($json as $key => $value){
+    if(array_key_exists("chat",$value)&&!array_key_exists("user_id",$value["chat"])&&strpos($value["chat"]["content"],"/")===0){
+        $data[]=mb_substr($value["chat"]["content"],1);
+    }
+}
+@unlink(__DIR__."/$filename.json");
+file_put_contents(__DIR__."/$filename.niwango",implode("\n",$data));

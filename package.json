@@ -5,7 +5,7 @@
   "main": "dist/bundle.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "pegjs -o ./src/niwango.js ./src/niwango/niwango.pegjs && rollup -c rollup.config.js",
+    "build": "pegjs --cache --optimize speed -o ./src/niwango.js --format umd --export-var niwango ./src/niwango/niwango.pegjs && rollup -c rollup.config.js",
     "watch": "rollup -c rollup.config.js -w",
     "typedoc": "typedoc --options tsdoc.json --out ./docs/type/ ./src/main.ts",
     "prepublishOnly": "npm run build"

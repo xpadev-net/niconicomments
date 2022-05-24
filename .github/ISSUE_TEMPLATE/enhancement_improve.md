@@ -1,7 +1,7 @@
 ---
 name: "[要望]機能改善"
 about: この機能をもっとこうしてほしいとか
-title: "[要望][改善]"
+title: "[機能][改善]"
 labels: enhancement
 assignees: xpadev-net
 

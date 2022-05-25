@@ -1,5 +1,5 @@
 import {parseFunc, parseBrackets, isString, splitWithDeps, arrayPush, unQuote, getByName} from "./Utils";
-import {parse} from  "./niwango";
+import {parse} from "./niwango.peg";
 
 type formattedComment = {
     "id": number,
@@ -80,6 +80,7 @@ class NiwangoParser {
         if (comment.content.startsWith("/")) {
             let scripts = this.parse(comment);
             arrayPush(this.scripts, comment.vpos, scripts);
+            console.log(scripts);
             this.exec(scripts);//todo: 実装完了したら消す
         }
         this.last_chat = comment;
@@ -135,8 +136,8 @@ class NiwangoParser {
                     switch (script.operator) {
                         case "=":
                             let left = this.exec(script.left, options), right = this.exec(script.right, options);
-                            if (typeof left === "string") {
-                                this.variable[left] = right;
+                            if (left?.type === "Identifier") {
+                                this.variable[left.raw] = right;
                             } else {
                                 left = right;
                             }
@@ -265,7 +266,7 @@ class NiwangoParser {
                         case "ZEN::loop":
                             console.info("ZEN::loop:", script,callee.count);
                             for (let i = 0; i < callee.count; i++) {
-                                this.exec(script.arguments[0], {argument: {...options.argument,tmp0:i}, root: false});
+                                this.exec(script.arguments[0], {argument: {...options.argument,tmp0: {type:"Literal",value:i}}, root: false});
                             }
                             break;
                         case "@":
@@ -320,7 +321,7 @@ class NiwangoParser {
                             }
                         }
                         if (!this.variable[left]) {
-                            console.warn("undefined left:", left, right, script);
+                            console.warn("undefined left:", left, right, script,this.variable);
                             break;
                         }
                         return this.variable[left][right];
@@ -330,6 +331,12 @@ class NiwangoParser {
                     for (let item of script.body){
                         this.exec(item);
                     }
+                    break;
+                case "UnaryExpression":
+                    if (script.operator==="-"){
+                        return this.exec(script.argument) * -1;
+                    }
+                    console.warn("unknown Unary Expression:", script);
                     break;
                 case "UpdateExpression":
                     console.warn("unknown update expression:", script, options);
@@ -362,12 +369,14 @@ class NiwangoParser {
      */
     execArg(template: any, args: any, options: any) {
         for (let key in args) {
-            if (template[args[key].id] === null) {
-                template[args[key].id] = this.exec(args[key], options);
+            let arg_key = this.exec(args[key].NIWANGO_Identifier,options);
+            if (template[arg_key.raw] === null) {
+                template[args[key].NIWANGO_Identifier] = this.exec(args[key], options);
             }
         }
         for (let key in args) {
-            if (args[key].id.match(/^default\d+$/)) {
+            let arg_key = this.exec(args[key].NIWANGO_Identifier,options);
+            if (arg_key.raw.match(/^default\d+$/)) {
                 for (let key2 in template) {
                     if (template[key2] === null) {
                         template[key2] = this.exec(args[key], options);

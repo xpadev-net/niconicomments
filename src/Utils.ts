@@ -291,10 +291,12 @@ const getByName = (args: any,name: string) => {
     let default_value = name.match(/^\$(\d+)$/);
     if (default_value)name="default"+(Number(default_value[1])-1);
     let tmp_value = name.match(/^@(\d+)$/);
-    if (tmp_value)name="tmp"+(Number(tmp_value[1])-1);
-    for (let arg of args){
-        if (arg.id === name){
-            return arg;
+    if (tmp_value)name="tmp"+tmp_value[1];
+    console.log("name",name);
+    for (let key in args){
+        console.log(key);
+        if (key === name){
+            return args[key];
         }
     }
     return false;

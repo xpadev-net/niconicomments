@@ -1,0 +1,7343 @@
+[
+  {
+    "id": 1,
+    "vpos": 0,
+    "content": "/\"\"# このスクリプトはご自由に使っていただいて結構です。",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 2,
+    "vpos": 0,
+    "content": "/\"\"# コピーときは、矢印の範囲内のみを選択すると、背景とテレビちゃんが描画されません。",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 3,
+    "vpos": 0,
+    "content": "/\"\"#",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 4,
+    "vpos": 0,
+    "content": "/\"\"# 作成にあたり参考にさせてもらった動画",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 5,
+    "vpos": 0,
+    "content": "/\"\"# ・モノクロスロード(nm13390455) By ゆうきさん",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 6,
+    "vpos": 0,
+    "content": "/\"\"# ・ニコスで懐かしいコメントを再現してみた(nm10645548) By ボノボさん",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 7,
+    "vpos": 0,
+    "content": "/\"\"#------------------ 　↓↓↓　　コピー範囲　ここから　↓↓↓　 ------------------",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 8,
+    "vpos": 0,
+    "content": "/isWide=true",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 9,
+    "vpos": 0,
+    "content": "/def_kari(\"mk\", $2.times(\\timer(timer:(@0+1)*$1, $3[(@0+1)*$1])))",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 11,
+    "vpos": 0,
+    "content": "/postDisabled=true; timer(timer:0.3, postDisabled=false)",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 12,
+    "vpos": 0,
+    "content": "/interval=0.08; y0=200; Lxmin=50; Lxmax=250; xmin=-160; xmax=160; ymin=-200; ymax=-70; tmin=0.65; tmax=0.85; smin=22; smax=64; strmax=16",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 13,
+    "vpos": 0,
+    "content": "/fontcolor=[0xFF8282, 0xFFC082, 0xFFFF82, 0xC0FF82, 0x82FF82, 0x82C0FF, 0x82FFFF, 0x8282FF, 0xFF82FF, 0x82FFC0, 0xC082FF, 0xFF82C0]",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 14,
+    "vpos": 0,
+    "content": "/def_kari('hopping', $1.text=chat.message.slice(0, strmax); r1:=rnd[count%200][0]; r2:=rnd[count%200][1]; r3:=rnd[count%200][2]; ytop:=ymin+r1%(ymax-ymin); ttop:=tmin+(r2/100)%(tmax-tmin); v0:=2*(ytop-y0)/ttop; acc:=-v0/ttop; xtop:=xmin+r3%(xmax-xmin); vx:=(r1<>r2)*(Lxmin+(r2+r3)%(Lxmax-Lxmin))/ttop; $1.x=xtop-vx*ttop; $1.y=y0; $1.size=smin+(r3+r1)%(smax-smin); $1.color=fontcolor[r1%fontcolor.size]; dx:=vx*interval; mk(interval, 2*ttop/interval+1, \\($1.x+=dx; $1.y=acc*@0.pow(2)/2+v0*@0+y0)))",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 15,
+    "vpos": 0,
+    "content": "/msg=[]; 13.times(\\msg[@0]=dt(z:3))",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 19,
+    "vpos": 0,
+    "content": "/\"\"#------------------ 　↑↑↑　　コピー範囲　ここまで　↑↑↑　 ------------------",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 20,
+    "vpos": 0,
+    "content": "/\"\"#",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 21,
+    "vpos": 0,
+    "content": "/\"\"#--------------- 　以下は、背景とテレビちゃんに関するスクリプトです -------------",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 22,
+    "vpos": 0,
+    "content": "/\"--------  【レイヤー作成】 --------\"",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 23,
+    "vpos": 0,
+    "content": "/layer=[]",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 24,
+    "vpos": 0,
+    "content": "/layer[0]=drawShape(z:0,x:-20,y:0,width:700,height:400,color:0xFEFDDD,shape:'rect',pos:'hidari ue')",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "背景ベタ",
+      "invisible"
+    ]
+  },
+  {
+    "id": 25,
+    "vpos": 0,
+    "content": "/layer[1]=drawShape(z:1,y:60,width:0,height:0,color:0xD6D5BF)",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "背景まる1",
+      "invisible"
+    ]
+  },
+  {
+    "id": 26,
+    "vpos": 0,
+    "content": "/layer[2]=drawShape(z:2,y:60,width:0,height:0,color:0xFEFDDD)",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "背景まる2",
+      "invisible"
+    ]
+  },
+  {
+    "id": 27,
+    "vpos": 0,
+    "content": "/layer[3]=drawShape(z:4,x:255,y:341,width:21,height:35,color:0x2A2820,pos:'hidari ue')",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "左足1",
+      "invisible"
+    ]
+  },
+  {
+    "id": 28,
+    "vpos": 0,
+    "content": "/layer[4]=drawShape(z:5,x:262,y:348,width:7,height:21,color:0xFEFEFE,pos:'hidari ue')",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "左足2",
+      "invisible"
+    ]
+  },
+  {
+    "id": 29,
+    "vpos": 0,
+    "content": "/layer[5]=drawShape(z:6,x:355,y:336,width:25,height:39,color:0x2A2820,pos:'hidari ue')",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "右足1",
+      "invisible"
+    ]
+  },
+  {
+    "id": 30,
+    "vpos": 0,
+    "content": "/layer[6]=drawShape(z:7,x:362,y:343,width:11,height:25,color:0xFEFEFE,pos:'hidari ue')",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "右足2",
+      "invisible"
+    ]
+  },
+  {
+    "id": 31,
+    "vpos": 0,
+    "content": "/layer[7]=drawText(z:8,x:1,y:58,size:94,color:0x2A2820,text:'＼')",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "左アンテナ",
+      "invisible"
+    ]
+  },
+  {
+    "id": 32,
+    "vpos": 0,
+    "content": "/layer[8]=drawText(z:9,x:-2,y:57,size:94,color:0x2A2820,text:'／')",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "右アンテナ",
+      "invisible"
+    ]
+  },
+  {
+    "id": 33,
+    "vpos": 0,
+    "content": "/layer[18]=drawShape(z:10,x:0,y:245,width:672,height:114,color:0xFEFDDD,shape:'rect',pos:'hidari ue')",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "アンテナ隠し",
+      "invisible"
+    ]
+  },
+  {
+    "id": 34,
+    "vpos": 0,
+    "content": "/layer[9]=drawShape(z:11,x:240,y:245,width:160,height:114,color:0x2A2820,shape:'rect',pos:'hidari ue')",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "わく1",
+      "invisible"
+    ]
+  },
+  {
+    "id": 35,
+    "vpos": 0,
+    "content": "/layer[10]=drawShape(z:12,x:246,y:251,width:148,height:102,color:0xFEFEFE,shape:'rect',pos:'hidari ue')",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "わく2",
+      "invisible"
+    ]
+  },
+  {
+    "id": 36,
+    "vpos": 0,
+    "content": "/layer[11]=drawShape(z:13,x:253,y:258,width:134,height:88,color:0x2A2820,shape:'rect',pos:'hidari ue')",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "わく3",
+      "invisible"
+    ]
+  },
+  {
+    "id": 37,
+    "vpos": 0,
+    "content": "/layer[12]=drawShape(z:14,x:258,y:263,width:124,height:78,color:0xFEFEFE,shape:'rect',pos:'hidari ue')",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "わく4",
+      "invisible"
+    ]
+  },
+  {
+    "id": 38,
+    "vpos": 0,
+    "content": "/layer[13]=drawShape(z:15,x:-45,y:104,width:19,height:17,color:0x2A2820)",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "左目",
+      "invisible"
+    ]
+  },
+  {
+    "id": 39,
+    "vpos": 0,
+    "content": "/layer[14]=drawShape(z:16,x:43,y:94,width:19,height:17,color:0x2A2820)",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "右目",
+      "invisible"
+    ]
+  },
+  {
+    "id": 40,
+    "vpos": 0,
+    "content": "/layer[15]=drawText(z:17,x:0,y:131,size:28,color:0x2A2820,text:'▲')",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "くち",
+      "invisible"
+    ]
+  },
+  {
+    "id": 41,
+    "vpos": 0,
+    "content": "/layer[16]=drawShape(z:18,x:-47,y:126,width:0,height:9,color:0xFFC793)",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "左ほっぺ",
+      "invisible"
+    ]
+  },
+  {
+    "id": 42,
+    "vpos": 0,
+    "content": "/layer[17]=drawShape(z:19,x:47,y:126,width:0,height:9,color:0xFFC793)",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "右ほっぺ",
+      "invisible"
+    ]
+  },
+  {
+    "id": 43,
+    "vpos": 0,
+    "content": "/\"--------【アニメーションを設定】---------\"",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 44,
+    "vpos": 0,
+    "content": "/def_kari('do',i:=$1-1;while_kari(++i<=$2,$3[i]))",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 45,
+    "vpos": 0,
+    "content": "/bg_state=[[85,81],[213,208],[306,301],[371,367],[0,0]]",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "[out,in]",
+      "invisible"
+    ]
+  },
+  {
+    "id": 46,
+    "vpos": 0,
+    "content": "/tv_state=[18,[45,39],[-15,15],[-15,-7],[[-30,-26],[-15,-13]],5,[5,-3,-2]]",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "[ini,in_antena,eye,up,ex_antena,set,shake]",
+      "invisible"
+    ]
+  },
+  {
+    "id": 47,
+    "vpos": 0,
+    "content": "/tv_initial=\\(layer[@0].y+=tv_state[0])",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 48,
+    "vpos": 0,
+    "content": "/tv_blink=\\(@(j);timer(timer:0.1*j,do(13,14,\\(layer[@0].height+=tv_state[2][j]))))",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 49,
+    "vpos": 0,
+    "content": "/tv_up=\\(@(i_out);do(7,18,\\(@(i_in);timer(timer:0.1*i_out,layer[i_in].y+=tv_state[3][i_out]))))",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 50,
+    "vpos": 0,
+    "content": "/tv_l_antena=\\(timer(timer:0.1*@0,layer[7].x+=tv_state[4][@0][0];layer[7].y+=tv_state[4][@0][1]))",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 51,
+    "vpos": 0,
+    "content": "/tv_r_antena=\\(timer(timer:0.1*@0,layer[8].x-=tv_state[4][@0][0];layer[8].y+=tv_state[4][@0][1]))",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 52,
+    "vpos": 0,
+    "content": "/tv_set=\\(layer[@0].y+=tv_state[5])",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 53,
+    "vpos": 0,
+    "content": "/tv_shake1=\\(@(j);timer(timer:0.1*j,do(7,15,\\(layer[@0].y+=tv_state[6][j]))))",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 54,
+    "vpos": 0,
+    "content": "/tv_shake2=\\(@(j);timer(timer:0.1*j,do(7,15,\\(layer[@0].y+=tv_state[6][j];layer[@0].x-=5));do(1,6,\\(layer[@0].x-=5))))",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 55,
+    "vpos": 0,
+    "content": "/tv_shake3=\\(@(j);timer(timer:0.1*j,do(7,15,\\(layer[@0].y+=tv_state[6][j];layer[@0].x+=5));do(1,6,\\(layer[@0].x+=5))))",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 56,
+    "vpos": 0,
+    "content": "/tv_shake4=\\(@(j);timer(timer:0.1*j,do(7,17,\\(layer[@0].y+=tv_state[6][j]))))",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 57,
+    "vpos": 0,
+    "content": "/def_kari(\"tv_jump\", do(7,17,\\layer[@0].y-=5); do(0, 2*$1, \\(@(j); timer(timer:(j+1)*interval, do(3, 17, \\(layer[@0].y+=100*(j-$1)*interval.pow(2); layer[@0].x+=$2))))); timer(timer:(2*$1+2)*interval, do(7, 17, \\layer[@0].y+=5)))",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 58,
+    "vpos": 0,
+    "content": "/bg_extend=\\(timer(timer:0.06*@0,layer[1].width=layer[1].height=bg_state[@0][0];layer[2].width=layer[2].height=bg_state[@0][1]))",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 59,
+    "vpos": 0,
+    "content": "/\"--------【アニメーションを実行】---------\"",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 60,
+    "vpos": 0,
+    "content": "/do(7,18,tv_initial);layer[7].x+=tv_state[1][0];layer[7].y+=tv_state[1][1];layer[8].x-=tv_state[1][0];layer[8].y+=tv_state[1][1]",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 111731,
+    "vpos": 54,
+    "content": "たい焼き",
+    "date": 1597328292,
+    "date_usec": 375348,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111864,
+    "vpos": 68,
+    "content": "ミジンコ",
+    "date": 1628186708,
+    "date_usec": 293221,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111891,
+    "vpos": 100,
+    "content": "イキスギィイ！",
+    "date": 1636102628,
+    "date_usec": 296806,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:Switch"
+    ]
+  },
+  {
+    "id": 61,
+    "vpos": 190,
+    "content": "/do(0,tv_state[2].size-1,tv_blink)",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 111677,
+    "vpos": 239,
+    "content": "ひみみ",
+    "date": 1591784239,
+    "date_usec": 685079,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 62,
+    "vpos": 270,
+    "content": "/do(0,tv_state[2].size-1,tv_blink)",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 111916,
+    "vpos": 271,
+    "content": "すき焼き",
+    "date": 1644119903,
+    "date_usec": 281429,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 63,
+    "vpos": 290,
+    "content": "/do(0,tv_state[2].size-1,tv_blink)",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 111936,
+    "vpos": 370,
+    "content": "？？？？？",
+    "date": 1651413517,
+    "date_usec": 997806,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111791,
+    "vpos": 374,
+    "content": "せ",
+    "date": 1607339943,
+    "date_usec": 534697,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111926,
+    "vpos": 374,
+    "content": "wwwwwwwwwwwwwwwwwww",
+    "date": 1647433666,
+    "date_usec": 603113,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111917,
+    "vpos": 387,
+    "content": "湯浅☆Prince☆of☆ペニィィィィィィィィィィィィス！！！",
+    "date": 1644119974,
+    "date_usec": 794275,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "",
+      "blue"
+    ]
+  },
+  {
+    "id": 111768,
+    "vpos": 388,
+    "content": "„・・„",
+    "date": 1603455529,
+    "date_usec": 41755,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 64,
+    "vpos": 390,
+    "content": "/do(0,tv_state[3].size-1,tv_up)",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 65,
+    "vpos": 430,
+    "content": "/do(0,tv_state[4].size-1,tv_l_antena)",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 66,
+    "vpos": 470,
+    "content": "/do(0,tv_state[4].size-1,tv_r_antena)",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 111762,
+    "vpos": 481,
+    "content": "ん？",
+    "date": 1602250704,
+    "date_usec": 202234,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 67,
+    "vpos": 520,
+    "content": "/do(7,18,tv_set);layer[18].width=0",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 111761,
+    "vpos": 566,
+    "content": "んも",
+    "date": 1601705788,
+    "date_usec": 767221,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 16,
+    "vpos": 600,
+    "content": "/repl=replace(src:\"\", dest:\" \", enabled:true, fill:true)",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 111718,
+    "vpos": 616,
+    "content": "お？",
+    "date": 1596259674,
+    "date_usec": 797703,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111889,
+    "vpos": 631,
+    "content": "！？",
+    "date": 1635854161,
+    "date_usec": 568503,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 10,
+    "vpos": 650,
+    "content": "/rnd=[]; 200.times(\\rnd[@0]=[rand(), rand(), rand()])",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 111915,
+    "vpos": 689,
+    "content": "Nya!",
+    "date": 1644068353,
+    "date_usec": 707131,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111770,
+    "vpos": 699,
+    "content": "！",
+    "date": 1604240419,
+    "date_usec": 504449,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111695,
+    "vpos": 711,
+    "content": "Nya!",
+    "date": 1593686109,
+    "date_usec": 166688,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111895,
+    "vpos": 721,
+    "content": "え？",
+    "date": 1637225801,
+    "date_usec": 320362,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111760,
+    "vpos": 751,
+    "content": "Nya",
+    "date": 1601353401,
+    "date_usec": 442315,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111868,
+    "vpos": 761,
+    "content": "EFFF",
+    "date": 1628399513,
+    "date_usec": 663990,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:Switch"
+    ]
+  },
+  {
+    "id": 111921,
+    "vpos": 766,
+    "content": "ｱｱｱｱｱｱｱ",
+    "date": 1646914738,
+    "date_usec": 727422,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111869,
+    "vpos": 773,
+    "content": "redあ",
+    "date": 1628491318,
+    "date_usec": 709246,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111678,
+    "vpos": 787,
+    "content": "ニコニコ fuck",
+    "date": 1591784258,
+    "date_usec": 308332,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111880,
+    "vpos": 819,
+    "content": "a",
+    "date": 1631317940,
+    "date_usec": 204499,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111855,
+    "vpos": 825,
+    "content": "ｽｹﾞｪ",
+    "date": 1625924380,
+    "date_usec": 630018,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111897,
+    "vpos": 853,
+    "content": "！",
+    "date": 1637678723,
+    "date_usec": 772178,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111867,
+    "vpos": 856,
+    "content": "さかな",
+    "date": 1628186754,
+    "date_usec": 358378,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111882,
+    "vpos": 925,
+    "content": "ん",
+    "date": 1634070806,
+    "date_usec": 975630,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 68,
+    "vpos": 995,
+    "content": "/do(0,31,\\(timer(timer:60/142*@0,do(0,2,tv_shake1);do(0,4,bg_extend))))",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 17,
+    "vpos": 1000,
+    "content": "/count=-1; Lasthop=0; commentTrigger((((chat.vpos-Lasthop)>0.17)||chat.isYourPost).alt(Lasthop=chat.vpos; hopping(msg[(count++)%msg.size])), timer:53.4)",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "適用時間指定",
+      "invisible"
+    ]
+  },
+  {
+    "id": 111859,
+    "vpos": 1002,
+    "content": "いいかいか",
+    "date": 1627213141,
+    "date_usec": 434597,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111733,
+    "vpos": 1039,
+    "content": "え？？？",
+    "date": 1598116525,
+    "date_usec": 788258,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111724,
+    "vpos": 1063,
+    "content": "おおおおおおおおおおおおおおおおおおおおお？",
+    "date": 1596716411,
+    "date_usec": 65268,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111803,
+    "vpos": 1144,
+    "content": "wwwwwwwwwwwwwww",
+    "date": 1609085370,
+    "date_usec": 659406,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111676,
+    "vpos": 1161,
+    "content": "/",
+    "date": 1591678738,
+    "date_usec": 995581,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111874,
+    "vpos": 1170,
+    "content": "あ",
+    "date": 1629609557,
+    "date_usec": 792822,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111755,
+    "vpos": 1174,
+    "content": "おお",
+    "date": 1601067989,
+    "date_usec": 635856,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111793,
+    "vpos": 1177,
+    "content": "やっほー",
+    "date": 1607838101,
+    "date_usec": 821537,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111827,
+    "vpos": 1281,
+    "content": "janjanjanjanjanjanjanjanjanjanjanjanjanjanjanjanjanjanjanjanjanjanjanjanjan",
+    "date": 1613915546,
+    "date_usec": 96157,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111705,
+    "vpos": 1300,
+    "content": "ああ",
+    "date": 1594455109,
+    "date_usec": 978098,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111894,
+    "vpos": 1306,
+    "content": "ループ",
+    "date": 1636211538,
+    "date_usec": 823153,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111744,
+    "vpos": 1323,
+    "content": "ループした",
+    "date": 1600170804,
+    "date_usec": 949509,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111834,
+    "vpos": 1358,
+    "content": "ん",
+    "date": 1615287083,
+    "date_usec": 298061,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111932,
+    "vpos": 1366,
+    "content": "とかちつくちて",
+    "date": 1648354279,
+    "date_usec": 370338,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111687,
+    "vpos": 1373,
+    "content": "おお",
+    "date": 1593082026,
+    "date_usec": 836253,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111861,
+    "vpos": 1397,
+    "content": "え？",
+    "date": 1627330079,
+    "date_usec": 323675,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111901,
+    "vpos": 1404,
+    "content": "わお",
+    "date": 1641531180,
+    "date_usec": 114904,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111784,
+    "vpos": 1527,
+    "content": "SEX",
+    "date": 1605422447,
+    "date_usec": 547599,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111759,
+    "vpos": 1528,
+    "content": "く",
+    "date": 1601235474,
+    "date_usec": 380423,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111852,
+    "vpos": 1530,
+    "content": "ン？",
+    "date": 1625038136,
+    "date_usec": 465980,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111885,
+    "vpos": 1547,
+    "content": "え、すご",
+    "date": 1634477164,
+    "date_usec": 25426,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111883,
+    "vpos": 1612,
+    "content": "や",
+    "date": 1634070813,
+    "date_usec": 860090,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111742,
+    "vpos": 1634,
+    "content": "！？",
+    "date": 1600170723,
+    "date_usec": 928534,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111756,
+    "vpos": 1663,
+    "content": "すげぇ",
+    "date": 1601067995,
+    "date_usec": 930865,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111785,
+    "vpos": 1670,
+    "content": "SEXSEXSEX",
+    "date": 1605422448,
+    "date_usec": 976432,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111719,
+    "vpos": 1685,
+    "content": "3DSは出来るのかな？",
+    "date": 1596259736,
+    "date_usec": 256076,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111774,
+    "vpos": 1740,
+    "content": "すげぇ",
+    "date": 1605413813,
+    "date_usec": 999420,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111836,
+    "vpos": 1740,
+    "content": "いええええい",
+    "date": 1616658599,
+    "date_usec": 288625,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111825,
+    "vpos": 1751,
+    "content": "？",
+    "date": 1613915474,
+    "date_usec": 535381,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111773,
+    "vpos": 1757,
+    "content": "；：",
+    "date": 1604708844,
+    "date_usec": 485925,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111902,
+    "vpos": 1757,
+    "content": "ん",
+    "date": 1641614294,
+    "date_usec": 662730,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111923,
+    "vpos": 1778,
+    "content": "イエーイ☆",
+    "date": 1647079474,
+    "date_usec": 764188,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111884,
+    "vpos": 1786,
+    "content": "ち",
+    "date": 1634070815,
+    "date_usec": 600124,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111766,
+    "vpos": 1799,
+    "content": "なんもない、",
+    "date": 1602745820,
+    "date_usec": 990216,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111870,
+    "vpos": 1802,
+    "content": "きえええええええええエエエエエエエエエエエエエエエエエエエエエエエエエエエエエエエエエエエエエエエエエエエエエエエエエエエエエエエエエエエエエエエエエ",
+    "date": 1628818949,
+    "date_usec": 861727,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111853,
+    "vpos": 1817,
+    "content": "え",
+    "date": 1625304437,
+    "date_usec": 177726,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111824,
+    "vpos": 1851,
+    "content": "ふっ",
+    "date": 1613915385,
+    "date_usec": 729629,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111728,
+    "vpos": 1903,
+    "content": "！？",
+    "date": 1597005326,
+    "date_usec": 842182,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111905,
+    "vpos": 1998,
+    "content": "え？",
+    "date": 1642935348,
+    "date_usec": 833047,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111750,
+    "vpos": 2000,
+    "content": "キエエエエエエエ↑",
+    "date": 1600701304,
+    "date_usec": 752965,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111688,
+    "vpos": 2026,
+    "content": "すげえかも",
+    "date": 1593082033,
+    "date_usec": 408441,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111796,
+    "vpos": 2029,
+    "content": "！？",
+    "date": 1608029698,
+    "date_usec": 686332,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111752,
+    "vpos": 2077,
+    "content": "・~・",
+    "date": 1600701332,
+    "date_usec": 905225,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111815,
+    "vpos": 2097,
+    "content": "？",
+    "date": 1611417495,
+    "date_usec": 737951,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111896,
+    "vpos": 2105,
+    "content": "まじ？",
+    "date": 1637423184,
+    "date_usec": 111794,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111746,
+    "vpos": 2134,
+    "content": "ﾌｧｯ！？",
+    "date": 1600513320,
+    "date_usec": 797517,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111865,
+    "vpos": 2159,
+    "content": "え",
+    "date": 1628186730,
+    "date_usec": 80281,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 1,
+    "vpos": 2165,
+    "content": "www",
+    "date": 1612629270,
+    "date_usec": 864657,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111741,
+    "vpos": 2173,
+    "content": "わお",
+    "date": 1599377672,
+    "date_usec": 141351,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111699,
+    "vpos": 2197,
+    "content": "心がぴょんぴょんするんじゃー",
+    "date": 1593686568,
+    "date_usec": 832670,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111908,
+    "vpos": 2205,
+    "content": "あ",
+    "date": 1642935522,
+    "date_usec": 485452,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111685,
+    "vpos": 2225,
+    "content": "すげえ",
+    "date": 1592330224,
+    "date_usec": 422347,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111929,
+    "vpos": 2227,
+    "content": "おん？",
+    "date": 1648354235,
+    "date_usec": 822506,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111697,
+    "vpos": 2269,
+    "content": "すげぇｗ",
+    "date": 1593686516,
+    "date_usec": 422614,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111711,
+    "vpos": 2269,
+    "content": "おお",
+    "date": 1595128581,
+    "date_usec": 95991,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:Switch"
+    ]
+  },
+  {
+    "id": 111704,
+    "vpos": 2270,
+    "content": "うおっ",
+    "date": 1594424116,
+    "date_usec": 246800,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111933,
+    "vpos": 2285,
+    "content": "愛してるよ",
+    "date": 1648354288,
+    "date_usec": 533130,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111775,
+    "vpos": 2297,
+    "content": "おぉ",
+    "date": 1605413819,
+    "date_usec": 289355,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111918,
+    "vpos": 2309,
+    "content": "あ",
+    "date": 1645874234,
+    "date_usec": 308061,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111807,
+    "vpos": 2312,
+    "content": "あ",
+    "date": 1610000180,
+    "date_usec": 978529,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111720,
+    "vpos": 2324,
+    "content": "！？",
+    "date": 1596598723,
+    "date_usec": 996842,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:Switch"
+    ]
+  },
+  {
+    "id": 111708,
+    "vpos": 2327,
+    "content": "えぇ…",
+    "date": 1594895984,
+    "date_usec": 552803,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 69,
+    "vpos": 2347,
+    "content": "/do(0,7,\\(timer(timer:60/142*@0,do(0,2,tv_shake2);do(0,4,bg_extend))))",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 2,
+    "vpos": 2355,
+    "content": "www",
+    "date": 1612629272,
+    "date_usec": 746273,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111910,
+    "vpos": 2387,
+    "content": "w",
+    "date": 1643730583,
+    "date_usec": 354198,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111679,
+    "vpos": 2398,
+    "content": "な　　　ん　　　だ　　　こ　　　れ",
+    "date": 1591784323,
+    "date_usec": 469094,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111696,
+    "vpos": 2418,
+    "content": "変わってる？",
+    "date": 1593686126,
+    "date_usec": 211545,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111780,
+    "vpos": 2429,
+    "content": "すご",
+    "date": 1605419278,
+    "date_usec": 517676,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 3,
+    "vpos": 2431,
+    "content": "www",
+    "date": 1612629273,
+    "date_usec": 519261,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111903,
+    "vpos": 2431,
+    "content": "まじ？？w",
+    "date": 1641976180,
+    "date_usec": 371174,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:Switch"
+    ]
+  },
+  {
+    "id": 111764,
+    "vpos": 2474,
+    "content": "すご",
+    "date": 1602745774,
+    "date_usec": 591830,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111757,
+    "vpos": 2492,
+    "content": "草",
+    "date": 1601068007,
+    "date_usec": 704129,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111804,
+    "vpos": 2526,
+    "content": "やば",
+    "date": 1609085384,
+    "date_usec": 516108,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111800,
+    "vpos": 2554,
+    "content": "しすせ",
+    "date": 1608644347,
+    "date_usec": 857333,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111862,
+    "vpos": 2561,
+    "content": "え",
+    "date": 1627552086,
+    "date_usec": 932277,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111712,
+    "vpos": 2566,
+    "content": "シャイニング☆スパイラル☆ウンコー☆",
+    "date": 1595508640,
+    "date_usec": 499598,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111686,
+    "vpos": 2594,
+    "content": "大丈夫だ、問題ない。",
+    "date": 1592616646,
+    "date_usec": 621135,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:Switch"
+    ]
+  },
+  {
+    "id": 111835,
+    "vpos": 2650,
+    "content": "こんな感じ",
+    "date": 1616317649,
+    "date_usec": 148251,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111840,
+    "vpos": 2659,
+    "content": "いいいい",
+    "date": 1617074151,
+    "date_usec": 370660,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 70,
+    "vpos": 2685,
+    "content": "/do(0,15,\\(timer(timer:60/142*@0,do(0,2,tv_shake3);do(0,4,bg_extend))))",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 111779,
+    "vpos": 2715,
+    "content": "www",
+    "date": 1605419175,
+    "date_usec": 62658,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111837,
+    "vpos": 2747,
+    "content": "かっか",
+    "date": 1616658609,
+    "date_usec": 38027,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111781,
+    "vpos": 2786,
+    "content": "こいしちゃんのぱんつが食べたい兄貴で草",
+    "date": 1605422427,
+    "date_usec": 513741,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111747,
+    "vpos": 2794,
+    "content": "おーーー",
+    "date": 1600671823,
+    "date_usec": 735966,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111878,
+    "vpos": 2799,
+    "content": "？",
+    "date": 1631278574,
+    "date_usec": 25512,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111913,
+    "vpos": 2808,
+    "content": "おっ",
+    "date": 1644040275,
+    "date_usec": 728211,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111906,
+    "vpos": 2825,
+    "content": "あ",
+    "date": 1642935356,
+    "date_usec": 894434,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111795,
+    "vpos": 2868,
+    "content": "Flash万歳！",
+    "date": 1607838171,
+    "date_usec": 773134,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111875,
+    "vpos": 2918,
+    "content": "あ",
+    "date": 1629609573,
+    "date_usec": 261252,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111723,
+    "vpos": 2922,
+    "content": "ほー",
+    "date": 1596710183,
+    "date_usec": 969298,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111890,
+    "vpos": 2923,
+    "content": "！",
+    "date": 1635854184,
+    "date_usec": 521864,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111729,
+    "vpos": 3033,
+    "content": "草",
+    "date": 1597005338,
+    "date_usec": 114513,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111789,
+    "vpos": 3043,
+    "content": "なんだこれ！？",
+    "date": 1606976129,
+    "date_usec": 597726,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111726,
+    "vpos": 3044,
+    "content": "？",
+    "date": 1596956092,
+    "date_usec": 943868,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111819,
+    "vpos": 3048,
+    "content": "あああ",
+    "date": 1612668617,
+    "date_usec": 151433,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111673,
+    "vpos": 3059,
+    "content": "★",
+    "date": 1591364662,
+    "date_usec": 742333,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111738,
+    "vpos": 3079,
+    "content": "10円！！",
+    "date": 1599355818,
+    "date_usec": 670781,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111713,
+    "vpos": 3115,
+    "content": "aaaaaaaaaaaaaaaaaaaa111111",
+    "date": 1595587854,
+    "date_usec": 537163,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "red"
+    ]
+  },
+  {
+    "id": 111730,
+    "vpos": 3124,
+    "content": "いえー",
+    "date": 1597328262,
+    "date_usec": 925746,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111690,
+    "vpos": 3132,
+    "content": "3",
+    "date": 1593217778,
+    "date_usec": 387169,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111681,
+    "vpos": 3133,
+    "content": "んん",
+    "date": 1591958230,
+    "date_usec": 169377,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:Switch"
+    ]
+  },
+  {
+    "id": 111739,
+    "vpos": 3139,
+    "content": "Nicococococococococococococococococococo！",
+    "date": 1599355839,
+    "date_usec": 198973,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111856,
+    "vpos": 3197,
+    "content": "し",
+    "date": 1626709296,
+    "date_usec": 615119,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111714,
+    "vpos": 3220,
+    "content": "ああ",
+    "date": 1595674254,
+    "date_usec": 508278,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111799,
+    "vpos": 3247,
+    "content": "おぉ",
+    "date": 1608528691,
+    "date_usec": 287926,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111809,
+    "vpos": 3290,
+    "content": "ーーー",
+    "date": 1610272632,
+    "date_usec": 737644,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111753,
+    "vpos": 3300,
+    "content": "懐かしい",
+    "date": 1600945507,
+    "date_usec": 411106,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111717,
+    "vpos": 3321,
+    "content": "すご",
+    "date": 1596178538,
+    "date_usec": 625970,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111734,
+    "vpos": 3327,
+    "content": "あ？？？？？？？？？？？？？？？？？？",
+    "date": 1598116547,
+    "date_usec": 767641,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111866,
+    "vpos": 3336,
+    "content": "ミジンコ",
+    "date": 1628186743,
+    "date_usec": 185838,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111898,
+    "vpos": 3336,
+    "content": "すご",
+    "date": 1639056295,
+    "date_usec": 859328,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111844,
+    "vpos": 3343,
+    "content": "にこおおおおおおおおおお",
+    "date": 1620362168,
+    "date_usec": 708395,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 71,
+    "vpos": 3361,
+    "content": "/do(0,7,\\(timer(timer:60/142*@0,do(0,2,tv_shake2);do(0,4,bg_extend))))",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 4,
+    "vpos": 3371,
+    "content": "かっこいい",
+    "date": 1612629282,
+    "date_usec": 916303,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111682,
+    "vpos": 3373,
+    "content": "!?",
+    "date": 1592031058,
+    "date_usec": 114737,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111758,
+    "vpos": 3382,
+    "content": "お？",
+    "date": 1601068020,
+    "date_usec": 580443,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111899,
+    "vpos": 3387,
+    "content": "おおお",
+    "date": 1640357003,
+    "date_usec": 823870,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      ""
+    ]
+  },
+  {
+    "id": 111850,
+    "vpos": 3399,
+    "content": "wwwww",
+    "date": 1624763447,
+    "date_usec": 683268,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111854,
+    "vpos": 3436,
+    "content": "Nicooooooooooooooooooooooooooooo！",
+    "date": 1625868601,
+    "date_usec": 284598,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111823,
+    "vpos": 3450,
+    "content": "あ",
+    "date": 1613406372,
+    "date_usec": 902853,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111828,
+    "vpos": 3477,
+    "content": "janjanjanjanjanjanjanjanjanjanjanjanjanjanjanjanjanjanjanjanjanjanjanjan",
+    "date": 1613915568,
+    "date_usec": 38548,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111743,
+    "vpos": 3493,
+    "content": "かみまみたw",
+    "date": 1600170750,
+    "date_usec": 277720,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111674,
+    "vpos": 3499,
+    "content": "PCだけだって",
+    "date": 1591406292,
+    "date_usec": 530209,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111751,
+    "vpos": 3514,
+    "content": "ん？ん？ん？",
+    "date": 1600701319,
+    "date_usec": 937666,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111817,
+    "vpos": 3532,
+    "content": "aaa",
+    "date": 1612004702,
+    "date_usec": 955375,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111930,
+    "vpos": 3539,
+    "content": "真っ赤な誓いいいいいいいいいいいいいいいいい",
+    "date": 1648354248,
+    "date_usec": 945357,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111689,
+    "vpos": 3577,
+    "content": "いみないきが…",
+    "date": 1593082048,
+    "date_usec": 886553,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111846,
+    "vpos": 3593,
+    "content": "？",
+    "date": 1622102625,
+    "date_usec": 232334,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111776,
+    "vpos": 3611,
+    "content": "いえーい",
+    "date": 1605413832,
+    "date_usec": 414468,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111709,
+    "vpos": 3627,
+    "content": "すご",
+    "date": 1594895997,
+    "date_usec": 564632,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111782,
+    "vpos": 3643,
+    "content": "sex",
+    "date": 1605422437,
+    "date_usec": 175471,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 5,
+    "vpos": 3656,
+    "content": "www",
+    "date": 1615750693,
+    "date_usec": 74743,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111886,
+    "vpos": 3671,
+    "content": "？",
+    "date": 1635344586,
+    "date_usec": 614839,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 72,
+    "vpos": 3699,
+    "content": "/layer[16].width=layer[17].width=23; do(0,31,\\(timer(timer:60/142*@0,do(0,2,tv_shake4);do(0,4,bg_extend))))",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 111801,
+    "vpos": 3746,
+    "content": "あ",
+    "date": 1608734322,
+    "date_usec": 690511,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111924,
+    "vpos": 3862,
+    "content": "いえーい☆",
+    "date": 1647079498,
+    "date_usec": 103301,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111914,
+    "vpos": 3865,
+    "content": "なんもならない",
+    "date": 1644040285,
+    "date_usec": 974510,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "red",
+      "184"
+    ]
+  },
+  {
+    "id": 111814,
+    "vpos": 3872,
+    "content": "すごいなw",
+    "date": 1611065377,
+    "date_usec": 741983,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111912,
+    "vpos": 3903,
+    "content": "♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪",
+    "date": 1643730677,
+    "date_usec": 63806,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111787,
+    "vpos": 3905,
+    "content": "流すな",
+    "date": 1606005936,
+    "date_usec": 211891,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111698,
+    "vpos": 3952,
+    "content": "ｷｬｰｲｸｻｰﾝ",
+    "date": 1593686533,
+    "date_usec": 76190,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111879,
+    "vpos": 3952,
+    "content": "できない",
+    "date": 1631278585,
+    "date_usec": 564715,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111691,
+    "vpos": 3978,
+    "content": "@ピザ",
+    "date": 1593313517,
+    "date_usec": 870120,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111797,
+    "vpos": 3981,
+    "content": "なんだこれ",
+    "date": 1608029718,
+    "date_usec": 534769,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "shita",
+      "big",
+      "red",
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111806,
+    "vpos": 3985,
+    "content": "なわこれ",
+    "date": 1609723348,
+    "date_usec": 370294,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111683,
+    "vpos": 3998,
+    "content": "どゆこと",
+    "date": 1592031104,
+    "date_usec": 561578,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111911,
+    "vpos": 4025,
+    "content": "おっくせんまん！",
+    "date": 1643730599,
+    "date_usec": 739262,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111721,
+    "vpos": 4026,
+    "content": "！？",
+    "date": 1596691435,
+    "date_usec": 502806,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 6,
+    "vpos": 4036,
+    "content": "www",
+    "date": 1615750696,
+    "date_usec": 673308,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111900,
+    "vpos": 4037,
+    "content": "ｷｬｰｲｸｻｰﾝ",
+    "date": 1641229006,
+    "date_usec": 729667,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111919,
+    "vpos": 4050,
+    "content": "？",
+    "date": 1645874251,
+    "date_usec": 726266,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111790,
+    "vpos": 4067,
+    "content": "ｗｗｗｗｗ",
+    "date": 1606976139,
+    "date_usec": 624894,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111805,
+    "vpos": 4114,
+    "content": "おー",
+    "date": 1609671076,
+    "date_usec": 172447,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111925,
+    "vpos": 4114,
+    "content": "☆",
+    "date": 1647079554,
+    "date_usec": 233165,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111881,
+    "vpos": 4130,
+    "content": "わ",
+    "date": 1634070793,
+    "date_usec": 548465,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 10,
+    "vpos": 4178,
+    "content": "わかる",
+    "date": 1616317664,
+    "date_usec": 361418,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111740,
+    "vpos": 4221,
+    "content": "イキスギィ",
+    "date": 1599377648,
+    "date_usec": 10035,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111783,
+    "vpos": 4226,
+    "content": "SEXSEXSEXSEXSEXSEXSEXSEXSEXSEXSEXSEX",
+    "date": 1605422443,
+    "date_usec": 367890,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111872,
+    "vpos": 4226,
+    "content": "あいう",
+    "date": 1629085870,
+    "date_usec": 293914,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111937,
+    "vpos": 4253,
+    "content": "はい",
+    "date": 1651413526,
+    "date_usec": 34624,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111909,
+    "vpos": 4321,
+    "content": "wwwww",
+    "date": 1643347543,
+    "date_usec": 662528,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:Switch"
+    ]
+  },
+  {
+    "id": 111847,
+    "vpos": 4326,
+    "content": "！？！？！？",
+    "date": 1622902103,
+    "date_usec": 787044,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111876,
+    "vpos": 4395,
+    "content": "！？",
+    "date": 1630588675,
+    "date_usec": 372594,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111693,
+    "vpos": 4438,
+    "content": "は？",
+    "date": 1593672458,
+    "date_usec": 93365,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111829,
+    "vpos": 4443,
+    "content": "janjanjanjanjanjanjanjanjanjanjanjanjanjanjanjanjanjanjanjanjanjan",
+    "date": 1613915577,
+    "date_usec": 704298,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111826,
+    "vpos": 4485,
+    "content": "ループした！",
+    "date": 1613915524,
+    "date_usec": 985088,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111767,
+    "vpos": 4539,
+    "content": "静止画しかみえん",
+    "date": 1602998697,
+    "date_usec": 448205,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 7,
+    "vpos": 4546,
+    "content": "www",
+    "date": 1615750701,
+    "date_usec": 807979,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111754,
+    "vpos": 4599,
+    "content": "おーーーすげー(棒)",
+    "date": 1601024912,
+    "date_usec": 915873,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111769,
+    "vpos": 4702,
+    "content": "3DS民号泣",
+    "date": 1604118418,
+    "date_usec": 814261,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111794,
+    "vpos": 4775,
+    "content": "Flash終了のお知らせｗｗｗｗｗ",
+    "date": 1607838137,
+    "date_usec": 638758,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111928,
+    "vpos": 4814,
+    "content": "Nicococococo!",
+    "date": 1647510429,
+    "date_usec": 861624,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111920,
+    "vpos": 4879,
+    "content": "　え",
+    "date": 1645874260,
+    "date_usec": 10979,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "ue",
+      "big",
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111832,
+    "vpos": 4917,
+    "content": "ニコニコ動画",
+    "date": 1614708885,
+    "date_usec": 171827,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111792,
+    "vpos": 4948,
+    "content": "こんどpcで見るか",
+    "date": 1607423957,
+    "date_usec": 704732,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111820,
+    "vpos": 4975,
+    "content": "あ",
+    "date": 1612886892,
+    "date_usec": 35276,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111703,
+    "vpos": 4992,
+    "content": "草",
+    "date": 1593937822,
+    "date_usec": 281802,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111777,
+    "vpos": 5022,
+    "content": "くぁｗせｒちゅいおｐ",
+    "date": 1605413846,
+    "date_usec": 562355,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 73,
+    "vpos": 5051,
+    "content": "/do(7,18,\\layer[@0].y+=5)",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 74,
+    "vpos": 5080,
+    "content": "/tv_jump(8,2)",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 111822,
+    "vpos": 5085,
+    "content": "草",
+    "date": 1613205786,
+    "date_usec": 221440,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111927,
+    "vpos": 5087,
+    "content": "ｱﾊｯ",
+    "date": 1647510380,
+    "date_usec": 464497,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111715,
+    "vpos": 5136,
+    "content": "ファ",
+    "date": 1595940783,
+    "date_usec": 390438,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111830,
+    "vpos": 5210,
+    "content": "janjanjanjanjanjanjanjanjanjanjanjanjanjanjanjanjanjan",
+    "date": 1613915585,
+    "date_usec": 376263,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111771,
+    "vpos": 5222,
+    "content": "きしめえええええええええええええええええええええええええええええええん",
+    "date": 1604622604,
+    "date_usec": 200006,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "naka",
+      "pink",
+      "medium",
+      "184"
+    ]
+  },
+  {
+    "id": 111892,
+    "vpos": 5272,
+    "content": "真っ赤な誓いいいいい！",
+    "date": 1636211448,
+    "date_usec": 453081,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 75,
+    "vpos": 5310,
+    "content": "/tv_jump(16,-3)",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 111907,
+    "vpos": 5346,
+    "content": "ああ",
+    "date": 1642935382,
+    "date_usec": 152011,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111848,
+    "vpos": 5353,
+    "content": "フォッシューーーーー",
+    "date": 1623150222,
+    "date_usec": 34680,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111765,
+    "vpos": 5354,
+    "content": "おっくせんまん!",
+    "date": 1602745803,
+    "date_usec": 402270,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111863,
+    "vpos": 5382,
+    "content": "つちけけ",
+    "date": 1627726579,
+    "date_usec": 706917,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111700,
+    "vpos": 5394,
+    "content": "自動的にループしてるｗ",
+    "date": 1593686663,
+    "date_usec": 143392,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111860,
+    "vpos": 5423,
+    "content": "ジャンジャンジャンジャンジャンジャンジャンジャンジャンジャンジャンジャンジャンジャンジャンジャンジャンジャンジャンジャンジャンジャンジャンジャンジャン",
+    "date": 1627306401,
+    "date_usec": 404036,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111737,
+    "vpos": 5582,
+    "content": "うをつ",
+    "date": 1598448605,
+    "date_usec": 810837,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111871,
+    "vpos": 5594,
+    "content": "ｷｬｰｲｸｻｰﾝ",
+    "date": 1628910580,
+    "date_usec": 528678,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:Switch"
+    ]
+  },
+  {
+    "id": 111831,
+    "vpos": 5650,
+    "content": "jjj",
+    "date": 1613915589,
+    "date_usec": 765104,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111778,
+    "vpos": 5654,
+    "content": "すっご",
+    "date": 1605413852,
+    "date_usec": 817804,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 76,
+    "vpos": 5660,
+    "content": "/tv_jump(18,4)",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "invisible"
+    ]
+  },
+  {
+    "id": 111707,
+    "vpos": 5677,
+    "content": "nicocococo!!!!",
+    "date": 1594518049,
+    "date_usec": 226148,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111702,
+    "vpos": 5694,
+    "content": "おっくせんまん！おっくせんまん！",
+    "date": 1593783858,
+    "date_usec": 676092,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:Switch"
+    ]
+  },
+  {
+    "id": 111763,
+    "vpos": 5695,
+    "content": "かみまみた",
+    "date": 1602669371,
+    "date_usec": 70832,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:Switch"
+    ]
+  },
+  {
+    "id": 111851,
+    "vpos": 5844,
+    "content": "かみまみた",
+    "date": 1624763496,
+    "date_usec": 61898,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 11,
+    "vpos": 5846,
+    "content": "www",
+    "date": 1616317681,
+    "date_usec": 6671,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 8,
+    "vpos": 5961,
+    "content": "！？",
+    "date": 1615750715,
+    "date_usec": 910028,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111821,
+    "vpos": 5998,
+    "content": "ｸｱｾﾌｼﾞｺ",
+    "date": 1612886901,
+    "date_usec": 528960,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111808,
+    "vpos": 6008,
+    "content": "ならない～",
+    "date": 1610116338,
+    "date_usec": 15009,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 77,
+    "vpos": 6020,
+    "content": "/tv_jump(28,-10)",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "さよなら～",
+      "invisible"
+    ]
+  },
+  {
+    "id": 111317,
+    "vpos": 6025,
+    "content": "にこにこにこチャンネル",
+    "date": 1562588400,
+    "date_usec": 263820,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111033,
+    "vpos": 6030,
+    "content": "ぼー",
+    "date": 1533878807,
+    "date_usec": 41252,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:Switch"
+    ]
+  },
+  {
+    "id": 111539,
+    "vpos": 6050,
+    "content": "すげぇ",
+    "date": 1582900610,
+    "date_usec": 136272,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 110858,
+    "vpos": 6071,
+    "content": "( *´艸｀)",
+    "date": 1523196762,
+    "date_usec": 560788,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111216,
+    "vpos": 6083,
+    "content": "(*´ω`*)",
+    "date": 1549438196,
+    "date_usec": 666818,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111032,
+    "vpos": 6096,
+    "content": "たっのしー！",
+    "date": 1533860590,
+    "date_usec": 780660,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "red",
+      "big"
+    ]
+  },
+  {
+    "id": 111289,
+    "vpos": 6124,
+    "content": "草",
+    "date": 1560607893,
+    "date_usec": 287118,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 110801,
+    "vpos": 6137,
+    "content": "なっにこれ",
+    "date": 1520183452,
+    "date_usec": 421266,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111448,
+    "vpos": 6148,
+    "content": "ウンチーコング",
+    "date": 1575189146,
+    "date_usec": 788943,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111163,
+    "vpos": 6158,
+    "content": "NYAM",
+    "date": 1545233864,
+    "date_usec": 805461,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111706,
+    "vpos": 6268,
+    "content": "あばばー",
+    "date": 1594455129,
+    "date_usec": 132792,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111300,
+    "vpos": 6270,
+    "content": "おっくせんまん!",
+    "date": 1561538831,
+    "date_usec": 808430,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111339,
+    "vpos": 6277,
+    "content": "(○|∀|○)キャラ",
+    "date": 1564562622,
+    "date_usec": 446660,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111341,
+    "vpos": 6295,
+    "content": "ｱﾊﾊﾊﾊﾊﾊﾊﾊﾊﾊ",
+    "date": 1565147468,
+    "date_usec": 183367,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111350,
+    "vpos": 6303,
+    "content": "かみまみた",
+    "date": 1565726322,
+    "date_usec": 310366,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111516,
+    "vpos": 6307,
+    "content": "そうだよ(便乗)",
+    "date": 1580110274,
+    "date_usec": 306363,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111701,
+    "vpos": 6309,
+    "content": "ぴょーん",
+    "date": 1593686672,
+    "date_usec": 233035,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111722,
+    "vpos": 6325,
+    "content": "ｷｬｰｲｸｻｰﾝ",
+    "date": 1596691458,
+    "date_usec": 521495,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111849,
+    "vpos": 6328,
+    "content": "わわわ",
+    "date": 1624655663,
+    "date_usec": 153366,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111367,
+    "vpos": 6332,
+    "content": "Nya！",
+    "date": 1566552858,
+    "date_usec": 202975,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111735,
+    "vpos": 6341,
+    "content": "？？？？",
+    "date": 1598196876,
+    "date_usec": 89382,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111748,
+    "vpos": 6352,
+    "content": "おっくせんまん！",
+    "date": 1600700708,
+    "date_usec": 249162,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111112,
+    "vpos": 6354,
+    "content": "おもしれー",
+    "date": 1541791065,
+    "date_usec": 748003,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111786,
+    "vpos": 6364,
+    "content": "ｷｬｰｲｸｻｰﾝ",
+    "date": 1605781152,
+    "date_usec": 14410,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 110939,
+    "vpos": 6373,
+    "content": "あ",
+    "date": 1527668644,
+    "date_usec": 656392,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111390,
+    "vpos": 6395,
+    "content": "いええーー",
+    "date": 1570238937,
+    "date_usec": 647970,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111191,
+    "vpos": 6400,
+    "content": "鈍痛☆鈍痛☆鈍痛☆鈍痛☆鈍痛☆鈍痛☆鈍痛",
+    "date": 1546836172,
+    "date_usec": 880322,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 110835,
+    "vpos": 6405,
+    "content": "aa",
+    "date": 1522460238,
+    "date_usec": 606752,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 110989,
+    "vpos": 6421,
+    "content": "あ",
+    "date": 1530318476,
+    "date_usec": 628984,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111893,
+    "vpos": 6424,
+    "content": "ラスコメ",
+    "date": 1636211530,
+    "date_usec": 234810,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111877,
+    "vpos": 6426,
+    "content": "あ",
+    "date": 1631278558,
+    "date_usec": 189381,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111710,
+    "vpos": 6431,
+    "content": "へーー",
+    "date": 1594925395,
+    "date_usec": 927500,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111285,
+    "vpos": 6434,
+    "content": "すこ",
+    "date": 1559656156,
+    "date_usec": 317034,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 110841,
+    "vpos": 6437,
+    "content": "なにこれええ",
+    "date": 1522477021,
+    "date_usec": 819638,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "pink",
+      "big"
+    ]
+  },
+  {
+    "id": 111509,
+    "vpos": 6439,
+    "content": "あ",
+    "date": 1579229819,
+    "date_usec": 486499,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 110825,
+    "vpos": 6480,
+    "content": "nya",
+    "date": 1522114646,
+    "date_usec": 443114,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111716,
+    "vpos": 6501,
+    "content": "ワロタ",
+    "date": 1596178517,
+    "date_usec": 166225,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 18,
+    "vpos": 6509,
+    "content": "/seek(vpos:11)",
+    "date": 1317309916,
+    "owner": true,
+    "premium": true,
+    "mail": [
+      "ループ設定",
+      "invisible"
+    ]
+  },
+  {
+    "id": 9,
+    "vpos": 6567,
+    "content": "！？",
+    "date": 1615750722,
+    "date_usec": 23908,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111351,
+    "vpos": 6586,
+    "content": "あ",
+    "date": 1565726348,
+    "date_usec": 790848,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111680,
+    "vpos": 6642,
+    "content": "ﾆｬﾆｬﾆｬﾆｬﾆｬﾆｬﾆｬﾆｬ",
+    "date": 1591784388,
+    "date_usec": 431642,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111088,
+    "vpos": 6674,
+    "content": "え",
+    "date": 1539623632,
+    "date_usec": 722765,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111008,
+    "vpos": 6738,
+    "content": "あ",
+    "date": 1532312751,
+    "date_usec": 764262,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111451,
+    "vpos": 6757,
+    "content": "　　　　　　　　　　ふぇ",
+    "date": 1575762733,
+    "date_usec": 80933,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "ue",
+      "184"
+    ]
+  },
+  {
+    "id": 110891,
+    "vpos": 6765,
+    "content": "ミク",
+    "date": 1525443371,
+    "date_usec": 291959,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 110979,
+    "vpos": 6823,
+    "content": "あ",
+    "date": 1529234468,
+    "date_usec": 194303,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "device:3ds",
+      "184"
+    ]
+  },
+  {
+    "id": 111417,
+    "vpos": 6858,
+    "content": "どうゆうこと？",
+    "date": 1571393399,
+    "date_usec": 936746,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111736,
+    "vpos": 6890,
+    "content": "すこ",
+    "date": 1598446243,
+    "date_usec": 530007,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111080,
+    "vpos": 6955,
+    "content": "いけた",
+    "date": 1538834381,
+    "date_usec": 804497,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111327,
+    "vpos": 6987,
+    "content": "！？",
+    "date": 1563452539,
+    "date_usec": 594662,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111094,
+    "vpos": 7006,
+    "content": "あ",
+    "date": 1540017307,
+    "date_usec": 591394,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111434,
+    "vpos": 7130,
+    "content": "작은 단지!おっくせんまん！",
+    "date": 1573883691,
+    "date_usec": 344146,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111243,
+    "vpos": 7178,
+    "content": "お",
+    "date": 1552552468,
+    "date_usec": 407140,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111845,
+    "vpos": 7211,
+    "content": "すご",
+    "date": 1621167786,
+    "date_usec": 304808,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111078,
+    "vpos": 7225,
+    "content": "にゃ！",
+    "date": 1538660838,
+    "date_usec": 278111,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111352,
+    "vpos": 7243,
+    "content": "あみ",
+    "date": 1565726355,
+    "date_usec": 450302,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111811,
+    "vpos": 7274,
+    "content": "あ",
+    "date": 1611062324,
+    "date_usec": 860638,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111435,
+    "vpos": 7345,
+    "content": "작은 단지!おっくせんまん！",
+    "date": 1573883691,
+    "date_usec": 483034,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111244,
+    "vpos": 7396,
+    "content": "123",
+    "date": 1552746223,
+    "date_usec": 328571,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 110933,
+    "vpos": 7509,
+    "content": "えーりん！",
+    "date": 1527594610,
+    "date_usec": 71063,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 110973,
+    "vpos": 7564,
+    "content": "なぜだーーー",
+    "date": 1529234237,
+    "date_usec": 545552,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111818,
+    "vpos": 7613,
+    "content": "うう",
+    "date": 1612365558,
+    "date_usec": 614030,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:Switch"
+    ]
+  },
+  {
+    "id": 110884,
+    "vpos": 7619,
+    "content": "あああ",
+    "date": 1524816353,
+    "date_usec": 57746,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:Switch"
+    ]
+  },
+  {
+    "id": 111772,
+    "vpos": 7629,
+    "content": "あいうえお",
+    "date": 1604622628,
+    "date_usec": 2496,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111095,
+    "vpos": 7666,
+    "content": "あ",
+    "date": 1540017314,
+    "date_usec": 63981,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111544,
+    "vpos": 7671,
+    "content": "aa",
+    "date": 1583266627,
+    "date_usec": 45592,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111798,
+    "vpos": 7789,
+    "content": "？",
+    "date": 1608462221,
+    "date_usec": 437063,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111089,
+    "vpos": 7807,
+    "content": "PCのみか",
+    "date": 1539623651,
+    "date_usec": 866091,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111725,
+    "vpos": 7866,
+    "content": "SCP!SCP!",
+    "date": 1596878426,
+    "date_usec": 823364,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111749,
+    "vpos": 7907,
+    "content": "真赤な誓いいいいい",
+    "date": 1600700723,
+    "date_usec": 729370,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111421,
+    "vpos": 7992,
+    "content": "a",
+    "date": 1572138166,
+    "date_usec": 195989,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111727,
+    "vpos": 8115,
+    "content": "！？！？！？！？",
+    "date": 1596956143,
+    "date_usec": 370411,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111812,
+    "vpos": 8132,
+    "content": "だ",
+    "date": 1611062333,
+    "date_usec": 515131,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 110908,
+    "vpos": 8331,
+    "content": "ニャニャニャニャニャニャニャニャ",
+    "date": 1526028515,
+    "date_usec": 517090,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:Switch"
+    ]
+  },
+  {
+    "id": 111452,
+    "vpos": 8343,
+    "content": "　　　　　　　　　　　　　　　ふむ",
+    "date": 1575762748,
+    "date_usec": 741935,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "ue",
+      "184"
+    ]
+  },
+  {
+    "id": 111813,
+    "vpos": 8366,
+    "content": "て",
+    "date": 1611062335,
+    "date_usec": 844266,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111385,
+    "vpos": 9024,
+    "content": "あああああああ",
+    "date": 1569030239,
+    "date_usec": 166355,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111263,
+    "vpos": 9066,
+    "content": "あ",
+    "date": 1555146731,
+    "date_usec": 320320,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111838,
+    "vpos": 9115,
+    "content": "あああ",
+    "date": 1616658624,
+    "date_usec": 618805,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 110866,
+    "vpos": 9265,
+    "content": "は",
+    "date": 1523629922,
+    "date_usec": 880831,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111694,
+    "vpos": 9732,
+    "content": "何もならんやん…",
+    "date": 1593672508,
+    "date_usec": 231699,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111101,
+    "vpos": 9733,
+    "content": "おっくせんまん！",
+    "date": 1540657764,
+    "date_usec": 717559,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 110934,
+    "vpos": 9800,
+    "content": "(^o^)",
+    "date": 1527594632,
+    "date_usec": 801503,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "red",
+      "big",
+      "184"
+    ]
+  },
+  {
+    "id": 110867,
+    "vpos": 9885,
+    "content": "は？",
+    "date": 1523629929,
+    "date_usec": 571203,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111195,
+    "vpos": 9901,
+    "content": "見えない",
+    "date": 1546836354,
+    "date_usec": 150045,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111368,
+    "vpos": 9918,
+    "content": "あ",
+    "date": 1566561979,
+    "date_usec": 629635,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111453,
+    "vpos": 10066,
+    "content": "　　　　　　　　　　　　　　　　　　　　むぅ",
+    "date": 1575762766,
+    "date_usec": 225139,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "ue",
+      "184"
+    ]
+  },
+  {
+    "id": 111444,
+    "vpos": 10108,
+    "content": "a",
+    "date": 1574611119,
+    "date_usec": 187277,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111839,
+    "vpos": 10145,
+    "content": "問題しかない",
+    "date": 1616658634,
+    "date_usec": 880450,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111387,
+    "vpos": 10310,
+    "content": "なにこれ",
+    "date": 1569161642,
+    "date_usec": 725037,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "white"
+    ]
+  },
+  {
+    "id": 110831,
+    "vpos": 10466,
+    "content": "あああ",
+    "date": 1522253607,
+    "date_usec": 958889,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "device:Switch"
+    ]
+  },
+  {
+    "id": 111692,
+    "vpos": 10477,
+    "content": "ｗｗ",
+    "date": 1593313583,
+    "date_usec": 493683,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 110868,
+    "vpos": 10483,
+    "content": "画像じゃん",
+    "date": 1523629949,
+    "date_usec": 765123,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111745,
+    "vpos": 10814,
+    "content": "うーん",
+    "date": 1600322778,
+    "date_usec": 305895,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111454,
+    "vpos": 11712,
+    "content": "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　むむむ",
+    "date": 1575762782,
+    "date_usec": 439653,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "ue",
+      "184"
+    ]
+  },
+  {
+    "id": 111416,
+    "vpos": 11895,
+    "content": "おー",
+    "date": 1571223779,
+    "date_usec": 503865,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111386,
+    "vpos": 11974,
+    "content": "にこにこ",
+    "date": 1569030269,
+    "date_usec": 99681,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 109725,
+    "vpos": 12282,
+    "content": "富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山",
+    "date": 1481614782,
+    "date_usec": 437576,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "naka",
+      "medium",
+      "184"
+    ]
+  },
+  {
+    "id": 108984,
+    "vpos": 12288,
+    "content": "富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山",
+    "date": 1467469480,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 108985,
+    "vpos": 12288,
+    "content": "富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山",
+    "date": 1467469492,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 108986,
+    "vpos": 12288,
+    "content": "富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山",
+    "date": 1467469505,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 108987,
+    "vpos": 12288,
+    "content": "富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山",
+    "date": 1467469519,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 108988,
+    "vpos": 12288,
+    "content": "富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山",
+    "date": 1467469555,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 108989,
+    "vpos": 12288,
+    "content": "富士山富士山富士山富士山富士山富士山",
+    "date": 1467469564,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 108948,
+    "vpos": 12292,
+    "content": "危機危機危機危機気",
+    "date": 1467468603,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 110095,
+    "vpos": 12315,
+    "content": "富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山",
+    "date": 1491815313,
+    "date_usec": 372654,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 109126,
+    "vpos": 12494,
+    "content": "富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山富士山",
+    "date": 1470025690,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111071,
+    "vpos": 12797,
+    "content": "おおおおおおおおおお",
+    "date": 1538268062,
+    "date_usec": 43451,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 108781,
+    "vpos": 12900,
+    "content": "Nyanyanyanyanyanyanyanya",
+    "date": 1463651838,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "cyan"
+    ]
+  },
+  {
+    "id": 109673,
+    "vpos": 13002,
+    "content": "ループ突破出来ん(PC)",
+    "date": 1479887873,
+    "date_usec": 924437,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "naka",
+      "big",
+      "red",
+      "184"
+    ]
+  },
+  {
+    "id": 109674,
+    "vpos": 13023,
+    "content": "ループ",
+    "date": 1479887881,
+    "date_usec": 488369,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "naka",
+      "big",
+      "red",
+      "184"
+    ]
+  },
+  {
+    "id": 109675,
+    "vpos": 13039,
+    "content": "ループ最後尾",
+    "date": 1479887893,
+    "date_usec": 907419,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "naka",
+      "big",
+      "red",
+      "184"
+    ]
+  },
+  {
+    "id": 109065,
+    "vpos": 13192,
+    "content": "つつつ",
+    "date": 1468840661,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 110650,
+    "vpos": 13194,
+    "content": "おっくせんまん！",
+    "date": 1512042381,
+    "date_usec": 485091,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 108909,
+    "vpos": 13266,
+    "content": "ワ",
+    "date": 1466687209,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 108949,
+    "vpos": 13268,
+    "content": "梅梅梅梅梅梅梅",
+    "date": 1467468612,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 108990,
+    "vpos": 13442,
+    "content": "おらぁおらぁおらぁおらぁおらぁおらぁおらぁおらぁおらぁおらぁおらぁおらぁ",
+    "date": 1467469696,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 109394,
+    "vpos": 13478,
+    "content": "しし",
+    "date": 1474169816,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111196,
+    "vpos": 13485,
+    "content": "鈍痛☆鈍痛☆鈍痛☆鈍痛☆鈍痛☆鈍痛☆鈍痛☆鈍痛☆鈍痛☆鈍痛☆鈍痛☆鈍痛☆鈍痛☆鈍痛☆鈍痛☆鈍痛☆鈍痛",
+    "date": 1546836410,
+    "date_usec": 724681,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 109127,
+    "vpos": 13714,
+    "content": "弾幕薄いよー！",
+    "date": 1470025732,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 108910,
+    "vpos": 13830,
+    "content": "ニコッ",
+    "date": 1466687223,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 109412,
+    "vpos": 13850,
+    "content": "おっkdkdkdkdk",
+    "date": 1474467937,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "naka",
+      "medium",
+      "184"
+    ]
+  },
+  {
+    "id": 109395,
+    "vpos": 13856,
+    "content": "ちむきよけ",
+    "date": 1474169820,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 109845,
+    "vpos": 13888,
+    "content": "ややや",
+    "date": 1484968355,
+    "date_usec": 208551,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 108991,
+    "vpos": 13921,
+    "content": "おらぁおらぁおらぁおらぁおらぁおらぁおらぁおらぁおらぁおらぁおらぁ",
+    "date": 1467469701,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 109007,
+    "vpos": 14059,
+    "content": "報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ス",
+    "date": 1467532309,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 109008,
+    "vpos": 14059,
+    "content": "報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道",
+    "date": 1467532319,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 109009,
+    "vpos": 14059,
+    "content": "報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション",
+    "date": 1467532328,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 109010,
+    "vpos": 14059,
+    "content": "報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション",
+    "date": 1467532342,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 109011,
+    "vpos": 14059,
+    "content": "報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション",
+    "date": 1467532355,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 109012,
+    "vpos": 14059,
+    "content": "報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション",
+    "date": 1467532379,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 109013,
+    "vpos": 14059,
+    "content": "報道ステーション報道ステーション",
+    "date": 1467532386,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 109014,
+    "vpos": 14059,
+    "content": "報道ステーション",
+    "date": 1467532393,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 109128,
+    "vpos": 14227,
+    "content": "報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション",
+    "date": 1470025758,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111546,
+    "vpos": 14411,
+    "content": "報道ステーション",
+    "date": 1583312079,
+    "date_usec": 474026,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111732,
+    "vpos": 14427,
+    "content": "nya",
+    "date": 1597764577,
+    "date_usec": 35780,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 110466,
+    "vpos": 14446,
+    "content": "wwwwwww",
+    "date": 1505111991,
+    "date_usec": 680509,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 109396,
+    "vpos": 14631,
+    "content": "!?",
+    "date": 1474169827,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 108992,
+    "vpos": 14647,
+    "content": "おらぁおらぁおらぁおらぁおらぁおらぁおらぁおらぁおらぁおらぁ",
+    "date": 1467469708,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 108950,
+    "vpos": 14769,
+    "content": "ニコニコニコニコニコニコニコニコニコニコニコ",
+    "date": 1467468627,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111934,
+    "vpos": 15068,
+    "content": "おお",
+    "date": 1649330343,
+    "date_usec": 952136,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:Switch"
+    ]
+  },
+  {
+    "id": 109413,
+    "vpos": 15115,
+    "content": "かままみたーーーー",
+    "date": 1474467950,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "naka",
+      "medium",
+      "184"
+    ]
+  },
+  {
+    "id": 111547,
+    "vpos": 15187,
+    "content": "報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ス",
+    "date": 1583312087,
+    "date_usec": 696663,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 108993,
+    "vpos": 15511,
+    "content": "おらぁおらぁおらぁおらぁおらぁおらぁおらぁおらぁおらぁ",
+    "date": 1467469717,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111197,
+    "vpos": 15645,
+    "content": "大丈夫だ、問題ない。",
+    "date": 1546836453,
+    "date_usec": 686706,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 109129,
+    "vpos": 15668,
+    "content": "弾幕が途切れないように話題作って！",
+    "date": 1470025796,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111379,
+    "vpos": 15800,
+    "content": "www",
+    "date": 1567694778,
+    "date_usec": 42353,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "naka",
+      "medium",
+      "184"
+    ]
+  },
+  {
+    "id": 111428,
+    "vpos": 15891,
+    "content": "おっくせんまん!",
+    "date": 1573710539,
+    "date_usec": 42698,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 108704,
+    "vpos": 15969,
+    "content": "\\(´∀`)/",
+    "date": 1461999210,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 110467,
+    "vpos": 16011,
+    "content": "おおおおおおおおおお",
+    "date": 1505112007,
+    "date_usec": 741500,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111463,
+    "vpos": 16024,
+    "content": "ええ",
+    "date": 1576286704,
+    "date_usec": 220686,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111301,
+    "vpos": 16039,
+    "content": "うく",
+    "date": 1561538861,
+    "date_usec": 428629,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 108953,
+    "vpos": 16136,
+    "content": "報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ス",
+    "date": 1467468798,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 108954,
+    "vpos": 16136,
+    "content": "報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション",
+    "date": 1467468803,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 108955,
+    "vpos": 16136,
+    "content": "報道ステーション報道ステーション報道ステーション",
+    "date": 1467468807,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 108956,
+    "vpos": 16136,
+    "content": "報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション",
+    "date": 1467468813,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 108957,
+    "vpos": 16136,
+    "content": "報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション",
+    "date": 1467468817,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111873,
+    "vpos": 16174,
+    "content": "オシャレ",
+    "date": 1629527625,
+    "date_usec": 382336,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 108994,
+    "vpos": 16201,
+    "content": "おらぁおらぁおらぁおらぁおらぁおらぁおらぁ",
+    "date": 1467469724,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111429,
+    "vpos": 16271,
+    "content": "報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ス",
+    "date": 1573710612,
+    "date_usec": 258818,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111816,
+    "vpos": 16470,
+    "content": "po",
+    "date": 1611417755,
+    "date_usec": 570913,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 108958,
+    "vpos": 16562,
+    "content": "報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ス",
+    "date": 1467468852,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 108959,
+    "vpos": 16562,
+    "content": "報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション",
+    "date": 1467468862,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 108960,
+    "vpos": 16562,
+    "content": "報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション",
+    "date": 1467468876,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 108961,
+    "vpos": 16562,
+    "content": "報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション",
+    "date": 1467468890,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 108962,
+    "vpos": 16562,
+    "content": "報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション",
+    "date": 1467468904,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 108963,
+    "vpos": 16562,
+    "content": "報道ステーション報道ステーション",
+    "date": 1467468919,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 108964,
+    "vpos": 16562,
+    "content": "報道ステーション",
+    "date": 1467468923,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 110766,
+    "vpos": 16570,
+    "content": "さたち",
+    "date": 1517142533,
+    "date_usec": 665616,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111455,
+    "vpos": 16734,
+    "content": "　　　　　　　　　　　　　　　　　　　　わ",
+    "date": 1575762832,
+    "date_usec": 692273,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "shita",
+      "184"
+    ]
+  },
+  {
+    "id": 110263,
+    "vpos": 16887,
+    "content": "真っ赤な誓いいいいいいい",
+    "date": 1498910034,
+    "date_usec": 216347,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 108995,
+    "vpos": 17028,
+    "content": "おらぁおらぁおらぁおらぁおらぁおらぁ",
+    "date": 1467469732,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 108965,
+    "vpos": 17048,
+    "content": "報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ス",
+    "date": 1467468989,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 108966,
+    "vpos": 17048,
+    "content": "報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道",
+    "date": 1467468997,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 108967,
+    "vpos": 17048,
+    "content": "報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション",
+    "date": 1467469007,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 108968,
+    "vpos": 17048,
+    "content": "報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション",
+    "date": 1467469018,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 108969,
+    "vpos": 17048,
+    "content": "報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション",
+    "date": 1467469030,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 108970,
+    "vpos": 17048,
+    "content": "報道ステーション報道ステーション報道ステーション報道ステーション",
+    "date": 1467469044,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 108971,
+    "vpos": 17048,
+    "content": "報道ステーション報道ステーション報道ステーション",
+    "date": 1467469062,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 108972,
+    "vpos": 17048,
+    "content": "報道ステーション報道ステーション",
+    "date": 1467469078,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 108973,
+    "vpos": 17048,
+    "content": "報道ステーション",
+    "date": 1467469083,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 110935,
+    "vpos": 17126,
+    "content": "オーケーオーケー任せとけー！",
+    "date": 1527594706,
+    "date_usec": 36964,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "red",
+      "big",
+      "ue",
+      "184"
+    ]
+  },
+  {
+    "id": 108974,
+    "vpos": 17519,
+    "content": "報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ス",
+    "date": 1467469128,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 108975,
+    "vpos": 17519,
+    "content": "報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道",
+    "date": 1467469201,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 108976,
+    "vpos": 17519,
+    "content": "報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション",
+    "date": 1467469211,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 108977,
+    "vpos": 17519,
+    "content": "報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション",
+    "date": 1467469222,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 108978,
+    "vpos": 17519,
+    "content": "報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション",
+    "date": 1467469235,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 108979,
+    "vpos": 17519,
+    "content": "報道ステーション報道ステーション報道ステーション報道ステーション",
+    "date": 1467469249,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 108980,
+    "vpos": 17519,
+    "content": "報道ステーション報道ステーション報道ステーション報道",
+    "date": 1467469261,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 108981,
+    "vpos": 17519,
+    "content": "報道ステーション報道ステーション",
+    "date": 1467469277,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 108982,
+    "vpos": 17519,
+    "content": "報道ステーション",
+    "date": 1467469282,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 110457,
+    "vpos": 17600,
+    "content": "ー",
+    "date": 1504615650,
+    "date_usec": 799349,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "naka",
+      "medium",
+      "184"
+    ]
+  },
+  {
+    "id": 108996,
+    "vpos": 17642,
+    "content": "おらぁおらぁおらぁおらぁおらぁ",
+    "date": 1467469738,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111548,
+    "vpos": 17826,
+    "content": "報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーショ",
+    "date": 1583312113,
+    "date_usec": 581974,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 108951,
+    "vpos": 17950,
+    "content": "あああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ",
+    "date": 1467468659,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 92980,
+    "vpos": 18000,
+    "content": "?",
+    "date": 1345682360,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 110260,
+    "vpos": 18039,
+    "content": "イチゴパフェ食べたい",
+    "date": 1498891091,
+    "date_usec": 413105,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 97235,
+    "vpos": 18040,
+    "content": "???",
+    "date": 1364537977,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "blue"
+    ]
+  },
+  {
+    "id": 111081,
+    "vpos": 18049,
+    "content": "え",
+    "date": 1538834391,
+    "date_usec": 984981,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 110767,
+    "vpos": 18126,
+    "content": "すげえ",
+    "date": 1517142546,
+    "date_usec": 197545,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 108997,
+    "vpos": 18290,
+    "content": "おらぁおらぁおらぁおらぁ",
+    "date": 1467469745,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111545,
+    "vpos": 18294,
+    "content": "報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ス",
+    "date": 1583312032,
+    "date_usec": 76734,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 108731,
+    "vpos": 18317,
+    "content": "wiiUでもダメなのか・・・pcみたいなもんだろ・・・",
+    "date": 1462626803,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:WiiU"
+    ]
+  },
+  {
+    "id": 108502,
+    "vpos": 18328,
+    "content": "お",
+    "date": 1458165069,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 110812,
+    "vpos": 18345,
+    "content": "ににににに",
+    "date": 1520736755,
+    "date_usec": 473361,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 108595,
+    "vpos": 18384,
+    "content": "うーにゃー",
+    "date": 1459767672,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111456,
+    "vpos": 18589,
+    "content": "　　　　　　　　　　　　　　　　　　　　なんだこれは",
+    "date": 1575762851,
+    "date_usec": 236103,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "shita",
+      "184"
+    ]
+  },
+  {
+    "id": 95857,
+    "vpos": 18600,
+    "content": "!?",
+    "date": 1358012582,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "naka",
+      "medium",
+      "184"
+    ]
+  },
+  {
+    "id": 84259,
+    "vpos": 18900,
+    "content": "(｀・ω・´)",
+    "date": 1321543845,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 94227,
+    "vpos": 18966,
+    "content": "(ﾟД)y-~",
+    "date": 1351770143,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "big",
+      "white"
+    ]
+  },
+  {
+    "id": 104890,
+    "vpos": 18980,
+    "content": "☆",
+    "date": 1419738091,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 110769,
+    "vpos": 19029,
+    "content": "つつつ",
+    "date": 1517142555,
+    "date_usec": 230795,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 101374,
+    "vpos": 19085,
+    "content": "え？",
+    "date": 1385719026,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 109414,
+    "vpos": 19132,
+    "content": "報道ステーション",
+    "date": 1474467990,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "naka",
+      "medium",
+      "184"
+    ]
+  },
+  {
+    "id": 105831,
+    "vpos": 19165,
+    "content": "テレビちゃんこっち見てる",
+    "date": 1423055190,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 106904,
+    "vpos": 19166,
+    "content": "☆彡　★彡",
+    "date": 1432825625,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:WiiU"
+    ]
+  },
+  {
+    "id": 108998,
+    "vpos": 19181,
+    "content": "おらぁおらぁおらぁ",
+    "date": 1467469753,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111198,
+    "vpos": 19275,
+    "content": "なってない",
+    "date": 1546836502,
+    "date_usec": 278924,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 105784,
+    "vpos": 19339,
+    "content": "テレビちゃん可愛い(＊^∀^)",
+    "date": 1422659948,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 105547,
+    "vpos": 19360,
+    "content": "跳ねるかな？",
+    "date": 1421416268,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 109992,
+    "vpos": 19364,
+    "content": "あ",
+    "date": 1488676459,
+    "date_usec": 797297,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 95386,
+    "vpos": 19466,
+    "content": "うまいな",
+    "date": 1357012213,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111935,
+    "vpos": 19483,
+    "content": "む",
+    "date": 1649596170,
+    "date_usec": 108640,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:Switch"
+    ]
+  },
+  {
+    "id": 109131,
+    "vpos": 19493,
+    "content": "にゃにゃにゃにゃにゃにゃにゃにゃにゃにゃ",
+    "date": 1470036295,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 83501,
+    "vpos": 19500,
+    "content": "乙",
+    "date": 1319695885,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 110468,
+    "vpos": 19508,
+    "content": "すご……",
+    "date": 1505112042,
+    "date_usec": 706489,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 104146,
+    "vpos": 19511,
+    "content": "いいい",
+    "date": 1408505028,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 108999,
+    "vpos": 19653,
+    "content": "おらぁおらぁ",
+    "date": 1467469758,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111238,
+    "vpos": 19779,
+    "content": "え？",
+    "date": 1552197446,
+    "date_usec": 798936,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 81006,
+    "vpos": 19800,
+    "content": "(´・ω・｀)つ",
+    "date": 1315400438,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 102869,
+    "vpos": 19806,
+    "content": "ああ",
+    "date": 1398592607,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 74815,
+    "vpos": 19899,
+    "content": "あ",
+    "date": 1307711519,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111788,
+    "vpos": 19941,
+    "content": "あわわわわわ",
+    "date": 1606006008,
+    "date_usec": 729775,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111199,
+    "vpos": 19966,
+    "content": "☆ﾐ",
+    "date": 1546836566,
+    "date_usec": 318181,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 109000,
+    "vpos": 19968,
+    "content": "おらぁ",
+    "date": 1467469761,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 105832,
+    "vpos": 20039,
+    "content": "　　　○  ＿　　　。　o  ┻┓∬　｡　　／⌒ヽ 　 　|||。o 　（＾ω＾　）  (￣￣o)￣￣￣￣○￣)  .i￣○￣￣○￣oﾟ",
+    "date": 1423055199,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 81219,
+    "vpos": 20100,
+    "content": "突破ｗｗｗ",
+    "date": 1315656073,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 110549,
+    "vpos": 20107,
+    "content": "あん",
+    "date": 1508659472,
+    "date_usec": 135544,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 106289,
+    "vpos": 20150,
+    "content": "☆",
+    "date": 1427002293,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 110770,
+    "vpos": 20254,
+    "content": "(´・・`)",
+    "date": 1517142567,
+    "date_usec": 502394,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 110813,
+    "vpos": 20303,
+    "content": "ああああああああああああああああああああああああああああああああああ",
+    "date": 1520736775,
+    "date_usec": 27014,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 97348,
+    "vpos": 20400,
+    "content": "うふ♡",
+    "date": 1364962289,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 94222,
+    "vpos": 20410,
+    "content": "Wreeeeee!!!",
+    "date": 1351769530,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "red"
+    ]
+  },
+  {
+    "id": 110231,
+    "vpos": 20416,
+    "content": "報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション報道ステーション",
+    "date": 1497164757,
+    "date_usec": 728244,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 107110,
+    "vpos": 20493,
+    "content": "ふ",
+    "date": 1435236234,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111426,
+    "vpos": 20503,
+    "content": "ループ無効にできたあーー",
+    "date": 1573111540,
+    "date_usec": 642090,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 108120,
+    "vpos": 20574,
+    "content": "つちす",
+    "date": 1448536940,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 107121,
+    "vpos": 20604,
+    "content": "ん？",
+    "date": 1435654073,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 105934,
+    "vpos": 20681,
+    "content": "？",
+    "date": 1423917965,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 90776,
+    "vpos": 20701,
+    "content": "あ",
+    "date": 1336324478,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 104883,
+    "vpos": 20860,
+    "content": "？",
+    "date": 1419595760,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 95385,
+    "vpos": 20900,
+    "content": "ニコニコ",
+    "date": 1356973920,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "naka",
+      "medium",
+      "184"
+    ]
+  },
+  {
+    "id": 105213,
+    "vpos": 20905,
+    "content": "あ",
+    "date": 1420800747,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 110771,
+    "vpos": 20961,
+    "content": "？",
+    "date": 1517142574,
+    "date_usec": 593993,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 74816,
+    "vpos": 20978,
+    "content": "あ\nあ",
+    "date": 1307711529,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 74357,
+    "vpos": 21000,
+    "content": "空間",
+    "date": 1307152826,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 89848,
+    "vpos": 21000,
+    "content": "::",
+    "date": 1333880662,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 109132,
+    "vpos": 21238,
+    "content": "え",
+    "date": 1470036311,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 77329,
+    "vpos": 21300,
+    "content": "ん？",
+    "date": 1310808119,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 110772,
+    "vpos": 21332,
+    "content": "あ",
+    "date": 1517142578,
+    "date_usec": 273806,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 110261,
+    "vpos": 21355,
+    "content": "WRYYYYYYYYYYYYYYYYYYYYY!!!!",
+    "date": 1498891124,
+    "date_usec": 500135,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 73424,
+    "vpos": 21435,
+    "content": "にゃ",
+    "date": 1306561061,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 110923,
+    "vpos": 21531,
+    "content": "ｷｬｰｲｸｻｰﾝ",
+    "date": 1526706880,
+    "date_usec": 763911,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 74028,
+    "vpos": 21600,
+    "content": "おや？",
+    "date": 1306836207,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 110773,
+    "vpos": 21655,
+    "content": "ききくくきききくく",
+    "date": 1517142581,
+    "date_usec": 609066,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 107347,
+    "vpos": 21740,
+    "content": "あ",
+    "date": 1438740490,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:WiiU"
+    ]
+  },
+  {
+    "id": 108586,
+    "vpos": 21772,
+    "content": "な、なんだと！？",
+    "date": 1459661149,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 102794,
+    "vpos": 21815,
+    "content": "え？",
+    "date": 1397903136,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 109902,
+    "vpos": 21856,
+    "content": "こめええええええええええええええええええ",
+    "date": 1486113421,
+    "date_usec": 246220,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 110376,
+    "vpos": 21876,
+    "content": "ならない",
+    "date": 1502170329,
+    "date_usec": 760790,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:WiiU"
+    ]
+  },
+  {
+    "id": 95858,
+    "vpos": 22000,
+    "content": "ーーー!?",
+    "date": 1358012601,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "naka",
+      "medium",
+      "184"
+    ]
+  },
+  {
+    "id": 72271,
+    "vpos": 22005,
+    "content": "ループ突破",
+    "date": 1305210974,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 109538,
+    "vpos": 22146,
+    "content": "え？",
+    "date": 1476346052,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 109133,
+    "vpos": 22210,
+    "content": "にゃにゃにゃにゃにゃにゃにゃにゃにゃにゃにゃにゃにゃにゃにゃにゃにゃにゃにゃにゃにゃにゃにゃにゃにゃにゃにゃにゃにゃにゃにゃにゃにゃにゃにゃにゃにゃに",
+    "date": 1470036320,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 109873,
+    "vpos": 22293,
+    "content": "Nya",
+    "date": 1485776205,
+    "date_usec": 852669,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 110454,
+    "vpos": 22331,
+    "content": "な",
+    "date": 1504603364,
+    "date_usec": 596946,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 106736,
+    "vpos": 22358,
+    "content": "Fooooooooooo",
+    "date": 1431691027,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111457,
+    "vpos": 22366,
+    "content": "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　なるほど",
+    "date": 1575762889,
+    "date_usec": 14573,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "shita",
+      "184"
+    ]
+  },
+  {
+    "id": 108952,
+    "vpos": 22377,
+    "content": "化か化か化か化か化か化か化化か化か化か化化化か化か化か化か化化化か",
+    "date": 1467468704,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 111308,
+    "vpos": 22388,
+    "content": "こええおお",
+    "date": 1561881240,
+    "date_usec": 1735,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 109874,
+    "vpos": 22405,
+    "content": "Nya.",
+    "date": 1485776213,
+    "date_usec": 875159,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 95865,
+    "vpos": 22410,
+    "content": "z",
+    "date": 1358050095,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 110774,
+    "vpos": 22459,
+    "content": "こなああああああああああああああ",
+    "date": 1517142589,
+    "date_usec": 534446,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 105834,
+    "vpos": 22460,
+    "content": "引っ越し！",
+    "date": 1423055223,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 108086,
+    "vpos": 22503,
+    "content": "乙です！",
+    "date": 1447924263,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 110448,
+    "vpos": 22517,
+    "content": "逃げられた",
+    "date": 1504525802,
+    "date_usec": 364552,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "184",
+      "big",
+      "black",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 107603,
+    "vpos": 22547,
+    "content": "Это вулас",
+    "date": 1440919982,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:WiiU"
+    ]
+  },
+  {
+    "id": 110569,
+    "vpos": 22580,
+    "content": "←頭おかしい？",
+    "date": 1510483022,
+    "date_usec": 488451,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "device:3DS"
+    ]
+  },
+  {
+    "id": 75257,
+    "vpos": 22630,
+    "content": "cc",
+    "date": 1308311699,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184",
+      "orange",
+      "big"
+    ]
+  },
+  {
+    "id": 87298,
+    "vpos": 22659,
+    "content": "あ",
+    "date": 1328936474,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 76989,
+    "vpos": 22680,
+    "content": "ああああああああああああああ",
+    "date": 1310462397,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 103610,
+    "vpos": 22812,
+    "content": "乙ｗｗｗｗｗｗｗｗｗｗｗｗ",
+    "date": 1404562464,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "184"
+    ]
+  },
+  {
+    "id": 111259,
+    "vpos": 22820,
+    "content": "＠ジャンプ #00",
+    "date": 1554452668,
+    "date_usec": 499606,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "184"
+    ]
+  }
+]

@@ -5,7 +5,7 @@
   "main": "dist/bundle.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "pegjs --cache --optimize speed -o ./src/niwango.js --format umd --export-var niwango ./src/niwango/niwango.pegjs && rollup -c rollup.config.js",
+    "build": "pegjs --cache --optimize speed -o ./src/niwango.peg.js --format umd --export-var niwango ./src/niwango/niwango.pegjs && rollup -c rollup.config.js",
     "watch": "rollup -c rollup.config.js -w",
     "typedoc": "typedoc --options tsdoc.json --out ./docs/type/ ./src/main.ts",
     "prepublishOnly": "npm run build"
@@ -28,14 +28,13 @@
   "license": "MIT",
   "devDependencies": {
     "@rollup/plugin-babel": "^5.3.0",
+    "@rollup/plugin-commonjs": "^22.0.0",
     "@rollup/plugin-node-resolve": "^13.3.0",
     "@rollup/plugin-typescript": "^8.3.1",
+    "pegjs": "^0.10.0",
     "rollup": "~2.73.0",
     "typedoc": "^0.22.13",
     "typedoc-plugin-missing-exports": "^0.22.6",
     "typescript": "^4.6.3"
-  },
-  "dependencies": {
-    "@rollup/plugin-commonjs": "^22.0.0"
   }
 }

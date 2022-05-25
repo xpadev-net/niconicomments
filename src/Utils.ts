@@ -277,7 +277,10 @@ const splitWithDeps = (string: string, separator: RegExp) => {
     }
     return res;
 }
-const unQuote = (string: string) => {
+const unQuote = (string: any) => {
+    if ((typeof string).match(/boolean|number/)){
+        return string;
+    }
     if (string.match(/^["'「][\s\S]*["'」]$/)) {
         string = string.slice(1, -1);
     }

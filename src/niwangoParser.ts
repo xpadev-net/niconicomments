@@ -1,5 +1,5 @@
 import {parseFunc, parseBrackets, isString, splitWithDeps, arrayPush, unQuote, getByName} from "./Utils";
-import {parse} from "./niwango";
+import {parse} from  "./niwango";
 
 type formattedComment = {
     "id": number,
@@ -80,10 +80,7 @@ class NiwangoParser {
         if (comment.content.startsWith("/")) {
             let scripts = this.parse(comment);
             arrayPush(this.scripts, comment.vpos, scripts);
-            for (const item of scripts) {
-                if (!item) continue;
-                this.exec(item);//todo: 実装完了したら消す
-            }
+            this.exec(scripts);//todo: 実装完了したら消す
         }
         this.last_chat = comment;
     }
@@ -329,6 +326,11 @@ class NiwangoParser {
                         return this.variable[left][right];
                     }
                     return left[right];
+                case "Program":
+                    for (let item of script.body){
+                        this.exec(item);
+                    }
+                    break;
                 case "UpdateExpression":
                     console.warn("unknown update expression:", script, options);
                     break;
@@ -345,7 +347,6 @@ class NiwangoParser {
                     break;
                 default:
                     console.warn("unknown:", script);
-                    debugger;
             }
         } catch (e) {
             console.error(e.name + ": " + e.message, script, this);
@@ -391,7 +392,7 @@ class NiwangoParser {
             string = arg1;
         }
         let ast = parse(string);
-        console.log(ast);
+        //console.log(ast);
         return ast;
     }
 

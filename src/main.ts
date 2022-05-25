@@ -470,23 +470,23 @@ class NiconiComments {
      * @param comment - 独自フォーマットのコメントデータ
      * @returns {{resized: boolean, width: number, width_max: number, fontSize: number, width_min: number, height: number}} - 描画サイズとリサイズの情報
      */
-    measureText(comment: { content: string; resized: boolean; ender: any; size: string; fontSize: number; tateRisized: boolean; font: any; loc: string; full: any; yokoResized: boolean; }): measureTextResult {
+    measureText(comment: { content: string; resized: boolean; ender: any; size: string; fontSize: number; tateresized: boolean; font: any; loc: string; full: any; yokoResized: boolean; }): measureTextResult {
         let width, width_max, width_min, height, width_arr = [], lines = comment.content.split("\n");
         if (!comment.resized && !comment.ender) {
             if (comment.size === "big" && lines.length > 2) {
                 comment.fontSize = this.fontSize.big.resized;
                 comment.resized = true;
-                comment.tateRisized = true;
+                comment.tateresized = true;
                 this.context.font = parseFont(comment.font, comment.fontSize, this.useLegacy);
             } else if (comment.size === "medium" && lines.length > 4) {
                 comment.fontSize = this.fontSize.medium.resized;
                 comment.resized = true;
-                comment.tateRisized = true;
+                comment.tateresized = true;
                 this.context.font = parseFont(comment.font, comment.fontSize, this.useLegacy);
             } else if (comment.size === "small" && lines.length > 6) {
                 comment.fontSize = this.fontSize.small.resized;
                 comment.resized = true;
-                comment.tateRisized = true;
+                comment.tateresized = true;
                 this.context.font = parseFont(comment.font, comment.fontSize, this.useLegacy);
             }
         }
@@ -498,8 +498,8 @@ class NiconiComments {
         width_max = Math.max(...width_arr);
         width_min = Math.min(...width_arr);
         height = (comment.fontSize * (1 + this.commentYPaddingTop) * lines.length) + (this.commentYMarginBottom * comment.fontSize);
-        if (comment.loc !== "naka" && !comment.tateRisized) {
-            if (comment.full && width_max > 1840) {
+        if (comment.loc !== "naka" && !comment.tateresized) {
+            if (comment.full && width_max > 1920) {
                 comment.fontSize -= 1;
                 comment.resized = true;
                 comment.yokoResized = true;
@@ -512,13 +512,13 @@ class NiconiComments {
                 this.context.font = parseFont(comment.font, comment.fontSize, this.useLegacy);
                 return this.measureText(comment);
             }
-        } else if (comment.loc !== "naka" && comment.tateRisized && (comment.full && width_max > 1920 || !comment.full && width_max > 1440) && !comment.yokoResized) {
+        } else if (comment.loc !== "naka" && comment.tateresized && (comment.full && width_max > 1920 || !comment.full && width_max > 1440) && !comment.yokoResized) {
             comment.fontSize = this.fontSize[comment.size].default;
             comment.resized = true;
             comment.yokoResized = true;
             this.context.font = parseFont(comment.font, comment.fontSize, this.useLegacy);
             return this.measureText(comment);
-        } else if (comment.loc !== "naka" && comment.tateRisized && comment.yokoResized) {
+        } else if (comment.loc !== "naka" && comment.tateresized && comment.yokoResized) {
             if (comment.full && width_max > this.doubleResizeMaxWidth.full[this.useLegacy ? "legacy" : "default"]) {
                 comment.fontSize -= 1;
                 this.context.font = parseFont(comment.font, comment.fontSize, this.useLegacy);

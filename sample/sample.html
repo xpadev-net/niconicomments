@@ -14,10 +14,11 @@
     <label>
         動画
         <select name="video" id="control-video" autocomplete="off">
-            <option value="onmyoji" selected>新・豪血寺一族 -煩悩解放 - レッツゴー！陰陽師(sm9)</option>
-            <option value="ryuuseigun">ニコニコ動画流星群(sm2959233)</option>
-            <option value="uninstall1">アンインストール　Arrange.ver【コメント職人】(sm21172249・2018/10/1)</option>
-            <option value="uninstall2">投コメ アンインストール(sm34968071)</option>
+            <option value="sm9" selected>新・豪血寺一族 -煩悩解放 - レッツゴー！陰陽師(sm9)</option>
+            <option value="sm9_">新・豪血寺一族 -煩悩解放 - レッツゴー！陰陽師(sm9・コメント増量版)</option>
+            <option value="sm2959233">ニコニコ動画流星群(sm2959233)</option>
+            <option value="sm21172249">アンインストール　Arrange.ver【コメント職人】(sm21172249・2018/10/1)</option>
+            <option value="sm34968071">投コメ アンインストール(sm34968071)</option>
         </select>
     </label>
     <label>
@@ -114,12 +115,13 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@xpadev-net/niconicomments@latest/dist/bundle.min.js"></script>
 <script type="text/javascript">
     const videos = {
-        "onmyoji": "PumFnlu9EIY",
-        "ryuuseigun": "pv2IzP2CyRs",
-        "uninstall1": "_d6VuTTa8Do",
-        "uninstall2": "_d6VuTTa8Do"
+        "sm9": "PumFnlu9EIY",
+        "sm9_": "PumFnlu9EIY",
+        "sm2959233": "pv2IzP2CyRs",
+        "sm21172249": "_d6VuTTa8Do",
+        "sm34968071": "_d6VuTTa8Do"
     }
-    let video = "onmyoji",player,interval=null,nico=null,useLegacy = false,showFPS=false,showCollision=false,showCommentCount=false,smoothing=false,videoMicroSec=false;
+    let video = "sm9",player,interval=null,nico=null,useLegacy = false,showFPS=false,showCollision=false,showCommentCount=false,smoothing=false,videoMicroSec=false;
     function onYouTubeIframeAPIReady() {
         player = new YT.Player('player', {
             height: '360',
@@ -178,10 +180,14 @@
         }
     }
 
-    const updateTime = () => {
-        videoMicroSec={
-            currentTime: player.getCurrentTime(),
-            microsec: performance.now()
+    const updateTime = (e) => {
+        if (e===1) {
+            videoMicroSec={
+                currentTime: player.getCurrentTime(),
+                microsec: performance.now()
+            }
+        }else{
+            videoMicroSec=false
         }
     }
 

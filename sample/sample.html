@@ -6,14 +6,46 @@
     <title></title>
 </head>
 <body>
-<div>
+<div class="wrapper">
     <div id="player"></div>
     <canvas id="canvas" width="1920" height="1080"></canvas>
+</div>
+<div id="control" style="display: none">
+    <label>
+        動画
+        <select name="video" id="control-video" autocomplete="off">
+            <option value="onmyoji" selected>新・豪血寺一族 -煩悩解放 - レッツゴー！陰陽師(sm9)</option>
+            <option value="ryuuseigun">ニコニコ動画流星群(sm2959233)</option>
+            <option value="uninstall1">アンインストール　Arrange.ver【コメント職人】(sm21172249・2018/10/1)</option>
+            <option value="uninstall2">投コメ アンインストール(sm34968071)</option>
+        </select>
+    </label>
+    <label>
+        <input type="checkbox" name="show-fps" id="show-fps" autocomplete="off">
+        FPS表示
+    </label>
+    <label>
+        <input type="checkbox" name="show-collision" id="show-collision" autocomplete="off">
+        当たり判定表示
+    </label>
+    <label>
+        <input type="checkbox" name="show-comment-count" id="show-comment-count" autocomplete="off">
+        コメント数表示
+    </label>
+    <label>
+        <input type="checkbox" name="use-legacy" id="use-legacy" autocomplete="off">
+        ニコ動互換モード
+    </label>
+    <label>
+        <input type="checkbox" name="smoothing" id="smoothing" autocomplete="off">
+        スムージング処理
+    </label>
+    <div id="toggle"><p>&lt;</p></div>
 </div>
 </body>
 </html>
 <style type="text/css">
-    div{
+    .wrapper{
         position: absolute;
         top: 0;
         left: 0;
@@ -22,8 +54,9 @@
         aspect-ratio: 16/9;
         height: 100vh;
         width: 100vw;
+        z-index: 0;
     }
-    iframe,canvas{
+    #player,#canvas{
         position: absolute;
         top: 0;
         left: 0;
@@ -33,32 +66,149 @@
         width: 100%;
         object-fit: contain;
     }
-    canvas{
+    #canvas{
         pointer-events: none;
     }
+    #control{
+        position: fixed;
+        z-index: 1;
+        top: 0;
+        right: 0;
+        background-color: white;
+        border-radius: 0 0 0 10px;
+        padding: 10px 10px 20px 10px;
+        display: flex;
+        flex-direction: column;
+        transition: ease 500ms top;
+    }
+    #control label:hover{
+        background-color: #ccc;
+    }
+    #toggle{
+        position: absolute;
+        bottom: 0;
+        height: 20px;
+        width: 100%;
+    }
+    #toggle p{
+        transform: rotateZ(90deg);
+        transform-origin: center center 0;
+        text-align: center;
+        width: 20px;
+        height: 20px;
+        font-size: 10px;
+        margin: 0;
+        padding: 0;
+        user-select: none;
+        transition: 500ms ease-in-out transform;
+        position: absolute;
+        top: 0;
+        left: calc(50% - 10px);
+        line-height: 20px;
+    }
+    #control.close #toggle p{
+        transform: rotateZ(-90deg);
+    }
 </style>
+<script type="text/javascript" src="https://www.youtube.com/iframe_api"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@xpadev-net/niconicomments@latest/dist/bundle.min.js"></script>
 <script type="text/javascript">
-    let tag = document.createElement('script');
-    tag.src = "https://www.youtube.com/iframe_api";
-    var firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-    var player;
+    const videos = {
+        "onmyoji": "PumFnlu9EIY",
+        "ryuuseigun": "pv2IzP2CyRs",
+        "uninstall1": "_d6VuTTa8Do",
+        "uninstall2": "_d6VuTTa8Do"
+    }
+    let video = "onmyoji",player,interval=null,nico=null,useLegacy = false,showFPS=false,showCollision=false,showCommentCount=false,smoothing=false,videoMicroSec=false;
     function onYouTubeIframeAPIReady() {
         player = new YT.Player('player', {
             height: '360',
             width: '640',
-            videoId: 'PumFnlu9EIY',
+            videoId: videos[video],
             events: {
-                'onReady': onPlayerReady
+                'onReady': onReady,
+                'onStateChange': updateTime
             }
         });
     }
-    async function onPlayerReady() {
+    const onReady = () => {
+        document.getElementById("control").style.display="flex";
+        loadComments();
+    }
+    document.getElementById("control-video").onchange=(e)=>{
+        video = e.target.value;
+        player.loadVideoById({'videoId': videos[video],
+            'suggestedQuality': 'large'});
+        loadComments();
+    }
+    document.getElementById("show-fps").onchange=(e)=>{
+        showFPS = !showFPS;
+        nico.showFPS=showFPS;
+        e.target.checked=showFPS;
+    }
+    document.getElementById("show-collision").onchange=(e)=>{
+        showCollision = !showCollision;
+        nico.showCollision=showCollision;
+        for (let i in nico.data){
+            nico.data[i].image = false;
+        }
+        e.target.checked=showCollision;
+    }
+    document.getElementById("show-comment-count").onchange=(e)=>{
+        showCommentCount = !showCommentCount;
+        nico.showCommentCount=showCommentCount;
+        e.target.checked=showCommentCount;
+    }
+    document.getElementById("use-legacy").onchange=(e)=>{
+        useLegacy = !useLegacy;
+        e.target.checked=useLegacy;
+        loadComments();
+    }
+    document.getElementById("smoothing").onchange=(e)=>{
+        smoothing = !smoothing;
+        e.target.checked=smoothing;
+    }
+    document.getElementById("toggle").onclick=()=>{
+        let control = document.getElementById("control");
+        control.classList.toggle("close");
+        if(control.classList.contains("close")){
+            control.style.top=`${control.clientHeight*-1 + 20}px`;
+        }else{
+            control.style.top=0;
+        }
+    }
+
+    const updateTime = () => {
+        videoMicroSec={
+            currentTime: player.getCurrentTime(),
+            microsec: performance.now()
+        }
+    }
+
+    async function loadComments() {
         const canvas = document.getElementById("canvas");
-        const req = await fetch("sample.json");
+        const req = await fetch(`./commentdata/${video}.json`);
         const res = await req.json();
-        const niconiComments = new NiconiComments(canvas, res);
-        setInterval(() => niconiComments.drawCanvas(Math.floor(player.getCurrentTime() * 100)), 10);
+        if (nico instanceof NiconiComments){
+            nico.useLegacy = useLegacy;
+            nico.timeline = {};
+            nico.nicoScripts = {"reverse": [], "default": []};
+            nico.collision_right = {};
+            nico.collision_left = {};
+            nico.collision_ue = {};
+            nico.collision_shita = {};
+            nico.preRendering(res, false);
+        }else{
+            nico = new NiconiComments(canvas, res, {useLegacy: useLegacy,formatted: true});
+        }
+        if (!interval){
+            interval = setInterval(() => {
+                if (smoothing&&videoMicroSec){
+                    nico.drawCanvas(Math.floor((performance.now() - videoMicroSec.microsec) / 10 * player.getPlaybackRate()+ videoMicroSec.currentTime * 100));
+                }else{
+                    nico.drawCanvas(Math.floor(player.getCurrentTime() * 100))
+                }
+            }, 10);
+        }
     }
 </script>

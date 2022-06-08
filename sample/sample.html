@@ -14,11 +14,6 @@
     <label>
         動画
         <select name="video" id="control-video" autocomplete="off">
-            <option value="sm9" selected>新・豪血寺一族 -煩悩解放 - レッツゴー！陰陽師(sm9)</option>
-            <option value="sm9_">新・豪血寺一族 -煩悩解放 - レッツゴー！陰陽師(sm9・コメント増量版)</option>
-            <option value="sm2959233">ニコニコ動画流星群(sm2959233)</option>
-            <option value="sm21172249">アンインストール　Arrange.ver【コメント職人】(sm21172249・2018/10/1)</option>
-            <option value="sm34968071">投コメ アンインストール(sm34968071)</option>
         </select>
     </label>
     <label>
@@ -38,6 +33,10 @@
         ニコ動互換モード
     </label>
     <label>
+        <input type="checkbox" name="use-legacy" id="draw-all" autocomplete="off">
+        事前に全コメントを描画する
+    </label>
+    <label>
         <input type="checkbox" name="smoothing" id="smoothing" autocomplete="off">
         スムージング処理
     </label>
@@ -45,7 +44,7 @@
 </div>
 </body>
 </html>
-<style type="text/css">
+<style>
     .wrapper{
         position: absolute;
         top: 0;
@@ -112,21 +111,83 @@
     }
 </style>
 <script type="text/javascript" src="https://www.youtube.com/iframe_api"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@xpadev-net/niconicomments@latest/dist/bundle.min.js"></script>
+<script type="text/javascript" src="../dist/bundle.js"></script>
 <script type="text/javascript">
-    const videos = {
-        "sm9": "PumFnlu9EIY",
-        "sm9_": "PumFnlu9EIY",
-        "sm2959233": "pv2IzP2CyRs",
-        "sm21172249": "_d6VuTTa8Do",
-        "sm34968071": "_d6VuTTa8Do"
-    }
-    let video = "sm9",player,interval=null,nico=null,useLegacy = false,showFPS=false,showCollision=false,showCommentCount=false,smoothing=false,videoMicroSec=false;
+    const videos =[
+        {
+            id: 0,
+            nc: "sm9",
+            yt: "PumFnlu9EIY",
+            title: "新・豪血寺一族 -煩悩解放 - レッツゴー！陰陽師"
+        },
+        {
+            id: 1,
+            nc: "sm9",
+            yt: "PumFnlu9EIY",
+            title: "新・豪血寺一族 -煩悩解放 - レッツゴー！陰陽師(コメント増量版)"
+        },
+        {
+            id: 2,
+            nc: "sm2959233",
+            yt: "pv2IzP2CyRs",
+            title: "ニコニコ動画流星群"
+        },
+        {
+            id: 3,
+            nc: "sm2959233",
+            yt: "pv2IzP2CyRs",
+            title: "ニコニコ動画流星群(50229コメ)"
+        },
+        {
+            id: 4,
+            nc: "sm21172249",
+            yt: "_d6VuTTa8Do",
+            title: "アンインストール　Arrange.ver【コメント職人】@2018/10/1"
+        },
+        {
+            id: 5,
+            nc: "sm34968071",
+            yt: "_d6VuTTa8Do",
+            title: "投コメ アンインストール"
+        },
+        {
+            id: 6,
+            nc: "so35384944",
+            yt: "S2_MZFHTYYk",
+            title: "よいまちカンターレ"
+        },
+        {
+            id: 7,
+            nc: "so17588662",
+            yt: "29NR161Bmd4",
+            title: "to the beginning@2012/04/28"
+        },
+	    {
+		    id: 8,
+		    nc: "so17784068",
+		    yt: "dW_5Q7uCS7Y",
+		    title: "満天@2012/05/19"
+	    },
+	    {
+		    id: 9,
+		    nc: "sm38551701",
+		    yt: "m8cdPwNZShM",
+		    title: "うっせぇわ"
+	    }
+    ]
+    let video = 0,player,interval=null,nico=null,useLegacy = false,showFPS=false,showCollision=false,showCommentCount=false,smoothing=false,videoMicroSec=false,drawAllImageOnLoad=false;
     function onYouTubeIframeAPIReady() {
+        let select = document.getElementById("control-video");
+        for(let item of videos){
+            let elem = document.createElement("option");
+            elem.value = item.id;
+            elem.text = `${item.title}(${item.nc})`;
+            select.appendChild(elem);
+        }
         player = new YT.Player('player', {
             height: '360',
             width: '640',
-            videoId: videos[video],
+            videoId: videos[video].yt,
             events: {
                 'onReady': onReady,
                 'onStateChange': updateTime
@@ -139,7 +200,7 @@
     }
     document.getElementById("control-video").onchange=(e)=>{
         video = e.target.value;
-        player.loadVideoById({'videoId': videos[video],
+        player.loadVideoById({'videoId': videos[video].yt,
             'suggestedQuality': 'large'});
         loadComments();
     }
@@ -169,6 +230,10 @@
     document.getElementById("smoothing").onchange=(e)=>{
         smoothing = !smoothing;
         e.target.checked=smoothing;
+    }
+    document.getElementById("draw-all").onchange=(e)=>{
+        drawAllImageOnLoad = !drawAllImageOnLoad;
+        e.target.checked=drawAllImageOnLoad;
     }
     document.getElementById("toggle").onclick=()=>{
         let control = document.getElementById("control");
@@ -203,9 +268,9 @@
             nico.collision_left = {};
             nico.collision_ue = {};
             nico.collision_shita = {};
-            nico.preRendering(res, false);
+            nico.preRendering(res, drawAllImageOnLoad);
         }else{
-            nico = new NiconiComments(canvas, res, {useLegacy: useLegacy,formatted: true});
+            nico = new NiconiComments(canvas, res, {useLegacy: useLegacy,formatted: true,drawAllImageOnLoad:drawAllImageOnLoad});
         }
         if (!interval){
             interval = setInterval(() => {

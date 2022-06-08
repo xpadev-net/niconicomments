@@ -156,7 +156,7 @@ class NiconiComments {
             },
             "big": {
                 "default": 111,
-                "resized": 62
+                "resized": 61
             }
         };
         this.doubleResizeMaxWidth = {
@@ -522,11 +522,12 @@ class NiconiComments {
                 this.context.font = parseFont(comment.font, comment.fontSize, this.useLegacy);
                 return this.measureText(comment);
             }
-        } else if (comment.loc !== "naka" && comment.tateresized && (comment.full && width_max > 1920 || !comment.full && width_max > 1440) && !comment.yokoResized) {
+        } else if (comment.loc !== "naka" && comment.tateresized && (comment.full && width_max > 2120 || !comment.full && width_max > 1440) && !comment.yokoResized) {
             comment.fontSize = this.fontSize[comment.size]!.default;
             comment.resized = true;
             comment.yokoResized = true;
             this.context.font = parseFont(comment.font, comment.fontSize, this.useLegacy);
+            console.log(comment);
             return this.measureText(comment);
         } else if (comment.loc !== "naka" && comment.tateresized && comment.yokoResized) {
             if (comment.full && width_max > this.doubleResizeMaxWidth.full![this.useLegacy ? "legacy" : "default"]) {

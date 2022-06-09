@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI
+name: TypeDoc
 
 # Controls when the workflow will run
 on:
@@ -37,8 +37,10 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: clear output dir
         run: rm ./docs/type/* -rf
+      - name: update .gitignore
+        run: sed '/\/docs/d' .gitignore
       - name: generate typedoc
-        run: npx typedoc --options tsdoc.json --out ./docs/type/ ./src/main.ts
+        run: npm run typedoc
 
       - name: Create new Branch
         env:

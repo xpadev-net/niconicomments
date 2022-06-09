@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>niconicomments documentation</title>
+    <link rel="stylesheet" type="text/css" href="./style.css">
+</head>
+<body>
+<aside id="aside">
+    <h1>Index</h1>
+    <div id="index">
+        <ul>
+            <li>niconicomments</li>
+            <ul>
+                <li><a href="#about">About</a></li>
+                <li><a href="#sample">Sample</a></li>
+                <li><a href="#install">Install</a></li>
+                <li><a href="#example">Example</a></li>
+            </ul>
+            <li><a href="#class">Class</a></li>
+            <ul>
+                <li><a href="#NiconiComments">NiconiComments</a></li>
+                <ul>
+                    <li><a href="#Parameters">Parameters</a></li>
+                    <ul>
+                        <li><a href="#p_canvas">canvas</a></li>
+                        <li><a href="#p_data">data</a></li>
+                        <li><a href="#p_options">options</a></li>
+                        <ul>
+                            <li><a href="#p_useLegacy">useLegacy</a></li>
+                            <li><a href="#p_formatted">formatted</a></li>
+                            <li><a href="#p_video">video</a></li>
+                            <li><a href="#p_showCollision">showCollision</a></li>
+                            <li><a href="#p_showFPS">showFPS</a></li>
+                            <li><a href="#p_showCommentCount">showCommentCount</a></li>
+                            <li><a href="#p_drawAllImageOnLoad">drawAllImageOnLoad</a></li>
+                        </ul>
+                    </ul>
+                    <li><a href="#Attributes">Attributes</a></li>
+                    <ul>
+                        <li><a href="#a_showFPS">showFPS</a></li>
+                        <li><a href="#a_showCommentCount">showCommentCount</a></li>
+                    </ul>
+                    <li><a href="#Methods">Methods</a></li>
+                    <ul>
+                        <li><a href="#m_drawCanvas">drawCanvas</a></li>
+                        <li><a href="#m_clear">clear</a></li>
+                    </ul>
+                </ul>
+            </ul>
+        </ul>
+    </div>
+</aside>
+<main id="main">
+    <section id="title">
+        <h1><span class="package_name">niconicomments</span> documentation</h1>
+    </section>
+    <section id="about">
+        <h2>About</h2>
+        <p>ニコニコ動画の公式プレイヤーに多少の互換性を持つコメント描画ライブラリです</p>
+        <p>ドキュメント： <a href="https://xpadev-net.github.io/niconicomments/">https://xpadev-net.github.io/niconicomments/</a></p>
+        <p>TypeDoc： <a href="https://xpadev-net.github.io/niconicomments/type/">https://xpadev-net.github.io/niconicomments/type/</a></p>
+        <p>リポジトリ： <a href="https://github.com/xpadev-net/niconicomments">https://github.com/xpadev-net/niconicomments</a></p>
+        <p>npm： <a href="https://www.npmjs.com/package/@xpadev-net/niconicomments">https://www.npmjs.com/package/@xpadev-net/niconicomments</a></p>
+    </section>
+    <section id="sample">
+        <h2>Sample</h2>
+        <ul>
+            <li><a href="https://xpadev.net/niconicomments/sample.html">レッツゴー！陰陽師</a></li>
+            <li><a href="https://codepen.io/xpadev-net/pen/mdBdQmX">レッツゴー！陰陽師(CodePen)</a></li>
+            <li><a href="https://xpadev.net/niconicomments/ryuuseigun.html">ニコニコ動画流星群</a></li>
+        </ul>
+    </section>
+    <section id="install">
+        <h2>Install</h2>
+        <p>NodeJS:</p>
+        <pre><code>npm i @xpadev-net/niconicomments</code></pre>
+        <p>Web:</p>
+        <pre><code><span class="blue">&lt;script <span class="yellow">src=</span><span class="green">&quot;https://cdn.jsdelivr.net/npm/@xpadev-net/niconicomments@latest/dist/bundle.min.js&quot;</span>&gt;&lt;/script&gt;</span></code></pre>
+    </section>
+    <section id="example">
+        <h2>Example</h2>
+        <pre><code><span class="orange">const</span> canvas = <span class="blue">document</span>.<span class="yellow">getElementById</span>(<span class="green">&quot;canvas&quot;</span>);
+<span class="orange">const</span> video = <span class="blue">document</span>.<span class="yellow">getElementById</span>(<span class="green">&quot;video&quot;</span>);
+<span class="orange">const</span> req = <span class="orange">await</span> <span class="yellow">fetch</span>(<span class="green">&quot;sample.json&quot;</span>);
+<span class="orange">const</span> res = <span class="orange">await</span> req.<span class="yellow">json</span>();
+<span class="orange">const</span> niconiComments = <span class="orange">new</span> <span class="blue">NiconiComments</span>(canvas, res);
+<span class="red">setInterval</span>(() =&gt; niconiComments.<span class="yellow">drawCanvas</span>(<span class="orange">Math</span>.<span class="red">floor</span>(video.currentTime * <span class="yellow">100</span>)), <span class="yellow">10</span>);</code></pre>
+    </section>
+    <section id="class">
+        <h2>Class</h2>
+        <h4 id="NiconiComments">class <span class="red">NiconiComments</span>(canvas<span class="type">:HTMLCanvasElement</span>, data<span class="type">:[]</span>, options<span class="type">:options</span>)</h4>
+        <div class="item">
+            <p>このライブラリの本体です。</p>
+            <p>すべての処理はこのクラスのみで完結します。</p>
+            <h3 id="Parameters">Parameters</h3>
+            <div class="item">
+                <h4 id="p_canvas">canvas<span class="type">:HTMLCanvasElement</span></h4>
+                <div class="item">
+                    <p>コメント描画用のキャンバスElementを渡してください。</p>
+                    <p>このライブラリはキャンバスサイズが1920x1080である前提で描画を行います。</p>
+                    <p>サイズ設定をミスるとコメントが正常に描画されません。</p>
+                </div>
+                <h4 id="p_data">data<span class="type">:[]</span></h4>
+                <div class="item">
+                    <p>ニコニコのコメントAPIが吐き出したデータか、独自フォーマットのコメントデータを渡してください。</p>
+                    <p>独自フォーマットのデータを渡す際は、<span class="yellow">formatted</span>を<span class="yellow">true</span>にする必要があります</p>
+                </div>
+                <h4 id="p_options">options<span class="type">:options</span></h4>
+                <div class="item">
+                    <h4 id="p_useLegacy">useLegacy<span class="type">:boolean</span> = <span class="yellow">false</span></h4>
+                    <div class="item">
+                        <p>公式プレイヤー互換モードを有効にするか指定します</p>
+                        <p>デフォルト(<span class="yellow">false</span>)の場合はsans-serifを使用します。</p>
+                        <p>この場合、windows環境において、macOSに近い表示になります。</p>
+                        <p><span class="yellow">true</span>の場合は公式プレイヤーと同じフォントを使用します。</p>
+                    </div>
+                    <h4 id="p_formatted">formatted<span class="type">:boolean</span> = <span class="yellow">false</span></h4>
+                    <div class="item">
+                        <p>コメントデータが独自フォーマットかを指定します。</p>
+                        <p>デフォルト(<span class="yellow">false</span>)の場合は独自フォーマットに変換を行ってから処理を行います。</p>
+                        <p><span class="yellow">true</span>の場合はそのまま処理を行います。</p>
+                    </div>
+                    <h4 id="p_video">video<span class="type">:HTMLVideoElement | null</span> = <span class="yellow">null</span></h4>
+                    <div class="item">
+                        <p>背景に描画する動画を指定します</p>
+                        <p>デフォルト(<span class="yellow">null</span>)の場合は描画を行いません</p>
+                        <p>指定されている場合は、背景に指定された動画を描画し、その上にコメントを描画します</p>
+                        <p>この機能を応用すると、Picture in Pictureにもコメントを表示できるようになります</p>
+                    </div>
+                    <h4 id="p_showCollision">showCollision<span class="type">:boolean</span> = <span class="yellow">false</span></h4>
+                    <div class="item">
+                        <p>コメントの当たり判定を描画するか指定します</p>
+                        <p>デフォルト(<span class="yellow">false</span>)の場合は描画を行いません</p>
+                        <p><span class="yellow">true</span>の場合は、コメントの当たり判定と行の区切りを描画します。</p>
+                        <p>初期化後に設定の変更を行う場合は描画済みコメントの削除が必要になります</p>
+                    </div>
+                    <h4 id="p_showFPS">showFPS<span class="type">:boolean</span> = <span class="yellow">false</span></h4>
+                    <div class="item">
+                        <p>FPSを画面上に描画するか指定します</p>
+                        <p>デフォルト(<span class="yellow">false</span>)の場合は描画を行いません</p>
+                        <p><span class="yellow">true</span>の場合は、過去0.5秒間のデータをもとにFPSを計算し、描画します。</p>
+                        <p>初期化後も随時設定の変更が可能です</p>
+                    </div>
+                    <h4 id="p_showCommentCount">showCommentCount<span class="type">:boolean</span> = <span class="yellow">false</span></h4>
+                    <div class="item">
+                        <p>描画されているコメント数を画面上に描画するか指定します</p>
+                        <p>デフォルト(<span class="yellow">false</span>)の場合は描画を行いません</p>
+                        <p><span class="yellow">true</span>の場合は、画面内に描画されているコメントの総数を描画します。</p>
+                        <p>初期化後も随時設定の変更が可能です</p>
+                    </div>
+                    <h4 id="p_drawAllImageOnLoad">drawAllImageOnLoad<span class="type">:boolean</span> = <span class="yellow">false</span></h4>
+                    <div class="item">
+                        <p>コメントの描画をどのタイミングで行うかを指定します</p>
+                        <p>デフォルト(<span class="yellow">false</span>)の場合は初めてコメントが画面に描画されるタイミングで生成されます</p>
+                        <p><span class="yellow">true</span>の場合は、初期化時にすべてのコメントを生成します。</p>
+                    </div>
+                </div>
+            </div>
+            <h3 id="Attributes">Attributes</h3>
+            <div class="item">
+                <h4 id="a_showFPS">showFPS<span class="type">:boolean</span> = <span class="yellow">false</span></h4>
+                <div class="item">
+                    <p>FPSを画面上に描画するか指定します</p>
+                    <p>デフォルト(<span class="yellow">false</span>)の場合は描画を行いません</p>
+                    <p><span class="yellow">true</span>の場合は、過去0.5秒間のデータをもとにFPSを計算し、描画します。</p>
+                    <p>初期化後も随時設定の変更が可能です</p>
+                </div>
+                <h4 id="a_showCommentCount">showCommentCount<span class="type">:boolean</span> = <span class="yellow">false</span></h4>
+                <div class="item">
+                    <p>描画されているコメント数を画面上に描画するか指定します</p>
+                    <p>デフォルト(<span class="yellow">false</span>)の場合は描画を行いません</p>
+                    <p><span class="yellow">true</span>の場合は、画面内に描画されているコメントの総数を描画します。</p>
+                    <p>初期化後も随時設定の変更が可能です</p>
+                </div>
+            </div>
+            <h3 id="Methods">Methods</h3>
+            <div class="item">
+                <h4 id="m_drawCanvas">drawCanvas(vpos<span class="type">:number</span>)<span class="type">:void</span></h4>
+                <div class="item">
+                    <p>vpos(動画のcurrentTime*100)を元にキャンバスにコメントを描画します。</p>
+                    <p>vposは<span class="yellow">整数(int)</span>である必要があります。</p>
+                </div>
+                <h4 id="m_clear">clear()<span class="type">:void</span></h4>
+                <div class="item">
+                    <p>キャンバスを消去</p>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
+</html>

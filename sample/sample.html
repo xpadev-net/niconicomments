@@ -6,14 +6,46 @@
     <title></title>
 </head>
 <body>
-<div>
+<div class="wrapper">
     <div id="player"></div>
     <canvas id="canvas" width="1920" height="1080"></canvas>
 </div>
+<div id="control" style="display: none">
+    <label>
+        動画
+        <select name="video" id="control-video" autocomplete="off">
+        </select>
+    </label>
+    <label>
+        <input type="checkbox" name="show-fps" id="show-fps" autocomplete="off">
+        FPS表示
+    </label>
+    <label>
+        <input type="checkbox" name="show-collision" id="show-collision" autocomplete="off">
+        当たり判定表示
+    </label>
+    <label>
+        <input type="checkbox" name="show-comment-count" id="show-comment-count" autocomplete="off">
+        コメント数表示
+    </label>
+    <label>
+        <input type="checkbox" name="use-legacy" id="use-legacy" autocomplete="off">
+        ニコ動互換モード
+    </label>
+    <label>
+        <input type="checkbox" name="use-legacy" id="draw-all" autocomplete="off">
+        事前に全コメントを描画する
+    </label>
+    <label>
+        <input type="checkbox" name="smoothing" id="smoothing" autocomplete="off">
+        スムージング処理
+    </label>
+    <div id="toggle"><p>&lt;</p></div>
+</div>
 </body>
 </html>
-<style type="text/css">
-    div{
+<style>
+    .wrapper {
         position: absolute;
         top: 0;
         left: 0;
@@ -22,8 +54,10 @@
         aspect-ratio: 16/9;
         height: 100vh;
         width: 100vw;
+        z-index: 0;
     }
-    iframe,canvas{
+
+    #player, #canvas {
         position: absolute;
         top: 0;
         left: 0;
@@ -33,32 +67,249 @@
         width: 100%;
         object-fit: contain;
     }
-    canvas{
+
+    #canvas {
         pointer-events: none;
     }
+
+    #control {
+        position: fixed;
+        z-index: 1;
+        top: 0;
+        right: 0;
+        background-color: white;
+        border-radius: 0 0 0 10px;
+        padding: 10px 10px 20px 10px;
+        display: flex;
+        flex-direction: column;
+        transition: top 500ms ease;
+    }
+
+    #control label:hover {
+        background-color: #ccc;
+    }
+
+    #toggle {
+        position: absolute;
+        bottom: 0;
+        height: 20px;
+        width: 100%;
+    }
+
+    #toggle p {
+        transform: rotateZ(90deg);
+        transform-origin: center center 0;
+        text-align: center;
+        width: 20px;
+        height: 20px;
+        font-size: 10px;
+        margin: 0;
+        padding: 0;
+        user-select: none;
+        transition: 500ms ease-in-out transform;
+        position: absolute;
+        top: 0;
+        left: calc(50% - 10px);
+        line-height: 20px;
+    }
+
+    #control.close #toggle p {
+        transform: rotateZ(-90deg);
+    }
 </style>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@xpadev-net/niconicomments@latest/dist/bundle.min.js"></script>
+<script type="text/javascript" src="https://www.youtube.com/iframe_api"></script>
+<script type="text/javascript" src="../dist/bundle.js"></script>
 <script type="text/javascript">
-    let tag = document.createElement('script');
-    tag.src = "https://www.youtube.com/iframe_api";
-    var firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-    var player;
+    const videos = [
+        {
+            id: 0,
+            nc: "sm9",
+            yt: "PumFnlu9EIY",
+            title: "新・豪血寺一族 -煩悩解放 - レッツゴー！陰陽師"
+        },
+        {
+            id: 1,
+            nc: "sm9",
+            yt: "PumFnlu9EIY",
+            title: "新・豪血寺一族 -煩悩解放 - レッツゴー！陰陽師(コメント増量版)"
+        },
+        {
+            id: 2,
+            nc: "sm2959233",
+            yt: "pv2IzP2CyRs",
+            title: "ニコニコ動画流星群"
+        },
+        {
+            id: 3,
+            nc: "sm2959233",
+            yt: "pv2IzP2CyRs",
+            title: "ニコニコ動画流星群(50229コメ)"
+        },
+        {
+            id: 4,
+            nc: "sm21172249",
+            yt: "_d6VuTTa8Do",
+            title: "アンインストール　Arrange.ver【コメント職人】@2018/10/1"
+        },
+        {
+            id: 5,
+            nc: "sm34968071",
+            yt: "_d6VuTTa8Do",
+            title: "投コメ アンインストール"
+        },
+        {
+            id: 6,
+            nc: "so35384944",
+            yt: "S2_MZFHTYYk",
+            title: "よいまちカンターレ"
+        },
+        {
+            id: 7,
+            nc: "so17588662",
+            yt: "29NR161Bmd4",
+            title: "to the beginning@2012/04/28"
+        },
+        {
+            id: 8,
+            nc: "so17784068",
+            yt: "dW_5Q7uCS7Y",
+            title: "満天@2012/05/19"
+        },
+        {
+            id: 9,
+            nc: "sm38551701",
+            yt: "m8cdPwNZShM",
+            title: "うっせぇわ"
+        },
+        {
+            id: 10,
+            nc: "so35349120",
+            yt: "yQEUGxngQN4",
+            title: "Good Morning World@2019/11/22"
+        }
+    ]
+    const urlParams = new URLSearchParams(window.location.search);
+    let video = urlParams.get('video') || 0, player, interval = null, nico = null, useLegacy = false, showFPS = false,
+        showCollision = false, showCommentCount = false, smoothing = false, videoMicroSec = false,
+        drawAllImageOnLoad = false;
+
     function onYouTubeIframeAPIReady() {
+        let select = document.getElementById("control-video");
+        for (let item of videos) {
+            let elem = document.createElement("option");
+            elem.value = item.id;
+            elem.text = `${item.title}(${item.nc})`;
+            if (item.id === Number(video)) {
+                elem.selected = true;
+            }
+            select.appendChild(elem);
+        }
         player = new YT.Player('player', {
             height: '360',
             width: '640',
-            videoId: 'PumFnlu9EIY',
+            videoId: videos[video].yt,
             events: {
-                'onReady': onPlayerReady
+                'onReady': onReady,
+                'onStateChange': updateTime
             }
         });
     }
-    async function onPlayerReady() {
+
+    const onReady = () => {
+        document.getElementById("control").style.display = "flex";
+        loadComments();
+    }
+    document.getElementById("control-video").onchange = (e) => {
+        video = e.target.value;
+        player.loadVideoById({
+            'videoId': videos[video].yt,
+            'suggestedQuality': 'large'
+        });
+        loadComments();
+        urlParams.set("video", video);
+        history.pushState('', '', `${window.location.pathname}?${urlParams.toString()}`);
+    }
+    document.getElementById("show-fps").onchange = (e) => {
+        showFPS = !showFPS;
+        nico.showFPS = showFPS;
+        e.target.checked = showFPS;
+    }
+    document.getElementById("show-collision").onchange = (e) => {
+        showCollision = !showCollision;
+        nico.showCollision = showCollision;
+        for (let i in nico.data) {
+            nico.data[i].image = false;
+        }
+        e.target.checked = showCollision;
+    }
+    document.getElementById("show-comment-count").onchange = (e) => {
+        showCommentCount = !showCommentCount;
+        nico.showCommentCount = showCommentCount;
+        e.target.checked = showCommentCount;
+    }
+    document.getElementById("use-legacy").onchange = (e) => {
+        useLegacy = !useLegacy;
+        e.target.checked = useLegacy;
+        loadComments();
+    }
+    document.getElementById("smoothing").onchange = (e) => {
+        smoothing = !smoothing;
+        e.target.checked = smoothing;
+    }
+    document.getElementById("draw-all").onchange = (e) => {
+        drawAllImageOnLoad = !drawAllImageOnLoad;
+        e.target.checked = drawAllImageOnLoad;
+    }
+    document.getElementById("toggle").onclick = () => {
+        let control = document.getElementById("control");
+        control.classList.toggle("close");
+        if (control.classList.contains("close")) {
+            control.style.top = `${control.clientHeight * -1 + 20}px`;
+        } else {
+            control.style.top = 0;
+        }
+    }
+
+    const updateTime = (e) => {
+        if (e === 1) {
+            videoMicroSec = {
+                currentTime: player.getCurrentTime(),
+                microsec: performance.now()
+            }
+        } else {
+            videoMicroSec = false
+        }
+    }
+
+    async function loadComments() {
         const canvas = document.getElementById("canvas");
-        const req = await fetch("sample.json");
+        const req = await fetch(`./commentdata/${video}.json`);
         const res = await req.json();
-        const niconiComments = new NiconiComments(canvas, res);
-        setInterval(() => niconiComments.drawCanvas(Math.floor(player.getCurrentTime() * 100)), 10);
+        if (nico instanceof NiconiComments) {
+            nico.useLegacy = useLegacy;
+            nico.timeline = {};
+            nico.nicoScripts = {"reverse": [], "default": []};
+            nico.collision_right = {};
+            nico.collision_left = {};
+            nico.collision_ue = {};
+            nico.collision_shita = {};
+            nico.preRendering(res, drawAllImageOnLoad);
+        } else {
+            nico = new NiconiComments(canvas, res, {
+                useLegacy: useLegacy,
+                formatted: true,
+                drawAllImageOnLoad: drawAllImageOnLoad,
+                debug: true
+            });
+        }
+        if (!interval) {
+            interval = setInterval(() => {
+                if (smoothing && videoMicroSec) {
+                    nico.drawCanvas(Math.floor((performance.now() - videoMicroSec.microsec) / 10 * player.getPlaybackRate() + videoMicroSec.currentTime * 100));
+                } else {
+                    nico.drawCanvas(Math.floor(player.getCurrentTime() * 100))
+                }
+            }, 10);
+        }
     }
 </script>

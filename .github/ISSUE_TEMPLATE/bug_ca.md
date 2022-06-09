@@ -2,7 +2,7 @@
 name: "[不具合]コメントアート関連"
 about: CAが崩れるとか
 title: "[不具合][CA]"
-labels: bug, CA, enhancement
+labels: bug, CA
 assignees: xpadev-net
 
 ---

@@ -1,7 +1,10 @@
 # [niconicomments](https://xpadev.net/niconicomments/)
-[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/xpadev-net/niconicomments/blob/master/LICENSE)  
-ニコニコ動画の公式プレイヤーに多少の互換性を持つコメント描画ライブラリです  
-This is a comment drawing library that is somewhat compatible with the official Nico Nico Douga player.  
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/xpadev-net/niconicomments/blob/master/LICENSE)
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/xpadev-net/niconicomments.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/xpadev-net/niconicomments/alerts/)
+[![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/xpadev-net/niconicomments.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/xpadev-net/niconicomments/context:javascript)
+
+ニコニコ動画の公式プレイヤー互換の高パフォーマンスなコメント描画ライブラリ   
+High peformance High compatibility comment drawing library  
 Reference： https://xpadev-net.github.io/niconicomments/  
 Github： https://github.com/xpadev-net/niconicomments  
 npm： https://www.npmjs.com/package/@xpadev-net/niconicomments  
@@ -27,6 +30,5 @@ setInterval(() => niconiComments.drawCanvas(Math.floor(video.currentTime * 100))
 ```
 
 ## Sample
-[レッツゴー！陰陽師](https://xpadev.net/niconicomments/sample.html)  
-[レッツゴー！陰陽師(CodePen)](https://codepen.io/xpadev-net/pen/mdBdQmX)  
-[ニコニコ動画流星群](https://xpadev.net/niconicomments/ryuuseigun.html)  
+[サンプル](https://xpadev.net/niconicomments/sample.html)  
+[CodePen](https://codepen.io/xpadev-net/pen/mdBdQmX)  

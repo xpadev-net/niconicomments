@@ -1,5 +1,8 @@
 # [niconicomments](https://xpadev.net/niconicomments/)
-[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/xpadev-net/niconicomments/blob/master/LICENSE)  
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/xpadev-net/niconicomments/blob/master/LICENSE)
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/xpadev-net/niconicomments.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/xpadev-net/niconicomments/alerts/)
+[![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/xpadev-net/niconicomments.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/xpadev-net/niconicomments/context:javascript)
+
 ニコニコ動画の公式プレイヤー互換の高パフォーマンスなコメント描画ライブラリ   
 High peformance High compatibility comment drawing library  
 Reference： https://xpadev-net.github.io/niconicomments/  

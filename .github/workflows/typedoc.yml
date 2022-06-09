@@ -38,7 +38,7 @@ jobs:
       - name: clear output dir
         run: rm ./docs/type/* -rf
       - name: update .gitignore
-        run: sed '/\/docs/d' .gitignore > .gitignore
+        run: sed -i -e '/\/docs/d' .gitignore
       - name: generate typedoc
         run: npm run typedoc
 

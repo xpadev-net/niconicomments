@@ -10,7 +10,7 @@
     "watch": "rollup -c rollup.config.js -w",
     "typedoc": "typedoc --options tsdoc.json --out ./docs/type/ ./src/main.ts",
     "tsc": "tsc --emitDeclarationOnly",
-    "prepublishOnly": "npm run tsc&&npm run build&&npm run typedoc"
+    "prepublishOnly": "npm run tsc&&npm run build"
   },
   "repository": {
     "type": "git",

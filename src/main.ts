@@ -166,7 +166,7 @@ class NiconiComments {
                 "resized": 38.7
             },
             "big": {
-                "default": 111,
+                "default": 110,
                 "resized": 61
             }
         };
@@ -180,7 +180,7 @@ class NiconiComments {
                 "resized": 1
             },
             "big": {
-                "default": 1,
+                "default": 1.03,
                 "resized": 1.01
             }
         };
@@ -550,7 +550,7 @@ class NiconiComments {
         width_min = Math.min(...width_arr);
         height = (comment.fontSize * comment.lineHeight * (1 + this.commentYPaddingTop) * lines.length) + (this.commentYMarginBottom * comment.fontSize);
         if (comment.loc !== "naka" && !comment.tateresized) {
-            if (comment.full && width_max > 1920) {
+            if (comment.full && width_max > 1930) {
                 comment.fontSize -= 2;
                 comment.resized = true;
                 comment.yokoResized = true;
@@ -627,6 +627,16 @@ class NiconiComments {
         if (comment.image && comment.image !== true) {
             this.context.drawImage(comment.image, posX, posY);
         }
+        if (this.showCollision) {
+            this.context.strokeStyle = "rgba(0,255,255,1)";
+            this.context.strokeRect(posX, posY, comment.width_max, comment.height);
+            let lines = comment.content.split("\n");
+            for (let i in lines) {
+                let linePosY = (Number(i) + 1) * (comment.fontSize * comment.lineHeight) * (1 + this.commentYPaddingTop);
+                this.context.strokeStyle = "rgba(255,255,0,0.5)";
+                this.context.strokeRect(posX, posY + linePosY, comment.width_max, comment.fontSize * comment.lineHeight * -1);
+            }
+        }
     }
 
     /**
@@ -635,7 +645,7 @@ class NiconiComments {
      */
     getTextImage(i: number) {
         let value = this.data[i];
-        if (!value || value.invisible || value.content.match(/^\s*$/)) return;
+        if (!value || value.invisible) return;
         let image = document.createElement("canvas");
         image.width = value.width_max;
         image.height = value.height;
@@ -655,30 +665,12 @@ class NiconiComments {
         if (value.color === "#000000") {
             context.strokeStyle = "rgba(255,255,255,0.7)";
         }
-        if (this.showCollision) {
-            context.strokeStyle = "rgba(0,255,255,1)";
-            context.strokeRect(0, 0, value.width_max, value.height);
-            if (value.color === "#000000") {
-                context.strokeStyle = "rgba(255,255,255,0.7)";
-            } else {
-                context.strokeStyle = "rgba(0,0,0,0.7)";
-            }
-        }
         let lines = value.content.split("\n");
         for (let i in lines) {
             let line = lines[i] as string, posY;
             posY = (Number(i) + 1) * (value.fontSize * value.lineHeight) * (1 + this.commentYPaddingTop);
             context.strokeText(line, 0, posY);
             context.fillText(line, 0, posY);
-            if (this.showCollision) {
-                context.strokeStyle = "rgba(255,255,0,0.5)";
-                context.strokeRect(0, posY, value.width_max, value.fontSize * value.lineHeight * -1);
-                if (value.color === "#000000") {
-                    context.strokeStyle = "rgba(255,255,255,0.7)";
-                } else {
-                    context.strokeStyle = "rgba(0,0,0,0.7)";
-                }
-            }
         }
         this.data[i]!.image = image;
         setTimeout(() => {
@@ -1018,7 +1010,7 @@ class NiconiComments {
             for (let i in this.timeline[vpos]) {
                 let index = this.timeline[vpos]![Number(i) as number] as number;
                 let comment = this.data[index];
-                if (!comment || comment.invisible || comment.content.match(/^[\u200B-\u200D\uFEFF\u3164\s]*$/)) {
+                if (!comment || comment.invisible) {
                     continue;
                 }
                 if (comment.image === undefined) {
@@ -1034,12 +1026,14 @@ class NiconiComments {
         if (this.showFPS) {
             this.context.font = parseFont("defont", 60, this.useLegacy);
             this.context.fillStyle = "#00FF00";
+            this.context.strokeStyle = "rgba(0,0,0,0.7)";
             this.context.strokeText("FPS:" + this.fps, 100, 100);
             this.context.fillText("FPS:" + this.fps, 100, 100);
         }
         if (this.showCommentCount) {
             this.context.font = parseFont("defont", 60, this.useLegacy);
             this.context.fillStyle = "#00FF00";
+            this.context.strokeStyle = "rgba(0,0,0,0.7)";
             if (this.timeline[vpos]) {
                 this.context.strokeText("Count:" + this.timeline[vpos]!.length, 100, 200);
                 this.context.fillText("Count:" + this.timeline[vpos]!.length, 100, 200);

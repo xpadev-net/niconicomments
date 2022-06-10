@@ -398,7 +398,7 @@ class NiconiComments {
                                     break;
                                 }
                             }
-                            if (left_pos <= 40 && !is_break) {
+                            if (left_pos <= 40) {
                                 for (let k in this.collision_left[vpos]) {
                                     let l = this.collision_left[vpos][k];
                                     if ((posY < data[l]!.posY + data[l]!.height && posY + comment.height > data[l]!.posY) && data[l]!.owner === comment.owner) {
@@ -420,9 +420,6 @@ class NiconiComments {
                                 if (is_break) {
                                     break;
                                 }
-                            }
-                            if (is_break) {
-                                break;
                             }
                         }
                         if (is_break) {

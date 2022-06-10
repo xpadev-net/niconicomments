@@ -122,71 +122,98 @@
 <script type="text/javascript">
     const videos = [
         {
-            id: 0,
-            nc: "sm9",
-            yt: "PumFnlu9EIY",
-            title: "新・豪血寺一族 -煩悩解放 - レッツゴー！陰陽師"
+            title:"一般",
+            items:[
+                {
+                    id: 0,
+                    nc: "sm9",
+                    yt: "PumFnlu9EIY",
+                    title: "新・豪血寺一族 -煩悩解放 - レッツゴー！陰陽師"
+                },
+                {
+                    id: 1,
+                    nc: "sm9",
+                    yt: "PumFnlu9EIY",
+                    title: "新・豪血寺一族 -煩悩解放 - レッツゴー！陰陽師(コメント増量版)"
+                },
+                {
+                    id: 2,
+                    nc: "sm2959233",
+                    yt: "pv2IzP2CyRs",
+                    title: "ニコニコ動画流星群"
+                },
+                {
+                    id: 3,
+                    nc: "sm2959233",
+                    yt: "pv2IzP2CyRs",
+                    title: "ニコニコ動画流星群(50229コメ)"
+                },
+            ]
         },
         {
-            id: 1,
-            nc: "sm9",
-            yt: "PumFnlu9EIY",
-            title: "新・豪血寺一族 -煩悩解放 - レッツゴー！陰陽師(コメント増量版)"
+            title:"CA",
+            items:[
+                {
+                    id: 4,
+                    nc: "sm21172249",
+                    yt: "_d6VuTTa8Do",
+                    title: "アンインストール　Arrange.ver【コメント職人】@2018/10/1"
+                },
+                {
+                    id: 5,
+                    nc: "sm34968071",
+                    yt: "_d6VuTTa8Do",
+                    title: "投コメ アンインストール"
+                },
+                {
+                    id: 11,
+                    nc: "sm40491399",
+                    yt: "8mdkdg7vrXg",
+                    title: "【コマテ】アンインストール　Full.ver"
+                },
+                {
+                    id: 6,
+                    nc: "so35384944",
+                    yt: "S2_MZFHTYYk",
+                    title: "よいまちカンターレ"
+                },
+                {
+                    id: 7,
+                    nc: "so17588662",
+                    yt: "29NR161Bmd4",
+                    title: "to the beginning@2012/04/28"
+                },
+                {
+                    id: 8,
+                    nc: "so17784068",
+                    yt: "dW_5Q7uCS7Y",
+                    title: "満天@2012/05/19"
+                },
+                {
+                    id: 9,
+                    nc: "sm38551701",
+                    yt: "m8cdPwNZShM",
+                    title: "うっせぇわ"
+                },
+                {
+                    id: 10,
+                    nc: "so35349120",
+                    yt: "yQEUGxngQN4",
+                    title: "Good Morning World@2019/11/22"
+                }
+            ]
         },
         {
-            id: 2,
-            nc: "sm2959233",
-            yt: "pv2IzP2CyRs",
-            title: "ニコニコ動画流星群"
+            title:"デバッグ",
+            items:[
+                {
+                    id: -1,
+                    nc: "動作確認用",
+                    yt: "m2M2piEMWAE",
+                    title: "各固定テンプレ"
+                },
+            ]
         },
-        {
-            id: 3,
-            nc: "sm2959233",
-            yt: "pv2IzP2CyRs",
-            title: "ニコニコ動画流星群(50229コメ)"
-        },
-        {
-            id: 4,
-            nc: "sm21172249",
-            yt: "_d6VuTTa8Do",
-            title: "アンインストール　Arrange.ver【コメント職人】@2018/10/1"
-        },
-        {
-            id: 5,
-            nc: "sm34968071",
-            yt: "_d6VuTTa8Do",
-            title: "投コメ アンインストール"
-        },
-        {
-            id: 6,
-            nc: "so35384944",
-            yt: "S2_MZFHTYYk",
-            title: "よいまちカンターレ"
-        },
-        {
-            id: 7,
-            nc: "so17588662",
-            yt: "29NR161Bmd4",
-            title: "to the beginning@2012/04/28"
-        },
-        {
-            id: 8,
-            nc: "so17784068",
-            yt: "dW_5Q7uCS7Y",
-            title: "満天@2012/05/19"
-        },
-        {
-            id: 9,
-            nc: "sm38551701",
-            yt: "m8cdPwNZShM",
-            title: "うっせぇわ"
-        },
-        {
-            id: 10,
-            nc: "so35349120",
-            yt: "yQEUGxngQN4",
-            title: "Good Morning World@2019/11/22"
-        }
     ]
     const urlParams = new URLSearchParams(window.location.search);
     let video = urlParams.get('video') || 0, player, interval = null, nico = null, useLegacy = false, showFPS = false,
@@ -195,19 +222,24 @@
 
     function onYouTubeIframeAPIReady() {
         let select = document.getElementById("control-video");
-        for (let item of videos) {
-            let elem = document.createElement("option");
-            elem.value = item.id;
-            elem.text = `${item.title}(${item.nc})`;
-            if (item.id === Number(video)) {
-                elem.selected = true;
+        for (let cate of videos) {
+            let groupElement = document.createElement("optgroup");
+            groupElement.label = cate.title;
+            for (let item of cate.items){
+                let optionElement = document.createElement("option");
+                optionElement.value = item.id;
+                optionElement.text = `${item.title}(${item.nc})`;
+                if (item.id === Number(video)) {
+                    optionElement.selected = true;
+                }
+                groupElement.appendChild(optionElement);
             }
-            select.appendChild(elem);
+            select.appendChild(groupElement);
         }
         player = new YT.Player('player', {
             height: '360',
             width: '640',
-            videoId: videos[video].yt,
+            videoId: getById(videos,video).yt,
             events: {
                 'onReady': onReady,
                 'onStateChange': updateTime
@@ -222,7 +254,7 @@
     document.getElementById("control-video").onchange = (e) => {
         video = e.target.value;
         player.loadVideoById({
-            'videoId': videos[video].yt,
+            'videoId': getById(videos,video).yt,
             'suggestedQuality': 'large'
         });
         loadComments();
@@ -238,7 +270,7 @@
         showCollision = !showCollision;
         nico.showCollision = showCollision;
         for (let i in nico.data) {
-            nico.data[i].image = false;
+            delete nico.data[i].image;
         }
         e.target.checked = showCollision;
     }
@@ -311,5 +343,15 @@
                 }
             }, 10);
         }
+    }
+    const getById = (array, id) => {
+        for (let i of array){
+            for (let j of i.items){
+                if (j.id === Number(id)){
+                    return j;
+                }
+            }
+        }
+        return false
     }
 </script>

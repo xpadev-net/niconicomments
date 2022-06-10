@@ -238,7 +238,7 @@
         showCollision = !showCollision;
         nico.showCollision = showCollision;
         for (let i in nico.data) {
-            nico.data[i].image = false;
+            delete nico.data[i].image;
         }
         e.target.checked = showCollision;
     }

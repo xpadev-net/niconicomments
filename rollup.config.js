@@ -3,6 +3,7 @@ import typescript from "@rollup/plugin-typescript";
 import commonjs from '@rollup/plugin-commonjs';
 import nodeResolve from "@rollup/plugin-node-resolve";
 import pkg from "./package.json";
+import * as path from "path";
 const banner = `/*!
   niconicomments.js v${pkg.version}
   (c) 2021 xpadev-net https://xpadev.net
@@ -18,8 +19,10 @@ export default {
         banner
     },
     plugins: [
-        typescript({
-            tsconfig: 'tsconfig.json',
+        typescript(),
+        babel({
+            babelHelpers: "bundled",
+            configFile: path.resolve(__dirname, ".babelrc.js"),
         }),
         commonjs(),
         nodeResolve(),

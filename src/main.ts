@@ -840,7 +840,6 @@ class NiconiComments {
      * @return formattedCommentWithFont
      */
     parseCommandAndNicoscript(comment: formattedComment): formattedCommentWithFont {
-    parseCommandAndNicoscript(comment: formattedComment):formattedCommentWithFont {
         comment.content = comment.content.replace("/\t/g", "  ")
         let data = this.parseCommand(comment),
             nicoscript = comment.content.match(/^@(デフォルト|置換|逆|コメント禁止|シーク禁止|ジャンプ)/)
@@ -1067,87 +1066,6 @@ class NiconiComments {
     }
 }
 
-/**
- * 配列を複数のキーでグループ化する
- * @param {{}} array
- * @param {string} key
- * @param {string} key2
- * @returns {{}}
- */
-const groupBy = (array: any, key: string, key2: string): {} => {
-    let data: any = {};
-    for (let i in array) {
-        if (!data[array[i][key]]) {
-            data[array[i][key]] = {};
-        }
-        if (!data[array[i][key]][array[i][key2]]) {
-            data[array[i][key]][array[i][key2]] = [];
-        }
-        array[i].index = i;
-        data[array[i][key]][array[i][key2]].push(array[i]);
-    }
-    return data;
-}
-/**
- * フォント名とサイズをもとにcontextで使えるフォントを生成する
- * @param {string} font
- * @param {string|number} size
- * @param {boolean} useLegacy
- * @returns {string}
- */
-const parseFont = (font: string, size: string | number, useLegacy: boolean): string => {
-    switch (font) {
-        case "gothic":
-            return `normal 400 ${size}px "游ゴシック体", "游ゴシック", "Yu Gothic", YuGothic, yugothic, YuGo-Medium`;
-        case "mincho":
-            return `normal 400 ${size}px "游明朝体", "游明朝", "Yu Mincho", YuMincho, yumincho, YuMin-Medium`;
-        default:
-            if (useLegacy) {
-                return `normal 600 ${size}px Arial, "ＭＳ Ｐゴシック", "MS PGothic", MSPGothic, MS-PGothic`;
-            } else {
-                return `normal 600 ${size}px sans-serif, Arial, "ＭＳ Ｐゴシック", "MS PGothic", MSPGothic, MS-PGothic`;
-            }
-    }
-}
-/**
- * phpのarray_push的なあれ
- * @param array
- * @param {string|number} key
- * @param push
- */
-const arrayPush = (array: any, key: string | number, push: any) => {
-    if (!array) {
-        array = {};
-    }
-    if (!array[key]) {
-        array[key] = [];
-    }
-    array[key].push(push);
-}
-/**
- * Hexからrgbに変換する(_live用)
- * @param {string} hex
- * @return {array} RGB
- */
-const hex2rgb = (hex: string) => {
-    if (hex.slice(0, 1) === "#") hex = hex.slice(1);
-    if (hex.length === 3) hex = hex.slice(0, 1) + hex.slice(0, 1) + hex.slice(1, 2) + hex.slice(1, 2) + hex.slice(2, 3) + hex.slice(2, 3);
-
-    return [hex.slice(0, 2), hex.slice(2, 4), hex.slice(4, 6)].map(function (str) {
-        return parseInt(str, 16);
-    });
-}
-/**
- * replaceAll
- */
-const replaceAll = (string: string, target: string, replace: string) => {
-    let count = 0;
-    while (string.indexOf(target) !== -1 && count < 100) {
-        string = string.replace(target, replace)
-        count++;
-    }
-    return string;
-}
 const isApiChat = (item: any): item is apiChat =>
     !!item.chat
 

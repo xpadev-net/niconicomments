@@ -232,9 +232,9 @@ class NiconiComments {
         const parseDataStart = performance.now();
         let data_: formattedComment[] = [];
         for (let i = 0; i < data.length; i++) {
-            for (let key in data[i]) {
-                let val = data[i];
-                if (!val) continue;
+            let val = data[i];
+            if (!val) continue;
+            for (let key in val) {
                 let value = val[key];
                 if (isApiChat(value) && value["deleted"] !== 1) {
                     let tmpParam: any = {
@@ -1139,7 +1139,7 @@ const replaceAll = (string: string, target: string, replace: string) => {
     return string;
 }
 const isApiChat = (item: any): item is apiChat =>
-    !!item.chat
+    item.id&&item.vpos&&item.vpos
 
 const logger = (msg: any) => {
     if (isDebug) console.debug(msg);

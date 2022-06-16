@@ -6,7 +6,8 @@ type InitOptions = {
     showFPS: boolean,
     showCommentCount: boolean,
     drawAllImageOnLoad: boolean,
-    debug: boolean
+    debug: boolean,
+    enableLegacyPiP: boolean
 }
 type rawApiResponse = {
     [key: string]: apiPing | apiThread | apiLeaf | apiGlobalNumRes | apiChat
@@ -112,6 +113,7 @@ class NiconiComments {
     private showCollision: boolean;
     public showFPS: boolean;
     public showCommentCount: boolean;
+    public enableLegacyPiP: boolean;
     private data: parsedComment[];
     private timeline: { [key: number]: number[] };
     private nicoScripts: {
@@ -141,7 +143,8 @@ class NiconiComments {
         showFPS: false,
         showCommentCount: false,
         drawAllImageOnLoad: false,
-        debug: false
+        debug: false,
+        enableLegacyPiP: false
     }) {
         isDebug = options.debug;
         const constructorStart = performance.now();
@@ -199,6 +202,7 @@ class NiconiComments {
         this.showCollision = options.showCollision;
         this.showFPS = options.showFPS;
         this.showCommentCount = options.showCommentCount;
+        this.enableLegacyPiP = options.enableLegacyPiP
 
         this.timeline = {};
         this.nicoScripts = {reverse: [], default: [], replace: [], ban: []};
@@ -997,7 +1001,7 @@ class NiconiComments {
         if (this.video) {
             let offsetX, offsetY, scale, height = this.canvas.height / this.video.videoHeight,
                 width = this.canvas.width / this.video.videoWidth;
-            if (height < width) {
+            if (this.enableLegacyPiP?height > width : height < width) {
                 scale = width;
             } else {
                 scale = height;

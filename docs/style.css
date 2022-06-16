@@ -101,3 +101,7 @@ span.type {
     margin-left: 5px;
     padding: 0 2px
 }
+span.important{
+    color: red;
+    font-size: 2em;
+}

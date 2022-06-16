@@ -997,7 +997,7 @@ class NiconiComments {
         if (this.video) {
             let offsetX, offsetY, scale, height = this.canvas.height / this.video.videoHeight,
                 width = this.canvas.width / this.video.videoWidth;
-            if (height > width) {
+            if (height < width) {
                 scale = width;
             } else {
                 scale = height;

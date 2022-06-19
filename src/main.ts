@@ -349,7 +349,7 @@ class NiconiComments {
             if (!comment || comment.invisible) {
                 continue;
             }
-            for (let j = 0; j < 500; j++) {
+            for (let j = 0; j < comment.long+200; j++) {
                 if (!this.timeline[comment.vpos + j]) {
                     this.timeline[comment.vpos + j] = [];
                 }
@@ -376,7 +376,7 @@ class NiconiComments {
                     while (is_change && count < 10) {
                         is_change = false;
                         count++;
-                        for (let j = 0; j < 500; j++) {
+                        for (let j = 0; j < comment.long+200; j++) {
                             let vpos = comment.vpos + j;
                             let left_pos = 1920 - ((1920 + comment.width_max) * j / 500);
                             if (left_pos + comment.width_max >= 1880) {
@@ -431,7 +431,7 @@ class NiconiComments {
                         }
                     }
                 }
-                for (let j = 0; j < 500; j++) {
+                for (let j = 0; j < comment.long+200; j++) {
                     let vpos = comment.vpos + j;
                     let left_pos = 1920 - ((1920 + comment.width_max) * j / 500);
                     arrayPush(this.timeline, vpos, i);
@@ -453,7 +453,7 @@ class NiconiComments {
                 while (is_change && count < 10) {
                     is_change = false;
                     count++;
-                    for (let j = 0; j < 300; j++) {
+                    for (let j = 0; j < comment.long; j++) {
                         let vpos = comment.vpos + j;
                         for (let k in collision[vpos]) {
                             let l = collision[vpos][k];
@@ -621,9 +621,9 @@ class NiconiComments {
         let posX = (1920 - comment.width_max) / 2, posY = comment.posY;
         if (comment.loc === "naka") {
             if (reverse) {
-                posX = ((1920 + comment.width_max) * (vpos - comment.vpos) / 500) - comment.width_max;
+                posX = ((1920 + comment.width_max) * (vpos - comment.vpos) / comment.long+200) - comment.width_max;
             } else {
-                posX = 1920 - ((1920 + comment.width_max) * (vpos - comment.vpos) / 500);
+                posX = 1920 - ((1920 + comment.width_max) * (vpos - comment.vpos) / comment.long+200);
             }
         } else if (comment.loc === "shita") {
             posY = 1080 - comment.posY - comment.height;

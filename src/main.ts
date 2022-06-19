@@ -1139,7 +1139,7 @@ const replaceAll = (string: string, target: string, replace: string) => {
     return string;
 }
 const isApiChat = (item: any): item is apiChat =>
-    item.id&&item.vpos&&item.vpos
+    item.no&&item.vpos&&item.content
 
 const logger = (msg: any) => {
     if (isDebug) console.debug(msg);

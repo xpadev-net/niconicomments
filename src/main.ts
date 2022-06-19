@@ -8,7 +8,8 @@ type InitOptions = {
     showFPS: boolean,
     showCommentCount: boolean,
     drawAllImageOnLoad: boolean,
-    debug: boolean
+    debug: boolean,
+    enableLegacyPiP: boolean
 }
 type rawApiResponse = {
     [key: string]: apiPing | apiThread | apiLeaf | apiGlobalNumRes | apiChat
@@ -114,6 +115,7 @@ class NiconiComments {
     private showCollision: boolean;
     public showFPS: boolean;
     public showCommentCount: boolean;
+    public enableLegacyPiP: boolean;
     private data: parsedComment[];
     private timeline: { [key: number]: number[] };
     private nicoScripts: {
@@ -145,7 +147,8 @@ class NiconiComments {
         showFPS: false,
         showCommentCount: false,
         drawAllImageOnLoad: false,
-        debug: false
+        debug: false,
+        enableLegacyPiP: false
     }) {
         isDebug = options.debug;
         const constructorStart = performance.now();
@@ -203,6 +206,7 @@ class NiconiComments {
         this.showCollision = options.showCollision;
         this.showFPS = options.showFPS;
         this.showCommentCount = options.showCommentCount;
+        this.enableLegacyPiP = options.enableLegacyPiP;
 
         this.niwango = new NiwangoParser();
 
@@ -234,9 +238,9 @@ class NiconiComments {
         const parseDataStart = performance.now();
         let data_: formattedComment[] = [];
         for (let i = 0; i < data.length; i++) {
-            for (let key in data[i]) {
-                let val = data[i];
-                if (!val) continue;
+            let val = data[i];
+            if (!val) continue;
+            for (let key in val) {
                 let value = val[key];
                 if (isApiChat(value) && value["deleted"] !== 1) {
                     let tmpParam: any = {
@@ -351,7 +355,7 @@ class NiconiComments {
             if (!comment || comment.invisible) {
                 continue;
             }
-            for (let j = 0; j < 500; j++) {
+            for (let j = 0; j < comment.long*4/3+100; j++) {
                 if (!this.timeline[comment.vpos + j]) {
                     this.timeline[comment.vpos + j] = [];
                 }
@@ -369,18 +373,17 @@ class NiconiComments {
                 }
             }
             if (comment.loc === "naka") {
-                comment.vpos -= 70;
-                parsedData[i]!.vpos -= 70;
-                let posY = 0, is_break = false, is_change = true, count = 0;
+
+                let posY = 0, is_break = false, is_change = true, count = 0, beforeVpos = Math.round(-240 / ((1680+comment.width_max)/ (comment.long+125))) - 100;
                 if (1080 < comment.height) {
                     posY = (comment.height - 1080) / -2;
                 } else {
                     while (is_change && count < 10) {
                         is_change = false;
                         count++;
-                        for (let j = 0; j < 500; j++) {
+                        for (let j = beforeVpos; j < comment.long; j++) {
                             let vpos = comment.vpos + j;
-                            let left_pos = 1920 - ((1920 + comment.width_max) * j / 500);
+                            let left_pos = 1680 - (1680+comment.width_max)/ (comment.long+125) * j;
                             if (left_pos + comment.width_max >= 1880) {
                                 for (let k in this.collision_right[vpos]) {
                                     let l = this.collision_right[vpos][k];
@@ -433,9 +436,10 @@ class NiconiComments {
                         }
                     }
                 }
-                for (let j = 0; j < 500; j++) {
+                for (let j = beforeVpos; j < comment.long+125; j++) {
                     let vpos = comment.vpos + j;
-                    let left_pos = 1920 - ((1920 + comment.width_max) * j / 500);
+                    let left_pos = 1680 - (1680+comment.width_max)/ (comment.long+125) * j;
+                    console.log(vpos,i,j);
                     arrayPush(this.timeline, vpos, i);
                     if (left_pos + comment.width_max >= 1880) {
                         arrayPush(this.collision_right, vpos, i);
@@ -455,7 +459,7 @@ class NiconiComments {
                 while (is_change && count < 10) {
                     is_change = false;
                     count++;
-                    for (let j = 0; j < 300; j++) {
+                    for (let j = 0; j < comment.long; j++) {
                         let vpos = comment.vpos + j;
                         for (let k in collision[vpos]) {
                             let l = collision[vpos][k];
@@ -623,9 +627,10 @@ class NiconiComments {
         let posX = (1920 - comment.width_max) / 2, posY = comment.posY;
         if (comment.loc === "naka") {
             if (reverse) {
-                posX = ((1920 + comment.width_max) * (vpos - comment.vpos) / 500) - comment.width_max;
+                posX = 240 + (1680+comment.width_max)/ (comment.long+125) * (vpos - comment.vpos + 100) - comment.width_max;
             } else {
-                posX = 1920 - ((1920 + comment.width_max) * (vpos - comment.vpos) / 500);
+                posX = 1680 - (1680+comment.width_max)/ (comment.long+125) * (vpos - comment.vpos + 100);
+                console.log(vpos - comment.vpos)
             }
         } else if (comment.loc === "shita") {
             posY = 1080 - comment.posY - comment.height;
@@ -986,12 +991,10 @@ class NiconiComments {
         if (!data.font) {
             data.font = font;
         }
-        if (data.loc !== "naka") {
-            if (!data.long) {
-                data.long = 300;
-            } else {
-                data.long = Math.floor(data.long * 100);
-            }
+        if (!data.long) {
+            data.long = 300;
+        } else {
+            data.long = Math.floor(Number(data.long) * 100);
         }
         return {...comment, ...data} as formattedCommentWithFont;
 
@@ -1010,7 +1013,7 @@ class NiconiComments {
         if (this.video) {
             let offsetX, offsetY, scale, height = this.canvas.height / this.video.videoHeight,
                 width = this.canvas.width / this.video.videoWidth;
-            if (height > width) {
+            if (this.enableLegacyPiP?height > width : height < width) {
                 scale = width;
             } else {
                 scale = height;
@@ -1067,7 +1070,7 @@ class NiconiComments {
 }
 
 const isApiChat = (item: any): item is apiChat =>
-    !!item.chat
+    item.no&&item.vpos&&item.content
 
 const logger = (msg: any) => {
     if (isDebug) console.debug(msg);

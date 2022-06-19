@@ -202,7 +202,7 @@ class NiconiComments {
         this.showCollision = options.showCollision;
         this.showFPS = options.showFPS;
         this.showCommentCount = options.showCommentCount;
-        this.enableLegacyPiP = options.enableLegacyPiP
+        this.enableLegacyPiP = options.enableLegacyPiP;
 
         this.timeline = {};
         this.nicoScripts = {reverse: [], default: [], replace: [], ban: []};
@@ -349,7 +349,7 @@ class NiconiComments {
             if (!comment || comment.invisible) {
                 continue;
             }
-            for (let j = 0; j < 500; j++) {
+            for (let j = 0; j < comment.long*4/3+100; j++) {
                 if (!this.timeline[comment.vpos + j]) {
                     this.timeline[comment.vpos + j] = [];
                 }
@@ -367,18 +367,17 @@ class NiconiComments {
                 }
             }
             if (comment.loc === "naka") {
-                comment.vpos -= 70;
-                parsedData[i]!.vpos -= 70;
-                let posY = 0, is_break = false, is_change = true, count = 0;
+
+                let posY = 0, is_break = false, is_change = true, count = 0, beforeVpos = Math.round(-240 / ((1680+comment.width_max)/ (comment.long+125))) - 100;
                 if (1080 < comment.height) {
                     posY = (comment.height - 1080) / -2;
                 } else {
                     while (is_change && count < 10) {
                         is_change = false;
                         count++;
-                        for (let j = 0; j < 500; j++) {
+                        for (let j = beforeVpos; j < comment.long; j++) {
                             let vpos = comment.vpos + j;
-                            let left_pos = 1920 - ((1920 + comment.width_max) * j / 500);
+                            let left_pos = 1680 - (1680+comment.width_max)/ (comment.long+125) * j;
                             if (left_pos + comment.width_max >= 1880) {
                                 for (let k in this.collision_right[vpos]) {
                                     let l = this.collision_right[vpos][k];
@@ -431,9 +430,10 @@ class NiconiComments {
                         }
                     }
                 }
-                for (let j = 0; j < 500; j++) {
+                for (let j = beforeVpos; j < comment.long+125; j++) {
                     let vpos = comment.vpos + j;
-                    let left_pos = 1920 - ((1920 + comment.width_max) * j / 500);
+                    let left_pos = 1680 - (1680+comment.width_max)/ (comment.long+125) * j;
+                    console.log(vpos,i,j);
                     arrayPush(this.timeline, vpos, i);
                     if (left_pos + comment.width_max >= 1880) {
                         arrayPush(this.collision_right, vpos, i);
@@ -453,7 +453,7 @@ class NiconiComments {
                 while (is_change && count < 10) {
                     is_change = false;
                     count++;
-                    for (let j = 0; j < 300; j++) {
+                    for (let j = 0; j < comment.long; j++) {
                         let vpos = comment.vpos + j;
                         for (let k in collision[vpos]) {
                             let l = collision[vpos][k];
@@ -621,9 +621,10 @@ class NiconiComments {
         let posX = (1920 - comment.width_max) / 2, posY = comment.posY;
         if (comment.loc === "naka") {
             if (reverse) {
-                posX = ((1920 + comment.width_max) * (vpos - comment.vpos) / 500) - comment.width_max;
+                posX = 240 + (1680+comment.width_max)/ (comment.long+125) * (vpos - comment.vpos + 100) - comment.width_max;
             } else {
-                posX = 1920 - ((1920 + comment.width_max) * (vpos - comment.vpos) / 500);
+                posX = 1680 - (1680+comment.width_max)/ (comment.long+125) * (vpos - comment.vpos + 100);
+                console.log(vpos - comment.vpos)
             }
         } else if (comment.loc === "shita") {
             posY = 1080 - comment.posY - comment.height;
@@ -977,12 +978,10 @@ class NiconiComments {
         if (!data.font) {
             data.font = font;
         }
-        if (data.loc !== "naka") {
-            if (!data.long) {
-                data.long = 300;
-            } else {
-                data.long = Math.floor(data.long * 100);
-            }
+        if (!data.long) {
+            data.long = 300;
+        } else {
+            data.long = Math.floor(Number(data.long) * 100);
         }
         return {...comment, ...data} as formattedCommentWithFont;
 

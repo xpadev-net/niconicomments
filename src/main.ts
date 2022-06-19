@@ -202,7 +202,7 @@ class NiconiComments {
         this.showCollision = options.showCollision;
         this.showFPS = options.showFPS;
         this.showCommentCount = options.showCommentCount;
-        this.enableLegacyPiP = options.enableLegacyPiP
+        this.enableLegacyPiP = options.enableLegacyPiP;
 
         this.timeline = {};
         this.nicoScripts = {reverse: [], default: [], replace: [], ban: []};

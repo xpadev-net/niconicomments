@@ -190,11 +190,11 @@ class NiconiComments {
         this.doubleResizeMaxWidth = {
             full: {
                 legacy: 3020,
-                default: 3220
+                default: 3550
             },
             normal: {
                 legacy: 2540,
-                default: 2740
+                default: 2650
             }
         };
         let parsedData: formattedComment[] = options.formatted ? data as formattedComment[] : this.parseData(data as rawApiResponse[]);
@@ -569,6 +569,7 @@ class NiconiComments {
             }
         } else if (comment.loc !== "naka" && comment.tateresized && (comment.full && width_max > 2120 || !comment.full && width_max > 1440) && !comment.yokoResized) {
             comment.fontSize = this.fontSize[comment.size]!.default;
+            comment.lineHeight = this.lineHeight[comment.size]!.default*1.05;
             comment.resized = true;
             comment.yokoResized = true;
             this.context.font = parseFont(comment.font, comment.fontSize, this.useLegacy);

@@ -439,7 +439,6 @@ class NiconiComments {
                 for (let j = beforeVpos; j < comment.long+125; j++) {
                     let vpos = comment.vpos + j;
                     let left_pos = 1680 - (1680+comment.width_max)/ (comment.long+125) * j;
-                    console.log(vpos,i,j);
                     arrayPush(this.timeline, vpos, i);
                     if (left_pos + comment.width_max >= 1880) {
                         arrayPush(this.collision_right, vpos, i);

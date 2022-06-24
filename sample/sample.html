@@ -34,7 +34,11 @@
         ニコ動互換モード
     </label>
     <label>
-        <input type="checkbox" name="use-legacy" id="draw-all" autocomplete="off">
+        <input type="checkbox" name="keep-ca" id="keep-ca" autocomplete="off">
+        CA衝突回避
+    </label>
+    <label>
+        <input type="checkbox" name="draw-all" id="draw-all" autocomplete="off">
         事前に全コメントを描画する
     </label>
     <label>
@@ -287,7 +291,7 @@
     const urlParams = new URLSearchParams(window.location.search);
     let video = urlParams.get('video') || 0, player, interval = null, nico = null, useLegacy = false, showFPS = false,
         showCollision = false, showCommentCount = false, smoothing = false, videoMicroSec = false,
-        drawAllImageOnLoad = false;
+        drawAllImageOnLoad = false, keepCA=false;
 
     function onYouTubeIframeAPIReady() {
         let select = document.getElementById("control-video");
@@ -357,6 +361,11 @@
         e.target.checked = useLegacy;
         loadComments();
     }
+    document.getElementById("keep-ca").onchange = (e) => {
+        keepCA = !keepCA;
+        e.target.checked = keepCA;
+        loadComments();
+    }
     document.getElementById("smoothing").onchange = (e) => {
         smoothing = !smoothing;
         e.target.checked = smoothing;
@@ -392,6 +401,7 @@
         const res = await req.json();
         if (nico instanceof NiconiComments) {
             nico.useLegacy = useLegacy;
+            nico.keepCA = keepCA;
             nico.timeline = {};
             nico.nicoScripts = {"reverse": [], "default": []};
             nico.collision_right = {};
@@ -402,6 +412,7 @@
         } else {
             nico = new NiconiComments(canvas, res, {
                 useLegacy: useLegacy,
+                keepCA: keepCA,
                 formatted: true,
                 drawAllImageOnLoad: drawAllImageOnLoad,
                 debug: true

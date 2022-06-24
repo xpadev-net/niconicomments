@@ -173,7 +173,7 @@ class NiconiComments {
             drawAllImageOnLoad: false,
             debug: false,
             enableLegacyPiP: false,
-            keepCA: true
+            keepCA: false
         },initOptions) ;
         isDebug = options.debug;
         const constructorStart = performance.now();

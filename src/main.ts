@@ -1,4 +1,16 @@
 type InitOptions = {
+    useLegacy?: boolean,
+    formatted?: boolean,
+    video?: HTMLVideoElement | null
+    showCollision?: boolean,
+    showFPS?: boolean,
+    showCommentCount?: boolean,
+    drawAllImageOnLoad?: boolean,
+    debug?: boolean,
+    enableLegacyPiP?: boolean,
+    keepCA?: boolean
+}
+type Options = {
     useLegacy: boolean,
     formatted: boolean,
     video: HTMLVideoElement | null,
@@ -7,7 +19,8 @@ type InitOptions = {
     showCommentCount: boolean,
     drawAllImageOnLoad: boolean,
     debug: boolean,
-    enableLegacyPiP: boolean
+    enableLegacyPiP: boolean,
+    keepCA: boolean
 }
 type rawApiResponse = {
     [key: string]: apiPing | apiThread | apiLeaf | apiGlobalNumRes | apiChat
@@ -52,7 +65,9 @@ type formattedComment = {
     "date_usec": number,
     "owner": boolean,
     "premium": boolean,
-    "mail": string[]
+    "mail": string[],
+    "user_id": number,
+    "layer": number,
 }
 type formattedCommentWithFont = formattedComment & {
     "loc": string,
@@ -114,6 +129,7 @@ class NiconiComments {
     public showFPS: boolean;
     public showCommentCount: boolean;
     public enableLegacyPiP: boolean;
+    private keepCA: boolean;
     private data: parsedComment[];
     private timeline: { [key: number]: number[] };
     private nicoScripts: {
@@ -133,9 +149,9 @@ class NiconiComments {
      * NiconiComments Constructor
      * @param {HTMLCanvasElement} canvas - 描画対象のキャンバス
      * @param {[]} data - 描画用のコメント
-     * @param {{useLegacy: boolean, formatted: boolean, video: HTMLVideoElement|null}, showCollision: boolean, showFPS: boolean, showCommentCount: boolean, drawAllImageOnLoad: boolean} options - 細かい設定類
+     * @param initOptions
      */
-    constructor(canvas: HTMLCanvasElement, data: (rawApiResponse | formattedComment)[], options: InitOptions = {
+    constructor(canvas: HTMLCanvasElement, data: (rawApiResponse | formattedComment)[], initOptions: InitOptions = {
         useLegacy: false,
         formatted: false,
         video: null,
@@ -144,8 +160,21 @@ class NiconiComments {
         showCommentCount: false,
         drawAllImageOnLoad: false,
         debug: false,
-        enableLegacyPiP: false
+        enableLegacyPiP: false,
+        keepCA: false
     }) {
+        const options: Options = Object.assign({
+            useLegacy: false,
+            formatted: false,
+            video: null,
+            showCollision: false,
+            showFPS: false,
+            showCommentCount: false,
+            drawAllImageOnLoad: false,
+            debug: false,
+            enableLegacyPiP: false,
+            keepCA: true
+        },initOptions) ;
         isDebug = options.debug;
         const constructorStart = performance.now();
 
@@ -203,6 +232,7 @@ class NiconiComments {
         this.showFPS = options.showFPS;
         this.showCommentCount = options.showCommentCount;
         this.enableLegacyPiP = options.enableLegacyPiP;
+        this.keepCA = options.keepCA;
 
         this.timeline = {};
         this.nicoScripts = {reverse: [], default: [], replace: [], ban: []};
@@ -230,7 +260,7 @@ class NiconiComments {
      */
     parseData(data: rawApiResponse[]) {
         const parseDataStart = performance.now();
-        let data_: formattedComment[] = [];
+        let data_: formattedComment[] = [], userList: string[] = [];
         for (let i = 0; i < data.length; i++) {
             let val = data[i];
             if (!val) continue;
@@ -245,13 +275,22 @@ class NiconiComments {
                         "date_usec": value["date_usec"],
                         "owner": !value["user_id"],
                         "premium": value["premium"] === 1,
-                        "mail": []
+                        "mail": [],
+                        "user_id": -1,
+                        "layer": -1
                     };
                     if (value["mail"]) {
                         tmpParam["mail"] = value["mail"].split(/[\s　]/g);
                     }
                     if (value["content"].startsWith("/") && !value["user_id"]) {
                         tmpParam["mail"].push("invisible");
+                    }
+                    let isUserExist = userList.indexOf(value["user_id"])
+                    if (isUserExist === -1) {
+                        tmpParam.user_id = userList.length;
+                        userList.push(value.user_id);
+                    } else {
+                        tmpParam.user_id = isUserExist;
                     }
                     data_.push(tmpParam);
                 }
@@ -278,11 +317,14 @@ class NiconiComments {
      */
     preRendering(rawData: formattedComment[], drawAll: boolean) {
         const preRenderingStart = performance.now();
+        if (this.keepCA) {
+            rawData = changeCALayer(rawData);
+        }
         let parsedData: parsedComment[] = this.getCommentPos(this.getCommentSize(this.getFont(rawData)) as parsedComment[]);
         this.data = this.sortComment(parsedData);
         if (drawAll) {
             for (let i in parsedData) {
-                this.getTextImage(Number(i));
+                this.getTextImage(Number(i), true);
             }
         }
         logger(`preRendering complete: ${performance.now() - preRenderingStart}ms`);
@@ -349,7 +391,7 @@ class NiconiComments {
             if (!comment || comment.invisible) {
                 continue;
             }
-            for (let j = 0; j < comment.long*4/3+100; j++) {
+            for (let j = 0; j < comment.long * 4 / 3 + 100; j++) {
                 if (!this.timeline[comment.vpos + j]) {
                     this.timeline[comment.vpos + j] = [];
                 }
@@ -368,7 +410,8 @@ class NiconiComments {
             }
             if (comment.loc === "naka") {
 
-                let posY = 0, is_break = false, is_change = true, count = 0, beforeVpos = Math.round(-240 / ((1680+comment.width_max)/ (comment.long+125))) - 100;
+                let posY = 0, is_break = false, is_change = true, count = 0,
+                    beforeVpos = Math.round(-240 / ((1680 + comment.width_max) / (comment.long + 125))) - 100;
                 if (1080 < comment.height) {
                     posY = (comment.height - 1080) / -2;
                 } else {
@@ -377,11 +420,11 @@ class NiconiComments {
                         count++;
                         for (let j = beforeVpos; j < comment.long; j++) {
                             let vpos = comment.vpos + j;
-                            let left_pos = 1680 - (1680+comment.width_max)/ (comment.long+125) * j;
+                            let left_pos = 1680 - (1680 + comment.width_max) / (comment.long + 125) * j;
                             if (left_pos + comment.width_max >= 1880) {
                                 for (let k in this.collision_right[vpos]) {
                                     let l = this.collision_right[vpos][k];
-                                    if ((posY < data[l]!.posY + data[l]!.height && posY + comment.height > data[l]!.posY) && data[l]!.owner === comment.owner) {
+                                    if ((posY < data[l]!.posY + data[l]!.height && posY + comment.height > data[l]!.posY) && data[l]!.owner === comment.owner&&data[l]!.layer === comment.layer) {
                                         if (data[l]!.posY + data[l]!.height > posY) {
                                             posY = data[l]!.posY + data[l]!.height;
                                             is_change = true;
@@ -404,7 +447,7 @@ class NiconiComments {
                             if (left_pos <= 40) {
                                 for (let k in this.collision_left[vpos]) {
                                     let l = this.collision_left[vpos][k];
-                                    if ((posY < data[l]!.posY + data[l]!.height && posY + comment.height > data[l]!.posY) && data[l]!.owner === comment.owner) {
+                                    if ((posY < data[l]!.posY + data[l]!.height && posY + comment.height > data[l]!.posY) && data[l]!.owner === comment.owner&&data[l]!.layer === comment.layer) {
                                         if (data[l]!.posY + data[l]!.height > posY) {
                                             posY = data[l]!.posY + data[l]!.height;
                                             is_change = true;
@@ -430,10 +473,9 @@ class NiconiComments {
                         }
                     }
                 }
-                for (let j = beforeVpos; j < comment.long+125; j++) {
+                for (let j = beforeVpos; j < comment.long + 125; j++) {
                     let vpos = comment.vpos + j;
-                    let left_pos = 1680 - (1680+comment.width_max)/ (comment.long+125) * j;
-                    console.log(vpos,i,j);
+                    let left_pos = 1680 - (1680 + comment.width_max) / (comment.long + 125) * j;
                     arrayPush(this.timeline, vpos, i);
                     if (left_pos + comment.width_max >= 1880) {
                         arrayPush(this.collision_right, vpos, i);
@@ -457,7 +499,7 @@ class NiconiComments {
                         let vpos = comment.vpos + j;
                         for (let k in collision[vpos]) {
                             let l = collision[vpos][k];
-                            if ((posY < data[l]!.posY + data[l]!.height && posY + comment.height > data[l]!.posY) && data[l]!.owner === comment.owner) {
+                            if ((posY < data[l]!.posY + data[l]!.height && posY + comment.height > data[l]!.posY) && data[l]!.owner === comment.owner&&data[l]!.layer === comment.layer) {
                                 if (data[l]!.posY + data[l]!.height > posY) {
                                     posY = data[l]!.posY + data[l]!.height;
                                     is_change = true;
@@ -569,7 +611,7 @@ class NiconiComments {
             }
         } else if (comment.loc !== "naka" && comment.tateresized && (comment.full && width_max > 2120 || !comment.full && width_max > 1440) && !comment.yokoResized) {
             comment.fontSize = this.fontSize[comment.size]!.default;
-            comment.lineHeight = this.lineHeight[comment.size]!.default*1.05;
+            comment.lineHeight = this.lineHeight[comment.size]!.default * 1.05;
             comment.resized = true;
             comment.yokoResized = true;
             this.context.font = parseFont(comment.font, comment.fontSize, this.useLegacy);
@@ -622,10 +664,9 @@ class NiconiComments {
         let posX = (1920 - comment.width_max) / 2, posY = comment.posY;
         if (comment.loc === "naka") {
             if (reverse) {
-                posX = 240 + (1680+comment.width_max)/ (comment.long+125) * (vpos - comment.vpos + 100) - comment.width_max;
+                posX = 240 + (1680 + comment.width_max) / (comment.long + 125) * (vpos - comment.vpos + 100) - comment.width_max;
             } else {
-                posX = 1680 - (1680+comment.width_max)/ (comment.long+125) * (vpos - comment.vpos + 100);
-                console.log(vpos - comment.vpos)
+                posX = 1680 - (1680 + comment.width_max) / (comment.long + 125) * (vpos - comment.vpos + 100);
             }
         } else if (comment.loc === "shita") {
             posY = 1080 - comment.posY - comment.height;
@@ -648,8 +689,9 @@ class NiconiComments {
     /**
      * drawTextで毎回fill/strokeすると重いので画像化して再利用できるようにする
      * @param {number} i - コメントデータのインデックス
+     * @param preRendering
      */
-    getTextImage(i: number) {
+    getTextImage(i: number, preRendering: boolean = false) {
         let value = this.data[i];
         if (!value || value.invisible) return;
         let image = document.createElement("canvas");
@@ -679,6 +721,7 @@ class NiconiComments {
             context.fillText(line, 0, posY);
         }
         this.data[i]!.image = image;
+        if (preRendering) return;
         setTimeout(() => {
             if (this.data[i]!.image) delete this.data[i]!.image;
         }, 5000);
@@ -1001,7 +1044,7 @@ class NiconiComments {
         if (this.video) {
             let offsetX, offsetY, scale, height = this.canvas.height / this.video.videoHeight,
                 width = this.canvas.width / this.video.videoWidth;
-            if (this.enableLegacyPiP?height > width : height < width) {
+            if (this.enableLegacyPiP ? height > width : height < width) {
                 scale = width;
             } else {
                 scale = height;
@@ -1139,10 +1182,39 @@ const replaceAll = (string: string, target: string, replace: string) => {
     return string;
 }
 const isApiChat = (item: any): item is apiChat =>
-    item.no&&item.vpos&&item.content
+    item.no && item.vpos && item.content
 
 const logger = (msg: any) => {
     if (isDebug) console.debug(msg);
+}
+
+const changeCALayer = (rawData: formattedComment[]): formattedComment[] => {
+    const userList:{[key:number]:number} = {};
+    const data:formattedComment[] = [],index: string[] = [];
+    for (let i in rawData) {
+        const value: formattedComment = rawData[i]!;
+        if (value.user_id===undefined||value.user_id === -1)continue;
+        if(userList[value.user_id]===undefined)userList[value.user_id]=0;
+        if (value.mail.includes("ca")||value.mail.includes("patissier")||value.mail.includes("ender")){
+            userList[value.user_id]+=5;
+        }
+        if ((value.content.match(/\r\n|\n|\r/g)||[]).length>2){
+            userList[value.user_id]+=1;
+        }
+        let key = `${value.content}@@${Array.from(new Set(value.mail.sort())).filter((e)=>!e.match(/@[\d.]+|184|device:.+|patissier|ca/)).join("")}@@${Math.floor(value.vpos*10)}`;
+        if (index.indexOf(key)===-1){
+            index.push(key);
+            data.push(value);
+        }
+    }
+    for (let i in data) {
+        const value: formattedComment = data[i]!;
+        if (userList[value.user_id]!==undefined&&userList[value.user_id]!>=10){
+            value.layer = value.user_id;
+        }
+    }
+    return data;
+
 }
 
 export default NiconiComments;

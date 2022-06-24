@@ -1195,7 +1195,7 @@ const changeCALayer = (rawData: formattedComment[]): formattedComment[] => {
         const value: formattedComment = rawData[i]!;
         if (value.user_id===undefined||value.user_id === -1)continue;
         if(userList[value.user_id]===undefined)userList[value.user_id]=0;
-        if (value.mail.includes("ca")||value.mail.includes("patissier")||value.mail.includes("ender")){
+        if (value.mail.indexOf("ca")>-1||value.mail.indexOf("patissier")>-1||value.mail.indexOf("ender")>-1){
             userList[value.user_id]+=5;
         }
         if ((value.content.match(/\r\n|\n|\r/g)||[]).length>2){

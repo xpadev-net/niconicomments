@@ -1,118 +1,4 @@
-type InitOptions = {
-    useLegacy?: boolean,
-    formatted?: boolean,
-    video?: HTMLVideoElement | null
-    showCollision?: boolean,
-    showFPS?: boolean,
-    showCommentCount?: boolean,
-    drawAllImageOnLoad?: boolean,
-    debug?: boolean,
-    enableLegacyPiP?: boolean,
-    keepCA?: boolean
-}
-type Options = {
-    useLegacy: boolean,
-    formatted: boolean,
-    video: HTMLVideoElement | null,
-    showCollision: boolean,
-    showFPS: boolean,
-    showCommentCount: boolean,
-    drawAllImageOnLoad: boolean,
-    debug: boolean,
-    enableLegacyPiP: boolean,
-    keepCA: boolean
-}
-type rawApiResponse = {
-    [key: string]: apiPing | apiThread | apiLeaf | apiGlobalNumRes | apiChat
-}
-type apiPing = {
-    "content": string
-}
-type apiThread = {
-    "resultcode": number,
-    "thread": string,
-    "server_time": number,
-    "ticket": string,
-    "revision": number
-}
-type apiLeaf = {
-    "thread": string,
-    "count": number
-}
-type apiGlobalNumRes = {
-    "thread": string,
-    "num_res": number
-}
-type apiChat = {
-    "thread": string,
-    "no": number,
-    "vpos": number,
-    "date": number,
-    "date_usec": number,
-    "nicoru": number,
-    "premium": number,
-    "anonymity": number,
-    "user_id": string,
-    "mail": string,
-    "content": string,
-    "deleted": number
-}
-type formattedComment = {
-    "id": number,
-    "vpos": number,
-    "content": string,
-    "date": number,
-    "date_usec": number,
-    "owner": boolean,
-    "premium": boolean,
-    "mail": string[],
-    "user_id": number,
-    "layer": number,
-}
-type formattedCommentWithFont = formattedComment & {
-    "loc": string,
-    "size": string,
-    "fontSize": number,
-    "font": string,
-    "color": string,
-    "full": boolean,
-    "ender": boolean,
-    "_live": boolean,
-    "long": number,
-    "invisible": boolean
-}
-type formattedCommentWithSize = formattedCommentWithFont & {
-    "height": number,
-    "width": number,
-    "width_max": number,
-    "width_min": number,
-    "lineHeight": number
-}
-type parsedComment = formattedCommentWithSize & {
-    posY: number,
-    image?: HTMLCanvasElement | boolean
-}
-type measureTextResult = {
-    "width": number,
-    "width_max": number,
-    "width_min": number,
-    "height": number,
-    "resized": boolean,
-    "fontSize": number,
-    "lineHeight": number
-}
-type T_fontSize = {
-    [key: string]: {
-        "default": number,
-        "resized": number
-    }
-}
-type T_doubleResizeMaxWidth = {
-    [key: string]: {
-        "legacy": number,
-        "default": number
-    }
-}
+import typeGuard from "@/typeGuard";
 
 let isDebug: boolean = false;
 
@@ -266,7 +152,7 @@ class NiconiComments {
             if (!val) continue;
             for (let key in val) {
                 let value = val[key];
-                if (isApiChat(value) && value["deleted"] !== 1) {
+                if (typeGuard.legacy.apiChat(value) && value["deleted"] !== 1) {
                     let tmpParam: any = {
                         "id": value["no"],
                         "vpos": value["vpos"],
@@ -1181,8 +1067,6 @@ const replaceAll = (string: string, target: string, replace: string) => {
     }
     return string;
 }
-const isApiChat = (item: any): item is apiChat =>
-    item.no && item.vpos && item.content
 
 const logger = (msg: any) => {
     if (isDebug) console.debug(msg);

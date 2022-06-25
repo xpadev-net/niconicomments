@@ -1,11 +1,20 @@
 const typeGuard = {
     formatted: {
         comment: (i: any): i is formattedComment =>
-            typeVerify(i, ["id", "vpos", "content", "date", "date_usec", "owner", "premium", "mail"]),
+            typeVerify(i, ["id", "vpos", "content", "date", "date_usec", "owner", "premium", "mail", "user_id", "layer"]),
         comments: (i: any): i is formattedComment[] => {
             if (typeof i !== "object") return false;
             for (let item of i) {
                 if (!typeGuard.formatted.comment(item)) return false;
+            }
+            return true;
+        },
+        legacyComment: (i: any): i is formattedLegacyComment =>
+            typeVerify(i, ["id", "vpos", "content", "date", "date_usec", "owner", "premium", "mail"]),
+        legacyComments: (i: any): i is formattedLegacyComment[] => {
+            if (typeof i !== "object") return false;
+            for (let item of i) {
+                if (!typeGuard.formatted.legacyComment(item)) return false;
             }
             return true;
         }
@@ -30,9 +39,6 @@ const typeGuard = {
             typeVerify(i, ["content"]),
         apiThread: (i: any): i is apiThread =>
             typeVerify(i, ["resultcode", "revision", "server_time", "thread", "ticket"]),
-    },
-    niconicome:{
-
     },
     owner: {
         comment: (i: any): i is ownerComment =>

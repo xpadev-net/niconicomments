@@ -70,6 +70,16 @@ type formattedComment = {
     "user_id": number,
     "layer": number,
 }
+type formattedLegacyComment = {
+    "id": number,
+    "vpos": number,
+    "content": string,
+    "date": number,
+    "date_usec": number,
+    "owner": boolean,
+    "premium": boolean,
+    "mail": string[],
+}
 type formattedCommentWithFont = formattedComment & {
     "loc": string,
     "size": string,
@@ -118,7 +128,7 @@ type v1Thread = {
     "id": string,
     "fork": string,
     "commentCount": number,
-    "comments": v1Comment[]
+    "comments": { [key: string]:v1Comment }
 }
 type v1Comment = {
     "id": string,

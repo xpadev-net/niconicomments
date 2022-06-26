@@ -34,22 +34,19 @@
                                     <li>
                                         <a href="#p_options">options</a>
                                         <ul>
-                                            <li><a href="#p_useLegacy">useLegacy</a></li>
-                                            <li><a href="#p_formatted">formatted</a></li>
-                                            <li><a href="#p_video">video</a></li>
-                                            <li><a href="#p_showCollision">showCollision</a></li>
-                                            <li><a href="#p_showFPS">showFPS</a></li>
-                                            <li><a href="#p_showCommentCount">showCommentCount</a></li>
+                                            <li><a href="#p_debug">debug</a></li>
                                             <li><a href="#p_drawAllImageOnLoad">drawAllImageOnLoad</a></li>
+                                            <li><a href="#p_enableLegacyPiP">enableLegacyPiP</a></li>
+                                            <li><a href="#p_format">format</a></li>
+                                            <li><a href="#p_formatted">formatted</a></li>
+                                            <li><a href="#p_keepCA">keepCA</a></li>
+                                            <li><a href="#p_showCollision">showCollision</a></li>
+                                            <li><a href="#p_showCommentCount">showCommentCount</a></li>
+                                            <li><a href="#p_showFPS">showFPS</a></li>
+                                            <li><a href="#p_useLegacy">useLegacy</a></li>
+                                            <li><a href="#p_video">video</a></li>
                                         </ul>
                                     </li>
-                                </ul>
-                            </li>
-                            <li>
-                                <a href="#Attributes">Attributes</a>
-                                <ul>
-                                    <li><a href="#a_showFPS">showFPS</a></li>
-                                    <li><a href="#a_showCommentCount">showCommentCount</a></li>
                                 </ul>
                             </li>
                             <li>
@@ -70,14 +67,14 @@
     <section id="title">
         <h1><span class="package_name">niconicomments</span> documentation</h1>
     </section>
-    <section id="patent">
-        <h2><span class="important">[重要]このライブラリを使用される方へ</span></h2>
+    <section id="patent" class="warn">
+        <h2>[重要]このライブラリを使用される方へ</h2>
         <p>ニコニコ運営が画面にコメントを流すアドオンを特許侵害だと騒ぎ立てて潰して回っているようです</p>
         <p>このライブラリ本体は描画部分のみのため特許侵害に当たるとは考えていませんが、ニコニコ動画運営(とその近辺の人)に叩かれる可能性があります</p>
         <p>(すでに一部OSSに被害が出ています)</p>
         <p>また、このライブラリを使用するかどうかに関わらず、リアルタイムでコメントを取得、画面を描画、コメントの投稿という一連の流れを実装した場合、ニコニコの特許を侵害する可能性があります</p>
         <p>詳しくはこちら<a href="https://github.com/xpadev-net/niconicomments/blob/master/ABOUT_PATENT.md">ニコニコが保有する特許について</a>を参照してください</p>
-        <p><span class="important">※当ライブラリを削除する予定は一切ありません</span></p>
+        <p>※当ライブラリを削除する予定は一切ありません</p>
     </section>
     <section id="about">
         <h2>About</h2>
@@ -113,101 +110,141 @@
     </section>
     <section id="class">
         <h2>Class</h2>
-        <h4 id="NiconiComments">class <span class="red">NiconiComments</span>(canvas<span class="type">:HTMLCanvasElement</span>, data<span class="type">:[]</span>, options<span class="type">:options</span>)</h4>
+        <h4 id="NiconiComments">class <span class="red">NiconiComments</span>(canvas<span class="type">:HTMLCanvasElement</span>, data<span class="type">:[]</span>, options<span class="type">:<a href="./type/modules/_types_types.html#InitOptions">InitOptions</a></span>)</h4>
         <div class="item">
-            <p>このライブラリの本体です。</p>
-            <p>すべての処理はこのクラスのみで完結します。</p>
+            <p>このライブラリの本体です</p>
             <h3 id="Parameters">Parameters</h3>
             <div class="item">
                 <h4 id="p_canvas">canvas<span class="type">:HTMLCanvasElement</span></h4>
                 <div class="item">
-                    <p>コメント描画用のキャンバスElementを渡してください。</p>
-                    <p>このライブラリはキャンバスサイズが1920x1080である前提で描画を行います。</p>
-                    <p>サイズ設定をミスるとコメントが正常に描画されません。</p>
+                    <p>コメント描画用のキャンバスElementを渡してください</p>
+                    <p>このライブラリはキャンバスサイズが1920x1080である前提で描画を行います</p>
+                    <p>サイズ設定をミスるとコメントが正常に描画されません</p>
                 </div>
                 <h4 id="p_data">data<span class="type">:[]</span></h4>
                 <div class="item">
-                    <p>ニコニコのコメントAPIが吐き出したデータか、独自フォーマットのコメントデータを渡してください。</p>
-                    <p>独自フォーマットのデータを渡す際は、<span class="yellow">formatted</span>を<span class="yellow">true</span>にする必要があります</p>
+                    <p>コメントデータを渡してください</p>
+                    <p>対応フォーマットは<a href="#p_format">format</a>を確認してください</p>
                 </div>
-                <h4 id="p_options">options<span class="type">:options</span></h4>
+                <h4 id="p_options">options<span class="type">:<a href="./type/modules/_types_types.html#Options">InitOptions</a></span></h4>
                 <div class="item">
-                    <h4 id="p_useLegacy">useLegacy<span class="type">:boolean</span> = <span class="yellow">false</span></h4>
+                    <h4 id="p_debug">debug<span class="type">:boolean</span> = <span class="yellow">false</span></h4>
                     <div class="item">
-                        <p>公式プレイヤー互換モードを有効にするか指定します</p>
-                        <p>デフォルト(<span class="yellow">false</span>)の場合はsans-serifを使用します。</p>
-                        <p>この場合、windows環境において、macOSに近い表示になります。</p>
-                        <p><span class="yellow">true</span>の場合は公式プレイヤーと同じフォントを使用します。</p>
-                    </div>
-                    <h4 id="p_formatted">formatted<span class="type">:boolean</span> = <span class="yellow">false</span></h4>
-                    <div class="item">
-                        <p>コメントデータが独自フォーマットかを指定します。</p>
-                        <p>デフォルト(<span class="yellow">false</span>)の場合は独自フォーマットに変換を行ってから処理を行います。</p>
-                        <p><span class="yellow">true</span>の場合はそのまま処理を行います。</p>
-                    </div>
-                    <h4 id="p_video">video<span class="type">:HTMLVideoElement | null</span> = <span class="yellow">null</span></h4>
-                    <div class="item">
-                        <p><span class="important">niconicomments 0.2.12以前をご利用の方へ</span></p>
-                        <p><span class="important">この機能を使用して動画を表示すると特許侵害になる可能性があります</span></p>
-                        <p><span class="important">描画される動画を16:9に変換するなど各自で対応をお願いします</span></p>
-                        <p><span class="important">0.2.13以降は描画方法を変更しているため問題ありません</span></p>
-                        <p>背景に描画する動画を指定します</p>
-                        <p>デフォルト(<span class="yellow">null</span>)の場合は描画を行いません</p>
-                        <p>指定されている場合は、背景に指定された動画を描画し、その上にコメントを描画します</p>
-                        <p>この機能を応用すると、Picture in Pictureにもコメントを表示できるようになります</p>
-                    </div>
-                    <h4 id="p_showCollision">showCollision<span class="type">:boolean</span> = <span class="yellow">false</span></h4>
-                    <div class="item">
-                        <p>コメントの当たり判定を描画するか指定します</p>
-                        <p>デフォルト(<span class="yellow">false</span>)の場合は描画を行いません</p>
-                        <p><span class="yellow">true</span>の場合は、コメントの当たり判定と行の区切りを描画します。</p>
-                        <p>初期化後に設定の変更を行う場合は描画済みコメントの削除が必要になります</p>
-                    </div>
-                    <h4 id="p_showFPS">showFPS<span class="type">:boolean</span> = <span class="yellow">false</span></h4>
-                    <div class="item">
-                        <p>FPSを画面上に描画するか指定します</p>
-                        <p>デフォルト(<span class="yellow">false</span>)の場合は描画を行いません</p>
-                        <p><span class="yellow">true</span>の場合は、過去0.5秒間のデータをもとにFPSを計算し、描画します。</p>
-                        <p>初期化後も随時設定の変更が可能です</p>
-                    </div>
-                    <h4 id="p_showCommentCount">showCommentCount<span class="type">:boolean</span> = <span class="yellow">false</span></h4>
-                    <div class="item">
-                        <p>描画されているコメント数を画面上に描画するか指定します</p>
-                        <p>デフォルト(<span class="yellow">false</span>)の場合は描画を行いません</p>
-                        <p><span class="yellow">true</span>の場合は、画面内に描画されているコメントの総数を描画します。</p>
-                        <p>初期化後も随時設定の変更が可能です</p>
+                        <p>処理の所要時間をブラウザコンソールに出力します</p>
+                        <p>デフォルト(<span class="yellow">false</span>)の場合は出力を行いません</p>
                     </div>
                     <h4 id="p_drawAllImageOnLoad">drawAllImageOnLoad<span class="type">:boolean</span> = <span class="yellow">false</span></h4>
                     <div class="item">
                         <p>コメントの描画をどのタイミングで行うかを指定します</p>
                         <p>デフォルト(<span class="yellow">false</span>)の場合は初めてコメントが画面に描画されるタイミングで生成されます</p>
-                        <p><span class="yellow">true</span>の場合は、初期化時にすべてのコメントを生成します。</p>
+                        <p><span class="yellow">true</span>の場合は、初期化時にすべてのコメントを生成します</p>
                     </div>
-                </div>
-            </div>
-            <h3 id="Attributes">Attributes</h3>
-            <div class="item">
-                <h4 id="a_showFPS">showFPS<span class="type">:boolean</span> = <span class="yellow">false</span></h4>
-                <div class="item">
-                    <p>FPSを画面上に描画するか指定します</p>
-                    <p>デフォルト(<span class="yellow">false</span>)の場合は描画を行いません</p>
-                    <p><span class="yellow">true</span>の場合は、過去0.5秒間のデータをもとにFPSを計算し、描画します。</p>
-                    <p>初期化後も随時設定の変更が可能です</p>
-                </div>
-                <h4 id="a_showCommentCount">showCommentCount<span class="type">:boolean</span> = <span class="yellow">false</span></h4>
-                <div class="item">
-                    <p>描画されているコメント数を画面上に描画するか指定します</p>
-                    <p>デフォルト(<span class="yellow">false</span>)の場合は描画を行いません</p>
-                    <p><span class="yellow">true</span>の場合は、画面内に描画されているコメントの総数を描画します。</p>
-                    <p>初期化後も随時設定の変更が可能です</p>
+                    <h4 id="p_enableLegacyPiP">enableLegacyPiP<span class="type">:boolean</span> = <span class="yellow">false</span></h4>
+                    <div class="item">
+                        <p><span class="note">初期化後も随時設定の変更が可能です</span></p>
+                        <p>PiPの出力形式を変更します</p>
+                        <p>デフォルト(<span class="yellow">false</span>)の場合は画面全体を覆うように動画を描画します</p>
+                        <p><span class="yellow">true</span>の場合は画面内に全体が収まるように動画を描画します</p>
+                    </div>
+                    <h4 id="p_format">format<span class="type">:<a href="./type/modules/_types_types.html#inputFormatType">inputFormatType</a></span> = <span class="green">"legacy"</span></h4>
+                    <div class="item">
+                        <p>入力フォーマットを指定します</p>
+                        <p>対応しているフォーマットは以下のとおりです</p>
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>名前</th>
+                                <th>dataのtype</th>
+                                <th>備考</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>niconicome</td>
+                                <td class="type">XMLDocument</td>
+                                <td>XMLをDOMParserでparseFromStringしたものを渡してください</td>
+                            </tr>
+                            <tr>
+                                <td>formatted</td>
+                                <td class="type"><a href="./type/modules/_types_types.html#formattedComment">formattedComment</a>[] |
+                                    <a href="./type/modules/_types_types.html#formattedLegacyComment">formattedLegacyComment</a>[]</td>
+                                <td>user_idとlayerが含まれない場合はformattedLegacyCommentになります</td>
+                            </tr>
+                            <tr>
+                                <td>legacy</td>
+                                <td class="type"><a href="./type/modules/_types_types.html#rawApiResponse">rawApiResponse</a>[]</td>
+                                <td>legacy apiのレスポンスをそのまま渡してください</td>
+                            </tr>
+                            <tr>
+                                <td>owner</td>
+                                <td class="type"><a href="./type/modules/_types_types.html#ownerComment">ownerComment</a>[]</td>
+                                <td>投稿者コメント編集画面のエディータのjsonをそのまま渡してください</td>
+                            </tr>
+                            <tr>
+                                <td>v1</td>
+                                <td class="type"><a href="./type/modules/_types_types.html#v1Thread">v1Thread</a>[]</td>
+                                <td>v1 apiのdata以下threadsの内容を渡してください</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h4 id="p_formatted">formatted<span class="type">:boolean</span> = <span class="yellow">false</span></h4>
+                    <div class="item deprecated">
+                        <p><span class="warn">このオプションは非推奨です。<a href="#p_format">format</a>オプションを使用してください</span></p>
+                        <p>コメントデータが独自フォーマットかを指定します</p>
+                        <p>デフォルト(<span class="yellow">false</span>)の場合は独自フォーマットに変換を行ってから処理を行います</p>
+                        <p><span class="yellow">true</span>の場合はそのまま処理を行います</p>
+                    </div>
+                    <h4 id="p_keepCA">keepCA<span class="type">:boolean</span> = <span class="yellow">false</span></h4>
+                    <div class="item">
+                        <p>別のCAや関係ないコメントによってCA(主に積み絵)が崩壊するのを抑制します</p>
+                        <p>デフォルト(<span class="yellow">false</span>)の場合は通常通り位置決定を行います</p>
+                        <p><span class="yellow">true</span>の場合はCAを投稿していると推定されるユーザーのレイヤーを分けて位置決定をおこないます</p>
+                    </div>
+                    <h4 id="p_showCollision">showCollision<span class="type">:boolean</span> = <span class="yellow">false</span></h4>
+                    <div class="item">
+                        <p><span class="note">初期化後も随時設定の変更が可能です</span></p>
+                        <p>コメントの当たり判定を描画するか指定します</p>
+                        <p>デフォルト(<span class="yellow">false</span>)の場合は描画を行いません</p>
+                        <p><span class="yellow">true</span>の場合は、コメントの当たり判定と行の区切りを描画します</p>
+                    </div>
+                    <h4 id="p_showCommentCount">showCommentCount<span class="type">:boolean</span> = <span class="yellow">false</span></h4>
+                    <div class="item">
+                        <p><span class="note">初期化後も随時設定の変更が可能です</span></p>
+                        <p>描画されているコメント数を画面上に描画するか指定します</p>
+                        <p>デフォルト(<span class="yellow">false</span>)の場合は描画を行いません</p>
+                        <p><span class="yellow">true</span>の場合は、画面内に描画されているコメントの総数を描画します</p>
+                    </div>
+                    <h4 id="p_showFPS">showFPS<span class="type">:boolean</span> = <span class="yellow">false</span></h4>
+                    <div class="item">
+                        <p><span class="note">初期化後も随時設定の変更が可能です</span></p>
+                        <p>FPSを画面上に描画するか指定します</p>
+                        <p>デフォルト(<span class="yellow">false</span>)の場合は描画を行いません</p>
+                        <p><span class="yellow">true</span>の場合は、過去0.5秒間のデータをもとにFPSを計算し、描画します</p>
+                    </div>
+                    <h4 id="p_useLegacy">useLegacy<span class="type">:boolean</span> = <span class="yellow">false</span></h4>
+                    <div class="item">
+                        <p>公式プレイヤー互換モードを有効にするか指定します</p>
+                        <p>デフォルト(<span class="yellow">false</span>)の場合はsans-serifを使用します</p>
+                        <p>この場合、windows環境において、macOSに近い表示になります</p>
+                        <p><span class="yellow">true</span>の場合は公式プレイヤーと同じフォントを使用します</p>
+                    </div>
+                    <h4 id="p_video">video<span class="type">:HTMLVideoElement | null</span> = <span class="yellow">null</span></h4>
+                    <div class="item">
+                        <p><span class="note">初期化後も随時設定の変更が可能です</span></p>
+                        <p>背景に描画する動画を指定します</p>
+                        <p>デフォルト(<span class="yellow">null</span>)の場合は描画を行いません</p>
+                        <p>指定されている場合は、背景に指定された動画を描画し、その上にコメントを描画します</p>
+                        <p>この機能を応用すると、Picture in Pictureにもコメントを表示できるようになります</p>
+                    </div>
                 </div>
             </div>
             <h3 id="Methods">Methods</h3>
             <div class="item">
                 <h4 id="m_drawCanvas">drawCanvas(vpos<span class="type">:number</span>)<span class="type">:void</span></h4>
                 <div class="item">
-                    <p>vpos(動画のcurrentTime*100)を元にキャンバスにコメントを描画します。</p>
-                    <p>vposは<span class="yellow">整数(int)</span>である必要があります。</p>
+                    <p>vpos(動画のcurrentTime*100)を元にキャンバスにコメントを描画します</p>
+                    <p>vposは<span class="yellow">整数(int)</span>である必要があります</p>
                 </div>
                 <h4 id="m_clear">clear()<span class="type">:void</span></h4>
                 <div class="item">

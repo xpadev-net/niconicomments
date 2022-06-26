@@ -1,17 +1,17 @@
 {
   "name": "@xpadev-net/niconicomments",
-  "version": "0.2.18",
+  "version": "0.2.21",
   "description": "NiconiComments is a comment drawing library that is somewhat compatible with the official Nico Nico Douga player.",
   "main": "dist/bundle.js",
-  "types": "dist/dts/main.d.ts",
+  "types": "dist/dts/types.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rollup -c rollup.config.js",
     "pegjs": "pegjs --cache --optimize speed -o ./src/niwango.peg.js --format umd --export-var niwango ./src/niwango/niwango.pegjs",
     "watch": "rollup -c rollup.config.js -w",
-    "typedoc": "typedoc --options tsdoc.json --out ./docs/type/ ./src/main.ts",
-    "tsc": "tsc --emitDeclarationOnly",
-    "prepublishOnly": "npm run pegjs&&npm run tsc&&npm run build"
+    "typedoc": "typedoc --entryPointStrategy Expand --options tsdoc.json --out ./docs/type/ ./src/",
+    "copy-dts": "npx copyfiles -u 2 src/@types/*.d.ts dist/dts",
+    "prepublishOnly": "npm run copy-dts&&npm run build"
   },
   "repository": {
     "type": "git",
@@ -26,22 +26,23 @@
   },
   "files": [
     "dist/bundle.js",
-    "dist/dts/main.d.ts",
-    "dist/dts/main.d.ts.map"
+    "dist/dts/types.d.ts"
   ],
   "homepage": "https://xpadev.net/niconicomments/docs/",
   "license": "MIT",
   "devDependencies": {
     "@babel/preset-env": "^7.18.2",
     "@rollup/plugin-babel": "^5.3.0",
+    "@rollup/plugin-node-resolve": "^13.3.0",
+    "@rollup/plugin-typescript": "^8.3.3",
     "@rollup/plugin-commonjs": "^22.0.0",
     "@rollup/plugin-json": "^4.1.0",
-    "@rollup/plugin-node-resolve": "^13.3.0",
-    "@rollup/plugin-typescript": "^8.3.2",
+    "copyfiles": "^2.4.1",
+    "rollup": "^2.75.7",
+    "rollup-plugin-dts": "^4.2.2",
+    "typedoc": "^0.22.18",
     "pegjs": "^0.10.0",
-    "rollup": "^2.75.6",
-    "typedoc": "^0.22.17",
     "typedoc-plugin-missing-exports": "^0.22.6",
-    "typescript": "^4.7.3"
+    "typescript": "^4.7.4"
   }
 }

@@ -10,7 +10,7 @@ const typeGuard = {
             return true;
         },
         legacyComment: (i: any): i is formattedLegacyComment =>
-            typeVerify(i, ["id", "vpos", "content", "date", "date_usec", "owner", "premium", "mail"]),
+            typeVerify(i, ["id", "vpos", "content", "date", "owner", "premium", "mail"]),
         legacyComments: (i: any): i is formattedLegacyComment[] => {
             if (typeof i !== "object") return false;
             for (let item of i) {
@@ -22,12 +22,14 @@ const typeGuard = {
     legacy: {
         rawApiResponses: (i: any): i is rawApiResponse[] => {
             if (typeof i !== "object") return false;
-            for (let item of i) {
-                if (!(typeGuard.legacy.apiChat(item) || typeGuard.legacy.apiGlobalNumRes(item) || typeGuard.legacy.apiLeaf(item) || typeGuard.legacy.apiPing(item) || typeGuard.legacy.apiThread(item))) {
-                    return false
+            for (let itemWrapper of i) {
+                for (let item of itemWrapper){
+                    if (!(item.chat&&typeGuard.legacy.apiChat(item) || typeGuard.legacy.apiGlobalNumRes(item) || typeGuard.legacy.apiLeaf(item) || typeGuard.legacy.apiPing(item) || typeGuard.legacy.apiThread(item))) {
+                        return false;
+                    }
                 }
             }
-            return true
+            return true;
         },
         apiChat: (i: any): i is apiChat =>
             typeVerify(i, ["anonymity", "content", "date", "date_usec", "no", "thread", "vpos"]),
@@ -39,6 +41,32 @@ const typeGuard = {
             typeVerify(i, ["content"]),
         apiThread: (i: any): i is apiThread =>
             typeVerify(i, ["resultcode", "revision", "server_time", "thread", "ticket"]),
+    },
+    niconicome: {
+        xmlDocument: (i: any): i is XMLDocument => {
+            if (!i.documentElement || i.documentElement.nodeName !== "packet") return false;
+            if (!i.documentElement.children) return false;
+            for (let index in Array.from(i.documentElement.children)) {
+                let value = i.documentElement.children[index];
+                if (index === "0") {
+                    if (value.nodeName !== "thread" || !typeAttributeVerify(value, ["resultcode", "thread", "server_time", "last_res", "revision"])) return false;
+                } else {
+                    if (value.nodeName !== "chat" || !typeAttributeVerify(value, ["thread", "no", "vpos", "date", "date_usec", "anonymity", "user_id", "mail", "leaf", "premium", "score"])) return false;
+                }
+            }
+            return true;
+        }
+    },
+    legacyOwner:{
+        comments: (i: any): boolean => {
+            let lists = i.split("\n");
+            for (let list in lists){
+                if(list.split(":").length<3){
+                    return false;
+                }
+            }
+            return true;
+        }
     },
     owner: {
         comment: (i: any): i is ownerComment =>
@@ -74,6 +102,12 @@ const typeGuard = {
 const typeVerify = (item: any, keys: string[]): boolean => {
     for (let key of keys) {
         if (item[key] === undefined) return false;
+    }
+    return true
+}
+const typeAttributeVerify = (item: any, keys: string[]): boolean => {
+    for (let key of keys) {
+        if (item.getAttribute(key) === null) return false;
     }
     return true
 }

@@ -1,4 +1,4 @@
-import typeGuard from "@/typeGuard";
+import convert2formattedComment from "./inputParser";
 
 let isDebug: boolean = false;
 
@@ -10,8 +10,8 @@ class NiconiComments {
     private readonly fontSize: T_fontSize;
     private readonly lineHeight: T_fontSize;
     private readonly doubleResizeMaxWidth: T_doubleResizeMaxWidth;
-    private video: HTMLVideoElement | null;
-    private showCollision: boolean;
+    public video: HTMLVideoElement | null;
+    public showCollision: boolean;
     public showFPS: boolean;
     public showCommentCount: boolean;
     public enableLegacyPiP: boolean;
@@ -37,30 +37,21 @@ class NiconiComments {
      * @param {[]} data - 描画用のコメント
      * @param initOptions
      */
-    constructor(canvas: HTMLCanvasElement, data: (rawApiResponse | formattedComment)[], initOptions: InitOptions = {
-        useLegacy: false,
-        formatted: false,
-        video: null,
-        showCollision: false,
-        showFPS: false,
-        showCommentCount: false,
-        drawAllImageOnLoad: false,
-        debug: false,
-        enableLegacyPiP: false,
-        keepCA: false
-    }) {
-        const options: Options = Object.assign({
-            useLegacy: false,
-            formatted: false,
-            video: null,
-            showCollision: false,
-            showFPS: false,
-            showCommentCount: false,
+    constructor(canvas: HTMLCanvasElement, data: (rawApiResponse | formattedComment)[], initOptions: InitOptions = {}) {
+        const defaultOptions: Options = {
             drawAllImageOnLoad: false,
+            format: "default",
+            formatted: false,
             debug: false,
             enableLegacyPiP: false,
-            keepCA: false
-        },initOptions) ;
+            keepCA: false,
+            showCollision: false,
+            showCommentCount: false,
+            showFPS: false,
+            useLegacy: false,
+            video: null,
+        };
+        const options: Options = Object.assign(defaultOptions,initOptions) ;
         isDebug = options.debug;
         const constructorStart = performance.now();
 
@@ -112,7 +103,17 @@ class NiconiComments {
                 default: 2650
             }
         };
-        let parsedData: formattedComment[] = options.formatted ? data as formattedComment[] : this.parseData(data as rawApiResponse[]);
+        let formatType = options.format;
+
+        //Deprecated Warning
+        if (options.formatted){
+            console.warn("Deprecated: options.formatted is no longer recommended. Please use options.format");
+        }
+        if (formatType === "default"){
+            formatType = options.formatted?"formatted":"legacy";
+        }
+
+        let parsedData = convert2formattedComment(data, formatType);
         this.video = options.video ? options.video : null;
         this.showCollision = options.showCollision;
         this.showFPS = options.showFPS;
@@ -137,62 +138,6 @@ class NiconiComments {
             this.fpsCount = 0;
         }, 500);
         logger(`constructor complete: ${performance.now() - constructorStart}ms`);
-    }
-
-    /**
-     * ニコニコが吐き出したデータを処理しやすいように変換する
-     * @param {[]} data - ニコニコが吐き出したコメントデータ
-     * @returns {*[]} - 独自フォーマットのコメントデータ
-     */
-    parseData(data: rawApiResponse[]) {
-        const parseDataStart = performance.now();
-        let data_: formattedComment[] = [], userList: string[] = [];
-        for (let i = 0; i < data.length; i++) {
-            let val = data[i];
-            if (!val) continue;
-            for (let key in val) {
-                let value = val[key];
-                if (typeGuard.legacy.apiChat(value) && value["deleted"] !== 1) {
-                    let tmpParam: any = {
-                        "id": value["no"],
-                        "vpos": value["vpos"],
-                        "content": value["content"],
-                        "date": value["date"],
-                        "date_usec": value["date_usec"],
-                        "owner": !value["user_id"],
-                        "premium": value["premium"] === 1,
-                        "mail": [],
-                        "user_id": -1,
-                        "layer": -1
-                    };
-                    if (value["mail"]) {
-                        tmpParam["mail"] = value["mail"].split(/[\s　]/g);
-                    }
-                    if (value["content"].startsWith("/") && !value["user_id"]) {
-                        tmpParam["mail"].push("invisible");
-                    }
-                    let isUserExist = userList.indexOf(value["user_id"])
-                    if (isUserExist === -1) {
-                        tmpParam.user_id = userList.length;
-                        userList.push(value.user_id);
-                    } else {
-                        tmpParam.user_id = isUserExist;
-                    }
-                    data_.push(tmpParam);
-                }
-            }
-        }
-        data_.sort((a, b) => {
-            if (a.vpos < b.vpos) return -1;
-            if (a.vpos > b.vpos) return 1;
-            if (a.date < b.date) return -1;
-            if (a.date > b.date) return 1;
-            if (a.date_usec < b.date_usec) return -1;
-            if (a.date_usec > b.date_usec) return 1;
-            return 0;
-        });
-        logger(`parseData complete: ${performance.now() - parseDataStart}ms`);
-        return data_;
     }
 
     /**
@@ -943,6 +888,7 @@ class NiconiComments {
             for (let i in this.timeline[vpos]) {
                 let index = this.timeline[vpos]![Number(i) as number] as number;
                 let comment = this.data[index];
+                if (vpos > 23000&&vpos < 23100)console.log(comment)
                 if (!comment || comment.invisible) {
                     continue;
                 }
@@ -1074,21 +1020,27 @@ const logger = (msg: any) => {
 
 const changeCALayer = (rawData: formattedComment[]): formattedComment[] => {
     const userList:{[key:number]:number} = {};
-    const data:formattedComment[] = [],index: string[] = [];
+    const data:formattedComment[] = [],index: { [key: string]: formattedComment } = {};
     for (let i in rawData) {
         const value: formattedComment = rawData[i]!;
         if (value.user_id===undefined||value.user_id === -1)continue;
         if(userList[value.user_id]===undefined)userList[value.user_id]=0;
-        if (value.mail.indexOf("ca")>-1||value.mail.indexOf("patissier")>-1||value.mail.indexOf("ender")>-1){
+        if (value.mail.indexOf("ca")>-1||value.mail.indexOf("patissier")>-1||value.mail.indexOf("ender")>-1||value.mail.indexOf("full")>-1){
             userList[value.user_id]+=5;
         }
         if ((value.content.match(/\r\n|\n|\r/g)||[]).length>2){
-            userList[value.user_id]+=1;
+            userList[value.user_id]+=(value.content.match(/\r\n|\n|\r/g)||[]).length/2;
         }
-        let key = `${value.content}@@${Array.from(new Set(value.mail.sort())).filter((e)=>!e.match(/@[\d.]+|184|device:.+|patissier|ca/)).join("")}@@${Math.floor(value.vpos*10)}`;
-        if (index.indexOf(key)===-1){
-            index.push(key);
+        let key = `${value.content}@@${Array.from(new Set(JSON.parse(JSON.stringify(value.mail)).sort() as string[])).filter((e)=>!e.match(/@[\d.]+|184|device:.+|patissier|ca/)).join("")}`, lastComment = index[key];
+        if (lastComment!==undefined){
+            if (value.vpos > 29800&&30200 > value.vpos)console.log(value.vpos - lastComment.vpos , Math.abs(value.date-lastComment.date))
+            if (value.vpos - lastComment.vpos > 100|| Math.abs(value.date-lastComment.date)<3600){
+                data.push(value);
+                index[key]=value;
+            }
+        }else{
             data.push(value);
+            index[key]=value;
         }
     }
     for (let i in data) {

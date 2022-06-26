@@ -1,20 +1,18 @@
 # This is a basic workflow to help you get started with Actions
 
 name: TypeDoc
-
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the master branch
-  push:
-    branches: [ master ]
-
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+  pull_request:
+    branches:
+      - master
+    types:
+      - closed
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
   typedoc:
+    if: github.event.pull_request.merged == true
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 

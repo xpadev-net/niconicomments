@@ -1,7 +1,8 @@
-
+type inputFormatType = "niconicome"|"formatted"|"legacy"|"owner"|"v1"|"default";
 type InitOptions = {
     useLegacy?: boolean,
     formatted?: boolean,
+    format?: inputFormatType,
     video?: HTMLVideoElement | null
     showCollision?: boolean,
     showFPS?: boolean,
@@ -14,6 +15,7 @@ type InitOptions = {
 type Options = {
     useLegacy: boolean,
     formatted: boolean,
+    format: inputFormatType,
     video: HTMLVideoElement | null,
     showCollision: boolean,
     showFPS: boolean,
@@ -149,18 +151,4 @@ type ownerComment = {
     "time": string,
     "command": string,
     "comment": string
-}
-type niconicomeChat = {
-    "thread": number,
-    "no": number,
-    "vpos": number,
-    "date": number,
-    "date_usec": number,
-    "anonymity": number,
-    "user_id": string,
-    "mail": string,
-    "leaf": number,
-    "premium": number,
-    "score": number,
-    "content": string
 }

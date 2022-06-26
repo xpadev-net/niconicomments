@@ -1,18 +1,6 @@
 //@ts-ignore
 import {parse as peg$parse} from "./niwango.peg.js";
 
-
-type formattedComment = {
-    "id": number,
-    "vpos": number,
-    "content": string,
-    "date": number,
-    "date_usec": number,
-    "owner": boolean,
-    "premium": boolean,
-    "mail": string[]
-}
-
 class NiwangoParser {
     private timeline: any;
     private functions: any;

@@ -1,5 +1,6 @@
 import babel from "@rollup/plugin-babel";
 import typescript from "@rollup/plugin-typescript";
+import { nodeResolve } from '@rollup/plugin-node-resolve';
 import pkg from "./package.json";
 import * as path from "path";
 const banner = `/*!
@@ -22,5 +23,6 @@ export default {
             babelHelpers: "bundled",
             configFile: path.resolve(__dirname, ".babelrc.js"),
         }),
+        nodeResolve(),
     ]
 }

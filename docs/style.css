@@ -67,6 +67,9 @@ ul {
     padding: 10px 0;
     margin-left: 10px
 }
+.item.deprecated{
+    color: #999;
+}
 
 span.red {
     color: #f07178
@@ -104,4 +107,60 @@ span.type {
 span.important{
     color: red;
     font-size: 1.5em;
+}
+span.warn::before{
+    content:"⚠";
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    display: inline-block;
+    margin-right: 5px;
+}
+.warn{
+    color: #880000;
+    background: #ffcccc;
+    padding: 5px;
+    border: solid 1px #FF0000;
+    margin: 5px 0;
+    display: inline-block;
+}
+.warn a{
+    color: unset;
+}
+span.note::before{
+    content:"i";
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    background: #9CDCFE;
+    color: #0000ff;
+    border: solid #0000FF 1px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 5px;
+}
+.note{
+    color: black;
+    background: #cccccc;
+    padding: 5px;
+    border: solid 1px #666666;
+    margin: 5px 0;
+    display: inline-block;
+}
+table{
+    border-collapse:  collapse;
+}
+table .type{
+    color: #ccc;
+    font-size: .75em;
+    line-height: inherit;
+    padding: 0 2px;
+    text-align: center;
+}
+.type a{
+    color: unset;
+}
+td,th{
+    border: solid 1px white;
+    padding: 2px 5px;
 }

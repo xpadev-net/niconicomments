@@ -114,7 +114,7 @@ const fromLegacy = (data: rawApiResponse[]): formattedComment[] => {
                 if (value.content.startsWith("/") && !value.user_id) {
                     tmpParam.mail.push("invisible");
                 }
-                let isUserExist = userList.indexOf(value.mail)
+                let isUserExist = userList.indexOf(value.mail);
                 if (isUserExist === -1) {
                     tmpParam.user_id = userList.length;
                     userList.push(value.user_id);

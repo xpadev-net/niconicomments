@@ -27,6 +27,7 @@ export default {
         babel({
             babelHelpers: "bundled",
             configFile: path.resolve(__dirname, ".babelrc.js"),
-        })
+        }),
+        nodeResolve(),
     ]
 }

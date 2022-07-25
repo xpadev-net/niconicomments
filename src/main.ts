@@ -1097,7 +1097,6 @@ class NiconiComments {
       for (let i in this.timeline[vpos]) {
         let index = this.timeline[vpos]![Number(i) as number] as number;
         let comment = this.data[index];
-        if (vpos > 23000 && vpos < 23100) console.log(comment);
         if (!comment || comment.invisible) {
           continue;
         }
@@ -1176,11 +1175,6 @@ const changeCALayer = (rawData: formattedComment[]): formattedComment[] => {
         .join("")}`,
       lastComment = index[key];
     if (lastComment !== undefined) {
-      if (value.vpos > 29800 && 30200 > value.vpos)
-        console.log(
-          value.vpos - lastComment.vpos,
-          Math.abs(value.date - lastComment.date)
-        );
       if (
         value.vpos - lastComment.vpos > 100 ||
         Math.abs(value.date - lastComment.date) < 3600

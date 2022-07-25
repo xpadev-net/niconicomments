@@ -1,34 +1,18 @@
 //@ts-ignore
 import { parse as peg$parse } from "./niwango.peg.js";
+import typeGuard from "@/typeGuard";
 
-class NiwangoParser {
-  constructor() {}
-
-  /**
-   * パース処理のみ
-   * execは後で消す
-   * @param comment
-   */
-  init(comment: formattedComment) {
-    if (comment.content.startsWith("/")) {
-      let scripts = this.parse(comment);
-      console.log(scripts);
-    }
+/**
+ * pgejsのラッパー
+ * 型つけるだけ
+ * @param arg
+ */
+const parse = (arg: string | formattedComment) => {
+  if (typeGuard.formatted.comment(arg)) {
+    return peg$parse(arg.content.substring(1));
+  } else {
+    return peg$parse(arg);
   }
+};
 
-  /**
-   * コメントデータを分割して投げる
-   * @param arg1
-   */
-  parse(arg1: string | formattedComment): any {
-    let string;
-    if (typeof arg1 == "object") {
-      string = arg1.content.substring(1);
-    } else {
-      string = arg1;
-    }
-    return peg$parse(string);
-  }
-}
-
-export default NiwangoParser;
+export default parse;

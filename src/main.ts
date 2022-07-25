@@ -1,41 +1,74 @@
 import convert2formattedComment from "./inputParser";
-import NiwangoParser from "./niwangoParser";
 import { groupBy, parseFont, arrayPush, hex2rgb, replaceAll } from "./Utils";
 
 let isDebug: boolean = false;
+
+const doubleResizeMaxWidth: T_doubleResizeMaxWidth = {
+    full: {
+      legacy: 3020,
+      default: 3550,
+    },
+    normal: {
+      legacy: 2540,
+      default: 2650,
+    },
+  },
+  lineHeight: T_fontSize = {
+    small: {
+      default: 1,
+      resized: 1,
+    },
+    medium: {
+      default: 1,
+      resized: 1,
+    },
+    big: {
+      default: 1.03,
+      resized: 1.01,
+    },
+  },
+  fontSize: T_fontSize = {
+    small: {
+      default: 47,
+      resized: 26.1,
+    },
+    medium: {
+      default: 74,
+      resized: 38.7,
+    },
+    big: {
+      default: 110,
+      resized: 61,
+    },
+  };
 
 class NiconiComments {
   private canvas: HTMLCanvasElement;
   private context: CanvasRenderingContext2D;
   private readonly commentYPaddingTop: number;
   private readonly commentYMarginBottom: number;
-  private readonly fontSize: T_fontSize;
-  private readonly lineHeight: T_fontSize;
-  private readonly doubleResizeMaxWidth: T_doubleResizeMaxWidth;
   public video: HTMLVideoElement | null;
   public showCollision: boolean;
   public showFPS: boolean;
   public showCommentCount: boolean;
   public enableLegacyPiP: boolean;
-  private keepCA: boolean;
+  private readonly keepCA: boolean;
   private data: parsedComment[];
-  private timeline: { [key: number]: number[] };
+  private readonly timeline: { [key: number]: number[] };
   private nicoScripts: {
     replace: any[];
     ban: any[];
-    default: any[];
+    default: T_nicoScript_default[];
     reverse: any[];
   };
-  private collision_right: any;
-  private collision_left: any;
-  private collision_ue: any;
-  private collision_shita: any;
+  private readonly collision_right: any;
+  private readonly collision_left: any;
+  private readonly collision_ue: any;
+  private readonly collision_shita: any;
   private lastVpos: number;
-  private useLegacy: boolean;
+  private readonly useLegacy: boolean;
   private fpsCount: number;
   private fps: number;
-
-  private niwango: NiwangoParser;
 
   /**
    * NiconiComments Constructor
@@ -75,44 +108,6 @@ class NiconiComments {
     this.context.lineWidth = 4;
     this.commentYPaddingTop = 0.08;
     this.commentYMarginBottom = 0.24;
-    this.fontSize = {
-      small: {
-        default: 47,
-        resized: 26.1,
-      },
-      medium: {
-        default: 74,
-        resized: 38.7,
-      },
-      big: {
-        default: 110,
-        resized: 61,
-      },
-    };
-    this.lineHeight = {
-      small: {
-        default: 1,
-        resized: 1,
-      },
-      medium: {
-        default: 1,
-        resized: 1,
-      },
-      big: {
-        default: 1.03,
-        resized: 1.01,
-      },
-    };
-    this.doubleResizeMaxWidth = {
-      full: {
-        legacy: 3020,
-        default: 3550,
-      },
-      normal: {
-        legacy: 2540,
-        default: 2650,
-      },
-    };
     let formatType = options.format;
 
     //Deprecated Warning
@@ -132,8 +127,6 @@ class NiconiComments {
     this.showCommentCount = options.showCommentCount;
     this.enableLegacyPiP = options.enableLegacyPiP;
     this.keepCA = options.keepCA;
-
-    this.niwango = new NiwangoParser();
 
     this.timeline = {};
     this.nicoScripts = { reverse: [], default: [], replace: [], ban: [] };
@@ -449,7 +442,7 @@ class NiconiComments {
     content: string;
     resized: boolean;
     ender: any;
-    size: string;
+    size: T_commentSize;
     fontSize: number;
     tateresized: boolean;
     font: any;
@@ -465,11 +458,11 @@ class NiconiComments {
       width_arr = [],
       lines = comment.content.split("\n");
     if (!comment.lineHeight)
-      comment.lineHeight = this.lineHeight[comment.size]!.default;
+      comment.lineHeight = lineHeight[comment.size].default;
     if (!comment.resized && !comment.ender) {
       if (comment.size === "big" && lines.length > 2) {
-        comment.fontSize = this.fontSize.big!.resized;
-        comment.lineHeight = this.lineHeight.big!.resized;
+        comment.fontSize = fontSize.big.resized;
+        comment.lineHeight = lineHeight.big.resized;
         comment.resized = true;
         comment.tateresized = true;
         this.context.font = parseFont(
@@ -478,8 +471,8 @@ class NiconiComments {
           this.useLegacy
         );
       } else if (comment.size === "medium" && lines.length > 4) {
-        comment.fontSize = this.fontSize.medium!.resized;
-        comment.lineHeight = this.lineHeight.medium!.resized;
+        comment.fontSize = fontSize.medium.resized;
+        comment.lineHeight = lineHeight.medium.resized;
         comment.resized = true;
         comment.tateresized = true;
         this.context.font = parseFont(
@@ -488,8 +481,8 @@ class NiconiComments {
           this.useLegacy
         );
       } else if (comment.size === "small" && lines.length > 6) {
-        comment.fontSize = this.fontSize.small!.resized;
-        comment.lineHeight = this.lineHeight.small!.resized;
+        comment.fontSize = fontSize.small.resized;
+        comment.lineHeight = lineHeight.small.resized;
         comment.resized = true;
         comment.tateresized = true;
         this.context.font = parseFont(
@@ -541,8 +534,8 @@ class NiconiComments {
         (!comment.full && width_max > 1440)) &&
       !comment.yokoResized
     ) {
-      comment.fontSize = this.fontSize[comment.size]!.default;
-      comment.lineHeight = this.lineHeight[comment.size]!.default * 1.05;
+      comment.fontSize = fontSize[comment.size].default;
+      comment.lineHeight = lineHeight[comment.size].default * 1.05;
       comment.resized = true;
       comment.yokoResized = true;
       this.context.font = parseFont(
@@ -559,7 +552,7 @@ class NiconiComments {
       if (
         comment.full &&
         width_max >
-          this.doubleResizeMaxWidth.full![this.useLegacy ? "legacy" : "default"]
+          doubleResizeMaxWidth.full![this.useLegacy ? "legacy" : "default"]
       ) {
         comment.fontSize -= 1;
         this.context.font = parseFont(
@@ -571,9 +564,7 @@ class NiconiComments {
       } else if (
         !comment.full &&
         width_max >
-          this.doubleResizeMaxWidth.normal![
-            this.useLegacy ? "legacy" : "default"
-          ]
+          doubleResizeMaxWidth.normal[this.useLegacy ? "legacy" : "default"]
       ) {
         comment.fontSize -= 1;
         this.context.font = parseFont(
@@ -712,13 +703,13 @@ class NiconiComments {
    * @param comment- 独自フォーマットのコメントデータ
    * @returns {{loc: string|null, size: string|null, color: string|null, fontSize: number|null, ender: boolean, font: string|null, full: boolean, _live: boolean, invisible: boolean, long:number|null}}
    */
-  parseCommand(comment: any) {
+  parseCommand(comment: any): parseCommandResult {
     let metadata = comment.mail,
-      loc = null,
-      size = null,
-      fontSize = null,
+      loc: T_commentLoc | null = null,
+      size: T_commentSize | null = null,
+      fontSize_ = null,
       color = null,
-      font = null,
+      font: T_commentFont | null = null,
       full = false,
       ender = false,
       _live = false,
@@ -744,11 +735,11 @@ class NiconiComments {
         switch (command) {
           case "big":
             size = "big";
-            fontSize = this.fontSize.big!.default;
+            fontSize_ = fontSize.big.default;
             break;
           case "small":
             size = "small";
-            fontSize = this.fontSize.small!.default;
+            fontSize_ = fontSize.small.default;
             break;
         }
       }
@@ -831,6 +822,9 @@ class NiconiComments {
       }
       if (font === null) {
         switch (command) {
+          case "defont":
+            font = "defont";
+            break;
           case "gothic":
             font = "gothic";
             break;
@@ -857,7 +851,7 @@ class NiconiComments {
     return {
       loc,
       size,
-      fontSize,
+      fontSize: fontSize_,
       color,
       font,
       full,
@@ -877,12 +871,11 @@ class NiconiComments {
     comment: formattedComment
   ): formattedCommentWithFont {
     comment.content = comment.content.replace("/\t/g", "  ");
-    let data = this.parseCommand(comment),
+    const data = this.parseCommand(comment),
       nicoscript = comment.content.match(
         /^@(デフォルト|置換|逆|コメント禁止|シーク禁止|ジャンプ)/
       );
 
-    this.niwango.init(comment);
     if (nicoscript) {
       switch (nicoscript[1]) {
         case "デフォルト":
@@ -966,32 +959,30 @@ class NiconiComments {
       data.invisible = true;
     }
     let color = "#FFFFFF",
-      size = "medium",
-      font = "defont",
-      loc = "naka";
+      size: T_commentSize = "medium",
+      font: T_commentFont = "defont",
+      loc: T_commentLoc = "naka";
     for (let i in this.nicoScripts.default) {
-      if (
-        this.nicoScripts.default[i].long !== null &&
-        this.nicoScripts.default[i].start + this.nicoScripts.default[i].long <
-          comment.vpos
-      ) {
+      const value = this.nicoScripts.default[i];
+      if (!value) continue;
+      if (value.long !== null && value.start + value.long < comment.vpos) {
         this.nicoScripts.default = this.nicoScripts.default.splice(
           Number(i),
           1
         );
         continue;
       }
-      if (this.nicoScripts.default[i].loc) {
-        loc = this.nicoScripts.default[i].loc;
+      if (value.loc) {
+        loc = value.loc;
       }
-      if (this.nicoScripts.default[i].color) {
-        color = this.nicoScripts.default[i].color;
+      if (value.color) {
+        color = value.color;
       }
-      if (this.nicoScripts.default[i].size) {
-        size = this.nicoScripts.default[i].size;
+      if (value.size) {
+        size = value.size;
       }
-      if (this.nicoScripts.default[i].font) {
-        font = this.nicoScripts.default[i].font;
+      if (value.font) {
+        font = value.font;
       }
     }
     for (let i in this.nicoScripts.replace) {
@@ -1041,7 +1032,7 @@ class NiconiComments {
         }
       }
     }
-    if (!data.loc) {
+    if (data.loc === null) {
       data.loc = loc;
     }
     if (!data.color) {
@@ -1049,7 +1040,7 @@ class NiconiComments {
     }
     if (!data.size) {
       data.size = size;
-      data.fontSize = this.fontSize[data.size]!.default;
+      data.fontSize = fontSize[data.size].default;
     }
     if (!data.font) {
       data.font = font;

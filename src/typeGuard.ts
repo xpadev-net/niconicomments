@@ -178,6 +178,34 @@ const typeGuard = {
       return true;
     },
   },
+  ast: {
+    Literal: (i: any): i is A_Literal => i.type === "Literal",
+    Identifier: (i: any): i is A_Identifier => i.type === "Identifier",
+    ExpressionStatement: (i: any): i is A_ExpressionStatement =>
+      i.type === "ExpressionStatement",
+    AssignmentExpression: (i: any): i is A_AssignmentExpression =>
+      i.type === "AssignmentExpression",
+    ArrayExpression: (i: any): i is A_ArrayExpression =>
+      i.type === "ArrayExpression",
+    ArrowFunctionExpression: (i: any): i is A_ArrowFunctionExpression =>
+      i.type === "ArrowFunctionExpression",
+    BinaryExpression: (i: any): i is A_BinaryExpression =>
+      i.type === "BinaryExpression",
+    BlockStatement: (i: any): i is A_BlockStatement =>
+      i.type === "BlockStatement",
+    CallExpression: (i: any): i is A_CallExpression =>
+      i.type === "CallExpression",
+    IfStatement: (i: any): i is A_IfStatement => i.type === "IfStatement",
+    MemberExpression: (i: any): i is A_MemberExpression =>
+      i.type === "MemberExpression",
+    Program: (i: any): i is A_Program => i.type === "Program",
+    UnaryExpression: (i: any): i is A_UnaryExpression =>
+      i.type === "UnaryExpression",
+    UpdateExpression: (i: any): i is A_UpdateExpression =>
+      i.type === "UpdateExpression",
+    VariableDeclaration: (i: any): i is A_VariableDeclaration =>
+      i.type === "VariableDeclaration",
+  },
 };
 const typeVerify = (item: any, keys: string[]): boolean => {
   for (let key of keys) {

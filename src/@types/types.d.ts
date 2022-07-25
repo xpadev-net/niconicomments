@@ -89,10 +89,10 @@ type formattedLegacyComment = {
   mail: string[];
 };
 type formattedCommentWithFont = formattedComment & {
-  loc: string;
-  size: string;
+  loc: T_commentLoc;
+  size: T_commentSize;
   fontSize: number;
-  font: string;
+  font: T_commentFont;
   color: string;
   full: boolean;
   ender: boolean;
@@ -120,18 +120,44 @@ type measureTextResult = {
   fontSize: number;
   lineHeight: number;
 };
+type parseCommandResult = {
+  loc: T_commentLoc | null;
+  size: T_commentSize | null;
+  color: string | null;
+  fontSize: number | null;
+  ender: boolean;
+  font: T_commentFont | null;
+  full: boolean;
+  _live: boolean;
+  invisible: boolean;
+  long: number | null;
+};
 type T_fontSize = {
-  [key: string]: {
+  [key in T_commentSize]: {
     default: number;
     resized: number;
   };
 };
 type T_doubleResizeMaxWidth = {
-  [key: string]: {
+  [key in "full" | "normal"]: {
     legacy: number;
     default: number;
   };
 };
+
+type T_nicoScript_default = {
+  start: number;
+  long: number | null;
+  color: string | null;
+  size: T_commentSize | null;
+  font: T_commentFont | null;
+  loc: T_commentLoc | null;
+};
+
+type T_commentFont = "defont" | "mincho" | "gothic";
+type T_commentSize = "big" | "medium" | "small";
+type T_commentLoc = "ue" | "naka" | "shita";
+
 type v1Thread = {
   id: string;
   fork: string;

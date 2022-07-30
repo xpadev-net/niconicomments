@@ -62,9 +62,7 @@ const typeGuard = {
     },
     apiChat: (i: unknown): i is apiChat =>
       typeof i === "object" &&
-      (i as apiChat).chat &&
-      typeVerify((i as apiChat).chat, [
-        "anonymity",
+      typeVerify(i as apiChat, [
         "content",
         "date",
         "date_usec",
@@ -210,7 +208,7 @@ const typeGuard = {
 const typeVerify = (item: unknown, keys: string[]): boolean => {
   if (typeof item !== "object" || !item) return false;
   for (const key of keys) {
-    if (Object.prototype.hasOwnProperty.call(item, key)) return false;
+    if (!Object.prototype.hasOwnProperty.call(item, key)) return false;
   }
   return true;
 };

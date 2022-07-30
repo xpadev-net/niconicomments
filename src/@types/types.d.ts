@@ -53,20 +53,18 @@ type apiGlobalNumRes = {
   num_res: number;
 };
 type apiChat = {
-  chat: {
-    thread: string;
-    no: number;
-    vpos: number;
-    date: number;
-    date_usec: number;
-    nicoru: number;
-    premium: number;
-    anonymity: number;
-    user_id: string;
-    mail: string;
-    content: string;
-    deleted: number;
-  };
+  thread: string;
+  no: number;
+  vpos: number;
+  date: number;
+  date_usec: number;
+  nicoru: number;
+  premium: number;
+  anonymity: number;
+  user_id: string;
+  mail: string;
+  content: string;
+  deleted: number;
 };
 type formattedComment = {
   id: number;
@@ -149,6 +147,7 @@ type nicoScriptReplace = {
   size: commentSize | null;
   font: commentFont | null;
   loc: commentLoc | null;
+  no: number;
 };
 type nicoScriptReplaceRange = "単" | "全";
 type nicoScriptReplaceTarget = "コメ" | "投コメ" | "全" | "含まない" | "含む";

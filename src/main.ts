@@ -782,10 +782,10 @@ class NiconiComments {
     comment: formattedComment
   ): formattedCommentWithFont {
     const data = this.parseCommand(comment),
-      nicoscript = comment.content.match(
-        /^@(デフォルト|置換|逆|コメント禁止|シーク禁止|ジャンプ)/
+      string = comment.content,
+      nicoscript = string.match(
+        /^(?:@|＠)(デフォルト|置換|逆|コメント禁止|シーク禁止|ジャンプ)/
       );
-
     if (nicoscript) {
       const reverse = comment.content.match(/^@逆 ?(全|コメ|投コメ)?/);
       const content = comment.content.split(""),
@@ -854,10 +854,14 @@ class NiconiComments {
           }
           result.push(string);
           if (
-            !result[0] ||
-            !typeGuard.nicoScript.replace.range(result[2]) ||
-            !typeGuard.nicoScript.replace.target(result[3]) ||
-            !typeGuard.nicoScript.replace.condition(result[4])
+            result[0] === undefined ||
+            result[1] === undefined ||
+            (result[2] !== undefined &&
+              !typeGuard.nicoScript.replace.range(result[2])) ||
+            (result[3] !== undefined &&
+              !typeGuard.nicoScript.replace.target(result[3])) ||
+            (result[4] !== undefined &&
+              !typeGuard.nicoScript.replace.condition(result[4]))
           )
             break;
           this.nicoScripts.replace.unshift({
@@ -872,6 +876,14 @@ class NiconiComments {
             size: data.size,
             font: data.font,
             loc: data.loc,
+            no: comment.id,
+          });
+          this.nicoScripts.replace.sort((a, b) => {
+            if (a.start < b.start) return -1;
+            if (a.start > b.start) return 1;
+            if (a.no < b.no) return -1;
+            if (a.no > b.no) return 1;
+            return 0;
           });
           break;
       }
@@ -936,16 +948,16 @@ class NiconiComments {
           comment.content = item.replace;
         }
         if (item.loc) {
-          loc = item.loc;
+          data.loc = item.loc;
         }
         if (item.color) {
-          color = item.color;
+          data.color = item.color;
         }
         if (item.size) {
-          size = item.size;
+          data.size = item.size;
         }
         if (item.font) {
-          font = item.font;
+          data.font = item.font;
         }
       }
     }
@@ -1178,12 +1190,7 @@ const hex2rgb = (hex: string) => {
  * replaceAll
  */
 const replaceAll = (string: string, target: string, replace: string) => {
-  let count = 0;
-  while (string.indexOf(target) !== -1 && count < 100) {
-    string = string.replace(target, replace);
-    count++;
-  }
-  return string;
+  return string.replace(new RegExp(target, "g"), replace);
 };
 
 const logger = (msg: string) => {

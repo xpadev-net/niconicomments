@@ -222,7 +222,7 @@ const fromV1 = (data: v1Thread[]): formattedComment[] => {
       if (!value) continue;
       const tmpParam: formattedComment = {
         id: value.no,
-        vpos: Math.floor(value.vposMs * 10),
+        vpos: Math.floor(value.vposMs / 10),
         content: value.body,
         date: date2time(value.postedAt),
         date_usec: 0,

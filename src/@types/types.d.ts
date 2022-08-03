@@ -9,7 +9,7 @@ type InitOptions = {
   useLegacy?: boolean;
   formatted?: boolean;
   format?: inputFormatType;
-  video?: HTMLVideoElement | null;
+  video?: HTMLVideoElement | undefined;
   showCollision?: boolean;
   showFPS?: boolean;
   showCommentCount?: boolean;
@@ -22,7 +22,7 @@ type Options = {
   useLegacy: boolean;
   formatted: boolean;
   format: inputFormatType;
-  video: HTMLVideoElement | null;
+  video: HTMLVideoElement | undefined;
   showCollision: boolean;
   showFPS: boolean;
   showCommentCount: boolean;
@@ -137,16 +137,16 @@ type nicoScriptReverse = {
 type nicoScriptReverseTarget = "コメ" | "投コメ" | "全";
 type nicoScriptReplace = {
   start: number;
-  long: number | null;
+  long: number | undefined;
   keyword: string;
   replace: string;
   range: nicoScriptReplaceRange;
   target: nicoScriptReplaceTarget;
   condition: nicoScriptReplaceCondition;
-  color: string | null;
-  size: commentSize | null;
-  font: commentFont | null;
-  loc: commentLoc | null;
+  color: string | undefined;
+  size: commentSize | undefined;
+  font: commentFont | undefined;
+  loc: commentLoc | undefined;
   no: number;
 };
 type nicoScriptReplaceRange = "単" | "全";
@@ -158,11 +158,11 @@ type nicoScriptBan = {
 };
 type nicoScriptDefault = {
   start: number;
-  long: number | null;
-  color: string | null;
-  size: commentSize | null;
-  font: commentFont | null;
-  loc: commentLoc | null;
+  long: number | undefined;
+  color: string | undefined;
+  size: commentSize | undefined;
+  font: commentFont | undefined;
+  loc: commentLoc | undefined;
 };
 type measureTextResult = {
   width: number;
@@ -174,24 +174,24 @@ type measureTextResult = {
   lineHeight: number;
 };
 type parsedCommand = {
-  loc: commentLoc | null;
-  size: commentSize | null;
-  fontSize: number | null;
-  color: string | null;
-  font: commentFont | null;
+  loc: commentLoc | undefined;
+  size: commentSize | undefined;
+  fontSize: number | undefined;
+  color: string | undefined;
+  font: commentFont | undefined;
   full: boolean;
   ender: boolean;
   _live: boolean;
   invisible: boolean;
-  long: number | null;
+  long: number | undefined;
 };
-type T_fontSize = {
+type typeFontSize = {
   [key in commentSize]: {
     default: number;
     resized: number;
   };
 };
-type T_doubleResizeMaxWidth = {
+type typeDoubleResizeMaxWidth = {
   [key in "full" | "normal"]: {
     legacy: number;
     default: number;
@@ -214,7 +214,7 @@ type v1Comment = {
   score: number;
   postedAt: string;
   nicoruCount: number;
-  nicoruId: null;
+  nicoruId: undefined;
   source: string;
   isMyPost: boolean;
 };

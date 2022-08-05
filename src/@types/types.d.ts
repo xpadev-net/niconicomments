@@ -120,9 +120,9 @@ type groupedComments = {
 type commentFont = "defont" | "mincho" | "gothic";
 type commentSize = "big" | "medium" | "small";
 type commentLoc = "ue" | "naka" | "shita";
-type posCollision = { [p: number]: number[] };
-type collision = { [key in collisionPosList]: posCollision };
-type collisionPosList = "ue" | "shita" | "right" | "left";
+type collision = { [key in collisionPos]: collisionItem };
+type collisionPos = "ue" | "shita" | "right" | "left";
+type collisionItem = { [p: number]: number[] };
 type nicoScript = {
   reverse: nicoScriptReverse[];
   ban: nicoScriptBan[];

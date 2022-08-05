@@ -76,9 +76,9 @@ class NiconiComments {
     this.timeline = {};
     this.nicoScripts = { reverse: [], default: [], replace: [], ban: [] };
     this.collision = (
-      ["ue", "shita", "right", "left"] as collisionPosList[]
+      ["ue", "shita", "right", "left"] as collisionPos[]
     ).reduce((pv, value) => {
-      pv[value] = [] as posCollision;
+      pv[value] = [] as collisionItem;
       return pv;
     }, {} as collision);
     this.data = [];
@@ -259,7 +259,7 @@ class NiconiComments {
         let posY = 0,
           isChanged = true,
           count = 0,
-          collision: posCollision;
+          collision: collisionItem;
         if (comment.loc === "ue") {
           collision = this.collision.ue;
         } else {
@@ -1062,9 +1062,7 @@ const changeCALayer = (rawData: formattedComment[]): formattedComment[] => {
       userList[value.user_id] +=
         (value.content.match(/\r\n|\n|\r/g) || []).length / 2;
     }
-    const key = `${value.content}@@${Array.from(
-        new Set((JSON.parse(JSON.stringify(value.mail)) as string[]).sort())
-      )
+    const key = `${value.content}@@${Array.from(new Set([...value.mail].sort()))
         .filter((e) => !e.match(/@[\d.]+|184|device:.+|patissier|ca/))
         .join("")}`,
       lastComment = index[key];

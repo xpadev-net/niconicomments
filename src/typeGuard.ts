@@ -62,9 +62,7 @@ const typeGuard = {
     },
     apiChat: (i: unknown): i is apiChat =>
       typeof i === "object" &&
-      (i as apiChat).chat &&
-      typeVerify((i as apiChat).chat, [
-        "anonymity",
+      typeVerify(i as apiChat, [
         "content",
         "date",
         "date_usec",
@@ -206,11 +204,19 @@ const typeGuard = {
         typeof i === "string" && !!i.match(/^部分一致|完全一致$/),
     },
   },
+  comment: {
+    font: (i: unknown): i is commentFont =>
+      typeof i === "string" && !!i.match(/^gothic|mincho|defont$/),
+    loc: (i: unknown): i is commentLoc =>
+      typeof i === "string" && !!i.match(/^ue|naka|shita$/),
+    size: (i: unknown): i is commentSize =>
+      typeof i === "string" && !!i.match(/^big|medium|small$/),
+  },
 };
 const typeVerify = (item: unknown, keys: string[]): boolean => {
   if (typeof item !== "object" || !item) return false;
   for (const key of keys) {
-    if (Object.prototype.hasOwnProperty.call(item, key)) return false;
+    if (!Object.prototype.hasOwnProperty.call(item, key)) return false;
   }
   return true;
 };

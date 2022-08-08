@@ -11,17 +11,17 @@ const convert2formattedComment = (
   type: inputFormatType
 ): formattedComment[] => {
   let result: formattedComment[] = [];
-  if (typeGuard.niconicome.xmlDocument(data) && type === "niconicome") {
+  if (type === "niconicome" && typeGuard.niconicome.xmlDocument(data)) {
     result = fromNiconicome(data);
-  } else if (typeGuard.formatted.legacyComments(data) && type === "formatted") {
+  } else if (type === "formatted" && typeGuard.formatted.legacyComments(data)) {
     result = fromFormatted(data);
-  } else if (typeGuard.legacy.rawApiResponses(data) && type === "legacy") {
+  } else if (type === "legacy" && typeGuard.legacy.rawApiResponses(data)) {
     result = fromLegacy(data);
   } /*else if (typeGuard.legacyOwner.comments(data) && type === "legacyOwner") {
         result = fromLegacyOwner(data);
-    }*/ else if (typeGuard.owner.comments(data) && type === "owner") {
+    }*/ else if (type === "owner" && typeGuard.owner.comments(data)) {
     result = fromOwner(data);
-  } else if (typeGuard.v1.threads(data) && type === "v1") {
+  } else if (type === "v1" && typeGuard.v1.threads(data)) {
     result = fromV1(data);
   } else {
     throw new Error("unknown input format");
@@ -100,7 +100,7 @@ const fromLegacy = (data: rawApiResponse[]): formattedComment[] => {
     userList: string[] = [];
   for (let i = 0; i < data.length; i++) {
     const val = data[i];
-    if (!typeGuard.legacy.apiChat(val)) continue;
+    if (!val || !typeGuard.legacy.apiChat(val?.chat)) continue;
     const value = val.chat;
     if (value.deleted !== 1) {
       const tmpParam: formattedComment = {
@@ -222,7 +222,7 @@ const fromV1 = (data: v1Thread[]): formattedComment[] => {
       if (!value) continue;
       const tmpParam: formattedComment = {
         id: value.no,
-        vpos: Math.floor(value.vposMs * 10),
+        vpos: Math.floor(value.vposMs / 10),
         content: value.body,
         date: date2time(value.postedAt),
         date_usec: 0,

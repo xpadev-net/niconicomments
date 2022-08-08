@@ -1,66 +1,21 @@
 import convert2formattedComment from "./inputParser";
 import typeGuard from "@/typeGuard";
+import {
+  colors,
+  commentYMarginBottom,
+  commentYPaddingTop,
+  defaultOptions,
+  doubleResizeMaxWidth,
+  fontSize,
+  lineHeight,
+} from "@/definition/definition";
 
 let isDebug = false;
-
-const commentYPaddingTop = 0.08,
-  commentYMarginBottom = 0.24,
-  fontSize: T_fontSize = {
-    small: {
-      default: 47,
-      resized: 26.1,
-    },
-    medium: {
-      default: 74,
-      resized: 38.7,
-    },
-    big: {
-      default: 110,
-      resized: 61,
-    },
-  },
-  lineHeight: T_fontSize = {
-    small: {
-      default: 1,
-      resized: 1,
-    },
-    medium: {
-      default: 1,
-      resized: 1,
-    },
-    big: {
-      default: 1.03,
-      resized: 1.01,
-    },
-  },
-  doubleResizeMaxWidth: T_doubleResizeMaxWidth = {
-    full: {
-      legacy: 3020,
-      default: 3550,
-    },
-    normal: {
-      legacy: 2540,
-      default: 2650,
-    },
-  },
-  defaultOptions: Options = {
-    drawAllImageOnLoad: false,
-    format: "default",
-    formatted: false,
-    debug: false,
-    enableLegacyPiP: false,
-    keepCA: false,
-    showCollision: false,
-    showCommentCount: false,
-    showFPS: false,
-    useLegacy: false,
-    video: null,
-  };
 
 class NiconiComments {
   private canvas: HTMLCanvasElement;
   private context: CanvasRenderingContext2D;
-  public video: HTMLVideoElement | null;
+  public video: HTMLVideoElement | undefined;
   public showCollision: boolean;
   public showFPS: boolean;
   public showCommentCount: boolean;
@@ -111,7 +66,7 @@ class NiconiComments {
     }
 
     const parsedData = convert2formattedComment(data, formatType);
-    this.video = options.video ? options.video : null;
+    this.video = options.video || undefined;
     this.showCollision = options.showCollision;
     this.showFPS = options.showFPS;
     this.showCommentCount = options.showCommentCount;
@@ -121,9 +76,9 @@ class NiconiComments {
     this.timeline = {};
     this.nicoScripts = { reverse: [], default: [], replace: [], ban: [] };
     this.collision = (
-      ["ue", "shita", "right", "left"] as collisionPosList[]
+      ["ue", "shita", "right", "left"] as collisionPos[]
     ).reduce((pv, value) => {
-      pv[value] = [] as posCollision;
+      pv[value] = [] as collisionItem;
       return pv;
     }, {} as collision);
     this.data = [];
@@ -304,7 +259,7 @@ class NiconiComments {
         let posY = 0,
           isChanged = true,
           count = 0,
-          collision: posCollision;
+          collision: collisionItem;
         if (comment.loc === "ue") {
           collision = this.collision.ue;
         } else {
@@ -620,172 +575,61 @@ class NiconiComments {
   /**
    * コメントに含まれるコマンドを解釈する
    * @param comment- 独自フォーマットのコメントデータ
-   * @returns {{loc: string|null, size: string|null, color: string|null, fontSize: number|null, ender: boolean, font: string|null, full: boolean, _live: boolean, invisible: boolean, long:number|null}}
+   * @returns {{loc: string|undefined, size: string|undefined, color: string|undefined, fontSize: number|undefined, ender: boolean, font: string|undefined, full: boolean, _live: boolean, invisible: boolean, long:number|undefined}}
    */
   parseCommand(comment: formattedComment): parsedCommand {
     const metadata = comment.mail;
-    let loc: commentLoc | null = null,
-      size: commentSize | null = null,
-      _fontSize: number | null = null,
-      color: string | null = null,
-      font: commentFont | null = null,
-      full = false,
-      ender = false,
-      _live = false,
-      invisible = false,
-      long: number | null = null;
+    const result: parsedCommand = {
+      loc: undefined,
+      size: undefined,
+      fontSize: undefined,
+      color: undefined,
+      font: undefined,
+      full: false,
+      ender: false,
+      _live: false,
+      invisible: false,
+      long: undefined,
+    };
+    const isKey = (i: unknown): i is "full" | "ender" | "_live" | "invisible" =>
+      typeof i === "string" && !!i.match(/^full|ender|_live|invisible$/);
     for (let command of metadata) {
       command = command.toLowerCase();
       const match = command.match(/^@([0-9.]+)/);
       if (match && match[1]) {
-        long = Number(match[1]);
-      }
-      if (loc === null) {
-        switch (command) {
-          case "ue":
-            loc = "ue";
-            break;
-          case "shita":
-            loc = "shita";
-            break;
+        result.long = Number(match[1]);
+      } else if (result.loc === undefined && typeGuard.comment.loc(command)) {
+        result.loc = command;
+      } else if (result.size === undefined && typeGuard.comment.size(command)) {
+        result.size = command;
+        result.fontSize = fontSize[command].default;
+      } else if (result.color === undefined) {
+        const color = colors[command];
+        if (color) {
+          result.color = color;
+        } else {
+          const match = command.match(/#[0-9a-z]{3,6}/);
+          if (match && match[0] && comment.premium) {
+            result.color = match[0].toUpperCase();
+          }
         }
-      }
-      if (size === null) {
-        switch (command) {
-          case "big":
-            size = "big";
-            _fontSize = fontSize.big.default;
-            break;
-          case "small":
-            size = "small";
-            _fontSize = fontSize.small.default;
-            break;
-        }
-      }
-      if (color === null) {
-        const match = command.match(/#[0-9a-z]{3,6}/);
-        switch (command) {
-          case "white":
-            color = "#FFFFFF";
-            break;
-          case "red":
-            color = "#FF0000";
-            break;
-          case "pink":
-            color = "#FF8080";
-            break;
-          case "orange":
-            color = "#FFC000";
-            break;
-          case "yellow":
-            color = "#FFFF00";
-            break;
-          case "green":
-            color = "#00FF00";
-            break;
-          case "cyan":
-            color = "#00FFFF";
-            break;
-          case "blue":
-            color = "#0000FF";
-            break;
-          case "purple":
-            color = "#C000FF";
-            break;
-          case "black":
-            color = "#000000";
-            break;
-          case "white2":
-          case "niconicowhite":
-            color = "#CCCC99";
-            break;
-          case "red2":
-          case "truered":
-            color = "#CC0033";
-            break;
-          case "pink2":
-            color = "#FF33CC";
-            break;
-          case "orange2":
-          case "passionorange":
-            color = "#FF6600";
-            break;
-          case "yellow2":
-          case "madyellow":
-            color = "#999900";
-            break;
-          case "green2":
-          case "elementalgreen":
-            color = "#00CC66";
-            break;
-          case "cyan2":
-            color = "#00CCCC";
-            break;
-          case "blue2":
-          case "marineblue":
-            color = "#3399FF";
-            break;
-          case "purple2":
-          case "nobleviolet":
-            color = "#6633CC";
-            break;
-          case "black2":
-            color = "#666666";
-            break;
-          default:
-            if (match && match[0] && comment.premium) {
-              color = match[0].toUpperCase();
-            }
-            break;
-        }
-      }
-      if (font === null) {
-        switch (command) {
-          case "gothic":
-            font = "gothic";
-            break;
-          case "mincho":
-            font = "mincho";
-            break;
-        }
-      }
-      switch (command) {
-        case "full":
-          full = true;
-          break;
-        case "ender":
-          ender = true;
-          break;
-        case "_live":
-          _live = true;
-          break;
-        case "invisible":
-          invisible = true;
-          break;
+      } else if (result.font === undefined && typeGuard.comment.font(command)) {
+        result.font = command;
+      } else if (isKey(command)) {
+        result[command] = true;
       }
     }
-    return {
-      loc,
-      size,
-      fontSize: _fontSize,
-      color,
-      font,
-      full,
-      ender,
-      _live,
-      invisible,
-      long,
-    };
+    return result;
   }
 
   parseCommandAndNicoscript(
     comment: formattedComment
   ): formattedCommentWithFont {
     const data = this.parseCommand(comment),
-      nicoscript = comment.content.match(
-        /^@(デフォルト|置換|逆|コメント禁止|シーク禁止|ジャンプ)/
+      string = comment.content,
+      nicoscript = string.match(
+        /^(?:@|＠)(デフォルト|置換|逆|コメント禁止|シーク禁止|ジャンプ)/
       );
-
     if (nicoscript) {
       const reverse = comment.content.match(/^@逆 ?(全|コメ|投コメ)?/);
       const content = comment.content.split(""),
@@ -797,7 +641,8 @@ class NiconiComments {
         case "デフォルト":
           this.nicoScripts.default.unshift({
             start: comment.vpos,
-            long: data.long === null ? null : Math.floor(data.long * 100),
+            long:
+              data.long === undefined ? undefined : Math.floor(data.long * 100),
             color: data.color,
             size: data.size,
             font: data.font,
@@ -811,7 +656,7 @@ class NiconiComments {
             !typeGuard.nicoScript.range.target(reverse[1])
           )
             break;
-          if (data.long === null) {
+          if (data.long === undefined) {
             data.long = 30;
           }
           this.nicoScripts.reverse.unshift({
@@ -821,7 +666,7 @@ class NiconiComments {
           });
           break;
         case "コメント禁止":
-          if (data.long === null) {
+          if (data.long === undefined) {
             data.long = 30;
           }
           this.nicoScripts.ban.unshift({
@@ -854,15 +699,20 @@ class NiconiComments {
           }
           result.push(string);
           if (
-            !result[0] ||
-            !typeGuard.nicoScript.replace.range(result[2]) ||
-            !typeGuard.nicoScript.replace.target(result[3]) ||
-            !typeGuard.nicoScript.replace.condition(result[4])
+            result[0] === undefined ||
+            result[1] === undefined ||
+            (result[2] !== undefined &&
+              !typeGuard.nicoScript.replace.range(result[2])) ||
+            (result[3] !== undefined &&
+              !typeGuard.nicoScript.replace.target(result[3])) ||
+            (result[4] !== undefined &&
+              !typeGuard.nicoScript.replace.condition(result[4]))
           )
             break;
           this.nicoScripts.replace.unshift({
             start: comment.vpos,
-            long: data.long === null ? null : Math.floor(data.long * 100),
+            long:
+              data.long === undefined ? undefined : Math.floor(data.long * 100),
             keyword: result[0],
             replace: result[1] || "",
             range: result[2] || "単",
@@ -872,6 +722,14 @@ class NiconiComments {
             size: data.size,
             font: data.font,
             loc: data.loc,
+            no: comment.id,
+          });
+          this.nicoScripts.replace.sort((a, b) => {
+            if (a.start < b.start) return -1;
+            if (a.start > b.start) return 1;
+            if (a.no < b.no) return -1;
+            if (a.no > b.no) return 1;
+            return 0;
           });
           break;
       }
@@ -884,7 +742,7 @@ class NiconiComments {
     for (let i = 0; i < this.nicoScripts.default.length; i++) {
       const item = this.nicoScripts.default[i];
       if (!item) continue;
-      if (item.long !== null && item.start + item.long < comment.vpos) {
+      if (item.long !== undefined && item.start + item.long < comment.vpos) {
         this.nicoScripts.default = this.nicoScripts.default.splice(
           Number(i),
           1
@@ -908,7 +766,7 @@ class NiconiComments {
     for (let i = 0; i < this.nicoScripts.replace.length; i++) {
       const item = this.nicoScripts.replace[i];
       if (!item) continue;
-      if (item.long !== null && item.start + item.long < comment.vpos) {
+      if (item.long !== undefined && item.start + item.long < comment.vpos) {
         this.nicoScripts.default = this.nicoScripts.default.splice(
           Number(i),
           1
@@ -936,16 +794,16 @@ class NiconiComments {
           comment.content = item.replace;
         }
         if (item.loc) {
-          loc = item.loc;
+          data.loc = item.loc;
         }
         if (item.color) {
-          color = item.color;
+          data.color = item.color;
         }
         if (item.size) {
-          size = item.size;
+          data.size = item.size;
         }
         if (item.font) {
-          font = item.font;
+          data.font = item.font;
         }
       }
     }
@@ -1041,7 +899,7 @@ class NiconiComments {
   /**
    * キャンバスを消去する
    */
-  clear() {
+  public clear() {
     this.context.clearRect(0, 0, 1920, 1080);
   }
 }
@@ -1178,12 +1036,7 @@ const hex2rgb = (hex: string) => {
  * replaceAll
  */
 const replaceAll = (string: string, target: string, replace: string) => {
-  let count = 0;
-  while (string.indexOf(target) !== -1 && count < 100) {
-    string = string.replace(target, replace);
-    count++;
-  }
-  return string;
+  return string.replace(new RegExp(target, "g"), replace);
 };
 
 const logger = (msg: string) => {
@@ -1209,9 +1062,7 @@ const changeCALayer = (rawData: formattedComment[]): formattedComment[] => {
       userList[value.user_id] +=
         (value.content.match(/\r\n|\n|\r/g) || []).length / 2;
     }
-    const key = `${value.content}@@${Array.from(
-        new Set((JSON.parse(JSON.stringify(value.mail)) as string[]).sort())
-      )
+    const key = `${value.content}@@${Array.from(new Set([...value.mail].sort()))
         .filter((e) => !e.match(/@[\d.]+|184|device:.+|patissier|ca/))
         .join("")}`,
       lastComment = index[key];

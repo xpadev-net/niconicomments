@@ -9,7 +9,7 @@ type InitOptions = {
   useLegacy?: boolean;
   formatted?: boolean;
   format?: inputFormatType;
-  video?: HTMLVideoElement | null;
+  video?: HTMLVideoElement | undefined;
   showCollision?: boolean;
   showFPS?: boolean;
   showCommentCount?: boolean;
@@ -22,7 +22,7 @@ type Options = {
   useLegacy: boolean;
   formatted: boolean;
   format: inputFormatType;
-  video: HTMLVideoElement | null;
+  video: HTMLVideoElement | undefined;
   showCollision: boolean;
   showFPS: boolean;
   showCommentCount: boolean;
@@ -53,20 +53,18 @@ type apiGlobalNumRes = {
   num_res: number;
 };
 type apiChat = {
-  chat: {
-    thread: string;
-    no: number;
-    vpos: number;
-    date: number;
-    date_usec: number;
-    nicoru: number;
-    premium: number;
-    anonymity: number;
-    user_id: string;
-    mail: string;
-    content: string;
-    deleted: number;
-  };
+  thread: string;
+  no: number;
+  vpos: number;
+  date: number;
+  date_usec: number;
+  nicoru: number;
+  premium: number;
+  anonymity: number;
+  user_id: string;
+  mail: string;
+  content: string;
+  deleted: number;
 };
 type formattedComment = {
   id: number;
@@ -122,9 +120,9 @@ type groupedComments = {
 type commentFont = "defont" | "mincho" | "gothic";
 type commentSize = "big" | "medium" | "small";
 type commentLoc = "ue" | "naka" | "shita";
-type posCollision = { [p: number]: number[] };
-type collision = { [key in collisionPosList]: posCollision };
-type collisionPosList = "ue" | "shita" | "right" | "left";
+type collision = { [key in collisionPos]: collisionItem };
+type collisionPos = "ue" | "shita" | "right" | "left";
+type collisionItem = { [p: number]: number[] };
 type nicoScript = {
   reverse: nicoScriptReverse[];
   ban: nicoScriptBan[];
@@ -139,16 +137,17 @@ type nicoScriptReverse = {
 type nicoScriptReverseTarget = "コメ" | "投コメ" | "全";
 type nicoScriptReplace = {
   start: number;
-  long: number | null;
+  long: number | undefined;
   keyword: string;
   replace: string;
   range: nicoScriptReplaceRange;
   target: nicoScriptReplaceTarget;
   condition: nicoScriptReplaceCondition;
-  color: string | null;
-  size: commentSize | null;
-  font: commentFont | null;
-  loc: commentLoc | null;
+  color: string | undefined;
+  size: commentSize | undefined;
+  font: commentFont | undefined;
+  loc: commentLoc | undefined;
+  no: number;
 };
 type nicoScriptReplaceRange = "単" | "全";
 type nicoScriptReplaceTarget = "コメ" | "投コメ" | "全" | "含まない" | "含む";
@@ -159,11 +158,11 @@ type nicoScriptBan = {
 };
 type nicoScriptDefault = {
   start: number;
-  long: number | null;
-  color: string | null;
-  size: commentSize | null;
-  font: commentFont | null;
-  loc: commentLoc | null;
+  long: number | undefined;
+  color: string | undefined;
+  size: commentSize | undefined;
+  font: commentFont | undefined;
+  loc: commentLoc | undefined;
 };
 type measureTextResult = {
   width: number;
@@ -175,24 +174,24 @@ type measureTextResult = {
   lineHeight: number;
 };
 type parsedCommand = {
-  loc: commentLoc | null;
-  size: commentSize | null;
-  fontSize: number | null;
-  color: string | null;
-  font: commentFont | null;
+  loc: commentLoc | undefined;
+  size: commentSize | undefined;
+  fontSize: number | undefined;
+  color: string | undefined;
+  font: commentFont | undefined;
   full: boolean;
   ender: boolean;
   _live: boolean;
   invisible: boolean;
-  long: number | null;
+  long: number | undefined;
 };
-type T_fontSize = {
+type typeFontSize = {
   [key in commentSize]: {
     default: number;
     resized: number;
   };
 };
-type T_doubleResizeMaxWidth = {
+type typeDoubleResizeMaxWidth = {
   [key in "full" | "normal"]: {
     legacy: number;
     default: number;
@@ -215,7 +214,7 @@ type v1Comment = {
   score: number;
   postedAt: string;
   nicoruCount: number;
-  nicoruId: null;
+  nicoruId: undefined;
   source: string;
   isMyPost: boolean;
 };

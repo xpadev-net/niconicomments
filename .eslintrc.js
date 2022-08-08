@@ -9,7 +9,7 @@ module.exports = {
         sourceType: 'module',
         ecmaVersion: 2019,
         tsconfigRootDir: __dirname,
-        project: ['./tsconfig.eslint.json']
+        project: ['./tsconfig.eslint.json'],
     },
     plugins: [
         '@typescript-eslint',
@@ -18,10 +18,13 @@ module.exports = {
         'eslint:recommended',
         'plugin:@typescript-eslint/recommended',
         'plugin:@typescript-eslint/recommended-requiring-type-checking',
+        'google',
     ],
     rules: {
         "@typescript-eslint/restrict-template-expressions": "off",
         "@typescript-eslint/unbound-method": "off",
+        "@typescript-eslint/no-unused-vars": "error",
+        "no-unused-vars": "off",
         "no-control-regex": "off",
     },
 };

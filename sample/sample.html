@@ -403,17 +403,17 @@
             nico.useLegacy = useLegacy;
             nico.keepCA = keepCA;
             nico.timeline = {};
-            nico.nicoScripts = {"reverse": [], "default": []};
-            nico.collision_right = {};
-            nico.collision_left = {};
-            nico.collision_ue = {};
-            nico.collision_shita = {};
+            nico.nicoScripts = { reverse: [], default: [], replace: [], ban: [] };
+            nico.collision.right = {};
+            nico.collision.left = {};
+            nico.collision.ue = {};
+            nico.collision.shita = {};
             nico.preRendering(res, drawAllImageOnLoad);
         } else {
             nico = new NiconiComments(canvas, res, {
                 useLegacy: useLegacy,
                 keepCA: keepCA,
-                formatted: true,
+                format:"formatted",
                 drawAllImageOnLoad: drawAllImageOnLoad,
                 debug: true
             });

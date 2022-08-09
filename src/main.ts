@@ -283,6 +283,7 @@ class NiconiComments {
         for (let j = 0; j < comment.long; j++) {
           const vpos = comment.vpos + j;
           arrayPush(this.timeline, vpos, index);
+          if (j > comment.long - 20) continue;
           if (comment.loc === "ue") {
             arrayPush(this.collision.ue, vpos, index);
           } else {
@@ -391,18 +392,11 @@ class NiconiComments {
           lines.length +
         commentYMarginBottom * comment.fontSize;
     if (comment.loc !== "naka" && !comment.resizedY) {
-      if (comment.full && width_max > 1930) {
+      if (
+        (comment.full && width_max > 1930) ||
+        (!comment.full && width_max > 1440)
+      ) {
         comment.fontSize -= 2;
-        comment.resized = true;
-        comment.resizedX = true;
-        this.context.font = parseFont(
-          comment.font,
-          comment.fontSize,
-          this.useLegacy
-        );
-        return this.measureText(comment);
-      } else if (!comment.full && width_max > 1440) {
-        comment.fontSize -= 1;
         comment.resized = true;
         comment.resizedX = true;
         this.context.font = parseFont(
@@ -527,6 +521,15 @@ class NiconiComments {
         );
       });
     }
+    if (isDebug) {
+      const font = this.context.font;
+      const fillStyle = this.context.fillStyle;
+      this.context.font = parseFont("defont", 30, false);
+      this.context.fillStyle = "#ff00ff";
+      this.context.fillText(comment.mail.join(","), posX, posY + 30);
+      this.context.font = font;
+      this.context.fillStyle = fillStyle;
+    }
   }
 
   /**
@@ -603,20 +606,25 @@ class NiconiComments {
       } else if (result.size === undefined && typeGuard.comment.size(command)) {
         result.size = command;
         result.fontSize = fontSize[command].default;
-      } else if (result.color === undefined) {
-        const color = colors[command];
-        if (color) {
-          result.color = color;
-        } else {
-          const match = command.match(/#[0-9a-z]{3,6}/);
-          if (match && match[0] && comment.premium) {
-            result.color = match[0].toUpperCase();
+      } else {
+        if (result.color === undefined) {
+          const color = colors[command];
+          if (color) {
+            result.color = color;
+            continue;
+          } else {
+            const match = command.match(/#[0-9a-z]{3,6}/);
+            if (match && match[0] && comment.premium) {
+              result.color = match[0].toUpperCase();
+              continue;
+            }
           }
         }
-      } else if (result.font === undefined && typeGuard.comment.font(command)) {
-        result.font = command;
-      } else if (isKey(command)) {
-        result[command] = true;
+        if (result.font === undefined && typeGuard.comment.font(command)) {
+          result.font = command;
+        } else if (isKey(command)) {
+          result[command] = true;
+        }
       }
     }
     return result;
@@ -953,7 +961,11 @@ const getPosY = (
       }
       if (currentPos + targetComment.height > 1080) {
         if (1080 < targetComment.height) {
-          currentPos = (targetComment.height - 1080) / -2;
+          if (targetComment.mail.includes("naka")) {
+            currentPos = (targetComment.height - 1080) / -2;
+          } else {
+            currentPos = 0;
+          }
         } else {
           currentPos = Math.floor(
             Math.random() * (1080 - targetComment.height)
@@ -1036,7 +1048,10 @@ const hex2rgb = (hex: string) => {
  * replaceAll
  */
 const replaceAll = (string: string, target: string, replace: string) => {
-  return string.replace(new RegExp(target, "g"), replace);
+  while (string.indexOf(target) !== -1) {
+    string = string.replace(target, replace);
+  }
+  return string;
 };
 
 const logger = (msg: string) => {

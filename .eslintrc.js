@@ -18,7 +18,6 @@ module.exports = {
         'eslint:recommended',
         'plugin:@typescript-eslint/recommended',
         'plugin:@typescript-eslint/recommended-requiring-type-checking',
-        'google',
     ],
     rules: {
         "@typescript-eslint/restrict-template-expressions": "off",

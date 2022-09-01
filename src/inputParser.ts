@@ -154,7 +154,7 @@ const fromLegacyOwner = (data: string): formattedComment[] => {
     let tmpParam: formattedComment = {
       id: i,
       vpos: Number(commentData[0]),
-      content: commentData[2]!,
+      content: commentData[2] || "",
       date: i,
       date_usec: 0,
       owner: true,

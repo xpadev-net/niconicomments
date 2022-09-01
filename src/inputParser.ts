@@ -17,9 +17,9 @@ const convert2formattedComment = (
     result = fromFormatted(data);
   } else if (type === "legacy" && typeGuard.legacy.rawApiResponses(data)) {
     result = fromLegacy(data);
-  } /*else if (typeGuard.legacyOwner.comments(data) && type === "legacyOwner") {
-        result = fromLegacyOwner(data);
-    }*/ else if (type === "owner" && typeGuard.owner.comments(data)) {
+  } else if (type === "legacyOwner" && typeGuard.legacyOwner.comments(data)) {
+    result = fromLegacyOwner(data);
+  } else if (type === "owner" && typeGuard.owner.comments(data)) {
     result = fromOwner(data);
   } else if (type === "v1" && typeGuard.v1.threads(data)) {
     result = fromV1(data);
@@ -136,43 +136,43 @@ const fromLegacy = (data: rawApiResponse[]): formattedComment[] => {
 
 /**
  * 旧プレイヤーの投稿者コメントのエディターのデータを処理する
- * ※一番左の数値の単位がvposか秒かわからないので実装保留
  * @param data {string}
  * @return {formattedComment[]}
  */
-/*const fromLegacyOwner = (data: string): formattedComment[] => {
-    let data_: formattedComment[] = [], comments = data.split("\n");
-    for (let i = 0; i < comments.length; i++) {
-        let commentData = comments[i]!.split(":");
-        if (commentData.length < 3) {
-            continue;
-        } else if (commentData.length > 3) {
-            for (let j = 3; j < commentData.length; j++) {
-                commentData[2] += ":" + commentData[j];
-            }
-        }
-        let tmpParam: formattedComment = {
-            id: i,
-            vpos: Number(commentData[0]),
-            content: commentData[2]!,
-            date: i,
-            date_usec: 0,
-            owner: true,
-            premium: true,
-            mail: [],
-            user_id: -1,
-            layer: -1
-        };
-        if (commentData[1]) {
-            tmpParam.mail = commentData[1].split(/[\s+]/g);
-        }
-        if (tmpParam.content.startsWith("/")) {
-            tmpParam.mail.push("invisible");
-        }
-        data_.push(tmpParam);
+const fromLegacyOwner = (data: string): formattedComment[] => {
+  let data_: formattedComment[] = [],
+    comments = data.split("\n");
+  for (let i = 0; i < comments.length; i++) {
+    let commentData = comments[i]!.split(":");
+    if (commentData.length < 3) {
+      continue;
+    } else if (commentData.length > 3) {
+      for (let j = 3; j < commentData.length; j++) {
+        commentData[2] += ":" + commentData[j];
+      }
     }
-    return data_;
-}*/
+    let tmpParam: formattedComment = {
+      id: i,
+      vpos: Number(commentData[0]),
+      content: commentData[2]!,
+      date: i,
+      date_usec: 0,
+      owner: true,
+      premium: true,
+      mail: [],
+      user_id: -1,
+      layer: -1,
+    };
+    if (commentData[1]) {
+      tmpParam.mail = commentData[1].split(/[\s+]/g);
+    }
+    if (tmpParam.content.startsWith("/")) {
+      tmpParam.mail.push("invisible");
+    }
+    data_.push(tmpParam);
+  }
+  return data_;
+};
 
 /**
  * 投稿者コメントのエディターのデータを処理する

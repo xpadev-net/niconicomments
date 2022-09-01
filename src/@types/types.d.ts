@@ -2,6 +2,7 @@ type inputFormatType =
   | "niconicome"
   | "formatted"
   | "legacy"
+  | "legacyOwner"
   | "owner"
   | "v1"
   | "default";

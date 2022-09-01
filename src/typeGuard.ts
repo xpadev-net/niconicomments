@@ -134,7 +134,7 @@ const typeGuard = {
     },
   },
   legacyOwner: {
-    comments: (i: unknown): boolean => {
+    comments: (i: unknown): i is string => {
       if (typeof i !== "string") return false;
       const lists = i.split("\n");
       for (const list of lists) {

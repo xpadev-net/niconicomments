@@ -80,6 +80,10 @@ const defaultOptions: Options = {
   useLegacy: false,
   video: undefined,
 };
+/**
+ * fpsを更新する間隔(ms)
+ */
+const fpsInterval = 500;
 export {
   colors,
   commentYMarginBottom,
@@ -88,4 +92,5 @@ export {
   lineHeight,
   doubleResizeMaxWidth,
   defaultOptions,
+  fpsInterval,
 };

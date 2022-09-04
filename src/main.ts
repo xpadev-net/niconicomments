@@ -100,7 +100,7 @@ class NiconiComments {
     this.fpsCount = 0;
     this.fps = 0;
     window.setInterval(() => {
-      this.fps = this.fpsCount * (fpsInterval / 1000);
+      this.fps = this.fpsCount * (1000 / fpsInterval);
       this.fpsCount = 0;
     }, fpsInterval);
     logger(`constructor complete: ${performance.now() - constructorStart}ms`);

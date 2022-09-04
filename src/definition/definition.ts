@@ -1,3 +1,6 @@
+/**
+ * コマンドとカラーコードの対応表
+ */
 const colors: { [key: string]: string } = {
   white: "#FFFFFF",
   red: "#FF0000",
@@ -29,6 +32,9 @@ const colors: { [key: string]: string } = {
 };
 const commentYPaddingTop = 0.08;
 const commentYMarginBottom = 0.24;
+/**
+ * font-size
+ */
 const fontSize: typeFontSize = {
   small: {
     default: 47,
@@ -43,6 +49,9 @@ const fontSize: typeFontSize = {
     resized: 61,
   },
 };
+/**
+ * font-sizeに対しての倍率
+ */
 const lineHeight: typeFontSize = {
   small: {
     default: 1,
@@ -57,6 +66,9 @@ const lineHeight: typeFontSize = {
     resized: 1.01,
   },
 };
+/**
+ * 臨海+改行リサイズが発生した際(DR)の横幅最大値
+ */
 const doubleResizeMaxWidth: typeDoubleResizeMaxWidth = {
   full: {
     legacy: 3020,
@@ -67,6 +79,9 @@ const doubleResizeMaxWidth: typeDoubleResizeMaxWidth = {
     default: 2650,
   },
 };
+/**
+ * 既定の設定
+ */
 const defaultOptions: Options = {
   drawAllImageOnLoad: false,
   format: "default",
@@ -84,6 +99,9 @@ const defaultOptions: Options = {
  * fpsを更新する間隔(ms)
  */
 const fpsInterval = 500;
+const canvasWidth = 1920,
+  commentDrawRange = 1450,
+  commentDrawPadding = (canvasWidth - commentDrawRange) / 2;
 export {
   colors,
   commentYMarginBottom,
@@ -93,4 +111,7 @@ export {
   doubleResizeMaxWidth,
   defaultOptions,
   fpsInterval,
+  canvasWidth,
+  commentDrawRange,
+  commentDrawPadding,
 };

@@ -1,6 +1,7 @@
 import convert2formattedComment from "./inputParser";
 import typeGuard from "@/typeGuard";
 import {
+  canvasWidth,
   colors,
   commentYMarginBottom,
   commentYPaddingTop,
@@ -13,6 +14,7 @@ import {
 import {
   arrayPush,
   changeCALayer,
+  getPosX,
   getPosY,
   groupBy,
   hex2rgb,
@@ -186,42 +188,24 @@ class NiconiComments {
     const getCommentPosStart = performance.now();
     data.forEach((comment, index) => {
       if (comment.invisible) return;
-      for (let j = 0; j < (comment.long * 4) / 3 + 100; j++) {
-        if (!this.timeline[comment.vpos + j]) {
-          this.timeline[comment.vpos + j] = [];
-        }
-        if (!this.collision.right[comment.vpos + j]) {
-          this.collision.right[comment.vpos + j] = [];
-        }
-        if (!this.collision.left[comment.vpos + j]) {
-          this.collision.left[comment.vpos + j] = [];
-        }
-        if (!this.collision.ue[comment.vpos + j]) {
-          this.collision.ue[comment.vpos + j] = [];
-        }
-        if (!this.collision.shita[comment.vpos + j]) {
-          this.collision.shita[comment.vpos + j] = [];
-        }
-      }
       if (comment.loc === "naka") {
-        let posY = 0,
-          isBreak = false,
-          isChanged = true,
-          count = 0;
+        let posY = 0;
         const beforeVpos =
           Math.round(
-            -240 / ((1680 + comment.width_max) / (comment.long + 125))
+            -288 / ((1632 + comment.width_max) / (comment.long + 125))
           ) - 100;
         if (1080 < comment.height) {
           posY = (comment.height - 1080) / -2;
         } else {
+          let isBreak = false,
+            isChanged = true,
+            count = 0;
           while (isChanged && count < 10) {
             isChanged = false;
             count++;
             for (let j = beforeVpos; j < comment.long; j++) {
               const vpos = comment.vpos + j;
-              const left_pos =
-                1680 - ((1680 + comment.width_max) / (comment.long + 125)) * j;
+              const left_pos = getPosX(comment.width_max, j, comment.long);
               if (left_pos + comment.width_max >= 1880) {
                 const result = getPosY(
                   posY,
@@ -497,15 +481,11 @@ class NiconiComments {
     if (comment.loc === "naka") {
       if (reverse) {
         posX =
-          240 +
-          ((1680 + comment.width_max) / (comment.long + 125)) *
-            (vpos - comment.vpos + 100) -
-          comment.width_max;
+          canvasWidth +
+          comment.width_max -
+          getPosX(comment.width_max, vpos - comment.vpos, comment.long);
       } else {
-        posX =
-          1680 -
-          ((1680 + comment.width_max) / (comment.long + 125)) *
-            (vpos - comment.vpos + 100);
+        posX = getPosX(comment.width_max, vpos - comment.vpos, comment.long);
       }
     } else if (comment.loc === "shita") {
       posY = 1080 - comment.posY - comment.height;

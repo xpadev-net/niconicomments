@@ -1,3 +1,5 @@
+import { commentDrawPadding, commentDrawRange } from "@/definition/definition";
+
 /**
  * 配列をフォントとサイズでグループ化する
  * @param {{}} array
@@ -12,6 +14,9 @@ const groupBy = (array: formattedCommentWithFont[]): groupedComments => {
     {} as groupedComments
   );
   array.forEach((item, index) => {
+    if (!data[item.font]) {
+      console.log(data, item.font);
+    }
     const value = data[item.font][item.fontSize] || [];
     value.push({ ...item, index });
     if (value.length === 1) {
@@ -63,6 +68,13 @@ const getPosY = (
     }
   }
   return { currentPos, isChanged, isBreak };
+};
+const getPosX = (width: number, vpos: number, long: number): number => {
+  return (
+    commentDrawRange -
+    ((((width + commentDrawRange) * ((vpos + 100) / 100)) / 4) * 300) / long +
+    commentDrawPadding
+  );
 };
 /**
  * フォント名とサイズをもとにcontextで使えるフォントを生成する
@@ -180,9 +192,11 @@ const changeCALayer = (rawData: formattedComment[]): formattedComment[] => {
   }
   return data;
 };
+
 export {
   groupBy,
   getPosY,
+  getPosX,
   parseFont,
   arrayPush,
   hex2rgb,

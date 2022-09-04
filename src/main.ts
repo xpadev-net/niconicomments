@@ -584,8 +584,6 @@ class NiconiComments {
       invisible: false,
       long: undefined,
     };
-    const isKey = (i: unknown): i is "full" | "ender" | "_live" | "invisible" =>
-      typeof i === "string" && !!i.match(/^full|ender|_live|invisible$/);
     for (let command of metadata) {
       command = command.toLowerCase();
       const match = command.match(/^@([0-9.]+)/);
@@ -612,7 +610,7 @@ class NiconiComments {
         }
         if (result.font === undefined && typeGuard.comment.font(command)) {
           result.font = command;
-        } else if (isKey(command)) {
+        } else if (typeGuard.comment.command.key(command)) {
           result[command] = true;
         }
       }

@@ -273,7 +273,7 @@ const sort = (data: formattedComment[]): formattedComment[] => {
  */
 const time2vpos = (time_str: string): number => {
   const time = time_str.match(
-    /^(\d+):(\d+)\.(\d+)|(\d+):(\d+)|(\d+)\.(\d+)|(\d+)$/
+    /^(?:(\d+):(\d+)\.(\d+)|(\d+):(\d+)|(\d+)\.(\d+)|(\d+))$/
   );
   if (time) {
     if (

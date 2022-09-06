@@ -376,8 +376,8 @@ class NiconiComments {
       const measure = this.context.measureText(lines[i] as string);
       width_arr.push(measure.width);
     }
-    const width = width_arr.reduce((p, c) => p + c, 0) / width_arr.length,
-      width_max = Math.max(...width_arr),
+    const width = width_arr.reduce((p, c) => p + c, 0) / width_arr.length;
+    let width_max = Math.max(...width_arr),
       width_min = Math.min(...width_arr),
       height =
         comment.fontSize *
@@ -390,7 +390,11 @@ class NiconiComments {
         (comment.full && width_max > 1930) ||
         (!comment.full && width_max > 1440)
       ) {
-        comment.fontSize -= 2;
+        while (width_max > (comment.full ? 1930 : 1440)) {
+          width_max /= 1.1;
+          width_max /= 1.1;
+          comment.fontSize -= 2;
+        }
         comment.resized = true;
         comment.resizedX = true;
         this.context.font = parseFont(
@@ -423,7 +427,13 @@ class NiconiComments {
         width_max >
           doubleResizeMaxWidth.full[this.useLegacy ? "legacy" : "default"]
       ) {
-        comment.fontSize -= 1;
+        while (
+          width_max >
+          doubleResizeMaxWidth.full[this.useLegacy ? "legacy" : "default"]
+        ) {
+          width_max /= 1.1;
+          comment.fontSize -= 1;
+        }
         this.context.font = parseFont(
           comment.font,
           comment.fontSize,
@@ -435,7 +445,13 @@ class NiconiComments {
         width_max >
           doubleResizeMaxWidth.normal[this.useLegacy ? "legacy" : "default"]
       ) {
-        comment.fontSize -= 1;
+        while (
+          width_max >
+          doubleResizeMaxWidth.normal[this.useLegacy ? "legacy" : "default"]
+        ) {
+          width_max /= 1.1;
+          comment.fontSize -= 1;
+        }
         this.context.font = parseFont(
           comment.font,
           comment.fontSize,
@@ -444,7 +460,6 @@ class NiconiComments {
         return this.measureText(comment);
       }
     }
-
     return {
       width: width,
       width_max: width_max,

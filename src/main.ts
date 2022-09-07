@@ -547,7 +547,7 @@ class NiconiComments {
   getTextImage(i: number, preRendering = false) {
     const value = this.data[i];
     if (!value || value.invisible) return;
-    const cacheKey = value.content + "@@@" + value.mail.join(","),
+    const cacheKey = value.content + "@@@" + [...value.mail].sort().join(","),
       cache = this.cacheIndex[cacheKey];
     if (cache) {
       const image = this.data[cache]?.image;

@@ -25,22 +25,23 @@ import {
 let isDebug = false;
 
 class NiconiComments {
-  private canvas: HTMLCanvasElement;
-  private context: CanvasRenderingContext2D;
-  public video: HTMLVideoElement | undefined;
+  public enableLegacyPiP: boolean;
   public showCollision: boolean;
   public showFPS: boolean;
   public showCommentCount: boolean;
-  public enableLegacyPiP: boolean;
+  public video: HTMLVideoElement | undefined;
+  private data: parsedComment[];
+  private fps: number;
+  private fpsCount: number;
+  private lastVpos: number;
+  private readonly cacheIndex: { [key: string]: number };
+  private readonly canvas: HTMLCanvasElement;
+  private readonly collision: collision;
+  private readonly context: CanvasRenderingContext2D;
   private readonly keepCA: boolean;
+  private readonly nicoScripts: nicoScript;
   private readonly timeline: { [key: number]: number[] };
   private readonly useLegacy: boolean;
-  private data: parsedComment[];
-  private nicoScripts: nicoScript;
-  private collision: collision;
-  private lastVpos: number;
-  private fpsCount: number;
-  private fps: number;
 
   /**
    * NiconiComments Constructor
@@ -85,6 +86,7 @@ class NiconiComments {
     this.enableLegacyPiP = options.enableLegacyPiP;
     this.keepCA = options.keepCA;
 
+    this.cacheIndex = {};
     this.timeline = {};
     this.nicoScripts = { reverse: [], default: [], replace: [], ban: [] };
     this.collision = (
@@ -545,6 +547,24 @@ class NiconiComments {
   getTextImage(i: number, preRendering = false) {
     const value = this.data[i];
     if (!value || value.invisible) return;
+    const cacheKey = value.content + "@@@" + value.mail.join(","),
+      cache = this.cacheIndex[cacheKey];
+    if (cache) {
+      const image = this.data[cache]?.image;
+      if (image) {
+        this.cacheIndex[cacheKey] = i;
+        value.image = image;
+        setTimeout(() => {
+          if (value.image) {
+            delete value.image;
+          }
+          if (this.cacheIndex[cacheKey] === i) {
+            delete this.cacheIndex[cacheKey];
+          }
+        }, 5000);
+        return;
+      }
+    }
     const image = document.createElement("canvas");
     image.width = value.width_max;
     image.height = value.height;
@@ -574,9 +594,15 @@ class NiconiComments {
       context.fillText(line, 0, posY);
     });
     value.image = image;
+    this.cacheIndex[cacheKey] = i;
     if (preRendering) return;
     setTimeout(() => {
-      if (value.image) delete value.image;
+      if (value.image) {
+        delete value.image;
+      }
+      if (this.cacheIndex[cacheKey] === i) {
+        delete this.cacheIndex[cacheKey];
+      }
     }, 5000);
   }
 
@@ -842,10 +868,11 @@ class NiconiComments {
   /**
    * キャンバスを描画する
    * @param vpos - 動画の現在位置の100倍 ニコニコから吐き出されるコメントの位置情報は主にこれ
+   * @param forceRendering
    */
-  drawCanvas(vpos: number) {
+  drawCanvas(vpos: number, forceRendering: boolean = false) {
     const drawCanvasStart = performance.now();
-    if (this.lastVpos === vpos) return;
+    if (this.lastVpos === vpos && !forceRendering) return;
     this.lastVpos = vpos;
     this.fpsCount++;
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);

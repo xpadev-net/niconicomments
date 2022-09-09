@@ -38,5 +38,5 @@ setInterval(() => niconiComments.drawCanvas(Math.floor(video.currentTime * 100))
 ```
 
 ## Sample
-[サンプル](https://xpadev.net/niconicomments/sample.html)  
+[サンプル](https://xpadev-net.github.io/niconicomments/sample/)  
 [CodePen](https://codepen.io/xpadev-net/pen/mdBdQmX)  

@@ -1,3 +1,6 @@
+/**
+ * コマンドとカラーコードの対応表
+ */
 const colors: { [key: string]: string } = {
   white: "#FFFFFF",
   red: "#FF0000",
@@ -29,6 +32,9 @@ const colors: { [key: string]: string } = {
 };
 const commentYPaddingTop = 0.08;
 const commentYMarginBottom = 0.24;
+/**
+ * font-size
+ */
 const fontSize: typeFontSize = {
   small: {
     default: 47,
@@ -43,6 +49,9 @@ const fontSize: typeFontSize = {
     resized: 61,
   },
 };
+/**
+ * font-sizeに対しての倍率
+ */
 const lineHeight: typeFontSize = {
   small: {
     default: 1,
@@ -57,6 +66,9 @@ const lineHeight: typeFontSize = {
     resized: 1.01,
   },
 };
+/**
+ * 臨海+改行リサイズが発生した際(DR)の横幅最大値
+ */
 const doubleResizeMaxWidth: typeDoubleResizeMaxWidth = {
   full: {
     legacy: 3020,
@@ -67,6 +79,9 @@ const doubleResizeMaxWidth: typeDoubleResizeMaxWidth = {
     default: 2650,
   },
 };
+/**
+ * 既定の設定
+ */
 const defaultOptions: Options = {
   drawAllImageOnLoad: false,
   format: "default",
@@ -80,6 +95,54 @@ const defaultOptions: Options = {
   useLegacy: false,
   video: undefined,
 };
+/**
+ * fpsを更新する間隔(ms)
+ */
+const fpsInterval = 500;
+/**
+ * キャッシュの追加保持期間(ms)
+ */
+const cacheAge = 2000;
+/**
+ * キャンバスの横幅
+ */
+const canvasWidth = 1920;
+/**
+ * キャンバスの高さ
+ */
+const canvasHeight = 1080;
+/**
+ * コメントの処理範囲
+ */
+const commentDrawRange = 1450;
+/**
+ * コメントの処理範囲外(片側)の幅
+ */
+const commentDrawPadding = (canvasWidth - commentDrawRange) / 2;
+/**
+ * 当たり判定の幅
+ */
+const collisionWidth = 40;
+/**
+ * 当たり判定の左右幅
+ */
+const collisionRange = {
+  left: collisionWidth,
+  right: canvasWidth - collisionWidth,
+};
+/**
+ * 同一CAと判定する投下経過時間の最大値(秒)
+ */
+const sameCARange = 3600;
+/**
+ * 同一CAと判定するvposの範囲(vpos)
+ */
+const sameCAGap = 100;
+/**
+ * レイヤーを分離する基準値
+ */
+const sameCAMinScore = 10;
+
 export {
   colors,
   commentYMarginBottom,
@@ -88,4 +151,14 @@ export {
   lineHeight,
   doubleResizeMaxWidth,
   defaultOptions,
+  fpsInterval,
+  cacheAge,
+  canvasWidth,
+  canvasHeight,
+  commentDrawRange,
+  commentDrawPadding,
+  collisionRange,
+  sameCARange,
+  sameCAGap,
+  sameCAMinScore,
 };

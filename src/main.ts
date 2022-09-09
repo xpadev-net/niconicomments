@@ -208,7 +208,7 @@ class NiconiComments {
           while (isChanged && count < 10) {
             isChanged = false;
             count++;
-            for (let j = beforeVpos; j < comment.long; j++) {
+            for (let j = beforeVpos; j < comment.long + 125; j++) {
               const vpos = comment.vpos + j;
               const left_pos = getPosX(comment.width_max, j, comment.long);
               if (left_pos + comment.width_max >= collisionRange.right) {
@@ -664,6 +664,10 @@ class NiconiComments {
     return result;
   }
 
+  /**
+   * コメントに含まれるニコスクリプトを処理する
+   * @param comment
+   */
   parseCommandAndNicoscript(
     comment: formattedComment
   ): formattedCommentWithFont {

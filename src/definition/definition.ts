@@ -99,9 +99,50 @@ const defaultOptions: Options = {
  * fpsを更新する間隔(ms)
  */
 const fpsInterval = 500;
-const canvasWidth = 1920,
-  commentDrawRange = 1450,
-  commentDrawPadding = (canvasWidth - commentDrawRange) / 2;
+/**
+ * キャッシュの保持期間(ms)
+ */
+const cacheMaxAge = 5000;
+/**
+ * キャンバスの横幅
+ */
+const canvasWidth = 1920;
+/**
+ * キャンバスの高さ
+ */
+const canvasHeight = 1080;
+/**
+ * コメントの処理範囲
+ */
+const commentDrawRange = 1450;
+/**
+ * コメントの処理範囲外(片側)の幅
+ */
+const commentDrawPadding = (canvasWidth - commentDrawRange) / 2;
+/**
+ * 当たり判定の幅
+ */
+const collisionWidth = 40;
+/**
+ * 当たり判定の左右幅
+ */
+const collisionRange = {
+  left: collisionWidth,
+  right: canvasWidth - collisionWidth,
+};
+/**
+ * 同一CAと判定する投下経過時間の最大値(秒)
+ */
+const sameCARange = 3600;
+/**
+ * 同一CAと判定するvposの範囲(vpos)
+ */
+const sameCAGap = 100;
+/**
+ * レイヤーを分離する基準値
+ */
+const sameCAMinScore = 10;
+
 export {
   colors,
   commentYMarginBottom,
@@ -111,7 +152,13 @@ export {
   doubleResizeMaxWidth,
   defaultOptions,
   fpsInterval,
+  cacheMaxAge,
   canvasWidth,
+  canvasHeight,
   commentDrawRange,
   commentDrawPadding,
+  collisionRange,
+  sameCARange,
+  sameCAGap,
+  sameCAMinScore,
 };

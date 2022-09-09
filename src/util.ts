@@ -1,4 +1,11 @@
-import { commentDrawPadding, commentDrawRange } from "@/definition/definition";
+import {
+  canvasHeight,
+  commentDrawPadding,
+  commentDrawRange,
+  sameCAGap,
+  sameCAMinScore,
+  sameCARange,
+} from "@/definition/definition";
 
 /**
  * 配列をフォントとサイズでグループ化する
@@ -14,9 +21,6 @@ const groupBy = (array: formattedCommentWithFont[]): groupedComments => {
     {} as groupedComments
   );
   array.forEach((item, index) => {
-    if (!data[item.font]) {
-      console.log(data, item.font);
-    }
     const value = data[item.font][item.fontSize] || [];
     value.push({ ...item, index });
     if (value.length === 1) {
@@ -26,7 +30,7 @@ const groupBy = (array: formattedCommentWithFont[]): groupedComments => {
   return data;
 };
 /**
- *
+ * 当たり判定からコメントを配置できる場所を探す
  */
 const getPosY = (
   currentPos: number,
@@ -50,16 +54,16 @@ const getPosY = (
         currentPos = collisionItem.posY + collisionItem.height;
         isChanged = true;
       }
-      if (currentPos + targetComment.height > 1080) {
-        if (1080 < targetComment.height) {
+      if (currentPos + targetComment.height > canvasHeight) {
+        if (canvasHeight < targetComment.height) {
           if (targetComment.mail.includes("naka")) {
-            currentPos = (targetComment.height - 1080) / -2;
+            currentPos = (targetComment.height - canvasHeight) / -2;
           } else {
             currentPos = 0;
           }
         } else {
           currentPos = Math.floor(
-            Math.random() * (1080 - targetComment.height)
+            Math.random() * (canvasHeight - targetComment.height)
           );
         }
         isBreak = true;
@@ -151,6 +155,10 @@ const replaceAll = (string: string, target: string, replace: string) => {
   }
   return string;
 };
+/**
+ * CAと思われるコメントのレイヤーを分離する
+ * @param rawData
+ */
 const changeCALayer = (rawData: formattedComment[]): formattedComment[] => {
   const userList: { [key: number]: number } = {};
   const data: formattedComment[] = [],
@@ -176,8 +184,8 @@ const changeCALayer = (rawData: formattedComment[]): formattedComment[] => {
       lastComment = index[key];
     if (lastComment !== undefined) {
       if (
-        value.vpos - lastComment.vpos > 100 ||
-        Math.abs(value.date - lastComment.date) < 3600
+        value.vpos - lastComment.vpos > sameCAGap ||
+        Math.abs(value.date - lastComment.date) < sameCARange
       ) {
         data.push(value);
         index[key] = value;
@@ -188,7 +196,8 @@ const changeCALayer = (rawData: formattedComment[]): formattedComment[] => {
     }
   }
   for (const value of data) {
-    if (userList[value.user_id] || 0 >= 10) value.layer = value.user_id;
+    if (userList[value.user_id] || 0 >= sameCAMinScore)
+      value.layer = value.user_id;
   }
   return data;
 };

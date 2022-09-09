@@ -1,34 +1,50 @@
 import convert2formattedComment from "./inputParser";
 import typeGuard from "@/typeGuard";
 import {
+  cacheAge,
+  canvasHeight,
+  canvasWidth,
+  collisionRange,
   colors,
   commentYMarginBottom,
   commentYPaddingTop,
   defaultOptions,
   doubleResizeMaxWidth,
   fontSize,
+  fpsInterval,
   lineHeight,
 } from "@/definition/definition";
+import {
+  arrayPush,
+  changeCALayer,
+  getPosX,
+  getPosY,
+  groupBy,
+  hex2rgb,
+  parseFont,
+  replaceAll,
+} from "@/util";
 
 let isDebug = false;
 
 class NiconiComments {
-  private canvas: HTMLCanvasElement;
-  private context: CanvasRenderingContext2D;
-  public video: HTMLVideoElement | undefined;
+  public enableLegacyPiP: boolean;
   public showCollision: boolean;
   public showFPS: boolean;
   public showCommentCount: boolean;
-  public enableLegacyPiP: boolean;
+  public video: HTMLVideoElement | undefined;
+  private data: parsedComment[];
+  private fps: number;
+  private fpsCount: number;
+  private lastVpos: number;
+  private readonly cacheIndex: { [key: string]: number };
+  private readonly canvas: HTMLCanvasElement;
+  private readonly collision: collision;
+  private readonly context: CanvasRenderingContext2D;
   private readonly keepCA: boolean;
+  private readonly nicoScripts: nicoScript;
   private readonly timeline: { [key: number]: number[] };
   private readonly useLegacy: boolean;
-  private data: parsedComment[];
-  private nicoScripts: nicoScript;
-  private collision: collision;
-  private lastVpos: number;
-  private fpsCount: number;
-  private fps: number;
 
   /**
    * NiconiComments Constructor
@@ -73,6 +89,7 @@ class NiconiComments {
     this.enableLegacyPiP = options.enableLegacyPiP;
     this.keepCA = options.keepCA;
 
+    this.cacheIndex = {};
     this.timeline = {};
     this.nicoScripts = { reverse: [], default: [], replace: [], ban: [] };
     this.collision = (
@@ -88,9 +105,9 @@ class NiconiComments {
     this.fpsCount = 0;
     this.fps = 0;
     window.setInterval(() => {
-      this.fps = this.fpsCount * 2;
+      this.fps = this.fpsCount * (1000 / fpsInterval);
       this.fpsCount = 0;
-    }, 500);
+    }, fpsInterval);
     logger(`constructor complete: ${performance.now() - constructorStart}ms`);
   }
 
@@ -176,43 +193,28 @@ class NiconiComments {
     const getCommentPosStart = performance.now();
     data.forEach((comment, index) => {
       if (comment.invisible) return;
-      for (let j = 0; j < (comment.long * 4) / 3 + 100; j++) {
-        if (!this.timeline[comment.vpos + j]) {
-          this.timeline[comment.vpos + j] = [];
-        }
-        if (!this.collision.right[comment.vpos + j]) {
-          this.collision.right[comment.vpos + j] = [];
-        }
-        if (!this.collision.left[comment.vpos + j]) {
-          this.collision.left[comment.vpos + j] = [];
-        }
-        if (!this.collision.ue[comment.vpos + j]) {
-          this.collision.ue[comment.vpos + j] = [];
-        }
-        if (!this.collision.shita[comment.vpos + j]) {
-          this.collision.shita[comment.vpos + j] = [];
-        }
-      }
       if (comment.loc === "naka") {
-        let posY = 0,
-          isBreak = false,
-          isChanged = true,
-          count = 0;
+        let posY = 0;
         const beforeVpos =
           Math.round(
-            -240 / ((1680 + comment.width_max) / (comment.long + 125))
+            -288 / ((1632 + comment.width_max) / (comment.long + 125))
           ) - 100;
-        if (1080 < comment.height) {
-          posY = (comment.height - 1080) / -2;
+        if (canvasHeight < comment.height) {
+          posY = (comment.height - canvasHeight) / -2;
         } else {
+          let isBreak = false,
+            isChanged = true,
+            count = 0;
           while (isChanged && count < 10) {
             isChanged = false;
             count++;
-            for (let j = beforeVpos; j < comment.long; j++) {
+            for (let j = beforeVpos; j < comment.long + 125; j++) {
               const vpos = comment.vpos + j;
-              const left_pos =
-                1680 - ((1680 + comment.width_max) / (comment.long + 125)) * j;
-              if (left_pos + comment.width_max >= 1880) {
+              const left_pos = getPosX(comment.width_max, j, comment.long);
+              if (
+                left_pos + comment.width_max >= collisionRange.right &&
+                left_pos <= collisionRange.right
+              ) {
                 const result = getPosY(
                   posY,
                   comment,
@@ -224,7 +226,10 @@ class NiconiComments {
                 isBreak = result.isBreak;
                 if (isBreak) break;
               }
-              if (left_pos <= 40) {
+              if (
+                left_pos + comment.width_max >= collisionRange.left &&
+                left_pos <= collisionRange.left
+              ) {
                 const result = getPosY(
                   posY,
                   comment,
@@ -244,13 +249,12 @@ class NiconiComments {
         }
         for (let j = beforeVpos; j < comment.long + 125; j++) {
           const vpos = comment.vpos + j;
-          const left_pos =
-            1680 - ((1680 + comment.width_max) / (comment.long + 125)) * j;
+          const left_pos = getPosX(comment.width_max, j, comment.long);
           arrayPush(this.timeline, vpos, index);
-          if (left_pos + comment.width_max >= 1880) {
+          if (left_pos + comment.width_max >= collisionRange.right) {
             arrayPush(this.collision.right, vpos, index);
           }
-          if (left_pos <= 40) {
+          if (left_pos <= collisionRange.left) {
             arrayPush(this.collision.left, vpos, index);
           }
         }
@@ -382,8 +386,8 @@ class NiconiComments {
       const measure = this.context.measureText(lines[i] as string);
       width_arr.push(measure.width);
     }
-    const width = width_arr.reduce((p, c) => p + c, 0) / width_arr.length,
-      width_max = Math.max(...width_arr),
+    const width = width_arr.reduce((p, c) => p + c, 0) / width_arr.length;
+    let width_max = Math.max(...width_arr),
       width_min = Math.min(...width_arr),
       height =
         comment.fontSize *
@@ -396,7 +400,11 @@ class NiconiComments {
         (comment.full && width_max > 1930) ||
         (!comment.full && width_max > 1440)
       ) {
-        comment.fontSize -= 2;
+        while (width_max > (comment.full ? 1930 : 1440)) {
+          width_max /= 1.1;
+          width_max /= 1.1;
+          comment.fontSize -= 2;
+        }
         comment.resized = true;
         comment.resizedX = true;
         this.context.font = parseFont(
@@ -429,7 +437,13 @@ class NiconiComments {
         width_max >
           doubleResizeMaxWidth.full[this.useLegacy ? "legacy" : "default"]
       ) {
-        comment.fontSize -= 1;
+        while (
+          width_max >
+          doubleResizeMaxWidth.full[this.useLegacy ? "legacy" : "default"]
+        ) {
+          width_max /= 1.1;
+          comment.fontSize -= 1;
+        }
         this.context.font = parseFont(
           comment.font,
           comment.fontSize,
@@ -441,7 +455,13 @@ class NiconiComments {
         width_max >
           doubleResizeMaxWidth.normal[this.useLegacy ? "legacy" : "default"]
       ) {
-        comment.fontSize -= 1;
+        while (
+          width_max >
+          doubleResizeMaxWidth.normal[this.useLegacy ? "legacy" : "default"]
+        ) {
+          width_max /= 1.1;
+          comment.fontSize -= 1;
+        }
         this.context.font = parseFont(
           comment.font,
           comment.fontSize,
@@ -450,7 +470,6 @@ class NiconiComments {
         return this.measureText(comment);
       }
     }
-
     return {
       width: width,
       width_max: width_max,
@@ -482,23 +501,22 @@ class NiconiComments {
     for (const range of this.nicoScripts.ban) {
       if (range.start < vpos && vpos < range.end) return;
     }
-    let posX = (1920 - comment.width_max) / 2,
+    let posX = (canvasWidth - comment.width_max) / 2,
       posY = comment.posY;
     if (comment.loc === "naka") {
       if (reverse) {
         posX =
-          240 +
-          ((1680 + comment.width_max) / (comment.long + 125)) *
-            (vpos - comment.vpos + 100) -
-          comment.width_max;
+          canvasWidth +
+          comment.width_max -
+          getPosX(comment.width_max, vpos - comment.vpos, comment.long);
       } else {
-        posX =
-          1680 -
-          ((1680 + comment.width_max) / (comment.long + 125)) *
-            (vpos - comment.vpos + 100);
+        posX = getPosX(comment.width_max, vpos - comment.vpos, comment.long);
+      }
+      if (posX > canvasWidth || posX + comment.width_max < 0) {
+        return;
       }
     } else if (comment.loc === "shita") {
-      posY = 1080 - comment.posY - comment.height;
+      posY = canvasHeight - comment.posY - comment.height;
     }
     if (comment.image && comment.image !== true) {
       this.context.drawImage(comment.image, posX, posY);
@@ -540,6 +558,24 @@ class NiconiComments {
   getTextImage(i: number, preRendering = false) {
     const value = this.data[i];
     if (!value || value.invisible) return;
+    const cacheKey = value.content + "@@@" + [...value.mail].sort().join(","),
+      cache = this.cacheIndex[cacheKey];
+    if (cache) {
+      const image = this.data[cache]?.image;
+      if (image) {
+        this.cacheIndex[cacheKey] = i;
+        value.image = image;
+        setTimeout(() => {
+          if (value.image) {
+            delete value.image;
+          }
+          if (this.cacheIndex[cacheKey] === i) {
+            delete this.cacheIndex[cacheKey];
+          }
+        }, value.long * 10 + cacheAge);
+        return;
+      }
+    }
     const image = document.createElement("canvas");
     image.width = value.width_max;
     image.height = value.height;
@@ -562,17 +598,23 @@ class NiconiComments {
     const lines = value.content.split("\n");
     lines.forEach((line, index) => {
       const posY =
-        (Number(index) + 1) *
+        (index + 1) *
         (value.fontSize * value.lineHeight) *
         (1 + commentYPaddingTop);
       context.strokeText(line, 0, posY);
       context.fillText(line, 0, posY);
     });
     value.image = image;
+    this.cacheIndex[cacheKey] = i;
     if (preRendering) return;
     setTimeout(() => {
-      if (value.image) delete value.image;
-    }, 5000);
+      if (value.image) {
+        delete value.image;
+      }
+      if (this.cacheIndex[cacheKey] === i) {
+        delete this.cacheIndex[cacheKey];
+      }
+    }, value.long * 10 + cacheAge);
   }
 
   /**
@@ -594,8 +636,6 @@ class NiconiComments {
       invisible: false,
       long: undefined,
     };
-    const isKey = (i: unknown): i is "full" | "ender" | "_live" | "invisible" =>
-      typeof i === "string" && !!i.match(/^full|ender|_live|invisible$/);
     for (let command of metadata) {
       command = command.toLowerCase();
       const match = command.match(/^@([0-9.]+)/);
@@ -622,7 +662,7 @@ class NiconiComments {
         }
         if (result.font === undefined && typeGuard.comment.font(command)) {
           result.font = command;
-        } else if (isKey(command)) {
+        } else if (typeGuard.comment.command.key(command)) {
           result[command] = true;
         }
       }
@@ -630,6 +670,10 @@ class NiconiComments {
     return result;
   }
 
+  /**
+   * コメントに含まれるニコスクリプトを処理する
+   * @param comment
+   */
   parseCommandAndNicoscript(
     comment: formattedComment
   ): formattedCommentWithFont {
@@ -839,10 +883,11 @@ class NiconiComments {
   /**
    * キャンバスを描画する
    * @param vpos - 動画の現在位置の100倍 ニコニコから吐き出されるコメントの位置情報は主にこれ
+   * @param forceRendering
    */
-  drawCanvas(vpos: number) {
+  drawCanvas(vpos: number, forceRendering: boolean = false) {
     const drawCanvasStart = performance.now();
-    if (this.lastVpos === vpos) return;
+    if (this.lastVpos === vpos && !forceRendering) return;
     this.lastVpos = vpos;
     this.fpsCount++;
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -908,196 +953,12 @@ class NiconiComments {
    * キャンバスを消去する
    */
   public clear() {
-    this.context.clearRect(0, 0, 1920, 1080);
+    this.context.clearRect(0, 0, canvasWidth, canvasHeight);
   }
 }
 
-/**
- * 配列をフォントとサイズでグループ化する
- * @param {{}} array
- * @returns {{}}
- */
-const groupBy = (array: formattedCommentWithFont[]): groupedComments => {
-  const data = (["defont", "gothic", "mincho"] as commentFont[]).reduce(
-    (pv, font) => {
-      pv[font] = {};
-      return pv;
-    },
-    {} as groupedComments
-  );
-  array.forEach((item, index) => {
-    const value = data[item.font][item.fontSize] || [];
-    value.push({ ...item, index });
-    if (value.length === 1) {
-      data[item.font][item.fontSize] = value;
-    }
-  });
-  return data;
-};
-/**
- *
- */
-const getPosY = (
-  currentPos: number,
-  targetComment: parsedComment,
-  collision: number[] | undefined,
-  data: parsedComment[]
-): { currentPos: number; isChanged: boolean; isBreak: boolean } => {
-  let isChanged = false,
-    isBreak = false;
-  if (!collision) return { currentPos, isChanged, isBreak };
-  for (const index of collision) {
-    const collisionItem = data[index];
-    if (!collisionItem) continue;
-    if (
-      currentPos < collisionItem.posY + collisionItem.height &&
-      currentPos + targetComment.height > collisionItem.posY &&
-      collisionItem.owner === targetComment.owner &&
-      collisionItem.layer === targetComment.layer
-    ) {
-      if (collisionItem.posY + collisionItem.height > currentPos) {
-        currentPos = collisionItem.posY + collisionItem.height;
-        isChanged = true;
-      }
-      if (currentPos + targetComment.height > 1080) {
-        if (1080 < targetComment.height) {
-          if (targetComment.mail.includes("naka")) {
-            currentPos = (targetComment.height - 1080) / -2;
-          } else {
-            currentPos = 0;
-          }
-        } else {
-          currentPos = Math.floor(
-            Math.random() * (1080 - targetComment.height)
-          );
-        }
-        isBreak = true;
-        break;
-      }
-    }
-  }
-  return { currentPos, isChanged, isBreak };
-};
-/**
- * フォント名とサイズをもとにcontextで使えるフォントを生成する
- * @param {string} font
- * @param {string|number} size
- * @param {boolean} useLegacy
- * @returns {string}
- */
-const parseFont = (
-  font: commentFont,
-  size: string | number,
-  useLegacy: boolean
-): string => {
-  switch (font) {
-    case "gothic":
-      return `normal 400 ${size}px "游ゴシック体", "游ゴシック", "Yu Gothic", YuGothic, yugothic, YuGo-Medium`;
-    case "mincho":
-      return `normal 400 ${size}px "游明朝体", "游明朝", "Yu Mincho", YuMincho, yumincho, YuMin-Medium`;
-    default:
-      if (useLegacy) {
-        return `normal 600 ${size}px Arial, "ＭＳ Ｐゴシック", "MS PGothic", MSPGothic, MS-PGothic`;
-      } else {
-        return `normal 600 ${size}px sans-serif, Arial, "ＭＳ Ｐゴシック", "MS PGothic", MSPGothic, MS-PGothic`;
-      }
-  }
-};
-/**
- * phpのarray_push的なあれ
- * @param array
- * @param {string|number} key
- * @param push
- */
-const arrayPush = (
-  array: { [key: number]: number[] },
-  key: string | number,
-  push: number
-) => {
-  if (!array) {
-    array = {};
-  }
-  if (!array[Number(key)]) {
-    array[Number(key)] = [];
-  }
-  array[Number(key)]?.push(push);
-};
-/**
- * Hexからrgbに変換する(_live用)
- * @param {string} hex
- * @return {array} RGB
- */
-const hex2rgb = (hex: string) => {
-  if (hex.slice(0, 1) === "#") hex = hex.slice(1);
-  if (hex.length === 3)
-    hex =
-      hex.slice(0, 1) +
-      hex.slice(0, 1) +
-      hex.slice(1, 2) +
-      hex.slice(1, 2) +
-      hex.slice(2, 3) +
-      hex.slice(2, 3);
-
-  return [hex.slice(0, 2), hex.slice(2, 4), hex.slice(4, 6)].map(function (
-    str
-  ) {
-    return parseInt(str, 16);
-  });
-};
-/**
- * replaceAll
- */
-const replaceAll = (string: string, target: string, replace: string) => {
-  while (string.indexOf(target) !== -1) {
-    string = string.replace(target, replace);
-  }
-  return string;
-};
-
 const logger = (msg: string) => {
   if (isDebug) console.debug(msg);
-};
-
-const changeCALayer = (rawData: formattedComment[]): formattedComment[] => {
-  const userList: { [key: number]: number } = {};
-  const data: formattedComment[] = [],
-    index: { [key: string]: formattedComment } = {};
-  for (const value of rawData) {
-    if (value.user_id === undefined || value.user_id === -1) continue;
-    if (userList[value.user_id] === undefined) userList[value.user_id] = 0;
-    if (
-      value.mail.indexOf("ca") > -1 ||
-      value.mail.indexOf("patissier") > -1 ||
-      value.mail.indexOf("ender") > -1 ||
-      value.mail.indexOf("full") > -1
-    ) {
-      userList[value.user_id] += 5;
-    }
-    if ((value.content.match(/\r\n|\n|\r/g) || []).length > 2) {
-      userList[value.user_id] +=
-        (value.content.match(/\r\n|\n|\r/g) || []).length / 2;
-    }
-    const key = `${value.content}@@${Array.from(new Set([...value.mail].sort()))
-        .filter((e) => !e.match(/@[\d.]+|184|device:.+|patissier|ca/))
-        .join("")}`,
-      lastComment = index[key];
-    if (lastComment !== undefined) {
-      if (
-        value.vpos - lastComment.vpos > 100 ||
-        Math.abs(value.date - lastComment.date) < 3600
-      ) {
-        data.push(value);
-        index[key] = value;
-      }
-    } else {
-      data.push(value);
-      index[key] = value;
-    }
-  }
-  for (const value of data) {
-    if (userList[value.user_id] || 0 >= 10) value.layer = value.user_id;
-  }
-  return data;
 };
 
 export default NiconiComments;

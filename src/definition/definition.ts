@@ -100,9 +100,9 @@ const defaultOptions: Options = {
  */
 const fpsInterval = 500;
 /**
- * キャッシュの保持期間(ms)
+ * キャッシュの追加保持期間(ms)
  */
-const cacheMaxAge = 5000;
+const cacheAge = 2000;
 /**
  * キャンバスの横幅
  */
@@ -152,7 +152,7 @@ export {
   doubleResizeMaxWidth,
   defaultOptions,
   fpsInterval,
-  cacheMaxAge,
+  cacheAge,
   canvasWidth,
   canvasHeight,
   commentDrawRange,

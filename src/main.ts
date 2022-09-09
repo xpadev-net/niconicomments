@@ -1,7 +1,7 @@
 import convert2formattedComment from "./inputParser";
 import typeGuard from "@/typeGuard";
 import {
-  cacheMaxAge,
+  cacheAge,
   canvasHeight,
   canvasWidth,
   collisionRange,
@@ -572,7 +572,7 @@ class NiconiComments {
           if (this.cacheIndex[cacheKey] === i) {
             delete this.cacheIndex[cacheKey];
           }
-        }, cacheMaxAge);
+        }, value.long * 10 + cacheAge);
         return;
       }
     }
@@ -598,7 +598,7 @@ class NiconiComments {
     const lines = value.content.split("\n");
     lines.forEach((line, index) => {
       const posY =
-        (Number(index) + 1) *
+        (index + 1) *
         (value.fontSize * value.lineHeight) *
         (1 + commentYPaddingTop);
       context.strokeText(line, 0, posY);
@@ -614,7 +614,7 @@ class NiconiComments {
       if (this.cacheIndex[cacheKey] === i) {
         delete this.cacheIndex[cacheKey];
       }
-    }, cacheMaxAge);
+    }, value.long * 10 + cacheAge);
   }
 
   /**

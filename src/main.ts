@@ -1,7 +1,10 @@
 import convert2formattedComment from "./inputParser";
 import typeGuard from "@/typeGuard";
 import {
+  cacheMaxAge,
+  canvasHeight,
   canvasWidth,
+  collisionRange,
   colors,
   commentYMarginBottom,
   commentYPaddingTop,
@@ -196,8 +199,8 @@ class NiconiComments {
           Math.round(
             -288 / ((1632 + comment.width_max) / (comment.long + 125))
           ) - 100;
-        if (1080 < comment.height) {
-          posY = (comment.height - 1080) / -2;
+        if (canvasHeight < comment.height) {
+          posY = (comment.height - canvasHeight) / -2;
         } else {
           let isBreak = false,
             isChanged = true,
@@ -208,7 +211,7 @@ class NiconiComments {
             for (let j = beforeVpos; j < comment.long; j++) {
               const vpos = comment.vpos + j;
               const left_pos = getPosX(comment.width_max, j, comment.long);
-              if (left_pos + comment.width_max >= 1880) {
+              if (left_pos + comment.width_max >= collisionRange.right) {
                 const result = getPosY(
                   posY,
                   comment,
@@ -220,7 +223,7 @@ class NiconiComments {
                 isBreak = result.isBreak;
                 if (isBreak) break;
               }
-              if (left_pos <= 40) {
+              if (left_pos <= collisionRange.left) {
                 const result = getPosY(
                   posY,
                   comment,
@@ -240,13 +243,12 @@ class NiconiComments {
         }
         for (let j = beforeVpos; j < comment.long + 125; j++) {
           const vpos = comment.vpos + j;
-          const left_pos =
-            1680 - ((1680 + comment.width_max) / (comment.long + 125)) * j;
+          const left_pos = getPosX(comment.width_max, j, comment.long);
           arrayPush(this.timeline, vpos, index);
-          if (left_pos + comment.width_max >= 1880) {
+          if (left_pos + comment.width_max >= collisionRange.right) {
             arrayPush(this.collision.right, vpos, index);
           }
-          if (left_pos <= 40) {
+          if (left_pos <= collisionRange.left) {
             arrayPush(this.collision.left, vpos, index);
           }
         }
@@ -493,7 +495,7 @@ class NiconiComments {
     for (const range of this.nicoScripts.ban) {
       if (range.start < vpos && vpos < range.end) return;
     }
-    let posX = (1920 - comment.width_max) / 2,
+    let posX = (canvasWidth - comment.width_max) / 2,
       posY = comment.posY;
     if (comment.loc === "naka") {
       if (reverse) {
@@ -504,8 +506,11 @@ class NiconiComments {
       } else {
         posX = getPosX(comment.width_max, vpos - comment.vpos, comment.long);
       }
+      if (posX > canvasWidth || posX + comment.width_max < 0) {
+        return;
+      }
     } else if (comment.loc === "shita") {
-      posY = 1080 - comment.posY - comment.height;
+      posY = canvasHeight - comment.posY - comment.height;
     }
     if (comment.image && comment.image !== true) {
       this.context.drawImage(comment.image, posX, posY);
@@ -561,7 +566,7 @@ class NiconiComments {
           if (this.cacheIndex[cacheKey] === i) {
             delete this.cacheIndex[cacheKey];
           }
-        }, 5000);
+        }, cacheMaxAge);
         return;
       }
     }
@@ -603,7 +608,7 @@ class NiconiComments {
       if (this.cacheIndex[cacheKey] === i) {
         delete this.cacheIndex[cacheKey];
       }
-    }, 5000);
+    }, cacheMaxAge);
   }
 
   /**
@@ -938,7 +943,7 @@ class NiconiComments {
    * キャンバスを消去する
    */
   public clear() {
-    this.context.clearRect(0, 0, 1920, 1080);
+    this.context.clearRect(0, 0, canvasWidth, canvasHeight);
   }
 }
 

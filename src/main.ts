@@ -211,7 +211,10 @@ class NiconiComments {
             for (let j = beforeVpos; j < comment.long + 125; j++) {
               const vpos = comment.vpos + j;
               const left_pos = getPosX(comment.width_max, j, comment.long);
-              if (left_pos + comment.width_max >= collisionRange.right) {
+              if (
+                left_pos + comment.width_max >= collisionRange.right &&
+                left_pos <= collisionRange.right
+              ) {
                 const result = getPosY(
                   posY,
                   comment,
@@ -223,7 +226,10 @@ class NiconiComments {
                 isBreak = result.isBreak;
                 if (isBreak) break;
               }
-              if (left_pos <= collisionRange.left) {
+              if (
+                left_pos + comment.width_max >= collisionRange.left &&
+                left_pos <= collisionRange.left
+              ) {
                 const result = getPosY(
                   posY,
                   comment,

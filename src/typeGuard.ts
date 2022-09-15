@@ -62,14 +62,7 @@ const typeGuard = {
     },
     apiChat: (i: unknown): i is apiChat =>
       typeof i === "object" &&
-      typeVerify(i as apiChat, [
-        "content",
-        "date",
-        "date_usec",
-        "no",
-        "thread",
-        "vpos",
-      ]),
+      typeVerify(i as apiChat, ["content", "date", "no", "thread", "vpos"]),
     apiGlobalNumRes: (i: unknown): i is apiGlobalNumRes =>
       typeVerify(i, ["num_res", "thread"]),
     apiLeaf: (i: unknown): i is apiLeaf => typeVerify(i, ["count", "thread"]),

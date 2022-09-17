@@ -3,7 +3,7 @@
   "version": "0.2.25",
   "description": "NiconiComments is a comment drawing library that is somewhat compatible with the official Nico Nico Douga player.",
   "main": "dist/bundle.js",
-  "types": "dist/dts/types.d.ts",
+  "types": "dist/bundle.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rollup -c rollup.config.js",

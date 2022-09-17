@@ -10,7 +10,7 @@
     "watch": "rollup -c rollup.config.js -w",
     "typedoc": "typedoc --entryPointStrategy Expand --out ./docs/type/ ./src/",
     "copy-dts": "npx copyfiles -u 2 src/@types/*.d.ts dist/dts",
-    "prepublishOnly": "npm run copy-dts&&npm run build",
+    "prepublishOnly": "npx rimraf dist&&npm run copy-dts&&npm run build&&node ./util/bundle-dts.js",
     "check-types": "npx tsc --noEmit --jsx react",
     "eslint": "eslint src/**/*.ts*",
     "eslint:fix": "eslint src/**/*.ts* --fix",
@@ -32,7 +32,7 @@
   },
   "files": [
     "dist/bundle.js",
-    "dist/dts/types.d.ts"
+    "dist/bundle.d.ts"
   ],
   "homepage": "https://xpadev.net/niconicomments/docs/",
   "license": "MIT",
@@ -52,6 +52,7 @@
     "husky": "^8.0.0",
     "lint-staged": "^13.0.3",
     "prettier": "2.7.1",
+    "rimraf": "^3.0.2",
     "rollup": "^2.77.2",
     "typedoc": "^0.23.10",
     "typedoc-plugin-missing-exports": "^0.23.0",

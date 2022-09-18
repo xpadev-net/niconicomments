@@ -40,6 +40,7 @@
                                             <li><a href="#p_format">format</a></li>
                                             <li><a href="#p_formatted">formatted</a></li>
                                             <li><a href="#p_keepCA">keepCA</a></li>
+                                            <li><a href="#p_mode">mode</a></li>
                                             <li><a href="#p_showCollision">showCollision</a></li>
                                             <li><a href="#p_showCommentCount">showCommentCount</a></li>
                                             <li><a href="#p_showFPS">showFPS</a></li>
@@ -125,8 +126,14 @@
                     <p>コメントデータを渡してください</p>
                     <p>対応フォーマットは<a href="#p_format">format</a>を確認してください</p>
                 </div>
-                <h4 id="p_options">options<span class="type">:<a href="./type/modules/_types_types.html#Options">InitOptions</a></span></h4>
+                <h4 id="p_options">options<span class="type">:<a href="./type/modules/_types_types.InitOptions.html">InitOptions</a></span></h4>
                 <div class="item">
+                    <h4 id="p_config">config<span class="type"><a href="./type/modules/_types_types.ConfigNullable.html">:ConfigNullable</a></span> = {}</h4>
+                    <div class="item">
+                        <p><span class="warn">このオプションは非推奨です。適当に変更を行うと描画が崩れる場合があります</span></p>
+                        <p>内部処理用のマジックナンバーを上書きすることができます</p>
+                        <p>各変数の詳細は<a href="https://github.com/xpadev-net/niconicomments/blob/develop/src/definition/config.ts">src/definition/config.ts</a>内のdefaultConfigのコメントを参照してください</p>
+                    </div>
                     <h4 id="p_debug">debug<span class="type">:boolean</span> = <span class="yellow">false</span></h4>
                     <div class="item">
                         <p>処理の所要時間をブラウザコンソールに出力します</p>
@@ -165,18 +172,18 @@
                             </tr>
                             <tr>
                                 <td>formatted</td>
-                                <td class="type"><a href="./type/modules/_types_types.html#formattedComment">formattedComment</a>[] |
-                                    <a href="./type/modules/_types_types.html#formattedLegacyComment">formattedLegacyComment</a>[]</td>
+                                <td class="type"><a href="./type/modules/_types_types.formattedComment.html">formattedComment</a>[] |
+                                    <a href="./type/modules/_types_types.formattedLegacyComment.html">formattedLegacyComment</a>[]</td>
                                 <td>user_idとlayerが含まれない場合はformattedLegacyCommentになります</td>
                             </tr>
                             <tr>
                                 <td>legacy</td>
-                                <td class="type"><a href="./type/modules/_types_types.html#rawApiResponse">rawApiResponse</a>[]</td>
-                                <td>legacy apiのレスポンスをそのまま渡してください</td>
+                                <td class="type"><a href="./type/modules/_types_types.rawApiResponse.html">rawApiResponse</a>[]</td>
+                                <td>legacy apiのレスポンスをJSON.parseしたものを渡してください</td>
                             </tr>
                             <tr>
                                 <td>owner</td>
-                                <td class="type"><a href="./type/modules/_types_types.html#ownerComment">ownerComment</a>[]</td>
+                                <td class="type"><a href="./type/modules/_types_types.ownerComment.html">ownerComment</a>[]</td>
                                 <td>投稿者コメント編集画面のエディータのjsonをそのまま渡してください</td>
                             </tr>
                             <tr>
@@ -186,7 +193,7 @@
                             </tr>
                             <tr>
                                 <td>v1</td>
-                                <td class="type"><a href="./type/modules/_types_types.html#v1Thread">v1Thread</a>[]</td>
+                                <td class="type"><a href="./type/modules/_types_types.v1Thread.html">v1Thread</a>[]</td>
                                 <td>v1 apiのdata以下threadsの内容を渡してください</td>
                             </tr>
                             </tbody>
@@ -204,6 +211,13 @@
                         <p>別のCAや関係ないコメントによってCA(主に積み絵)が崩壊するのを抑制します</p>
                         <p>デフォルト(<span class="yellow">false</span>)の場合は通常通り位置決定を行います</p>
                         <p><span class="yellow">true</span>の場合はCAを投稿していると推定されるユーザーのレイヤーを分けて位置決定をおこないます</p>
+                    </div>
+                    <h4 id="p_mode">mode<span class="type"><a href="./type/modules/_types_types.mode.html">:modeType</a></span> = <span class="green">"default"</span></h4>
+                    <div class="item">
+                        <p>処理モードを指定します</p>
+                        <p>デフォルト(<span class="green">"default"</span>)の場合はなんとなくCAを再現します</p>
+                        <p><span class="green">"html5"</span>の場合は、現行のhtml5プレイヤーに近い動作をします</p>
+                        <p><span class="green">"flash"</span>の場合は、Saccubus/ZenzaWatchなどflash時代の互換プレイヤーに近い動作をします</p>
                     </div>
                     <h4 id="p_showCollision">showCollision<span class="type">:boolean</span> = <span class="yellow">false</span></h4>
                     <div class="item">
@@ -227,7 +241,8 @@
                         <p><span class="yellow">true</span>の場合は、過去0.5秒間のデータをもとにFPSを計算し、描画します</p>
                     </div>
                     <h4 id="p_useLegacy">useLegacy<span class="type">:boolean</span> = <span class="yellow">false</span></h4>
-                    <div class="item">
+                    <div class="item deprecated">
+                        <p><span class="warn">このオプションは非推奨です。<a href="#p_mode">mode</a>オプションを使用してください</span></p>
                         <p>公式プレイヤー互換モードを有効にするか指定します</p>
                         <p>デフォルト(<span class="yellow">false</span>)の場合はsans-serifを使用します</p>
                         <p>この場合、windows環境において、macOSに近い表示になります</p>

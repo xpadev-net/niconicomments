@@ -399,24 +399,13 @@
         const canvas = document.getElementById("canvas");
         const req = await fetch(`./commentdata/${video}.json`);
         const res = await req.json();
-        if (nico instanceof NiconiComments) {
-            nico.useLegacy = useLegacy;
-            nico.keepCA = keepCA;
-            nico.timeline = {};
-            nico.nicoScripts = { reverse: [], default: [], replace: [], ban: [] };
-            nico.collision.right = {};
-            nico.collision.left = {};
-            nico.collision.ue = {};
-            nico.collision.shita = {};
-            nico.preRendering(res, drawAllImageOnLoad);
-        } else {
-            nico = new NiconiComments(canvas, res, {
-                useLegacy: useLegacy,
-                keepCA: keepCA,
-                format:"formatted",
-                drawAllImageOnLoad: drawAllImageOnLoad,
-            });
-        }
+
+        nico = new NiconiComments(canvas, res, {
+            useLegacy: useLegacy,
+            keepCA: keepCA,
+            format:"formatted",
+            drawAllImageOnLoad: drawAllImageOnLoad,
+        });
         const background = getById(videos, video).bg;
         if (background) {
             document.getElementById("background").style.background = background;

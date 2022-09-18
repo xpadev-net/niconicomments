@@ -6,7 +6,9 @@ type inputFormatType =
   | "owner"
   | "v1"
   | "default";
+type modeType = "default" | "html5" | "flash";
 type InitOptions = {
+  mode?: modeType;
   useLegacy?: boolean;
   formatted?: boolean;
   format?: inputFormatType;
@@ -18,8 +20,10 @@ type InitOptions = {
   debug?: boolean;
   enableLegacyPiP?: boolean;
   keepCA?: boolean;
+  config?: ConfigNullable;
 };
 type Options = {
+  mode: modeType;
   useLegacy: boolean;
   formatted: boolean;
   format: inputFormatType;
@@ -31,6 +35,7 @@ type Options = {
   debug: boolean;
   enableLegacyPiP: boolean;
   keepCA: boolean;
+  config: ConfigNullable;
 };
 type rawApiResponse = {
   [key: string]: apiPing | apiThread | apiLeaf | apiGlobalNumRes | apiChat;
@@ -194,8 +199,9 @@ type typeFontSize = {
 };
 type typeDoubleResizeMaxWidth = {
   [key in "full" | "normal"]: {
-    legacy: number;
+    html5: number;
     default: number;
+    flash: number;
   };
 };
 type v1Thread = {
@@ -224,3 +230,76 @@ type ownerComment = {
   command: string;
   comment: string;
 };
+type Config = {
+  colors: { [key: string]: string };
+  commentYPaddingTop: number;
+  commentYMarginBottom: number;
+  fontSize: typeFontSize;
+  lineHeight: typeFontSize;
+  doubleResizeMaxWidth: typeDoubleResizeMaxWidth;
+  contextStrokeColor: string;
+  contextStrokeInversionColor: string;
+  contextStrokeOpacity: number;
+  contextFillLiveOpacity: number;
+  contextLineWidth: number;
+  fpsInterval: number;
+  cacheAge: number;
+  canvasWidth: number;
+  canvasHeight: number;
+  commentDrawRange: number;
+  commentDrawPadding: number;
+  collisionWidth: number;
+  collisionRange: { [key in "left" | "right"]: number };
+  sameCARange: number;
+  sameCAGap: number;
+  sameCAMinScore: number;
+};
+
+type ConfigNullable = {
+  colors?: { [key: string]: string };
+  commentYPaddingTop?: number;
+  commentYMarginBottom?: number;
+  fontSize?: typeFontSize;
+  lineHeight?: typeFontSize;
+  doubleResizeMaxWidth?: typeDoubleResizeMaxWidth;
+  fpsInterval?: number;
+  cacheAge?: number;
+  canvasWidth?: number;
+  canvasHeight?: number;
+  commentDrawRange?: number;
+  commentDrawPadding?: number;
+  collisionWidth?: number;
+  collisionRange?: { [key in "left" | "right"]: number };
+  sameCARange?: number;
+  sameCAGap?: number;
+  sameCAMinScore?: number;
+};
+
+type ConfigKeys =
+  | "colors"
+  | "commentYPaddingTop"
+  | "commentYMarginBottom"
+  | "fontSize"
+  | "lineHeight"
+  | "doubleResizeMaxWidth"
+  | "fpsInterval"
+  | "cacheAge"
+  | "canvasWidth"
+  | "canvasHeight"
+  | "commentDrawRange"
+  | "commentDrawPadding"
+  | "collisionWidth"
+  | "collisionRange"
+  | "sameCARange"
+  | "sameCAGap"
+  | "sameCAMinScore";
+
+type T_Type =
+  | "string"
+  | "number"
+  | "bigint"
+  | "boolean"
+  | "symbol"
+  | "undefined"
+  | "object"
+  | "function";

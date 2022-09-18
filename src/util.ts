@@ -1,11 +1,4 @@
-import {
-  canvasHeight,
-  commentDrawPadding,
-  commentDrawRange,
-  sameCAGap,
-  sameCAMinScore,
-  sameCARange,
-} from "@/definition/definition";
+import { config } from "@/definition/config";
 
 /**
  * 配列をフォントとサイズでグループ化する
@@ -54,16 +47,16 @@ const getPosY = (
         currentPos = collisionItem.posY + collisionItem.height;
         isChanged = true;
       }
-      if (currentPos + targetComment.height > canvasHeight) {
-        if (canvasHeight < targetComment.height) {
+      if (currentPos + targetComment.height > config.canvasHeight) {
+        if (config.canvasHeight < targetComment.height) {
           if (targetComment.mail.includes("naka")) {
-            currentPos = (targetComment.height - canvasHeight) / -2;
+            currentPos = (targetComment.height - config.canvasHeight) / -2;
           } else {
             currentPos = 0;
           }
         } else {
           currentPos = Math.floor(
-            Math.random() * (canvasHeight - targetComment.height)
+            Math.random() * (config.canvasHeight - targetComment.height)
           );
         }
         isBreak = true;
@@ -75,22 +68,23 @@ const getPosY = (
 };
 const getPosX = (width: number, vpos: number, long: number): number => {
   return (
-    commentDrawRange -
-    ((((width + commentDrawRange) * ((vpos + 100) / 100)) / 4) * 300) / long +
-    commentDrawPadding
+    config.commentDrawRange -
+    ((((width + config.commentDrawRange) * ((vpos + 100) / 100)) / 4) * 300) /
+      long +
+    config.commentDrawPadding
   );
 };
 /**
  * フォント名とサイズをもとにcontextで使えるフォントを生成する
  * @param {string} font
  * @param {string|number} size
- * @param {boolean} useLegacy
+ * @param {modeType} mode
  * @returns {string}
  */
 const parseFont = (
   font: commentFont,
   size: string | number,
-  useLegacy: boolean
+  mode: modeType = "default"
 ): string => {
   switch (font) {
     case "gothic":
@@ -98,7 +92,7 @@ const parseFont = (
     case "mincho":
       return `normal 400 ${size}px "游明朝体", "游明朝", "Yu Mincho", YuMincho, yumincho, YuMin-Medium`;
     default:
-      if (useLegacy) {
+      if (mode === "html5") {
         return `normal 600 ${size}px Arial, "ＭＳ Ｐゴシック", "MS PGothic", MSPGothic, MS-PGothic`;
       } else {
         return `normal 600 ${size}px sans-serif, Arial, "ＭＳ Ｐゴシック", "MS PGothic", MSPGothic, MS-PGothic`;
@@ -184,8 +178,8 @@ const changeCALayer = (rawData: formattedComment[]): formattedComment[] => {
       lastComment = index[key];
     if (lastComment !== undefined) {
       if (
-        value.vpos - lastComment.vpos > sameCAGap ||
-        Math.abs(value.date - lastComment.date) < sameCARange
+        value.vpos - lastComment.vpos > config.sameCAGap ||
+        Math.abs(value.date - lastComment.date) < config.sameCARange
       ) {
         data.push(value);
         index[key] = value;
@@ -196,7 +190,7 @@ const changeCALayer = (rawData: formattedComment[]): formattedComment[] => {
     }
   }
   for (const value of data) {
-    if (userList[value.user_id] || 0 >= sameCAMinScore)
+    if (userList[value.user_id] || 0 >= config.sameCAMinScore)
       value.layer = value.user_id;
   }
   return data;

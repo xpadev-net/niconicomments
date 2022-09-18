@@ -1,7 +1,7 @@
 const typeGuard = {
   formatted: {
     comment: (i: unknown): i is formattedComment =>
-      typeVerify(i, [
+      objectVerify(i, [
         "id",
         "vpos",
         "content",
@@ -21,7 +21,7 @@ const typeGuard = {
       return true;
     },
     legacyComment: (i: unknown): i is formattedLegacyComment =>
-      typeVerify(i, [
+      objectVerify(i, [
         "id",
         "vpos",
         "content",
@@ -62,13 +62,13 @@ const typeGuard = {
     },
     apiChat: (i: unknown): i is apiChat =>
       typeof i === "object" &&
-      typeVerify(i as apiChat, ["content", "date", "no", "thread", "vpos"]),
+      objectVerify(i as apiChat, ["content", "date", "no", "thread", "vpos"]),
     apiGlobalNumRes: (i: unknown): i is apiGlobalNumRes =>
-      typeVerify(i, ["num_res", "thread"]),
-    apiLeaf: (i: unknown): i is apiLeaf => typeVerify(i, ["count", "thread"]),
-    apiPing: (i: unknown): i is apiPing => typeVerify(i, ["content"]),
+      objectVerify(i, ["num_res", "thread"]),
+    apiLeaf: (i: unknown): i is apiLeaf => objectVerify(i, ["count", "thread"]),
+    apiPing: (i: unknown): i is apiPing => objectVerify(i, ["content"]),
     apiThread: (i: unknown): i is apiThread =>
-      typeVerify(i, [
+      objectVerify(i, [
         "resultcode",
         "revision",
         "server_time",
@@ -140,7 +140,7 @@ const typeGuard = {
   },
   owner: {
     comment: (i: unknown): i is ownerComment =>
-      typeVerify(i, ["time", "command", "comment"]),
+      objectVerify(i, ["time", "command", "comment"]),
     comments: (i: unknown): i is ownerComment[] => {
       if (typeof i !== "object") return false;
       for (const item of i as ownerComment[]) {
@@ -151,7 +151,7 @@ const typeGuard = {
   },
   v1: {
     comment: (i: unknown): i is apiThread =>
-      typeVerify(i, [
+      objectVerify(i, [
         "id",
         "no",
         "vposMs",
@@ -167,7 +167,7 @@ const typeGuard = {
         "isMyPost",
       ]),
     thread: (i: unknown): i is v1Thread => {
-      if (!typeVerify(i, ["id", "fork", "commentCount", "comments"]))
+      if (!objectVerify(i, ["id", "fork", "commentCount", "comments"]))
         return false;
       for (const item of Object.keys((i as v1Thread).comments)) {
         if (!typeGuard.v1.comment((i as v1Thread).comments[item])) return false;
@@ -210,8 +210,148 @@ const typeGuard = {
         typeof i === "string" && !!i.match(/^(?:full|ender|_live|invisible)$/),
     },
   },
+
+  config: {
+    initOptions: (item: unknown): item is InitOptions => {
+      if (typeof item !== "object" || !item) return false;
+      const keys: { [key: string]: Function } = {
+        useLegacy: isBoolean,
+        formatted: isBoolean,
+        showCollision: isBoolean,
+        showFPS: isBoolean,
+        showCommentCount: isBoolean,
+        drawAllImageOnLoad: isBoolean,
+        debug: isBoolean,
+        enableLegacyPiP: isBoolean,
+        keepCA: isBoolean,
+        config: typeGuard.config.config,
+        format: (i: unknown) =>
+          typeof i === "string" &&
+          i.match(
+            /^(niconicome|formatted|legacy|legacyOwner|owner|v1|default)$/
+          ),
+        video: (i: unknown) =>
+          typeof i === "object" && (i as HTMLVideoElement).nodeName === "VIDEO",
+      };
+      for (const key in keys) {
+        if (
+          (item as { [key: string]: unknown })[key] !== undefined &&
+          !(keys[key] as Function)((item as { [key: string]: unknown })[key])
+        ) {
+          console.warn(
+            `[Incorrect input] var: initOptions, key: ${key}, value: ${
+              (item as { [key: string]: unknown })[key]
+            }`
+          );
+          return false;
+        }
+      }
+      return true;
+    },
+    config: (item: unknown): item is ConfigNullable => {
+      if (!isStringKeyObject(item)) return false;
+      const isFontSize = (i: unknown) => {
+        if (!isStringKeyObject(i)) return false;
+        type fontSize = { [key: string]: { default: number; resized: number } };
+        return (
+          Object.keys(i).reduce(
+            (pv, cv) =>
+              pv +
+              Number(
+                !cv.match(/^(ue|shita|naka)$/) ||
+                  typeof i[cv] !== "object" ||
+                  !(i as fontSize)[cv]?.default ||
+                  !(i as fontSize)[cv]?.resized
+              ),
+            0
+          ) === 0
+        );
+      };
+      const isDoubleResizeMaxWidth = (i: unknown) => {
+        if (!isStringKeyObject(i)) return false;
+        type doubleResizeMaxWidth = {
+          [key: string]: { default: number; html5: number; flash: number };
+        };
+        return (
+          typeof i === "object" &&
+          Object.keys(i).reduce(
+            (pv, cv) =>
+              pv +
+              Number(
+                !cv.match(/^(full|normal)$/) ||
+                  typeof (i as { [key: string]: unknown })[cv] !== "object" ||
+                  !(i as doubleResizeMaxWidth)[cv]?.default ||
+                  !(i as doubleResizeMaxWidth)[cv]?.html5 ||
+                  !(i as doubleResizeMaxWidth)[cv]?.flash
+              ),
+            0
+          ) === 0
+        );
+      };
+      const keys: { [key: string]: Function } = {
+        commentYPaddingTop: isNumber,
+        commentYMarginBottom: isNumber,
+        fpsInterval: isNumber,
+        cacheAge: isNumber,
+        canvasWidth: isNumber,
+        canvasHeight: isNumber,
+        commentDrawRange: isNumber,
+        commentDrawPadding: isNumber,
+        collisionWidth: isNumber,
+        sameCARange: isNumber,
+        sameCAGap: isNumber,
+        sameCAMinScore: isNumber,
+        colors: (i: unknown) =>
+          typeof i === "object" &&
+          Object.keys(i as { [key: string]: unknown }).reduce(
+            (pv, cv) =>
+              pv +
+              Number(typeof (i as { [key: string]: unknown })[cv] !== "string"),
+            0
+          ) === 0,
+        fontSize: isFontSize,
+        lineHeight: isFontSize,
+        doubleResizeMaxWidth: isDoubleResizeMaxWidth,
+        collisionRange: (i: unknown) =>
+          typeof i === "object" &&
+          Object.keys(i as { [key: string]: number }).reduce(
+            (pv, cv) =>
+              pv +
+              Number(
+                !cv.match(/^(left|right)$/) ||
+                  typeof (i as { [key: string]: unknown })[cv] !== "number"
+              ),
+            0
+          ) === 0,
+      };
+      for (const key in item) {
+        if (
+          (item as { [key: string]: unknown })[key] !== undefined &&
+          !(keys[key] as Function)((item as { [key: string]: unknown })[key])
+        ) {
+          console.warn(
+            `[Incorrect input] var: initOptions, key: ${key}, value: ${
+              (item as { [key: string]: unknown })[key]
+            }`
+          );
+          return false;
+        }
+      }
+      return true;
+    },
+    configKey: (item: unknown): item is ConfigKeys =>
+      typeof item === "string" &&
+      !!item.match(
+        /^(colors|commentYPaddingTop|commentYMarginBottom|fontSize|lineHeight|doubleResizeMaxWidth|fpsInterval|cacheAge|canvasWidth|canvasHeight|commentDrawRange|commentDrawPadding|collisionWidth|collisionRange|sameCARange|sameCAGap|sameCAMinScore)$/
+      ),
+  },
 };
-const typeVerify = (item: unknown, keys: string[]): boolean => {
+const isBoolean = (i: unknown): i is boolean => typeof i === "boolean";
+const isNumber = (i: unknown): i is number => typeof i === "number";
+const isStringKeyObject = (i: unknown): i is { [key: string]: unknown } =>
+  typeof i === "object";
+
+const objectVerify = (item: unknown, keys: string[]): boolean => {
   if (typeof item !== "object" || !item) return false;
   for (const key of keys) {
     if (!Object.prototype.hasOwnProperty.call(item, key)) return false;

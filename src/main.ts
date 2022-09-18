@@ -187,7 +187,6 @@ class NiconiComments {
             measure.width *= options.scale;
             measure.width_max *= options.scale;
             measure.width_min *= options.scale;
-            //measure.lineHeight *= options.scale;
             measure.fontSize *= options.scale;
           }
           size.height = measure.height;

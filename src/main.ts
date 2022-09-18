@@ -35,7 +35,6 @@ class NiconiComments {
   private readonly canvas: HTMLCanvasElement;
   private readonly collision: collision;
   private readonly context: CanvasRenderingContext2D;
-  private readonly keepCA: boolean;
   private readonly nicoScripts: nicoScript;
   private readonly timeline: { [key: number]: number[] };
   private readonly mode: modeType;
@@ -104,8 +103,6 @@ class NiconiComments {
     this.showFPS = options.showFPS;
     this.showCommentCount = options.showCommentCount;
     this.enableLegacyPiP = options.enableLegacyPiP;
-    this.keepCA = options.keepCA;
-    console.log(this.keepCA);
 
     this.cacheIndex = {};
     this.timeline = {};
@@ -137,7 +134,7 @@ class NiconiComments {
    */
   preRendering(rawData: formattedComment[], drawAll: boolean) {
     const preRenderingStart = performance.now();
-    if (this.keepCA) {
+    if (options.keepCA) {
       rawData = changeCALayer(rawData);
     }
     const parsedData: parsedComment[] = this.getCommentPos(
@@ -185,13 +182,21 @@ class NiconiComments {
           }
           const measure = this.measureText(comment);
           const size = parsedData[comment.index] as formattedCommentWithSize;
+          if (options.scale !== 1 && size.layer === -1) {
+            measure.height *= options.scale;
+            measure.width *= options.scale;
+            measure.width_max *= options.scale;
+            measure.width_min *= options.scale;
+            //measure.lineHeight *= options.scale;
+            measure.fontSize *= options.scale;
+          }
           size.height = measure.height;
           size.width = measure.width;
           size.width_max = measure.width_max;
           size.width_min = measure.width_min;
           size.lineHeight = measure.lineHeight;
+          size.fontSize = measure.fontSize;
           if (measure.resized) {
-            size.fontSize = measure.fontSize;
             this.context.font = parseFont(font, fontSize, this.mode);
           }
           result[comment.index] = size;

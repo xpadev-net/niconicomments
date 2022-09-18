@@ -160,19 +160,20 @@ const defaultConfig: Config = {
  * 既定の設定
  */
 const defaultOptions: Options = {
-  mode: "default",
+  config: {},
+  debug: false,
   drawAllImageOnLoad: false,
+  enableLegacyPiP: false,
   format: "default",
   formatted: false,
-  debug: false,
-  enableLegacyPiP: false,
   keepCA: false,
+  mode: "default",
+  scale: 1,
   showCollision: false,
   showCommentCount: false,
   showFPS: false,
   useLegacy: false,
   video: undefined,
-  config: {},
 };
 
 let config: Config;

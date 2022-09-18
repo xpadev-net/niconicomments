@@ -224,6 +224,7 @@ const typeGuard = {
         debug: isBoolean,
         enableLegacyPiP: isBoolean,
         keepCA: isBoolean,
+        scale: isNumber,
         config: typeGuard.config.config,
         format: (i: unknown) =>
           typeof i === "string" &&
@@ -234,7 +235,6 @@ const typeGuard = {
           typeof i === "object" && (i as HTMLVideoElement).nodeName === "VIDEO",
       };
       for (const key in keys) {
-        console.log(keys[key]);
         if (
           (item as { [key: string]: unknown })[key] !== undefined &&
           !(keys[key] as (i: unknown) => boolean)(
@@ -333,7 +333,6 @@ const typeGuard = {
           ) === 0,
       };
       for (const key in item) {
-        console.log(key, item, keys);
         if (
           (item as { [key: string]: unknown })[key] !== undefined &&
           !(keys[key] as (i: unknown) => boolean)(

@@ -405,8 +405,8 @@ class NiconiComments {
       width_arr.push(measure.width);
     }
     const width = width_arr.reduce((p, c) => p + c, 0) / width_arr.length;
-    let width_max = Math.max(...width_arr),
-      width_min = Math.min(...width_arr),
+    let width_max = Math.max(...width_arr);
+    const width_min = Math.min(...width_arr),
       height =
         comment.fontSize *
           comment.lineHeight *
@@ -893,7 +893,7 @@ class NiconiComments {
    * @param vpos - 動画の現在位置の100倍 ニコニコから吐き出されるコメントの位置情報は主にこれ
    * @param forceRendering
    */
-  drawCanvas(vpos: number, forceRendering: boolean = false) {
+  drawCanvas(vpos: number, forceRendering = false) {
     const drawCanvasStart = performance.now();
     if (this.lastVpos === vpos && !forceRendering) return;
     this.lastVpos = vpos;

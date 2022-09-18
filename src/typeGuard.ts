@@ -214,7 +214,7 @@ const typeGuard = {
   config: {
     initOptions: (item: unknown): item is InitOptions => {
       if (typeof item !== "object" || !item) return false;
-      const keys: { [key: string]: Function } = {
+      const keys: { [key: string]: (i: unknown) => boolean } = {
         useLegacy: isBoolean,
         formatted: isBoolean,
         showCollision: isBoolean,
@@ -227,16 +227,19 @@ const typeGuard = {
         config: typeGuard.config.config,
         format: (i: unknown) =>
           typeof i === "string" &&
-          i.match(
+          !!i.match(
             /^(niconicome|formatted|legacy|legacyOwner|owner|v1|default)$/
           ),
         video: (i: unknown) =>
           typeof i === "object" && (i as HTMLVideoElement).nodeName === "VIDEO",
       };
       for (const key in keys) {
+        console.log(keys[key]);
         if (
           (item as { [key: string]: unknown })[key] !== undefined &&
-          !(keys[key] as Function)((item as { [key: string]: unknown })[key])
+          !(keys[key] as (i: unknown) => boolean)(
+            (item as { [key: string]: unknown })[key]
+          )
         ) {
           console.warn(
             `[Incorrect input] var: initOptions, key: ${key}, value: ${
@@ -288,7 +291,7 @@ const typeGuard = {
           ) === 0
         );
       };
-      const keys: { [key: string]: Function } = {
+      const keys: { [key: string]: (i: unknown) => boolean } = {
         commentYPaddingTop: isNumber,
         commentYMarginBottom: isNumber,
         fpsInterval: isNumber,
@@ -301,6 +304,11 @@ const typeGuard = {
         sameCARange: isNumber,
         sameCAGap: isNumber,
         sameCAMinScore: isNumber,
+        contextStrokeOpacity: isNumber,
+        contextFillLiveOpacity: isNumber,
+        contextLineWidth: isNumber,
+        contextStrokeColor: isString,
+        contextStrokeInversionColor: isString,
         colors: (i: unknown) =>
           typeof i === "object" &&
           Object.keys(i as { [key: string]: unknown }).reduce(
@@ -325,9 +333,12 @@ const typeGuard = {
           ) === 0,
       };
       for (const key in item) {
+        console.log(key, item, keys);
         if (
           (item as { [key: string]: unknown })[key] !== undefined &&
-          !(keys[key] as Function)((item as { [key: string]: unknown })[key])
+          !(keys[key] as (i: unknown) => boolean)(
+            (item as { [key: string]: unknown })[key]
+          )
         ) {
           console.warn(
             `[Incorrect input] var: initOptions, key: ${key}, value: ${
@@ -348,6 +359,7 @@ const typeGuard = {
 };
 const isBoolean = (i: unknown): i is boolean => typeof i === "boolean";
 const isNumber = (i: unknown): i is number => typeof i === "number";
+const isString = (i: unknown): i is string => typeof i === "string";
 const isStringKeyObject = (i: unknown): i is { [key: string]: unknown } =>
   typeof i === "object";
 

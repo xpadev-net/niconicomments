@@ -140,18 +140,20 @@ const fromLegacy = (data: rawApiResponse[]): formattedComment[] => {
  * @return {formattedComment[]}
  */
 const fromLegacyOwner = (data: string): formattedComment[] => {
-  let data_: formattedComment[] = [],
+  const data_: formattedComment[] = [],
     comments = data.split("\n");
   for (let i = 0; i < comments.length; i++) {
-    let commentData = comments[i]!.split(":");
+    const value = comments[i];
+    if (!value) continue;
+    const commentData = value.split(":");
     if (commentData.length < 3) {
       continue;
     } else if (commentData.length > 3) {
       for (let j = 3; j < commentData.length; j++) {
-        commentData[2] += ":" + commentData[j];
+        commentData[2] += `:${commentData[j]}`;
       }
     }
-    let tmpParam: formattedComment = {
+    const tmpParam: formattedComment = {
       id: i,
       vpos: Number(commentData[0]),
       content: commentData[2] || "",

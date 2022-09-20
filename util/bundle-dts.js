@@ -17,5 +17,5 @@ const processDir = (dir = "./dist/") => {
 
 processDir();
 
-fs.writeFileSync("./dist/bundle.d.ts",output.join("\n").replace(/export (default|\{).+;/g,"")+"\nexport default NiconiComments;");
+fs.writeFileSync("./dist/bundle.d.ts",output.join("\n").replace(/export (default|\{).+;/g,"").replace(/\/\/# sourceMappingURL=.+\.d\.ts\.map/g,"")+"\nexport default NiconiComments;");
 

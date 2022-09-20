@@ -1,19 +1,13 @@
 import convert2formattedComment from "./inputParser";
 import typeGuard from "@/typeGuard";
 import {
-  cacheAge,
-  canvasHeight,
-  canvasWidth,
-  collisionRange,
-  colors,
-  commentYMarginBottom,
-  commentYPaddingTop,
+  defaultConfig,
   defaultOptions,
-  doubleResizeMaxWidth,
-  fontSize,
-  fpsInterval,
-  lineHeight,
-} from "@/definition/definition";
+  config,
+  options,
+  setConfig,
+  setOptions,
+} from "@/definition/config";
 import {
   arrayPush,
   changeCALayer,
@@ -41,10 +35,9 @@ class NiconiComments {
   private readonly canvas: HTMLCanvasElement;
   private readonly collision: collision;
   private readonly context: CanvasRenderingContext2D;
-  private readonly keepCA: boolean;
   private readonly nicoScripts: nicoScript;
   private readonly timeline: { [key: number]: number[] };
-  private readonly useLegacy: boolean;
+  private readonly mode: modeType;
 
   /**
    * NiconiComments Constructor
@@ -57,28 +50,51 @@ class NiconiComments {
     data: (rawApiResponse | formattedComment)[],
     initOptions: InitOptions = {}
   ) {
-    const options: Options = Object.assign(defaultOptions, initOptions);
-    isDebug = options.debug;
     const constructorStart = performance.now();
+    if (!typeGuard.config.initOptions(initOptions))
+      throw new Error(
+        "Please see document: https://xpadev-net.github.io/niconicomments/#p_options"
+      );
+    setOptions(Object.assign(defaultOptions, initOptions));
+    if (!typeGuard.config.config(options.config)) {
+      console.warn(options.config);
+      throw new Error(
+        "Please see document: https://xpadev-net.github.io/niconicomments/#p_config"
+      );
+    }
+    setConfig(Object.assign(defaultConfig, options.config));
+    isDebug = options.debug;
 
     this.canvas = canvas;
     const context = canvas.getContext("2d");
     if (!context) throw new Error("Fail to get CanvasRenderingContext2D");
     this.context = context;
-    this.context.strokeStyle = "rgba(0,0,0,0.7)";
+    this.context.strokeStyle = `rgba(${hex2rgb(config.contextStrokeColor).join(
+      ","
+    )},${config.contextStrokeOpacity})`;
     this.context.textAlign = "start";
     this.context.textBaseline = "alphabetic";
-    this.context.lineWidth = 4;
-    let formatType = options.format;
+    this.context.lineWidth = config.contextLineWidth;
+    let formatType = options.format,
+      mode = options.mode;
 
     //Deprecated Warning
     if (options.formatted) {
       console.warn(
-        "Deprecated: options.formatted is no longer recommended. Please use options.format"
+        "Deprecated: options.formatted is no longer recommended. Please use options.format. https://xpadev-net.github.io/niconicomments/#p_format"
       );
     }
     if (formatType === "default") {
       formatType = options.formatted ? "formatted" : "legacy";
+    }
+
+    if (options.useLegacy) {
+      console.warn(
+        "Deprecated: options.useLegacy is no longer recommended. Please use options.mode. https://xpadev-net.github.io/niconicomments/#p_mode"
+      );
+    }
+    if (mode === "default" && options.useLegacy) {
+      mode = "html5";
     }
 
     const parsedData = convert2formattedComment(data, formatType);
@@ -87,7 +103,6 @@ class NiconiComments {
     this.showFPS = options.showFPS;
     this.showCommentCount = options.showCommentCount;
     this.enableLegacyPiP = options.enableLegacyPiP;
-    this.keepCA = options.keepCA;
 
     this.cacheIndex = {};
     this.timeline = {};
@@ -100,14 +115,14 @@ class NiconiComments {
     }, {} as collision);
     this.data = [];
     this.lastVpos = -1;
-    this.useLegacy = options.useLegacy;
+    this.mode = mode;
     this.preRendering(parsedData, options.drawAllImageOnLoad);
     this.fpsCount = 0;
     this.fps = 0;
     window.setInterval(() => {
-      this.fps = this.fpsCount * (1000 / fpsInterval);
+      this.fps = this.fpsCount * (1000 / config.fpsInterval);
       this.fpsCount = 0;
-    }, fpsInterval);
+    }, config.fpsInterval);
     logger(`constructor complete: ${performance.now() - constructorStart}ms`);
   }
 
@@ -119,7 +134,7 @@ class NiconiComments {
    */
   preRendering(rawData: formattedComment[], drawAll: boolean) {
     const preRenderingStart = performance.now();
-    if (this.keepCA) {
+    if (options.keepCA) {
       rawData = changeCALayer(rawData);
     }
     const parsedData: parsedComment[] = this.getCommentPos(
@@ -160,21 +175,28 @@ class NiconiComments {
       for (const fontSize of Object.keys(groupedData[font])) {
         const value = groupedData[font][fontSize];
         if (!value) continue;
-        this.context.font = parseFont(font, fontSize, this.useLegacy);
+        this.context.font = parseFont(font, fontSize, this.mode);
         for (const comment of value) {
           if (comment.invisible) {
             continue;
           }
           const measure = this.measureText(comment);
           const size = parsedData[comment.index] as formattedCommentWithSize;
+          if (options.scale !== 1 && size.layer === -1) {
+            measure.height *= options.scale;
+            measure.width *= options.scale;
+            measure.width_max *= options.scale;
+            measure.width_min *= options.scale;
+            measure.fontSize *= options.scale;
+          }
           size.height = measure.height;
           size.width = measure.width;
           size.width_max = measure.width_max;
           size.width_min = measure.width_min;
           size.lineHeight = measure.lineHeight;
+          size.fontSize = measure.fontSize;
           if (measure.resized) {
-            size.fontSize = measure.fontSize;
-            this.context.font = parseFont(font, fontSize, this.useLegacy);
+            this.context.font = parseFont(font, fontSize, this.mode);
           }
           result[comment.index] = size;
         }
@@ -199,8 +221,8 @@ class NiconiComments {
           Math.round(
             -288 / ((1632 + comment.width_max) / (comment.long + 125))
           ) - 100;
-        if (canvasHeight < comment.height) {
-          posY = (comment.height - canvasHeight) / -2;
+        if (config.canvasHeight < comment.height) {
+          posY = (comment.height - config.canvasHeight) / -2;
         } else {
           let isBreak = false,
             isChanged = true,
@@ -212,8 +234,8 @@ class NiconiComments {
               const vpos = comment.vpos + j;
               const left_pos = getPosX(comment.width_max, j, comment.long);
               if (
-                left_pos + comment.width_max >= collisionRange.right &&
-                left_pos <= collisionRange.right
+                left_pos + comment.width_max >= config.collisionRange.right &&
+                left_pos <= config.collisionRange.right
               ) {
                 const result = getPosY(
                   posY,
@@ -227,8 +249,8 @@ class NiconiComments {
                 if (isBreak) break;
               }
               if (
-                left_pos + comment.width_max >= collisionRange.left &&
-                left_pos <= collisionRange.left
+                left_pos + comment.width_max >= config.collisionRange.left &&
+                left_pos <= config.collisionRange.left
               ) {
                 const result = getPosY(
                   posY,
@@ -251,10 +273,10 @@ class NiconiComments {
           const vpos = comment.vpos + j;
           const left_pos = getPosX(comment.width_max, j, comment.long);
           arrayPush(this.timeline, vpos, index);
-          if (left_pos + comment.width_max >= collisionRange.right) {
+          if (left_pos + comment.width_max >= config.collisionRange.right) {
             arrayPush(this.collision.right, vpos, index);
           }
-          if (left_pos <= collisionRange.left) {
+          if (left_pos <= config.collisionRange.left) {
             arrayPush(this.collision.left, vpos, index);
           }
         }
@@ -348,37 +370,37 @@ class NiconiComments {
     const width_arr = [],
       lines = comment.content.split("\n");
     if (!comment.lineHeight)
-      comment.lineHeight = lineHeight[comment.size].default;
+      comment.lineHeight = config.lineHeight[comment.size].default;
     if (!comment.resized && !comment.ender) {
       if (comment.size === "big" && lines.length > 2) {
-        comment.fontSize = fontSize.big.resized;
-        comment.lineHeight = lineHeight.big.resized;
+        comment.fontSize = config.fontSize.big.resized;
+        comment.lineHeight = config.lineHeight.big.resized;
         comment.resized = true;
         comment.resizedY = true;
         this.context.font = parseFont(
           comment.font,
           comment.fontSize,
-          this.useLegacy
+          this.mode
         );
       } else if (comment.size === "medium" && lines.length > 4) {
-        comment.fontSize = fontSize.medium.resized;
-        comment.lineHeight = lineHeight.medium.resized;
+        comment.fontSize = config.fontSize.medium.resized;
+        comment.lineHeight = config.lineHeight.medium.resized;
         comment.resized = true;
         comment.resizedY = true;
         this.context.font = parseFont(
           comment.font,
           comment.fontSize,
-          this.useLegacy
+          this.mode
         );
       } else if (comment.size === "small" && lines.length > 6) {
-        comment.fontSize = fontSize.small.resized;
-        comment.lineHeight = lineHeight.small.resized;
+        comment.fontSize = config.fontSize.small.resized;
+        comment.lineHeight = config.lineHeight.small.resized;
         comment.resized = true;
         comment.resizedY = true;
         this.context.font = parseFont(
           comment.font,
           comment.fontSize,
-          this.useLegacy
+          this.mode
         );
       }
     }
@@ -387,14 +409,14 @@ class NiconiComments {
       width_arr.push(measure.width);
     }
     const width = width_arr.reduce((p, c) => p + c, 0) / width_arr.length;
-    let width_max = Math.max(...width_arr),
-      width_min = Math.min(...width_arr),
+    let width_max = Math.max(...width_arr);
+    const width_min = Math.min(...width_arr),
       height =
         comment.fontSize *
           comment.lineHeight *
-          (1 + commentYPaddingTop) *
+          (1 + config.commentYPaddingTop) *
           lines.length +
-        commentYMarginBottom * comment.fontSize;
+        config.commentYMarginBottom * comment.fontSize;
     if (comment.loc !== "naka" && !comment.resizedY) {
       if (
         (comment.full && width_max > 1930) ||
@@ -410,7 +432,7 @@ class NiconiComments {
         this.context.font = parseFont(
           comment.font,
           comment.fontSize,
-          this.useLegacy
+          this.mode
         );
         return this.measureText(comment);
       }
@@ -421,51 +443,39 @@ class NiconiComments {
         (!comment.full && width_max > 1440)) &&
       !comment.resizedX
     ) {
-      comment.fontSize = fontSize[comment.size].default;
-      comment.lineHeight = lineHeight[comment.size].default * 1.05;
+      comment.fontSize = config.fontSize[comment.size].default;
+      comment.lineHeight = config.lineHeight[comment.size].default * 1.05;
       comment.resized = true;
       comment.resizedX = true;
-      this.context.font = parseFont(
-        comment.font,
-        comment.fontSize,
-        this.useLegacy
-      );
+      this.context.font = parseFont(comment.font, comment.fontSize, this.mode);
       return this.measureText(comment);
     } else if (comment.loc !== "naka" && comment.resizedY && comment.resizedX) {
       if (
         comment.full &&
-        width_max >
-          doubleResizeMaxWidth.full[this.useLegacy ? "legacy" : "default"]
+        width_max > config.doubleResizeMaxWidth.full[this.mode]
       ) {
-        while (
-          width_max >
-          doubleResizeMaxWidth.full[this.useLegacy ? "legacy" : "default"]
-        ) {
+        while (width_max > config.doubleResizeMaxWidth.full[this.mode]) {
           width_max /= 1.1;
           comment.fontSize -= 1;
         }
         this.context.font = parseFont(
           comment.font,
           comment.fontSize,
-          this.useLegacy
+          this.mode
         );
         return this.measureText(comment);
       } else if (
         !comment.full &&
-        width_max >
-          doubleResizeMaxWidth.normal[this.useLegacy ? "legacy" : "default"]
+        width_max > config.doubleResizeMaxWidth.normal[this.mode]
       ) {
-        while (
-          width_max >
-          doubleResizeMaxWidth.normal[this.useLegacy ? "legacy" : "default"]
-        ) {
+        while (width_max > config.doubleResizeMaxWidth.normal[this.mode]) {
           width_max /= 1.1;
           comment.fontSize -= 1;
         }
         this.context.font = parseFont(
           comment.font,
           comment.fontSize,
-          this.useLegacy
+          this.mode
         );
         return this.measureText(comment);
       }
@@ -501,22 +511,22 @@ class NiconiComments {
     for (const range of this.nicoScripts.ban) {
       if (range.start < vpos && vpos < range.end) return;
     }
-    let posX = (canvasWidth - comment.width_max) / 2,
+    let posX = (config.canvasWidth - comment.width_max) / 2,
       posY = comment.posY;
     if (comment.loc === "naka") {
       if (reverse) {
         posX =
-          canvasWidth +
+          config.canvasWidth +
           comment.width_max -
           getPosX(comment.width_max, vpos - comment.vpos, comment.long);
       } else {
         posX = getPosX(comment.width_max, vpos - comment.vpos, comment.long);
       }
-      if (posX > canvasWidth || posX + comment.width_max < 0) {
+      if (posX > config.canvasWidth || posX + comment.width_max < 0) {
         return;
       }
     } else if (comment.loc === "shita") {
-      posY = canvasHeight - comment.posY - comment.height;
+      posY = config.canvasHeight - comment.posY - comment.height;
     }
     if (comment.image && comment.image !== true) {
       this.context.drawImage(comment.image, posX, posY);
@@ -529,7 +539,7 @@ class NiconiComments {
         const linePosY =
           (Number(index) + 1) *
           (comment.fontSize * comment.lineHeight) *
-          (1 + commentYPaddingTop);
+          (1 + config.commentYPaddingTop);
         this.context.strokeStyle = "rgba(255,255,0,0.5)";
         this.context.strokeRect(
           posX,
@@ -542,7 +552,7 @@ class NiconiComments {
     if (isDebug) {
       const font = this.context.font;
       const fillStyle = this.context.fillStyle;
-      this.context.font = parseFont("defont", 30, false);
+      this.context.font = parseFont("defont", 30);
       this.context.fillStyle = "#ff00ff";
       this.context.fillText(comment.mail.join(","), posX, posY + 30);
       this.context.font = font;
@@ -572,7 +582,7 @@ class NiconiComments {
           if (this.cacheIndex[cacheKey] === i) {
             delete this.cacheIndex[cacheKey];
           }
-        }, value.long * 10 + cacheAge);
+        }, value.long * 10 + config.cacheAge);
         return;
       }
     }
@@ -581,26 +591,28 @@ class NiconiComments {
     image.height = value.height;
     const context = image.getContext("2d");
     if (!context) throw new Error("Fail to get CanvasRenderingContext2D");
-    context.strokeStyle = "rgba(0,0,0,0.7)";
+    context.strokeStyle = `rgba(${hex2rgb(
+      value.color === "#000000"
+        ? config.contextStrokeInversionColor
+        : config.contextStrokeColor
+    ).join(",")},${config.contextStrokeOpacity})`;
     context.textAlign = "start";
     context.textBaseline = "alphabetic";
     context.lineWidth = 4;
-    context.font = parseFont(value.font, value.fontSize, this.useLegacy);
+    context.font = parseFont(value.font, value.fontSize, this.mode);
     if (value._live) {
-      const rgb = hex2rgb(value.color);
-      context.fillStyle = `rgba(${rgb[0]},${rgb[1]},${rgb[2]},0.5)`;
+      context.fillStyle = `rgba(${hex2rgb(value.color).join(",")},${
+        config.contextFillLiveOpacity
+      })`;
     } else {
       context.fillStyle = value.color;
-    }
-    if (value.color === "#000000") {
-      context.strokeStyle = "rgba(255,255,255,0.7)";
     }
     const lines = value.content.split("\n");
     lines.forEach((line, index) => {
       const posY =
         (index + 1) *
         (value.fontSize * value.lineHeight) *
-        (1 + commentYPaddingTop);
+        (1 + config.commentYPaddingTop);
       context.strokeText(line, 0, posY);
       context.fillText(line, 0, posY);
     });
@@ -614,7 +626,7 @@ class NiconiComments {
       if (this.cacheIndex[cacheKey] === i) {
         delete this.cacheIndex[cacheKey];
       }
-    }, value.long * 10 + cacheAge);
+    }, value.long * 10 + config.cacheAge);
   }
 
   /**
@@ -645,10 +657,10 @@ class NiconiComments {
         result.loc = command;
       } else if (result.size === undefined && typeGuard.comment.size(command)) {
         result.size = command;
-        result.fontSize = fontSize[command].default;
+        result.fontSize = config.fontSize[command].default;
       } else {
         if (result.color === undefined) {
-          const color = colors[command];
+          const color = config.colors[command];
           if (color) {
             result.color = color;
             continue;
@@ -867,7 +879,7 @@ class NiconiComments {
     }
     if (!data.size) {
       data.size = size || "medium";
-      data.fontSize = fontSize[data.size].default;
+      data.fontSize = config.fontSize[data.size].default;
     }
     if (!data.font) {
       data.font = font || "defont";
@@ -885,7 +897,7 @@ class NiconiComments {
    * @param vpos - 動画の現在位置の100倍 ニコニコから吐き出されるコメントの位置情報は主にこれ
    * @param forceRendering
    */
-  drawCanvas(vpos: number, forceRendering: boolean = false) {
+  drawCanvas(vpos: number, forceRendering = false) {
     const drawCanvasStart = performance.now();
     if (this.lastVpos === vpos && !forceRendering) return;
     this.lastVpos = vpos;
@@ -928,16 +940,20 @@ class NiconiComments {
       }
     }
     if (this.showFPS) {
-      this.context.font = parseFont("defont", 60, this.useLegacy);
+      this.context.font = parseFont("defont", 60);
       this.context.fillStyle = "#00FF00";
-      this.context.strokeStyle = "rgba(0,0,0,0.7)";
+      this.context.strokeStyle = `rgba(${hex2rgb(
+        config.contextStrokeColor
+      ).join(",")},${config.contextStrokeOpacity})`;
       this.context.strokeText(`FPS:${this.fps}`, 100, 100);
       this.context.fillText(`FPS:${this.fps}`, 100, 100);
     }
     if (this.showCommentCount) {
-      this.context.font = parseFont("defont", 60, this.useLegacy);
+      this.context.font = parseFont("defont", 60);
       this.context.fillStyle = "#00FF00";
-      this.context.strokeStyle = "rgba(0,0,0,0.7)";
+      this.context.strokeStyle = `rgba(${hex2rgb(
+        config.contextStrokeColor
+      ).join(",")},${config.contextStrokeOpacity})`;
       if (timelineRange) {
         this.context.strokeText(`Count:${timelineRange.length}`, 100, 200);
         this.context.fillText(`Count:${timelineRange.length}`, 100, 200);
@@ -953,7 +969,7 @@ class NiconiComments {
    * キャンバスを消去する
    */
   public clear() {
-    this.context.clearRect(0, 0, canvasWidth, canvasHeight);
+    this.context.clearRect(0, 0, config.canvasWidth, config.canvasHeight);
   }
 }
 

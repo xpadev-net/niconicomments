@@ -106,7 +106,7 @@ const fromLegacy = (data: rawApiResponse[]): formattedComment[] => {
       const tmpParam: formattedComment = {
         id: value.no,
         vpos: value.vpos,
-        content: value.content,
+        content: value.content || "",
         date: value.date,
         date_usec: value.date_usec || 0,
         owner: !value.user_id,

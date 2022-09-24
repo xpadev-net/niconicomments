@@ -200,11 +200,7 @@ type typeFontSize = {
   };
 };
 type typeDoubleResizeMaxWidth = {
-  [key in "full" | "normal"]: {
-    html5: number;
-    default: number;
-    flash: number;
-  };
+  [key in "full" | "normal"]: number;
 };
 type v1Thread = {
   id: string;
@@ -233,49 +229,56 @@ type ownerComment = {
   comment: string;
 };
 type Config = {
+  cacheAge: number;
+  canvasHeight: number;
+  canvasWidth: number;
+  collisionRange: { [key in "left" | "right"]: number };
+  collisionWidth: number;
   colors: { [key: string]: string };
-  commentYPaddingTop: number;
-  commentYMarginBottom: number;
-  fontSize: typeFontSize;
-  lineHeight: typeFontSize;
-  doubleResizeMaxWidth: typeDoubleResizeMaxWidth;
+  commentDrawPadding: configItem<number>;
+  commentDrawRange: configItem<number>;
+  commentYMarginBottom: configItem<number>;
+  commentYPaddingTop: configItem<number>;
+  contextFillLiveOpacity: number;
+  contextLineWidth: number;
   contextStrokeColor: string;
   contextStrokeInversionColor: string;
   contextStrokeOpacity: number;
-  contextFillLiveOpacity: number;
-  contextLineWidth: number;
+  doubleResizeMaxWidth: configItem<typeDoubleResizeMaxWidth>;
+  fontSize: configItem<typeFontSize>;
   fpsInterval: number;
-  cacheAge: number;
-  canvasWidth: number;
-  canvasHeight: number;
-  commentDrawRange: number;
-  commentDrawPadding: number;
-  collisionWidth: number;
-  collisionRange: { [key in "left" | "right"]: number };
-  sameCARange: number;
+  lineHeight: configItem<typeFontSize>;
   sameCAGap: number;
   sameCAMinScore: number;
+  sameCARange: number;
 };
 
 type ConfigNullable = {
-  colors?: { [key: string]: string };
-  commentYPaddingTop?: number;
-  commentYMarginBottom?: number;
-  fontSize?: typeFontSize;
-  lineHeight?: typeFontSize;
-  doubleResizeMaxWidth?: typeDoubleResizeMaxWidth;
-  fpsInterval?: number;
   cacheAge?: number;
-  canvasWidth?: number;
   canvasHeight?: number;
-  commentDrawRange?: number;
-  commentDrawPadding?: number;
-  collisionWidth?: number;
+  canvasWidth?: number;
   collisionRange?: { [key in "left" | "right"]: number };
-  sameCARange?: number;
+  collisionWidth?: number;
+  colors?: { [key: string]: string };
+  commentDrawPadding?: configItem<number>;
+  commentDrawRange?: configItem<number>;
+  commentYMarginBottom?: configItem<number>;
+  commentYPaddingTop?: configItem<number>;
+  contextFillLiveOpacity?: number;
+  contextLineWidth?: number;
+  contextStrokeColor?: string;
+  contextStrokeInversionColor?: string;
+  contextStrokeOpacity?: number;
+  doubleResizeMaxWidth?: configItem<typeDoubleResizeMaxWidth>;
+  fontSize?: configItem<typeFontSize>;
+  fpsInterval?: number;
+  lineHeight?: configItem<typeFontSize>;
   sameCAGap?: number;
   sameCAMinScore?: number;
+  sameCARange?: number;
 };
+
+type configItem<T> = T | { [key in "html5" | "flash"]: T };
 
 type ConfigKeys =
   | "colors"

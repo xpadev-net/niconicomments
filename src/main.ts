@@ -11,12 +11,14 @@ import {
 import {
   arrayPush,
   changeCALayer,
+  getConfig,
   getPosX,
   getPosY,
   groupBy,
   hex2rgb,
   parseFont,
   replaceAll,
+  setConfigMode,
 } from "@/util";
 
 let isDebug = false;
@@ -115,6 +117,7 @@ class NiconiComments {
     }, {} as collision);
     this.data = [];
     this.lastVpos = -1;
+    setConfigMode(mode);
     this.mode = mode;
     this.preRendering(parsedData, options.drawAllImageOnLoad);
     this.fpsCount = 0;
@@ -370,11 +373,11 @@ class NiconiComments {
     const width_arr = [],
       lines = comment.content.split("\n");
     if (!comment.lineHeight)
-      comment.lineHeight = config.lineHeight[comment.size].default;
+      comment.lineHeight = getConfig(config.lineHeight)[comment.size].default;
     if (!comment.resized && !comment.ender) {
       if (comment.size === "big" && lines.length > 2) {
-        comment.fontSize = config.fontSize.big.resized;
-        comment.lineHeight = config.lineHeight.big.resized;
+        comment.fontSize = getConfig(config.fontSize).big.resized;
+        comment.lineHeight = getConfig(config.lineHeight).big.resized;
         comment.resized = true;
         comment.resizedY = true;
         this.context.font = parseFont(
@@ -383,8 +386,8 @@ class NiconiComments {
           this.mode
         );
       } else if (comment.size === "medium" && lines.length > 4) {
-        comment.fontSize = config.fontSize.medium.resized;
-        comment.lineHeight = config.lineHeight.medium.resized;
+        comment.fontSize = getConfig(config.fontSize).medium.resized;
+        comment.lineHeight = getConfig(config.lineHeight).medium.resized;
         comment.resized = true;
         comment.resizedY = true;
         this.context.font = parseFont(
@@ -393,8 +396,8 @@ class NiconiComments {
           this.mode
         );
       } else if (comment.size === "small" && lines.length > 6) {
-        comment.fontSize = config.fontSize.small.resized;
-        comment.lineHeight = config.lineHeight.small.resized;
+        comment.fontSize = getConfig(config.fontSize).small.resized;
+        comment.lineHeight = getConfig(config.lineHeight).small.resized;
         comment.resized = true;
         comment.resizedY = true;
         this.context.font = parseFont(
@@ -414,9 +417,9 @@ class NiconiComments {
       height =
         comment.fontSize *
           comment.lineHeight *
-          (1 + config.commentYPaddingTop) *
+          (1 + getConfig(config.commentYPaddingTop)) *
           lines.length +
-        config.commentYMarginBottom * comment.fontSize;
+        getConfig(config.commentYMarginBottom) * comment.fontSize;
     if (comment.loc !== "naka" && !comment.resizedY) {
       if (
         (comment.full && width_max > 1930) ||
@@ -443,8 +446,9 @@ class NiconiComments {
         (!comment.full && width_max > 1440)) &&
       !comment.resizedX
     ) {
-      comment.fontSize = config.fontSize[comment.size].default;
-      comment.lineHeight = config.lineHeight[comment.size].default * 1.05;
+      comment.fontSize = getConfig(config.fontSize)[comment.size].default;
+      comment.lineHeight =
+        getConfig(config.lineHeight)[comment.size].default * 1.05;
       comment.resized = true;
       comment.resizedX = true;
       this.context.font = parseFont(comment.font, comment.fontSize, this.mode);
@@ -452,9 +456,9 @@ class NiconiComments {
     } else if (comment.loc !== "naka" && comment.resizedY && comment.resizedX) {
       if (
         comment.full &&
-        width_max > config.doubleResizeMaxWidth.full[this.mode]
+        width_max > getConfig(config.doubleResizeMaxWidth).full
       ) {
-        while (width_max > config.doubleResizeMaxWidth.full[this.mode]) {
+        while (width_max > getConfig(config.doubleResizeMaxWidth).full) {
           width_max /= 1.1;
           comment.fontSize -= 1;
         }
@@ -466,9 +470,9 @@ class NiconiComments {
         return this.measureText(comment);
       } else if (
         !comment.full &&
-        width_max > config.doubleResizeMaxWidth.normal[this.mode]
+        width_max > getConfig(config.doubleResizeMaxWidth).normal
       ) {
-        while (width_max > config.doubleResizeMaxWidth.normal[this.mode]) {
+        while (width_max > getConfig(config.doubleResizeMaxWidth).normal) {
           width_max /= 1.1;
           comment.fontSize -= 1;
         }
@@ -539,7 +543,7 @@ class NiconiComments {
         const linePosY =
           (Number(index) + 1) *
           (comment.fontSize * comment.lineHeight) *
-          (1 + config.commentYPaddingTop);
+          (1 + getConfig(config.commentYPaddingTop));
         this.context.strokeStyle = "rgba(255,255,0,0.5)";
         this.context.strokeRect(
           posX,
@@ -612,7 +616,7 @@ class NiconiComments {
       const posY =
         (index + 1) *
         (value.fontSize * value.lineHeight) *
-        (1 + config.commentYPaddingTop);
+        (1 + getConfig(config.commentYPaddingTop));
       context.strokeText(line, 0, posY);
       context.fillText(line, 0, posY);
     });
@@ -657,7 +661,7 @@ class NiconiComments {
         result.loc = command;
       } else if (result.size === undefined && typeGuard.comment.size(command)) {
         result.size = command;
-        result.fontSize = config.fontSize[command].default;
+        result.fontSize = getConfig(config.fontSize)[command].default;
       } else {
         if (result.color === undefined) {
           const color = config.colors[command];
@@ -879,7 +883,7 @@ class NiconiComments {
     }
     if (!data.size) {
       data.size = size || "medium";
-      data.fontSize = config.fontSize[data.size].default;
+      data.fontSize = getConfig(config.fontSize)[data.size].default;
     }
     if (!data.font) {
       data.font = font || "defont";

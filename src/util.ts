@@ -1,5 +1,7 @@
 import { config } from "@/definition/config";
 
+let configMode: modeType = "default";
+
 /**
  * 配列をフォントとサイズでグループ化する
  * @param {{}} array
@@ -68,10 +70,12 @@ const getPosY = (
 };
 const getPosX = (width: number, vpos: number, long: number): number => {
   return (
-    config.commentDrawRange -
-    ((((width + config.commentDrawRange) * ((vpos + 100) / 100)) / 4) * 300) /
+    getConfig(config.commentDrawRange) -
+    ((((width + getConfig(config.commentDrawRange)) * ((vpos + 100) / 100)) /
+      4) *
+      300) /
       long +
-    config.commentDrawPadding
+    getConfig(config.commentDrawPadding)
   );
 };
 /**
@@ -196,6 +200,21 @@ const changeCALayer = (rawData: formattedComment[]): formattedComment[] => {
   return data;
 };
 
+const setConfigMode = (mode: modeType) => {
+  configMode = mode;
+};
+const getConfig = <T>(input: configItem<T>, mode = configMode): T => {
+  mode = configMode === "default" ? "html5" : configMode;
+  if (
+    Object.prototype.hasOwnProperty.call(input, "html5") &&
+    Object.prototype.hasOwnProperty.call(input, "flash")
+  ) {
+    return (input as { [key in "html5" | "flash"]: T })[mode];
+  } else {
+    return input as T;
+  }
+};
+
 export {
   groupBy,
   getPosY,
@@ -205,4 +224,6 @@ export {
   hex2rgb,
   replaceAll,
   changeCALayer,
+  getConfig,
+  setConfigMode,
 };

@@ -70,15 +70,13 @@ const defaultConfig: Config = {
    * 臨海+改行リサイズが発生した際(DR)の横幅最大値
    */
   doubleResizeMaxWidth: {
-    full: {
-      html5: 3020,
-      default: 3550,
-      flash: 3550,
+    html5: {
+      full: 3020,
+      normal: 2540,
     },
-    normal: {
-      html5: 2540,
-      default: 2650,
-      flash: 2650,
+    flash: {
+      full: 3550,
+      normal: 2650,
     },
   },
   /**

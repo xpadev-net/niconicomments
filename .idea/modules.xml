@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/niconicomments.js.iml" filepath="$PROJECT_DIR$/niconicomments.js.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/niconicomments.iml" filepath="$PROJECT_DIR$/.idea/niconicomments.iml" />
     </modules>
   </component>
 </project>

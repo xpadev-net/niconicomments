@@ -37,8 +37,6 @@ jobs:
         run: rm ./docs/type/* -rf
       - name: update .gitignore
         run: sed -i -e '/\/docs\/type/d' .gitignore
-      - name: update sample.html
-        run: sed --in-place --expression='s/..\/..\/dist\/bundle.js/https:\/\/cdn.jsdelivr.net\/npm\/@xpadev-net\/niconicomments@latest\/dist\/bundle.min.js/' docs/sample/index.html
       - name: generate typedoc
         run: npm run typedoc
 

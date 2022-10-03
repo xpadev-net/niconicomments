@@ -50,5 +50,5 @@ jobs:
           git config user.name "github-actions"
           git checkout -b typedoc
           git add .
-          git commit -m "auto generate"
+          git commit -m "auto generate" -n
           git push -f origin typedoc

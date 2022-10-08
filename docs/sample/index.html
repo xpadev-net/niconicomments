@@ -476,7 +476,6 @@
     const resize = () => {
         const width = document.body.clientWidth / 1920, height = document.body.clientHeight / 1080;
         const container = document.getElementById("container");
-        console.log(width, document.body.clientHeight, 1080)
         if (width > height) {
             container.style.transform = `translate(-50%,-50%) scale(${height * 100}%)`;
         } else {

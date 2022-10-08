@@ -8,7 +8,9 @@
 <body id="body">
 <div class="wrapper">
     <div id="container">
-        <div class="playerContainer"><div id="player"></div></div>
+        <div class="playerContainer">
+            <div id="player"></div>
+        </div>
 
         <div id="background"></div>
         <canvas id="canvas" width="1920" height="1080"></canvas>
@@ -65,7 +67,8 @@
         width: 100vw;
         z-index: 0;
     }
-    #container{
+
+    #container {
         width: 1920px;
         height: 1080px;
         position: absolute;
@@ -136,6 +139,13 @@
 
     #control.close #toggle p {
         transform: rotateZ(-90deg);
+    }
+
+    body, html {
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        padding: 0;
     }
 </style>
 <script type="text/javascript" src="https://www.youtube.com/iframe_api"></script>
@@ -314,7 +324,7 @@
     const urlParams = new URLSearchParams(window.location.search);
     let video = urlParams.get('video') || 0, player, interval = null, nico = null, useLegacy = false, showFPS = false,
         showCollision = false, showCommentCount = false, smoothing = false, videoMicroSec = false,
-        drawAllImageOnLoad = false, keepCA=false;
+        drawAllImageOnLoad = false, keepCA = false;
 
     function onYouTubeIframeAPIReady() {
         let select = document.getElementById("control-video");
@@ -421,16 +431,16 @@
     async function loadComments() {
         const canvas = document.getElementById("canvas");
         let videoItem = getById(videos, video);
-        canvas.style.transform = `scale(${(videoItem.scale||100)-1}%)`;
+        canvas.style.transform = `scale(${(videoItem.scale || 100) - 1}%)`;
         const req = await fetch(`./commentdata/${video}.json`);
         const res = await req.json();
 
         nico = new NiconiComments(canvas, res, {
             useLegacy: useLegacy,
             keepCA: keepCA,
-            format:"formatted",
+            format: "formatted",
             drawAllImageOnLoad: drawAllImageOnLoad,
-            debug:true
+            debug: true
         });
         const background = getById(videos, video).bg;
         if (background) {
@@ -438,9 +448,9 @@
         } else {
             document.getElementById("background").style.background = "none";
         }
-        if (urlParams.get('time')){
+        if (urlParams.get('time')) {
             console.log(Number(urlParams.get('time')))
-            player.seekTo(Number(urlParams.get('time')),true);
+            player.seekTo(Number(urlParams.get('time')), true);
         }
         if (!interval) {
             interval = setInterval(() => {
@@ -464,12 +474,13 @@
         return false
     }
     const resize = () => {
-        const width = document.body.clientWidth/1920,height = document.body.clientHeight/1080;
+        const width = document.body.clientWidth / 1920, height = document.body.clientHeight / 1080;
         const container = document.getElementById("container");
-        if (width>height){
-            container.style.transform = `translate(-50%,-50%) scale(${width*100}%)`;
-        }else{
-            container.style.transform = `translate(-50%,-50%) scale(${height*100}%)`;
+        console.log(width, document.body.clientHeight, 1080)
+        if (width > height) {
+            container.style.transform = `translate(-50%,-50%) scale(${height * 100}%)`;
+        } else {
+            container.style.transform = `translate(-50%,-50%) scale(${width * 100}%)`;
         }
     }
     window.onresize = resize;

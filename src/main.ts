@@ -16,9 +16,9 @@ import {
   getPosY,
   groupBy,
   hex2rgb,
+  isFlashComment,
   parseFont,
   replaceAll,
-  setConfigMode,
 } from "@/util";
 
 let isDebug = false;
@@ -39,7 +39,6 @@ class NiconiComments {
   private readonly context: CanvasRenderingContext2D;
   private readonly nicoScripts: nicoScript;
   private readonly timeline: { [key: number]: number[] };
-  private readonly mode: modeType;
 
   /**
    * NiconiComments Constructor
@@ -117,8 +116,6 @@ class NiconiComments {
     }, {} as collision);
     this.data = [];
     this.lastVpos = -1;
-    setConfigMode(mode);
-    this.mode = mode;
     this.preRendering(parsedData, options.drawAllImageOnLoad);
     this.fpsCount = 0;
     this.fps = 0;
@@ -178,7 +175,7 @@ class NiconiComments {
       for (const fontSize of Object.keys(groupedData[font])) {
         const value = groupedData[font][fontSize];
         if (!value) continue;
-        this.context.font = parseFont(font, fontSize, this.mode);
+        this.context.font = parseFont(font, fontSize);
         for (const comment of value) {
           if (comment.invisible) {
             continue;
@@ -198,8 +195,9 @@ class NiconiComments {
           size.width_min = measure.width_min;
           size.lineHeight = measure.lineHeight;
           size.fontSize = measure.fontSize;
+          size.content = measure.content;
           if (measure.resized) {
-            this.context.font = parseFont(font, fontSize, this.mode);
+            this.context.font = parseFont(font, fontSize);
           }
           result[comment.index] = size;
         }
@@ -235,7 +233,12 @@ class NiconiComments {
             count++;
             for (let j = beforeVpos; j < comment.long + 125; j++) {
               const vpos = comment.vpos + j;
-              const left_pos = getPosX(comment.width_max, j, comment.long);
+              const left_pos = getPosX(
+                comment.width_max,
+                j,
+                comment.long,
+                comment.flash
+              );
               if (
                 left_pos + comment.width_max >= config.collisionRange.right &&
                 left_pos <= config.collisionRange.right
@@ -274,7 +277,12 @@ class NiconiComments {
         }
         for (let j = beforeVpos; j < comment.long + 125; j++) {
           const vpos = comment.vpos + j;
-          const left_pos = getPosX(comment.width_max, j, comment.long);
+          const left_pos = getPosX(
+            comment.width_max,
+            j,
+            comment.long,
+            comment.flash
+          );
           arrayPush(this.timeline, vpos, index);
           if (left_pos + comment.width_max >= config.collisionRange.right) {
             arrayPush(this.collision.right, vpos, index);
@@ -357,59 +365,57 @@ class NiconiComments {
    * @param comment - 独自フォーマットのコメントデータ
    * @returns {{resized: boolean, width: number, width_max: number, fontSize: number, width_min: number, height: number, lineHeight: number}} - 描画サイズとリサイズの情報
    */
-  measureText(comment: {
-    content: string;
-    resized?: boolean;
-    ender: boolean;
-    size: commentSize;
-    fontSize: number;
-    resizedY?: boolean;
-    resizedX?: boolean;
-    font: commentFont;
-    loc: commentLoc;
-    full: boolean;
-    lineHeight?: number;
-  }): measureTextResult {
+  measureText(comment: measureTextInput): measureTextResult {
+    const configLineHeight = getConfig(config.lineHeight, comment.flash),
+      configFontSize = getConfig(config.fontSize, comment.flash),
+      configDoubleResizeMaxWidth = getConfig(config.doubleResizeMaxWidth);
     const width_arr = [],
-      lines = comment.content.split("\n");
+      lineCount = comment.lineCount;
     if (!comment.lineHeight)
-      comment.lineHeight = getConfig(config.lineHeight)[comment.size].default;
+      comment.lineHeight = configLineHeight[comment.size].default;
     if (!comment.resized && !comment.ender) {
-      if (comment.size === "big" && lines.length > 2) {
-        comment.fontSize = getConfig(config.fontSize).big.resized;
-        comment.lineHeight = getConfig(config.lineHeight).big.resized;
+      if (comment.size === "big" && lineCount > 2) {
+        comment.fontSize = configFontSize.big.resized;
+        comment.lineHeight = configLineHeight.big.resized;
         comment.resized = true;
         comment.resizedY = true;
-        this.context.font = parseFont(
-          comment.font,
-          comment.fontSize,
-          this.mode
-        );
-      } else if (comment.size === "medium" && lines.length > 4) {
-        comment.fontSize = getConfig(config.fontSize).medium.resized;
-        comment.lineHeight = getConfig(config.lineHeight).medium.resized;
+        this.context.font = parseFont(comment.font, comment.fontSize);
+      } else if (comment.size === "medium" && lineCount > 4) {
+        comment.fontSize = configFontSize.medium.resized;
+        comment.lineHeight = configLineHeight.medium.resized;
         comment.resized = true;
         comment.resizedY = true;
-        this.context.font = parseFont(
-          comment.font,
-          comment.fontSize,
-          this.mode
-        );
-      } else if (comment.size === "small" && lines.length > 6) {
-        comment.fontSize = getConfig(config.fontSize).small.resized;
-        comment.lineHeight = getConfig(config.lineHeight).small.resized;
+        this.context.font = parseFont(comment.font, comment.fontSize);
+      } else if (comment.size === "small" && lineCount > 6) {
+        comment.fontSize = configFontSize.small.resized;
+        comment.lineHeight = configLineHeight.small.resized;
         comment.resized = true;
         comment.resizedY = true;
-        this.context.font = parseFont(
-          comment.font,
-          comment.fontSize,
-          this.mode
-        );
+        this.context.font = parseFont(comment.font, comment.fontSize);
       }
     }
-    for (let i = 0; i < lines.length; i++) {
-      const measure = this.context.measureText(lines[i] as string);
-      width_arr.push(measure.width);
+    let currentWidth = 0;
+    for (let i = 0; i < comment.content.length; i++) {
+      const item = comment.content[i];
+      if (item === undefined) continue;
+      const lines = item.content.split("\n");
+      const widths = [];
+
+      this.context.font = parseFont(
+        item.font || comment.font,
+        comment.fontSize
+      );
+      for (let i = 0; i < lines.length; i++) {
+        const measure = this.context.measureText(lines[i] as string);
+        currentWidth += measure.width;
+        widths.push(measure.width);
+        if (i < lines.length - 1) {
+          width_arr.push(currentWidth);
+          currentWidth = 0;
+        }
+      }
+      width_arr.push(currentWidth);
+      item.width = widths;
     }
     const width = width_arr.reduce((p, c) => p + c, 0) / width_arr.length;
     let width_max = Math.max(...width_arr);
@@ -417,9 +423,10 @@ class NiconiComments {
       height =
         comment.fontSize *
           comment.lineHeight *
-          (1 + getConfig(config.commentYPaddingTop)) *
-          lines.length +
-        getConfig(config.commentYMarginBottom) * comment.fontSize;
+          (1 + getConfig(config.commentYPaddingTop, comment.flash)) *
+          lineCount +
+        getConfig(config.commentYMarginBottom, comment.flash) *
+          comment.fontSize;
     if (comment.loc !== "naka" && !comment.resizedY) {
       if (
         (comment.full && width_max > 1930) ||
@@ -432,11 +439,7 @@ class NiconiComments {
         }
         comment.resized = true;
         comment.resizedX = true;
-        this.context.font = parseFont(
-          comment.font,
-          comment.fontSize,
-          this.mode
-        );
+        this.context.font = parseFont(comment.font, comment.fontSize);
         return this.measureText(comment);
       }
     } else if (
@@ -446,41 +449,29 @@ class NiconiComments {
         (!comment.full && width_max > 1440)) &&
       !comment.resizedX
     ) {
-      comment.fontSize = getConfig(config.fontSize)[comment.size].default;
-      comment.lineHeight =
-        getConfig(config.lineHeight)[comment.size].default * 1.05;
+      comment.fontSize = configFontSize[comment.size].default;
+      comment.lineHeight = configLineHeight[comment.size].default * 1.05;
       comment.resized = true;
       comment.resizedX = true;
-      this.context.font = parseFont(comment.font, comment.fontSize, this.mode);
+      this.context.font = parseFont(comment.font, comment.fontSize);
       return this.measureText(comment);
     } else if (comment.loc !== "naka" && comment.resizedY && comment.resizedX) {
-      if (
-        comment.full &&
-        width_max > getConfig(config.doubleResizeMaxWidth).full
-      ) {
-        while (width_max > getConfig(config.doubleResizeMaxWidth).full) {
+      if (comment.full && width_max > configDoubleResizeMaxWidth.full) {
+        while (width_max > configDoubleResizeMaxWidth.full) {
           width_max /= 1.1;
           comment.fontSize -= 1;
         }
-        this.context.font = parseFont(
-          comment.font,
-          comment.fontSize,
-          this.mode
-        );
+        this.context.font = parseFont(comment.font, comment.fontSize);
         return this.measureText(comment);
       } else if (
         !comment.full &&
-        width_max > getConfig(config.doubleResizeMaxWidth).normal
+        width_max > configDoubleResizeMaxWidth.normal
       ) {
-        while (width_max > getConfig(config.doubleResizeMaxWidth).normal) {
+        while (width_max > configDoubleResizeMaxWidth.normal) {
           width_max /= 1.1;
           comment.fontSize -= 1;
         }
-        this.context.font = parseFont(
-          comment.font,
-          comment.fontSize,
-          this.mode
-        );
+        this.context.font = parseFont(comment.font, comment.fontSize);
         return this.measureText(comment);
       }
     }
@@ -492,6 +483,7 @@ class NiconiComments {
       resized: !!comment.resized,
       fontSize: comment.fontSize,
       lineHeight: comment.lineHeight,
+      content: comment.content as commentMeasuredContentItem[],
     };
   }
 
@@ -522,9 +514,19 @@ class NiconiComments {
         posX =
           config.canvasWidth +
           comment.width_max -
-          getPosX(comment.width_max, vpos - comment.vpos, comment.long);
+          getPosX(
+            comment.width_max,
+            vpos - comment.vpos,
+            comment.long,
+            comment.flash
+          );
       } else {
-        posX = getPosX(comment.width_max, vpos - comment.vpos, comment.long);
+        posX = getPosX(
+          comment.width_max,
+          vpos - comment.vpos,
+          comment.long,
+          comment.flash
+        );
       }
       if (posX > config.canvasWidth || posX + comment.width_max < 0) {
         return;
@@ -538,10 +540,9 @@ class NiconiComments {
     if (this.showCollision) {
       this.context.strokeStyle = "rgba(0,255,255,1)";
       this.context.strokeRect(posX, posY, comment.width_max, comment.height);
-      const lines = comment.content.split("\n");
-      lines.forEach((_, index) => {
+      for (let i = 0; i < comment.lineCount; i++) {
         const linePosY =
-          (Number(index) + 1) *
+          (Number(i) + 1) *
           (comment.fontSize * comment.lineHeight) *
           (1 + getConfig(config.commentYPaddingTop));
         this.context.strokeStyle = "rgba(255,255,0,0.5)";
@@ -551,7 +552,7 @@ class NiconiComments {
           comment.width_max,
           comment.fontSize * comment.lineHeight * -1
         );
-      });
+      }
     }
     if (isDebug) {
       const font = this.context.font;
@@ -572,7 +573,10 @@ class NiconiComments {
   getTextImage(i: number, preRendering = false) {
     const value = this.data[i];
     if (!value || value.invisible) return;
-    const cacheKey = value.content + "@@@" + [...value.mail].sort().join(","),
+    const cacheKey =
+        JSON.stringify(value.content) +
+        "@@@" +
+        [...value.mail].sort().join(","),
       cache = this.cacheIndex[cacheKey];
     if (cache) {
       const image = this.data[cache]?.image;
@@ -603,7 +607,7 @@ class NiconiComments {
     context.textAlign = "start";
     context.textBaseline = "alphabetic";
     context.lineWidth = 4;
-    context.font = parseFont(value.font, value.fontSize, this.mode);
+    context.font = parseFont(value.font, value.fontSize);
     if (value._live) {
       context.fillStyle = `rgba(${hex2rgb(value.color).join(",")},${
         config.contextFillLiveOpacity
@@ -611,15 +615,34 @@ class NiconiComments {
     } else {
       context.fillStyle = value.color;
     }
-    const lines = value.content.split("\n");
-    lines.forEach((line, index) => {
-      const posY =
-        (index + 1) *
-        (value.fontSize * value.lineHeight) *
-        (1 + getConfig(config.commentYPaddingTop));
-      context.strokeText(line, 0, posY);
-      context.fillText(line, 0, posY);
-    });
+    let lastFont = value.font,
+      leftOffset = 0,
+      lineOffset = 0;
+    for (let i = 0; i < value.content.length; i++) {
+      const item = value.content[i];
+      if (!item) continue;
+      if (lastFont !== (item.font || value.font)) {
+        lastFont = item.font || value.font;
+        context.font = parseFont(lastFont, value.fontSize);
+      }
+      const lines = item.content.split("\n");
+      for (let j = 0; j < lines.length; j++) {
+        const line = lines[j];
+        if (line === undefined) continue;
+        const posY =
+          (lineOffset + 1) *
+          (value.fontSize * value.lineHeight) *
+          (1 + getConfig(config.commentYPaddingTop, value.flash));
+        context.strokeText(line, leftOffset, posY);
+        context.fillText(line, leftOffset, posY);
+        if (j < lines.length - 1) {
+          leftOffset = 0;
+          lineOffset += 1;
+        } else {
+          leftOffset += item.width[j] || 0;
+        }
+      }
+    }
     value.image = image;
     this.cacheIndex[cacheKey] = i;
     if (preRendering) return;
@@ -698,7 +721,7 @@ class NiconiComments {
       nicoscript = string.match(
         /^(?:@|＠)(デフォルト|置換|逆|コメント禁止|シーク禁止|ジャンプ)/
       );
-    if (nicoscript) {
+    if (nicoscript && comment.owner) {
       const reverse = comment.content.match(/^@逆 ?(全|コメ|投コメ)?/);
       const content = comment.content.split(""),
         result = [];
@@ -893,7 +916,113 @@ class NiconiComments {
     } else {
       data.long = Math.floor(Number(data.long) * 100);
     }
-    return { ...comment, ...data } as formattedCommentWithFont;
+    const content: commentContentItem[] = [];
+    if (isFlashComment(comment)) {
+      const parts = Array.from(
+        comment.content.match(/[ -~｡-ﾟ]+|[^ -~｡-ﾟ]+/g) || []
+      );
+      const regex = {
+        simsunStrong: new RegExp(config.flashChar.simsunStrong),
+        simsunWeak: new RegExp(config.flashChar.simsunWeak),
+        gulim: new RegExp(config.flashChar.gulim),
+        gothic: new RegExp(config.flashChar.gothic),
+      };
+      const getFontName = (font: string) =>
+        font.match("^simsun.+")
+          ? "simsun"
+          : font === "gothic"
+          ? "defont"
+          : (font as commentFlashFont);
+      for (const part of parts) {
+        if (part.match(/[ -~｡-ﾟ]+/g) !== null) {
+          content.push({ content: part });
+          continue;
+        }
+        const index: commentContentIndex[] = [];
+        let match;
+        if ((match = regex.simsunStrong.exec(part)) !== null) {
+          index.push({ font: "simsunStrong", index: match.index });
+        }
+        if ((match = regex.simsunWeak.exec(part)) !== null) {
+          index.push({ font: "simsunWeak", index: match.index });
+        }
+        if ((match = regex.gulim.exec(part)) !== null) {
+          index.push({ font: "gulim", index: match.index });
+        }
+        if ((match = regex.gothic.exec(part)) !== null) {
+          index.push({ font: "gothic", index: match.index });
+        }
+        if (index.length === 0) {
+          content.push({ content: part });
+        } else if (index.length === 1 && index[0]) {
+          content.push({ content: part, font: getFontName(index[0].font) });
+        } else {
+          index.sort((a, b) => {
+            if (a.index > b.index) {
+              return 1;
+            } else if (a.index < b.index) {
+              return -1;
+            } else {
+              return 0;
+            }
+          });
+          if (config.flashMode === "xp") {
+            let offset = 0;
+            for (let i = 1; i < index.length; i++) {
+              const currentVal = index[i],
+                lastVal = index[i - 1];
+              if (currentVal === undefined || lastVal === undefined) continue;
+              content.push({
+                content: part.slice(offset, currentVal.index),
+                font: getFontName(lastVal.font),
+              });
+              offset = currentVal.index;
+            }
+            const val = index[index.length - 1];
+            if (val)
+              content.push({
+                content: part.slice(offset),
+                font: getFontName(val.font),
+              });
+          } else {
+            const firstVal = index[0],
+              secondVal = index[1];
+            if (!firstVal || !secondVal) {
+              content.push({ content: part });
+              continue;
+            }
+            if (firstVal.font !== "gothic") {
+              content.push({ content: part, font: getFontName(firstVal.font) });
+            } else {
+              content.push({
+                content: part.slice(0, secondVal.index),
+                font: getFontName(firstVal.font),
+              });
+              content.push({
+                content: part.slice(secondVal.index),
+                font: getFontName(secondVal.font),
+              });
+            }
+          }
+        }
+      }
+      const val = content[0];
+      if (val && val.font) {
+        data.font = val.font;
+      }
+    } else {
+      content.push({ content: comment.content });
+    }
+    const lineCount = content.reduce((pv, val) => {
+      return pv + (val.content.match(/\n/g)?.length || 0);
+    }, 1);
+    return {
+      ...comment,
+      content,
+      lineCount,
+      ...data,
+      flash: isFlashComment(comment),
+    } as formattedCommentWithFont;
   }
 
   /**

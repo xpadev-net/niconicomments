@@ -1,20 +1,16 @@
-import { config } from "@/definition/config";
-
-let configMode: modeType = "default";
-
+import { config, options } from "@/definition/config";
 /**
  * 配列をフォントとサイズでグループ化する
  * @param {{}} array
  * @returns {{}}
  */
 const groupBy = (array: formattedCommentWithFont[]): groupedComments => {
-  const data = (["defont", "gothic", "mincho"] as commentFont[]).reduce(
-    (pv, font) => {
-      pv[font] = {};
-      return pv;
-    },
-    {} as groupedComments
-  );
+  const data = (
+    ["defont", "gothic", "mincho", "gulim", "simsun"] as commentFont[]
+  ).reduce((pv, font) => {
+    pv[font] = {};
+    return pv;
+  }, {} as groupedComments);
   array.forEach((item, index) => {
     const value = data[item.font][item.fontSize] || [];
     value.push({ ...item, index });
@@ -68,14 +64,20 @@ const getPosY = (
   }
   return { currentPos, isChanged, isBreak };
 };
-const getPosX = (width: number, vpos: number, long: number): number => {
+const getPosX = (
+  width: number,
+  vpos: number,
+  long: number,
+  isFlash: boolean
+): number => {
   return (
-    getConfig(config.commentDrawRange) -
-    ((((width + getConfig(config.commentDrawRange)) * ((vpos + 100) / 100)) /
+    getConfig(config.commentDrawRange, isFlash) -
+    ((((width + getConfig(config.commentDrawRange, isFlash)) *
+      ((vpos + 100) / 100)) /
       4) *
       300) /
       long +
-    getConfig(config.commentDrawPadding)
+    getConfig(config.commentDrawPadding, isFlash)
   );
 };
 /**
@@ -85,22 +87,15 @@ const getPosX = (width: number, vpos: number, long: number): number => {
  * @param {modeType} mode
  * @returns {string}
  */
-const parseFont = (
-  font: commentFont,
-  size: string | number,
-  mode: modeType = "default"
-): string => {
+const parseFont = (font: commentFont, size: string | number): string => {
   switch (font) {
     case "gothic":
-      return `normal 400 ${size}px "游ゴシック体", "游ゴシック", "Yu Gothic", YuGothic, yugothic, YuGo-Medium`;
     case "mincho":
-      return `normal 400 ${size}px "游明朝体", "游明朝", "Yu Mincho", YuMincho, yumincho, YuMin-Medium`;
+    case "gulim":
+    case "simsun":
+      return config.font[font].replace("[size]", `${size}`);
     default:
-      if (mode === "html5") {
-        return `normal 600 ${size}px Arial, "ＭＳ Ｐゴシック", "MS PGothic", MSPGothic, MS-PGothic`;
-      } else {
-        return `normal 600 ${size}px sans-serif, Arial, "ＭＳ Ｐゴシック", "MS PGothic", MSPGothic, MS-PGothic`;
-      }
+      return config.font.defont.replace("[size]", `${size}`);
   }
 };
 /**
@@ -200,20 +195,27 @@ const changeCALayer = (rawData: formattedComment[]): formattedComment[] => {
   return data;
 };
 
-const setConfigMode = (mode: modeType) => {
-  configMode = mode;
-};
-const getConfig = <T>(input: configItem<T>, mode = configMode): T => {
-  mode = configMode === "default" ? "html5" : configMode;
+const getConfig = <T>(input: configItem<T>, isFlash = false): T => {
   if (
     Object.prototype.hasOwnProperty.call(input, "html5") &&
     Object.prototype.hasOwnProperty.call(input, "flash")
   ) {
-    return (input as { [key in "html5" | "flash"]: T })[mode];
+    return (input as { [key in "html5" | "flash"]: T })[
+      isFlash ? "flash" : "html5"
+    ];
   } else {
     return input as T;
   }
 };
+
+const isFlashComment = (comment: formattedComment) =>
+  !(
+    comment.mail.includes("gothic") ||
+    comment.mail.includes("defont") ||
+    comment.mail.includes("mincho")
+  ) &&
+  ((comment.date < config.flashThreshold && options.mode === "default") ||
+    options.mode === "flash");
 
 export {
   groupBy,
@@ -225,5 +227,5 @@ export {
   replaceAll,
   changeCALayer,
   getConfig,
-  setConfigMode,
+  isFlashComment,
 };

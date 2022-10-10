@@ -96,7 +96,16 @@ type formattedLegacyComment = {
   premium: boolean;
   mail: string[];
 };
-type formattedCommentWithFont = formattedComment & {
+type formattedCommentWithFont = {
+  id: number;
+  vpos: number;
+  date: number;
+  date_usec: number;
+  owner: boolean;
+  premium: boolean;
+  mail: string[];
+  user_id: number;
+  layer: number;
   loc: commentLoc;
   size: commentSize;
   fontSize: number;
@@ -107,6 +116,9 @@ type formattedCommentWithFont = formattedComment & {
   _live: boolean;
   long: number;
   invisible: boolean;
+  content: commentContentItem[];
+  flash: boolean;
+  lineCount: number;
 };
 type formattedCommentWithSize = formattedCommentWithFont & {
   height: number;
@@ -114,6 +126,7 @@ type formattedCommentWithSize = formattedCommentWithFont & {
   width_max: number;
   width_min: number;
   lineHeight: number;
+  content: commentMeasuredContentItem[];
 };
 type parsedComment = formattedCommentWithSize & {
   posY: number;
@@ -125,7 +138,20 @@ type groupedResult = formattedCommentWithFont & {
 type groupedComments = {
   [key in commentFont]: { [key: string]: groupedResult[] };
 };
-type commentFont = "defont" | "mincho" | "gothic";
+type commentContentItem = {
+  content: string;
+  font?: commentFlashFont;
+  width?: number[];
+};
+type commentMeasuredContentItem = commentContentItem & {
+  width: number[];
+};
+type commentContentIndex = {
+  index: number;
+  font: "gothic" | "gulim" | "simsunStrong" | "simsunWeak";
+};
+type commentFont = "defont" | "mincho" | "gothic" | "gulim" | "simsun";
+type commentFlashFont = "defont" | "gulim" | "simsun";
 type commentSize = "big" | "medium" | "small";
 type commentLoc = "ue" | "naka" | "shita";
 type collision = { [key in collisionPos]: collisionItem };
@@ -180,6 +206,7 @@ type measureTextResult = {
   resized: boolean;
   fontSize: number;
   lineHeight: number;
+  content: commentMeasuredContentItem[];
 };
 type parsedCommand = {
   loc: commentLoc | undefined;
@@ -193,6 +220,23 @@ type parsedCommand = {
   invisible: boolean;
   long: number | undefined;
 };
+
+type measureTextInput = {
+  content: commentContentItem[];
+  resized?: boolean;
+  ender: boolean;
+  size: commentSize;
+  fontSize: number;
+  resizedY?: boolean;
+  resizedX?: boolean;
+  font: commentFont;
+  loc: commentLoc;
+  full: boolean;
+  lineHeight?: number;
+  flash: boolean;
+  lineCount: number;
+};
+
 type typeFontSize = {
   [key in commentSize]: {
     default: number;
@@ -228,6 +272,14 @@ type ownerComment = {
   command: string;
   comment: string;
 };
+type flashCharList = {
+  [key in "simsunStrong" | "simsunWeak" | "gulim" | "gothic"]: string;
+};
+type fontList = {
+  [key in "gothic" | "mincho" | "defont" | "gulim" | "simsun"]: string;
+};
+type flashMode = "xp" | "vista";
+
 type Config = {
   cacheAge: number;
   canvasHeight: number;
@@ -251,6 +303,10 @@ type Config = {
   sameCAGap: number;
   sameCAMinScore: number;
   sameCARange: number;
+  flashThreshold: number;
+  flashChar: flashCharList;
+  font: fontList;
+  flashMode?: flashMode;
 };
 
 type ConfigNullable = {
@@ -276,6 +332,10 @@ type ConfigNullable = {
   sameCAGap?: number;
   sameCAMinScore?: number;
   sameCARange?: number;
+  flashThreshold?: number;
+  flashChar?: flashCharList;
+  font?: fontList;
+  flashMode?: flashMode;
 };
 
 type configItem<T> = T | { [key in "html5" | "flash"]: T };

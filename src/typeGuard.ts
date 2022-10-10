@@ -304,6 +304,7 @@ const typeGuard = {
         sameCARange: isNumber,
         sameCAGap: isNumber,
         sameCAMinScore: isNumber,
+        flashThreshold: isNumber,
         contextStrokeOpacity: isNumber,
         contextFillLiveOpacity: isNumber,
         contextLineWidth: isNumber,
@@ -315,6 +316,28 @@ const typeGuard = {
             (pv, cv) =>
               pv +
               Number(typeof (i as { [key: string]: unknown })[cv] !== "string"),
+            0
+          ) === 0,
+        flashChar: (i: unknown) =>
+          typeof i === "object" &&
+          Object.keys(i as { [key: string]: unknown }).reduce(
+            (pv, cv) =>
+              pv +
+              Number(
+                !cv.match(/^(simsunStrong|simsunWeak|gulim|gothic)$/) ||
+                  typeof (i as { [key: string]: unknown })[cv] !== "string"
+              ),
+            0
+          ) === 0,
+        font: (i: unknown) =>
+          typeof i === "object" &&
+          Object.keys(i as { [key: string]: unknown }).reduce(
+            (pv, cv) =>
+              pv +
+              Number(
+                !cv.match(/^(gothic|mincho|defont|gulim|simsun)$/) ||
+                  typeof (i as { [key: string]: unknown })[cv] !== "string"
+              ),
             0
           ) === 0,
         fontSize: isFontSize,

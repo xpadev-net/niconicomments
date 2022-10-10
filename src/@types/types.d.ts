@@ -119,6 +119,7 @@ type formattedCommentWithFont = {
   content: commentContentItem[];
   flash: boolean;
   lineCount: number;
+  lineOffset: number;
 };
 type formattedCommentWithSize = formattedCommentWithFont & {
   height: number;
@@ -279,7 +280,9 @@ type fontList = {
   [key in "gothic" | "mincho" | "defont" | "gulim" | "simsun"]: string;
 };
 type flashMode = "xp" | "vista";
-
+type flashScriptChar = {
+  [key in "super" | "sub"]: string;
+};
 type Config = {
   cacheAge: number;
   canvasHeight: number;
@@ -307,6 +310,7 @@ type Config = {
   flashChar: flashCharList;
   font: fontList;
   flashMode?: flashMode;
+  flashScriptChar: flashScriptChar;
 };
 
 type ConfigNullable = {

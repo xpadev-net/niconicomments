@@ -158,6 +158,10 @@ const defaultConfig: Config = {
    */
   flashThreshold: 1499871600,
 
+  /**
+   * Flash版のフォント変化文字
+   * todo: ゴシック保護文字を探す
+   */
   flashChar: {
     gulim:
       "[\u0126\u0127\u0132\u0133\u0138\u013f\u0140\u0149-\u014b\u0166\u0167\u02d0\u02da\u2074\u207f\u2081-\u2084\u2113\u2153\u2154\u215c-\u215e\u2194\u2195\u223c\u249c-\u24b5\u24d0-\u24e9\u25a3-\u25a9\u25b6\u25b7\u25c0\u25c1\u25c8\u25d0\u25d1\u260e\u260f\u261c\u261e\u2660\u2661\u2663-\u2665\u2667-\u2669\u266c\u3131-\u316e\u3200-\u321c\u3260-\u327b\u3380-\u3384\u3388-\u338d\u3390-\u339b\u339f\u33a0\u33a2-\u33ca\u33cf\u33d0\u33d3\u33d6\u33d8\u33db-\u33dd\uf900-\uf928\uf92a-\uf994\uf996\ufa0b\uffe6]",
@@ -168,8 +172,28 @@ const defaultConfig: Config = {
     gothic: "[\u03fb\uff9f]",
   },
 
+  /**
+   * Flash版の文字変化規則を設定
+   * xp -> フォント変化文字全て適用
+   * vista -> 1又は2種類のみに制限
+   * 参考: https://w.atwiki.jp/commentart/pages/44.html
+   */
   flashMode: "xp",
 
+  /**
+   * Flash版の上付き・下付き文字
+   * super: 上付き sub: 下付き
+   */
+  flashScriptChar: {
+    super:
+      "[\u00aa\u00b2\u00b3\u00b9\u00ba\u02b0\u02b2\u02b3\u02b7\u02b8\u02e1-\u02e3\u0304\u1d2c-\u1d43\u1d45-\u1d61\u1d9b-\u1da1\u1da3-\u1dbf\u2070\u2071\u2074-\u207f\u2c7d]",
+    sub: "[\u0320\u1d62-\u1d6a\u2080-\u208e\u2090-\u209c\u2c7c]",
+  },
+
+  /**
+   * 描画に使うフォント
+   * [size]に数値が入る
+   */
   font: {
     gothic:
       'normal 400 [size]px "游ゴシック体", "游ゴシック", "Yu Gothic", YuGothic, yugothic, YuGo-Medium',

@@ -429,13 +429,13 @@ class NiconiComments {
           comment.fontSize;
     if (comment.loc !== "naka" && !comment.resizedY) {
       if (
-        (comment.full && width_max > 1930) ||
+        (comment.full && width_max > 1920) ||
         (!comment.full && width_max > 1440)
       ) {
-        while (width_max > (comment.full ? 1930 : 1440)) {
-          width_max /= 1.1;
-          width_max /= 1.1;
-          comment.fontSize -= 2;
+        while (width_max > (comment.full ? 1920 : 1440)) {
+          width_max /= 1.331;
+          comment.fontSize -= 3;
+          console.log(comment);
         }
         comment.resized = true;
         comment.resizedX = true;
@@ -458,8 +458,8 @@ class NiconiComments {
     } else if (comment.loc !== "naka" && comment.resizedY && comment.resizedX) {
       if (comment.full && width_max > configDoubleResizeMaxWidth.full) {
         while (width_max > configDoubleResizeMaxWidth.full) {
-          width_max /= 1.1;
-          comment.fontSize -= 1;
+          width_max /= 1.331;
+          comment.fontSize -= 3;
         }
         this.context.font = parseFont(comment.font, comment.fontSize);
         return this.measureText(comment);
@@ -468,8 +468,8 @@ class NiconiComments {
         width_max > configDoubleResizeMaxWidth.normal
       ) {
         while (width_max > configDoubleResizeMaxWidth.normal) {
-          width_max /= 1.1;
-          comment.fontSize -= 1;
+          width_max /= 1.331;
+          comment.fontSize -= 3;
         }
         this.context.font = parseFont(comment.font, comment.fontSize);
         return this.measureText(comment);
@@ -617,7 +617,7 @@ class NiconiComments {
     }
     let lastFont = value.font,
       leftOffset = 0,
-      lineOffset = 0;
+      lineOffset = value.lineOffset;
     for (let i = 0; i < value.content.length; i++) {
       const item = value.content[i];
       if (!item) continue;
@@ -720,7 +720,8 @@ class NiconiComments {
       string = comment.content,
       nicoscript = string.match(
         /^(?:@|＠)(デフォルト|置換|逆|コメント禁止|シーク禁止|ジャンプ)/
-      );
+      ),
+      isFlash = isFlashComment(comment);
     if (nicoscript && comment.owner) {
       const reverse = comment.content.match(/^@逆 ?(全|コメ|投コメ)?/);
       const content = comment.content.split(""),
@@ -917,7 +918,7 @@ class NiconiComments {
       data.long = Math.floor(Number(data.long) * 100);
     }
     const content: commentContentItem[] = [];
-    if (isFlashComment(comment)) {
+    if (isFlash) {
       const parts = Array.from(
         comment.content.match(/[ -~｡-ﾟ]+|[^ -~｡-ﾟ]+/g) || []
       );
@@ -1016,12 +1017,21 @@ class NiconiComments {
     const lineCount = content.reduce((pv, val) => {
       return pv + (val.content.match(/\n/g)?.length || 0);
     }, 1);
+    const lineOffset = isFlash
+      ? (comment.content.match(new RegExp(config.flashScriptChar.super, "g"))
+          ?.length || 0) *
+          -0.1 +
+        (comment.content.match(new RegExp(config.flashScriptChar.sub, "g"))
+          ?.length || 0) *
+          0.1
+      : 0;
     return {
       ...comment,
       content,
       lineCount,
+      lineOffset,
       ...data,
-      flash: isFlashComment(comment),
+      flash: isFlash,
     } as formattedCommentWithFont;
   }
 

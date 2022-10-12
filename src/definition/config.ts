@@ -34,13 +34,25 @@ const defaultConfig: Config = {
 
   commentYPaddingTop: {
     small: 0.126,
-    medium: 0.085,
+    medium: 0.07,
     big: 0.126,
   },
   commentYMarginBottom: {
     small: 0.24,
-    medium: 0.285,
+    medium: 0.28,
     big: 0.24,
+  },
+  commentYOffset: {
+    small: { default: 0, resized: 0 },
+    medium: { default: 0, resized: 0 },
+    big: {
+      default: -1 / 22,
+      resized: 0,
+    },
+  },
+  commentWidthLimit: {
+    default: 1429,
+    full: 1920,
   },
 
   /**
@@ -48,12 +60,12 @@ const defaultConfig: Config = {
    */
   fontSize: {
     small: {
-      default: 47,
+      default: 51,
       resized: 26.1,
     },
     medium: {
-      default: 75,
-      resized: 38.9,
+      default: 76,
+      resized: 42,
     },
     big: {
       default: 110,
@@ -67,7 +79,7 @@ const defaultConfig: Config = {
     },
     medium: {
       default: 1,
-      resized: 1,
+      resized: 0.94,
     },
     big: {
       default: 1.028,

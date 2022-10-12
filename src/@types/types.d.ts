@@ -127,6 +127,9 @@ type formattedCommentWithSize = formattedCommentWithFont & {
   width_max: number;
   width_min: number;
   lineHeight: number;
+  resized: boolean;
+  resizedX: boolean;
+  resizedY: boolean;
   content: commentMeasuredContentItem[];
 };
 type parsedComment = formattedCommentWithSize & {
@@ -205,6 +208,8 @@ type measureTextResult = {
   width_min: number;
   height: number;
   resized: boolean;
+  resizedX: boolean;
+  resizedY: boolean;
   fontSize: number;
   lineHeight: number;
   content: commentMeasuredContentItem[];
@@ -292,7 +297,9 @@ type Config = {
   colors: { [key: string]: string };
   commentDrawPadding: configItem<number>;
   commentDrawRange: configItem<number>;
+  commentWidthLimit: configItem<configFullItem<number>>;
   commentYMarginBottom: configItem<configSizeItem<number>>;
+  commentYOffset: configItem<configSizeItem<configResizedItem<number>>>;
   commentYPaddingTop: configItem<configSizeItem<number>>;
   contextFillLiveOpacity: number;
   contextLineWidth: number;
@@ -300,17 +307,17 @@ type Config = {
   contextStrokeInversionColor: string;
   contextStrokeOpacity: number;
   doubleResizeMaxWidth: configItem<typeDoubleResizeMaxWidth>;
+  flashChar: flashCharList;
+  flashMode: flashMode;
+  flashScriptChar: flashScriptChar;
+  flashThreshold: number;
+  font: fontList;
   fontSize: configItem<configSizeItem<configResizedItem<number>>>;
   fpsInterval: number;
   lineHeight: configItem<configSizeItem<configResizedItem<number>>>;
   sameCAGap: number;
   sameCAMinScore: number;
   sameCARange: number;
-  flashThreshold: number;
-  flashChar: flashCharList;
-  font: fontList;
-  flashMode?: flashMode;
-  flashScriptChar: flashScriptChar;
 };
 
 type ConfigNullable = {
@@ -322,7 +329,9 @@ type ConfigNullable = {
   colors?: { [key: string]: string };
   commentDrawPadding?: configItem<number>;
   commentDrawRange?: configItem<number>;
+  commentWidthLimit?: configItem<configFullItem<number>>;
   commentYMarginBottom?: configItem<configSizeItem<number>>;
+  commentYOffset?: configItem<configSizeItem<number>>;
   commentYPaddingTop?: configItem<configSizeItem<number>>;
   contextFillLiveOpacity?: number;
   contextLineWidth?: number;
@@ -330,22 +339,24 @@ type ConfigNullable = {
   contextStrokeInversionColor?: string;
   contextStrokeOpacity?: number;
   doubleResizeMaxWidth?: configItem<typeDoubleResizeMaxWidth>;
+  flashChar?: flashCharList;
+  flashMode?: flashMode;
+  flashScriptChar?: flashScriptChar;
+  flashThreshold?: number;
+  font?: fontList;
   fontSize?: configItem<configSizeItem<configResizedItem<number>>>;
   fpsInterval?: number;
   lineHeight?: configItem<configSizeItem<configResizedItem<number>>>;
   sameCAGap?: number;
   sameCAMinScore?: number;
   sameCARange?: number;
-  flashThreshold?: number;
-  flashChar?: flashCharList;
-  font?: fontList;
-  flashMode?: flashMode;
 };
 
 type configItem<T> = T | { [key in "html5" | "flash"]: T };
 
 type configSizeItem<T> = { big: T; medium: T; small: T };
 type configResizedItem<T> = { default: T; resized: T };
+type configFullItem<T> = { default: T; full: T };
 
 type ConfigKeys =
   | "colors"

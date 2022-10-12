@@ -194,6 +194,9 @@ class NiconiComments {
           size.lineHeight = measure.lineHeight;
           size.fontSize = measure.fontSize;
           size.content = measure.content;
+          size.resized = measure.resized;
+          size.resizedX = measure.resizedX;
+          size.resizedY = measure.resizedY;
           if (measure.resized) {
             this.context.font = parseFont(font, fontSize);
           }
@@ -428,15 +431,14 @@ class NiconiComments {
         getConfig(config.commentYMarginBottom, comment.flash)[comment.size] *
           comment.lineHeight *
           comment.fontSize;
+    const widthLimit = getConfig(config.commentWidthLimit, comment.flash)[
+      comment.full ? "full" : "default"
+    ];
     if (comment.loc !== "naka" && !comment.resizedY) {
-      if (
-        (comment.full && width_max > 1920) ||
-        (!comment.full && width_max > 1440)
-      ) {
-        while (width_max > (comment.full ? 1920 : 1440)) {
+      if (width_max > widthLimit) {
+        while (width_max > widthLimit) {
           width_max /= 1.331;
           comment.fontSize -= 3;
-          console.log(comment);
         }
         comment.resized = true;
         comment.resizedX = true;
@@ -446,8 +448,7 @@ class NiconiComments {
     } else if (
       comment.loc !== "naka" &&
       comment.resizedY &&
-      ((comment.full && width_max > 2120) ||
-        (!comment.full && width_max > 1440)) &&
+      width_max > widthLimit &&
       !comment.resizedX
     ) {
       comment.fontSize = configFontSize[comment.size].default;
@@ -485,6 +486,8 @@ class NiconiComments {
       fontSize: comment.fontSize,
       lineHeight: comment.lineHeight,
       content: comment.content as commentMeasuredContentItem[],
+      resizedX: !!comment.resizedX,
+      resizedY: !!comment.resizedY,
     };
   }
 
@@ -640,9 +643,12 @@ class NiconiComments {
           (lineOffset + lineCount) *
             (value.fontSize * value.lineHeight) *
             (1 +
-              (lineCount > 0
-                ? getConfig(config.commentYPaddingTop, value.flash)[value.size]
-                : 0));
+              getConfig(config.commentYPaddingTop, value.flash)[value.size]) +
+          value.fontSize *
+            value.lineHeight *
+            getConfig(config.commentYOffset, value.flash)[value.size][
+              value.resizedY ? "resized" : "default"
+            ];
         context.strokeText(line, leftOffset, posY);
         context.fillText(line, leftOffset, posY);
         if (j < lines.length - 1) {

@@ -58,7 +58,6 @@ class NiconiComments {
       );
     setOptions(Object.assign(defaultOptions, initOptions));
     if (!typeGuard.config.config(options.config)) {
-      console.warn(options.config);
       throw new Error(
         "Please see document: https://xpadev-net.github.io/niconicomments/#p_config"
       );
@@ -76,8 +75,7 @@ class NiconiComments {
     this.context.textAlign = "start";
     this.context.textBaseline = "alphabetic";
     this.context.lineWidth = config.contextLineWidth;
-    let formatType = options.format,
-      mode = options.mode;
+    let formatType = options.format;
 
     //Deprecated Warning
     if (options.formatted) {
@@ -94,8 +92,8 @@ class NiconiComments {
         "Deprecated: options.useLegacy is no longer recommended. Please use options.mode. https://xpadev-net.github.io/niconicomments/#p_mode"
       );
     }
-    if (mode === "default" && options.useLegacy) {
-      mode = "html5";
+    if (options.mode === "default" && options.useLegacy) {
+      options.mode = "html5";
     }
 
     const parsedData = convert2formattedComment(data, formatType);

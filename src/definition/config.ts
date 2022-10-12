@@ -183,6 +183,7 @@ const defaultConfig: Config = {
   /**
    * Flash版の上付き・下付き文字
    * super: 上付き sub: 下付き
+   * todo: 対象文字を探す
    */
   flashScriptChar: {
     super:

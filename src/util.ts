@@ -22,6 +22,10 @@ const groupBy = (array: formattedCommentWithFont[]): groupedComments => {
 };
 /**
  * 当たり判定からコメントを配置できる場所を探す
+ * @param {number} currentPos
+ * @param {parsedComment} targetComment
+ * @param {number[]|undefined} collision
+ * @param {parsedComment[]} data
  */
 const getPosY = (
   currentPos: number,
@@ -64,6 +68,13 @@ const getPosY = (
   }
   return { currentPos, isChanged, isBreak };
 };
+/**
+ * コメントのvposと現在のvposから左右の位置を返す
+ * @param {number} width
+ * @param {number} vpos
+ * @param {number} long
+ * @param {boolean} isFlash
+ */
 const getPosX = (
   width: number,
   vpos: number,
@@ -84,7 +95,6 @@ const getPosX = (
  * フォント名とサイズをもとにcontextで使えるフォントを生成する
  * @param {string} font
  * @param {string|number} size
- * @param {modeType} mode
  * @returns {string}
  */
 const parseFont = (font: commentFont, size: string | number): string => {
@@ -150,7 +160,7 @@ const replaceAll = (string: string, target: string, replace: string) => {
 };
 /**
  * CAと思われるコメントのレイヤーを分離する
- * @param rawData
+ * @param {formattedComment[]} rawData
  */
 const changeCALayer = (rawData: formattedComment[]): formattedComment[] => {
   const userList: { [key: number]: number } = {};
@@ -195,6 +205,11 @@ const changeCALayer = (rawData: formattedComment[]): formattedComment[] => {
   return data;
 };
 
+/**
+ * Configがhtml5とflashで別れてる場合は対応するものを、そうでなければ初期値を返す
+ * @param {configItem} input
+ * @param {boolean} isFlash
+ */
 const getConfig = <T>(input: configItem<T>, isFlash = false): T => {
   if (
     Object.prototype.hasOwnProperty.call(input, "html5") &&
@@ -208,7 +223,11 @@ const getConfig = <T>(input: configItem<T>, isFlash = false): T => {
   }
 };
 
-const isFlashComment = (comment: formattedComment) =>
+/**
+ * コメントがFlash適用対象化判定返す
+ * @param {formattedComment} comment
+ */
+const isFlashComment = (comment: formattedComment): boolean =>
   !(
     comment.mail.includes("gothic") ||
     comment.mail.includes("defont") ||

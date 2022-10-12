@@ -32,8 +32,16 @@ const defaultConfig: Config = {
     black2: "#666666",
   },
 
-  commentYPaddingTop: 0.08,
-  commentYMarginBottom: 0.24,
+  commentYPaddingTop: {
+    small: 0.126,
+    medium: 0.085,
+    big: 0.126,
+  },
+  commentYMarginBottom: {
+    small: 0.24,
+    medium: 0.285,
+    big: 0.24,
+  },
 
   /**
    * font-sizeに対しての倍率
@@ -44,12 +52,12 @@ const defaultConfig: Config = {
       resized: 26.1,
     },
     medium: {
-      default: 74,
+      default: 75,
       resized: 38.7,
     },
     big: {
       default: 110,
-      resized: 61,
+      resized: 59,
     },
   },
   lineHeight: {
@@ -62,7 +70,7 @@ const defaultConfig: Config = {
       resized: 1,
     },
     big: {
-      default: 1.03,
+      default: 1.028,
       resized: 1.01,
     },
   },

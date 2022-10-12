@@ -292,17 +292,17 @@ type Config = {
   colors: { [key: string]: string };
   commentDrawPadding: configItem<number>;
   commentDrawRange: configItem<number>;
-  commentYMarginBottom: configItem<number>;
-  commentYPaddingTop: configItem<number>;
+  commentYMarginBottom: configItem<configSizeItem<number>>;
+  commentYPaddingTop: configItem<configSizeItem<number>>;
   contextFillLiveOpacity: number;
   contextLineWidth: number;
   contextStrokeColor: string;
   contextStrokeInversionColor: string;
   contextStrokeOpacity: number;
   doubleResizeMaxWidth: configItem<typeDoubleResizeMaxWidth>;
-  fontSize: configItem<typeFontSize>;
+  fontSize: configItem<configSizeItem<configResizedItem<number>>>;
   fpsInterval: number;
-  lineHeight: configItem<typeFontSize>;
+  lineHeight: configItem<configSizeItem<configResizedItem<number>>>;
   sameCAGap: number;
   sameCAMinScore: number;
   sameCARange: number;
@@ -322,17 +322,17 @@ type ConfigNullable = {
   colors?: { [key: string]: string };
   commentDrawPadding?: configItem<number>;
   commentDrawRange?: configItem<number>;
-  commentYMarginBottom?: configItem<number>;
-  commentYPaddingTop?: configItem<number>;
+  commentYMarginBottom?: configItem<configSizeItem<number>>;
+  commentYPaddingTop?: configItem<configSizeItem<number>>;
   contextFillLiveOpacity?: number;
   contextLineWidth?: number;
   contextStrokeColor?: string;
   contextStrokeInversionColor?: string;
   contextStrokeOpacity?: number;
   doubleResizeMaxWidth?: configItem<typeDoubleResizeMaxWidth>;
-  fontSize?: configItem<typeFontSize>;
+  fontSize?: configItem<configSizeItem<configResizedItem<number>>>;
   fpsInterval?: number;
-  lineHeight?: configItem<typeFontSize>;
+  lineHeight?: configItem<configSizeItem<configResizedItem<number>>>;
   sameCAGap?: number;
   sameCAMinScore?: number;
   sameCARange?: number;
@@ -343,6 +343,9 @@ type ConfigNullable = {
 };
 
 type configItem<T> = T | { [key in "html5" | "flash"]: T };
+
+type configSizeItem<T> = { big: T; medium: T; small: T };
+type configResizedItem<T> = { default: T; resized: T };
 
 type ConfigKeys =
   | "colors"

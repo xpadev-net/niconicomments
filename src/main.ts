@@ -421,9 +421,12 @@ class NiconiComments {
       height =
         comment.fontSize *
           comment.lineHeight *
-          (1 + getConfig(config.commentYPaddingTop, comment.flash)) *
-          lineCount +
-        getConfig(config.commentYMarginBottom, comment.flash) *
+          (1 +
+            getConfig(config.commentYPaddingTop, comment.flash)[comment.size]) *
+          (lineCount - 1) +
+        comment.fontSize * comment.lineHeight +
+        getConfig(config.commentYMarginBottom, comment.flash)[comment.size] *
+          comment.lineHeight *
           comment.fontSize;
     if (comment.loc !== "naka" && !comment.resizedY) {
       if (
@@ -540,9 +543,13 @@ class NiconiComments {
       this.context.strokeRect(posX, posY, comment.width_max, comment.height);
       for (let i = 0; i < comment.lineCount; i++) {
         const linePosY =
-          (Number(i) + 1) *
-          (comment.fontSize * comment.lineHeight) *
-          (1 + getConfig(config.commentYPaddingTop));
+          comment.fontSize * comment.lineHeight +
+          Number(i) *
+            (comment.fontSize * comment.lineHeight) *
+            (1 +
+              getConfig(config.commentYPaddingTop, comment.flash)[
+                comment.size
+              ]);
         this.context.strokeStyle = "rgba(255,255,0,0.5)";
         this.context.strokeRect(
           posX,
@@ -613,9 +620,10 @@ class NiconiComments {
     } else {
       context.fillStyle = value.color;
     }
+    const lineOffset = value.lineOffset;
     let lastFont = value.font,
       leftOffset = 0,
-      lineOffset = value.lineOffset;
+      lineCount = 0;
     for (let i = 0; i < value.content.length; i++) {
       const item = value.content[i];
       if (!item) continue;
@@ -628,14 +636,18 @@ class NiconiComments {
         const line = lines[j];
         if (line === undefined) continue;
         const posY =
-          (lineOffset + 1) *
-          (value.fontSize * value.lineHeight) *
-          (1 + getConfig(config.commentYPaddingTop, value.flash));
+          value.fontSize * value.lineHeight +
+          (lineOffset + lineCount) *
+            (value.fontSize * value.lineHeight) *
+            (1 +
+              (lineCount > 0
+                ? getConfig(config.commentYPaddingTop, value.flash)[value.size]
+                : 0));
         context.strokeText(line, leftOffset, posY);
         context.fillText(line, leftOffset, posY);
         if (j < lines.length - 1) {
           leftOffset = 0;
-          lineOffset += 1;
+          lineCount += 1;
         } else {
           leftOffset += item.width[j] || 0;
         }

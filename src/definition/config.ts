@@ -53,7 +53,7 @@ const defaultConfig: Config = {
     },
     medium: {
       default: 75,
-      resized: 38.7,
+      resized: 38.9,
     },
     big: {
       default: 110,

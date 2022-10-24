@@ -45,39 +45,11 @@ const defaultConfig: Config = {
     black2: "#666666",
   },
 
-  commentResizeStep: { html5: 1, flash: 1 },
   commentScale: {
     html5: 1920 / 683,
-    flash: 1,
+    flash: 1920 / 672,
   },
 
-  commentYPaddingTop: {
-    small: {
-      default: 0.195,
-      resized: 0.195,
-    },
-    medium: {
-      default: 0.06,
-      resized: 0.0725,
-    },
-    big: {
-      default: 0.16,
-      resized: 0.195,
-    },
-  },
-  commentYMarginBottom: {
-    small: 0.32,
-    medium: 0.285,
-    big: 0.275,
-  },
-  commentYOffset: {
-    small: { default: 0, resized: 0 },
-    medium: { default: 0, resized: 0 },
-    big: {
-      default: 0,
-      resized: 0,
-    },
-  },
   commentStageSize: {
     html5: {
       width: 512,
@@ -85,75 +57,80 @@ const defaultConfig: Config = {
       height: 384,
     },
     flash: {
-      width: 1430,
-      fullWidth: 1920,
-      height: 1080,
+      width: 554,
+      fullWidth: 672,
+      height: 385,
     },
   },
 
   fontSize: {
-    small: {
-      default: 18,
-      resized: 10,
+    html5: {
+      small: {
+        default: 18,
+        resized: 10,
+      },
+      medium: {
+        default: 27,
+        resized: 14,
+      },
+      big: {
+        default: 39,
+        resized: 20,
+      },
     },
-    medium: {
-      default: 27,
-      resized: 14,
-    },
-    big: {
-      default: 39,
-      resized: 20,
+    flash: {
+      small: {
+        default: 18,
+        resized: 10,
+      },
+      medium: {
+        default: 27,
+        resized: 14,
+      },
+      big: {
+        default: 39,
+        resized: 20,
+      },
     },
   },
   lineCounts: {
-    default: {
-      big: 8.4,
-      medium: 13.1,
-      small: 21,
+    html5: {
+      default: {
+        big: 8.4,
+        medium: 13.1,
+        small: 21,
+      },
+      resized: {
+        big: 16,
+        medium: 25.4,
+        small: 38,
+      },
+      doubleResized: {
+        big: 7.8,
+        medium: 11.3,
+        small: 16.6,
+      },
     },
-    resized: {
-      big: 16,
-      medium: 25.4,
-      small: 38,
-    },
-    doubleResized: {
-      big: 7.8,
-      medium: 11.3,
-      small: 16.6,
+    flash: {
+      default: {
+        big: 8.4,
+        medium: 13.1,
+        small: 21,
+      },
+      resized: {
+        big: 16,
+        medium: 25.4,
+        small: 38,
+      },
+      doubleResized: {
+        big: 7.8,
+        medium: 11.3,
+        small: 16.6,
+      },
     },
   },
   minFontSize: 10,
   fonts: fonts[platform],
-  /**
-   * font-sizeに対しての倍率
-   */
-  lineHeight: {
-    small: {
-      default: 1,
-      resized: 1,
-    },
-    medium: {
-      default: 1,
-      resized: 1,
-    },
-    big: {
-      default: 1,
-      resized: 1,
-    },
-  },
-  /**
-   * 臨海+改行リサイズが発生した際(DR)の横幅最大値
-   */
-  doubleResizeMaxWidth: {
-    html5: {
-      full: 1280,
-      normal: 1000,
-    },
-    flash: {
-      full: 3550,
-      normal: 2650,
-    },
-  },
   /**
    * fillColorが#000000以外の時の枠線の色
    */

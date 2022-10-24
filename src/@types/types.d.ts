@@ -330,18 +330,13 @@ type Config = {
   colors: { [key: string]: string };
   commentDrawPadding: configItem<number>;
   commentDrawRange: configItem<number>;
-  commentResizeStep: configItem<number>;
   commentScale: configItem<number>;
   commentStageSize: configItem<commentStageSize>;
-  commentYMarginBottom: configItem<configSizeItem<number>>;
-  commentYOffset: configItem<configSizeItem<configResizedItem<number>>>;
-  commentYPaddingTop: configItem<configSizeItem<configResizedItem<number>>>;
   contextFillLiveOpacity: number;
   contextLineWidth: number;
   contextStrokeColor: string;
   contextStrokeInversionColor: string;
   contextStrokeOpacity: number;
-  doubleResizeMaxWidth: configItem<typeDoubleResizeMaxWidth>;
   flashChar: flashCharList;
   flashMode: flashMode;
   flashScriptChar: flashScriptChar;
@@ -351,7 +346,6 @@ type Config = {
   fontSize: configItem<configSizeItem<configResizedItem<number>>>;
   fpsInterval: number;
   lineCounts: configItem<lineCounts>;
-  lineHeight: configItem<configSizeItem<configResizedItem<number>>>;
   minFontSize: number;
   sameCAGap: number;
   sameCAMinScore: number;

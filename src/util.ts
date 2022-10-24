@@ -99,13 +99,14 @@ const getPosX = (
  */
 const parseFont = (font: commentFont, size: string | number): string => {
   switch (font) {
-    case "gothic":
-    case "mincho":
     case "gulim":
     case "simsun":
       return config.font[font].replace("[size]", `${size}`);
+    case "gothic":
+    case "mincho":
+      return `${config.fonts[font].weight} ${size}px ${config.fonts[font].font}`;
     default:
-      return config.font.defont.replace("[size]", `${size}`);
+      return `${config.fonts.defont.weight} ${size}px ${config.fonts.defont.font}`;
   }
 };
 /**
@@ -234,7 +235,8 @@ const isFlashComment = (comment: formattedComment): boolean =>
     comment.mail.includes("mincho")
   ) &&
   ((comment.date < config.flashThreshold && options.mode === "default") ||
-    options.mode === "flash");
+    options.mode === "flash" ||
+    comment.mail.includes("nico:flash"));
 
 export {
   groupBy,

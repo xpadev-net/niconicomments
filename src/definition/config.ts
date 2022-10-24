@@ -1,3 +1,16 @@
+import { fonts } from "@/definition/fonts";
+
+const platform: platform = (function (ua) {
+  if (ua.match(/windows nt 6\.[12]/i)) return "win7";
+  else if (ua.match(/windows nt (6\.3|10\.\d+)/i)) return "win8_1";
+  else if (ua.match(/windows nt/i)) return "win";
+  else if (ua.match(/mac os x 10(.|_)(9|10)/i)) return "mac10_9";
+  else if (ua.match(/mac os x 10(.|_)\d{2}/i)) return "mac10_11";
+  else if (ua.match(/mac os x/i)) return "mac";
+  return "other";
+})(navigator.userAgent);
+
+console.log(platform);
 const defaultConfig: Config = {
   /**
    * コマンドとカラーコードの対応表
@@ -32,46 +45,88 @@ const defaultConfig: Config = {
     black2: "#666666",
   },
 
+  commentResizeStep: { html5: 1, flash: 1 },
+  commentScale: {
+    html5: 1920 / 683,
+    flash: 1,
+  },
+
   commentYPaddingTop: {
-    small: 0.126,
-    medium: 0.07,
-    big: 0.126,
+    small: {
+      default: 0.195,
+      resized: 0.195,
+    },
+    medium: {
+      default: 0.06,
+      resized: 0.0725,
+    },
+    big: {
+      default: 0.16,
+      resized: 0.195,
+    },
   },
   commentYMarginBottom: {
-    small: 0.24,
-    medium: 0.28,
-    big: 0.24,
+    small: 0.32,
+    medium: 0.285,
+    big: 0.275,
   },
   commentYOffset: {
     small: { default: 0, resized: 0 },
     medium: { default: 0, resized: 0 },
     big: {
-      default: -1 / 22,
+      default: 0,
       resized: 0,
     },
   },
-  commentWidthLimit: {
-    default: 1429,
-    full: 1920,
+  commentStageSize: {
+    html5: {
+      width: 512,
+      fullWidth: 683,
+      height: 384,
+    },
+    flash: {
+      width: 1430,
+      fullWidth: 1920,
+      height: 1080,
+    },
   },
 
+  fontSize: {
+    small: {
+      default: 18,
+      resized: 10,
+    },
+    medium: {
+      default: 27,
+      resized: 14,
+    },
+    big: {
+      default: 39,
+      resized: 20,
+    },
+  },
+  lineCounts: {
+    default: {
+      big: 8.4,
+      medium: 13.1,
+      small: 21,
+    },
+    resized: {
+      big: 16,
+      medium: 25.4,
+      small: 38,
+    },
+    doubleResized: {
+      big: 7.8,
+      medium: 11.3,
+      small: 16.6,
+    },
+  },
+  minFontSize: 10,
+  fonts: fonts[platform],
   /**
    * font-sizeに対しての倍率
    */
-  fontSize: {
-    small: {
-      default: 51,
-      resized: 26.1,
-    },
-    medium: {
-      default: 76,
-      resized: 42,
-    },
-    big: {
-      default: 110,
-      resized: 59,
-    },
-  },
   lineHeight: {
     small: {
       default: 1,
@@ -79,11 +134,11 @@ const defaultConfig: Config = {
     },
     medium: {
       default: 1,
-      resized: 0.94,
+      resized: 1,
     },
     big: {
-      default: 1.028,
-      resized: 1.01,
+      default: 1,
+      resized: 1,
     },
   },
   /**
@@ -91,8 +146,8 @@ const defaultConfig: Config = {
    */
   doubleResizeMaxWidth: {
     html5: {
-      full: 3020,
-      normal: 2540,
+      full: 1280,
+      normal: 1000,
     },
     flash: {
       full: 3550,
@@ -110,7 +165,7 @@ const defaultConfig: Config = {
   /**
    * 枠線の透明度
    */
-  contextStrokeOpacity: 0.7,
+  contextStrokeOpacity: 0.4,
   /**
    * _liveコマンドの透明度
    */
@@ -118,7 +173,7 @@ const defaultConfig: Config = {
   /**
    * 枠線の太さ
    */
-  contextLineWidth: 4,
+  contextLineWidth: 2.8,
 
   /**
    * fpsを更新する間隔(ms)
@@ -216,12 +271,6 @@ const defaultConfig: Config = {
    * [size]に数値が入る
    */
   font: {
-    gothic:
-      'normal 400 [size]px "游ゴシック体", "游ゴシック", "Yu Gothic", YuGothic, yugothic, YuGo-Medium',
-    mincho:
-      'normal 400 [size]px "游明朝体", "游明朝", "Yu Mincho", YuMincho, yumincho, YuMin-Medium',
-    defont:
-      'normal 600 [size]px Arial, "ＭＳ Ｐゴシック", "MS PGothic", MSPGothic, MS-PGothic',
     gulim:
       'normal 600 [size]px gulim, "Microsoft JhengHei UI", Arial, "ＭＳ Ｐゴシック", "MS PGothic", MSPGothic, MS-PGothic',
     simsun:

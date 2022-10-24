@@ -20,6 +20,12 @@ import {
   parseFont,
   replaceAll,
 } from "@/util";
+import {
+  getCharSize,
+  getFontSizeAndScale,
+  getLineHeight,
+  measure,
+} from "@/nico";
 
 let isDebug = false;
 
@@ -57,11 +63,6 @@ class NiconiComments {
         "Please see document: https://xpadev-net.github.io/niconicomments/#p_options"
       );
     setOptions(Object.assign(defaultOptions, initOptions));
-    if (!typeGuard.config.config(options.config)) {
-      throw new Error(
-        "Please see document: https://xpadev-net.github.io/niconicomments/#p_config"
-      );
-    }
     setConfig(Object.assign(defaultConfig, options.config));
     isDebug = options.debug;
 
@@ -183,20 +184,17 @@ class NiconiComments {
           if (options.scale !== 1 && size.layer === -1) {
             measure.height *= options.scale;
             measure.width *= options.scale;
-            measure.width_max *= options.scale;
-            measure.width_min *= options.scale;
             measure.fontSize *= options.scale;
           }
           size.height = measure.height;
           size.width = measure.width;
-          size.width_max = measure.width_max;
-          size.width_min = measure.width_min;
           size.lineHeight = measure.lineHeight;
           size.fontSize = measure.fontSize;
           size.content = measure.content;
           size.resized = measure.resized;
           size.resizedX = measure.resizedX;
           size.resizedY = measure.resizedY;
+          size.charSize = measure.charSize;
           if (measure.resized) {
             this.context.font = parseFont(font, fontSize);
           }
@@ -220,9 +218,8 @@ class NiconiComments {
       if (comment.loc === "naka") {
         let posY = 0;
         const beforeVpos =
-          Math.round(
-            -288 / ((1632 + comment.width_max) / (comment.long + 125))
-          ) - 100;
+          Math.round(-288 / ((1632 + comment.width) / (comment.long + 125))) -
+          100;
         if (config.canvasHeight < comment.height) {
           posY = (comment.height - config.canvasHeight) / -2;
         } else {
@@ -235,13 +232,13 @@ class NiconiComments {
             for (let j = beforeVpos; j < comment.long + 125; j++) {
               const vpos = comment.vpos + j;
               const left_pos = getPosX(
-                comment.width_max,
+                comment.width,
                 j,
                 comment.long,
                 comment.flash
               );
               if (
-                left_pos + comment.width_max >= config.collisionRange.right &&
+                left_pos + comment.width >= config.collisionRange.right &&
                 left_pos <= config.collisionRange.right
               ) {
                 const result = getPosY(
@@ -256,7 +253,7 @@ class NiconiComments {
                 if (isBreak) break;
               }
               if (
-                left_pos + comment.width_max >= config.collisionRange.left &&
+                left_pos + comment.width >= config.collisionRange.left &&
                 left_pos <= config.collisionRange.left
               ) {
                 const result = getPosY(
@@ -279,13 +276,13 @@ class NiconiComments {
         for (let j = beforeVpos; j < comment.long + 125; j++) {
           const vpos = comment.vpos + j;
           const left_pos = getPosX(
-            comment.width_max,
+            comment.width,
             j,
             comment.long,
             comment.flash
           );
           arrayPush(this.timeline, vpos, index);
-          if (left_pos + comment.width_max >= config.collisionRange.right) {
+          if (left_pos + comment.width >= config.collisionRange.right) {
             arrayPush(this.collision.right, vpos, index);
           }
           if (left_pos <= config.collisionRange.left) {
@@ -364,130 +361,107 @@ class NiconiComments {
    * context.measureTextの複数行対応版
    * 画面外にはみ出すコメントの縮小も行う
    * @param comment - 独自フォーマットのコメントデータ
-   * @returns {{resized: boolean, width: number, width_max: number, fontSize: number, width_min: number, height: number, lineHeight: number}} - 描画サイズとリサイズの情報
+   * @returns {{resized: boolean, width: number, width: number, fontSize: number, width_min: number, height: number, lineHeight: number}} - 描画サイズとリサイズの情報
    */
   measureText(comment: measureTextInput): measureTextResult {
-    const configLineHeight = getConfig(config.lineHeight, comment.flash),
-      configFontSize = getConfig(config.fontSize, comment.flash),
-      configDoubleResizeMaxWidth = getConfig(config.doubleResizeMaxWidth);
-    const width_arr = [],
-      lineCount = comment.lineCount;
-    if (!comment.lineHeight)
-      comment.lineHeight = configLineHeight[comment.size].default;
-    if (!comment.resized && !comment.ender) {
-      if (comment.size === "big" && lineCount > 2) {
-        comment.fontSize = configFontSize.big.resized;
-        comment.lineHeight = configLineHeight.big.resized;
-        comment.resized = true;
-        comment.resizedY = true;
-        this.context.font = parseFont(comment.font, comment.fontSize);
-      } else if (comment.size === "medium" && lineCount > 4) {
-        comment.fontSize = configFontSize.medium.resized;
-        comment.lineHeight = configLineHeight.medium.resized;
-        comment.resized = true;
-        comment.resizedY = true;
-        this.context.font = parseFont(comment.font, comment.fontSize);
-      } else if (comment.size === "small" && lineCount > 6) {
-        comment.fontSize = configFontSize.small.resized;
-        comment.lineHeight = configLineHeight.small.resized;
-        comment.resized = true;
-        comment.resizedY = true;
-        this.context.font = parseFont(comment.font, comment.fontSize);
-      }
+    const configFontSize = getConfig(config.fontSize, comment.flash),
+      lineHeight = getLineHeight(comment.size, comment.flash),
+      charSize = getCharSize(comment.size, comment.flash);
+    console.log(lineHeight, charSize);
+    const lineCount = comment.lineCount;
+    if (!comment.lineHeight) comment.lineHeight = lineHeight;
+    if (!comment.charSize) comment.charSize = charSize;
+    comment.fontSize = comment.charSize * 0.8;
+    let width, height, itemWidth;
+    this.context.font = parseFont(comment.font, comment.fontSize);
+    if (
+      !comment.resized &&
+      !comment.ender &&
+      ((comment.size === "big" && lineCount > 2) ||
+        (comment.size === "medium" && lineCount > 4) ||
+        (comment.size === "small" && lineCount > 6))
+    ) {
+      comment.fontSize = configFontSize[comment.size].resized;
+      const lineHeight = getLineHeight(comment.size, comment.flash, true);
+      comment.charSize = comment.charSize * (lineHeight / comment.lineHeight);
+      comment.lineHeight = lineHeight;
+      comment.resized = true;
+      comment.resizedY = true;
+      const measureResult = measure(comment as measureInput);
+      height = measureResult.height;
+      width = measureResult.width;
+      itemWidth = measureResult.itemWidth;
+    } else {
+      const measureResult = measure(comment as measureInput);
+      console.log(measureResult);
+      height = measureResult.height;
+      width = measureResult.width;
+      itemWidth = measureResult.itemWidth;
     }
-    let currentWidth = 0;
+    const widthLimit = getConfig(config.commentStageSize, comment.flash)[
+      comment.full ? "fullWidth" : "width"
+    ];
+    console.log(width, widthLimit, comment);
+    if (comment.loc !== "naka" && width > widthLimit) {
+      const scale = widthLimit / width;
+      comment.resizedX = true;
+      let _comment = { ...comment };
+      _comment.charSize = (_comment.charSize || 0) * scale;
+      _comment.lineHeight = (_comment.lineHeight || 0) * scale;
+      _comment.fontSize = _comment.charSize * 0.8;
+      let result = measure(_comment as measureInput);
+      if (result.width > widthLimit) {
+        while (result.width >= widthLimit) {
+          const originalCharSize = _comment.charSize;
+          _comment.charSize -= 1;
+          _comment.lineHeight *= _comment.charSize / originalCharSize;
+          _comment.fontSize = _comment.charSize * 0.8;
+          result = measure(_comment as measureInput);
+        }
+      } else {
+        let lastComment = { ..._comment };
+        while (result.width < widthLimit) {
+          lastComment = { ..._comment };
+          const originalCharSize = _comment.charSize;
+          _comment.charSize += 1;
+          _comment.lineHeight *= _comment.charSize / originalCharSize;
+          _comment.fontSize = _comment.charSize * 0.8;
+          result = measure(_comment as measureInput);
+        }
+        _comment = lastComment;
+      }
+      if (comment.resizedY) {
+        const scale = (_comment.charSize || 0) / comment.charSize;
+        comment.charSize = scale * charSize;
+        comment.lineHeight = scale * lineHeight;
+      } else {
+        comment.charSize = _comment.charSize;
+        comment.lineHeight = _comment.lineHeight;
+      }
+      comment.fontSize = (comment.charSize || 0) * 0.8;
+      result = measure(comment as measureInput);
+      width = result.width;
+      height = result.height;
+      itemWidth = result.itemWidth;
+    }
+
     for (let i = 0; i < comment.content.length; i++) {
       const item = comment.content[i];
-      if (item === undefined) continue;
-      const lines = item.content.split("\n");
-      const widths = [];
-
-      this.context.font = parseFont(
-        item.font || comment.font,
-        comment.fontSize
-      );
-      for (let i = 0; i < lines.length; i++) {
-        const measure = this.context.measureText(lines[i] as string);
-        currentWidth += measure.width;
-        widths.push(measure.width);
-        if (i < lines.length - 1) {
-          width_arr.push(currentWidth);
-          currentWidth = 0;
-        }
-      }
-      width_arr.push(currentWidth);
-      item.width = widths;
+      if (!item || !itemWidth) continue;
+      item.width = itemWidth[i];
     }
-    const width = width_arr.reduce((p, c) => p + c, 0) / width_arr.length;
-    let width_max = Math.max(...width_arr);
-    const width_min = Math.min(...width_arr),
-      height =
-        comment.fontSize *
-          comment.lineHeight *
-          (1 +
-            getConfig(config.commentYPaddingTop, comment.flash)[comment.size]) *
-          (lineCount - 1) +
-        comment.fontSize * comment.lineHeight +
-        getConfig(config.commentYMarginBottom, comment.flash)[comment.size] *
-          comment.lineHeight *
-          comment.fontSize;
-    const widthLimit = getConfig(config.commentWidthLimit, comment.flash)[
-      comment.full ? "full" : "default"
-    ];
-    if (comment.loc !== "naka" && !comment.resizedY) {
-      if (width_max > widthLimit) {
-        while (width_max > widthLimit) {
-          width_max /= 1.331;
-          comment.fontSize -= 3;
-        }
-        comment.resized = true;
-        comment.resizedX = true;
-        this.context.font = parseFont(comment.font, comment.fontSize);
-        return this.measureText(comment);
-      }
-    } else if (
-      comment.loc !== "naka" &&
-      comment.resizedY &&
-      width_max > widthLimit &&
-      !comment.resizedX
-    ) {
-      comment.fontSize = configFontSize[comment.size].default;
-      comment.lineHeight = configLineHeight[comment.size].default * 1.05;
-      comment.resized = true;
-      comment.resizedX = true;
-      this.context.font = parseFont(comment.font, comment.fontSize);
-      return this.measureText(comment);
-    } else if (comment.loc !== "naka" && comment.resizedY && comment.resizedX) {
-      if (comment.full && width_max > configDoubleResizeMaxWidth.full) {
-        while (width_max > configDoubleResizeMaxWidth.full) {
-          width_max /= 1.331;
-          comment.fontSize -= 3;
-        }
-        this.context.font = parseFont(comment.font, comment.fontSize);
-        return this.measureText(comment);
-      } else if (
-        !comment.full &&
-        width_max > configDoubleResizeMaxWidth.normal
-      ) {
-        while (width_max > configDoubleResizeMaxWidth.normal) {
-          width_max /= 1.331;
-          comment.fontSize -= 3;
-        }
-        this.context.font = parseFont(comment.font, comment.fontSize);
-        return this.measureText(comment);
-      }
-    }
+    comment.fontSize = (comment.charSize || 0) * 0.8;
+    const scale = getConfig(config.commentScale, comment.flash);
     return {
-      width: width,
-      width_max: width_max,
-      width_min: width_min,
-      height: height,
+      width: width * scale,
+      height: height * scale,
       resized: !!comment.resized,
       fontSize: comment.fontSize,
-      lineHeight: comment.lineHeight,
+      lineHeight: comment.lineHeight || 0,
       content: comment.content as commentMeasuredContentItem[],
       resizedX: !!comment.resizedX,
       resizedY: !!comment.resizedY,
+      charSize: comment.charSize || 0,
     };
   }
 
@@ -511,28 +485,28 @@ class NiconiComments {
     for (const range of this.nicoScripts.ban) {
       if (range.start < vpos && vpos < range.end) return;
     }
-    let posX = (config.canvasWidth - comment.width_max) / 2,
+    let posX = (config.canvasWidth - comment.width) / 2,
       posY = comment.posY;
     if (comment.loc === "naka") {
       if (reverse) {
         posX =
           config.canvasWidth +
-          comment.width_max -
+          comment.width -
           getPosX(
-            comment.width_max,
+            comment.width,
             vpos - comment.vpos,
             comment.long,
             comment.flash
           );
       } else {
         posX = getPosX(
-          comment.width_max,
+          comment.width,
           vpos - comment.vpos,
           comment.long,
           comment.flash
         );
       }
-      if (posX > config.canvasWidth || posX + comment.width_max < 0) {
+      if (posX > config.canvasWidth || posX + comment.width < 0) {
         return;
       }
     } else if (comment.loc === "shita") {
@@ -542,23 +516,17 @@ class NiconiComments {
       this.context.drawImage(comment.image, posX, posY);
     }
     if (this.showCollision) {
+      const scale = getConfig(config.commentScale, comment.flash);
       this.context.strokeStyle = "rgba(0,255,255,1)";
-      this.context.strokeRect(posX, posY, comment.width_max, comment.height);
+      this.context.strokeRect(posX, posY, comment.width, comment.height);
       for (let i = 0; i < comment.lineCount; i++) {
-        const linePosY =
-          comment.fontSize * comment.lineHeight +
-          Number(i) *
-            (comment.fontSize * comment.lineHeight) *
-            (1 +
-              getConfig(config.commentYPaddingTop, comment.flash)[
-                comment.size
-              ]);
+        const linePosY = comment.lineHeight * (i + 1) * scale;
         this.context.strokeStyle = "rgba(255,255,0,0.5)";
         this.context.strokeRect(
           posX,
           posY + linePosY,
-          comment.width_max,
-          comment.fontSize * comment.lineHeight * -1
+          comment.width,
+          comment.lineHeight * -1 * scale
         );
       }
     }
@@ -603,8 +571,8 @@ class NiconiComments {
       }
     }
     const image = document.createElement("canvas");
-    image.width = value.width_max;
-    image.height = value.height;
+    image.width = value.width + 19.5 * 2 * 2;
+    image.height = value.height + 19.5 * 2 * 2;
     const context = image.getContext("2d");
     if (!context) throw new Error("Fail to get CanvasRenderingContext2D");
     context.strokeStyle = `rgba(${hex2rgb(
@@ -614,8 +582,11 @@ class NiconiComments {
     ).join(",")},${config.contextStrokeOpacity})`;
     context.textAlign = "start";
     context.textBaseline = "alphabetic";
-    context.lineWidth = 4;
-    context.font = parseFont(value.font, value.fontSize);
+    context.lineWidth = config.contextLineWidth;
+    const { fontSize, scale } = getFontSizeAndScale(value.charSize);
+    context.font = parseFont(value.font, fontSize);
+    const drawScale = getConfig(config.commentScale, value.flash) * scale;
+    context.scale(drawScale, drawScale);
     if (value._live) {
       context.fillStyle = `rgba(${hex2rgb(value.color).join(",")},${
         config.contextFillLiveOpacity
@@ -623,7 +594,6 @@ class NiconiComments {
     } else {
       context.fillStyle = value.color;
     }
-    const lineOffset = value.lineOffset;
     let lastFont = value.font,
       leftOffset = 0,
       lineCount = 0;
@@ -638,17 +608,10 @@ class NiconiComments {
       for (let j = 0; j < lines.length; j++) {
         const line = lines[j];
         if (line === undefined) continue;
+        console.log(config.fonts, value.font);
         const posY =
-          value.fontSize * value.lineHeight +
-          (lineOffset + lineCount) *
-            (value.fontSize * value.lineHeight) *
-            (1 +
-              getConfig(config.commentYPaddingTop, value.flash)[value.size]) +
-          value.fontSize *
-            value.lineHeight *
-            getConfig(config.commentYOffset, value.flash)[value.size][
-              value.resizedY ? "resized" : "default"
-            ];
+          value.lineHeight * (lineCount + 1) + value.lineHeight * -0.16;
+        //(config.fonts[value.font as unknown as HTML5Fonts]?.offset || 0);
         context.strokeText(line, leftOffset, posY);
         context.fillText(line, leftOffset, posY);
         if (j < lines.length - 1) {
@@ -1059,9 +1022,9 @@ class NiconiComments {
   drawCanvas(vpos: number, forceRendering = false) {
     const drawCanvasStart = performance.now();
     if (this.lastVpos === vpos && !forceRendering) return;
+    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.lastVpos = vpos;
     this.fpsCount++;
-    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     if (this.video) {
       let scale;
       const height = this.canvas.height / this.video.videoHeight,

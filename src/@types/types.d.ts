@@ -124,13 +124,12 @@ type formattedCommentWithFont = {
 type formattedCommentWithSize = formattedCommentWithFont & {
   height: number;
   width: number;
-  width_max: number;
-  width_min: number;
   lineHeight: number;
   resized: boolean;
   resizedX: boolean;
   resizedY: boolean;
   content: commentMeasuredContentItem[];
+  charSize: number;
 };
 type parsedComment = formattedCommentWithSize & {
   posY: number;
@@ -204,8 +203,6 @@ type nicoScriptDefault = {
 };
 type measureTextResult = {
   width: number;
-  width_max: number;
-  width_min: number;
   height: number;
   resized: boolean;
   resizedX: boolean;
@@ -213,6 +210,7 @@ type measureTextResult = {
   fontSize: number;
   lineHeight: number;
   content: commentMeasuredContentItem[];
+  charSize: number;
 };
 type parsedCommand = {
   loc: commentLoc | undefined;
@@ -227,7 +225,7 @@ type parsedCommand = {
   long: number | undefined;
 };
 
-type measureTextInput = {
+interface measureTextInput {
   content: commentContentItem[];
   resized?: boolean;
   ender: boolean;
@@ -238,8 +236,22 @@ type measureTextInput = {
   font: commentFont;
   loc: commentLoc;
   full: boolean;
-  lineHeight?: number;
   flash: boolean;
+  lineCount: number;
+  lineHeight?: number;
+  charSize?: number;
+}
+
+interface measureTextParam extends measureTextInput {
+  lineHeight: number;
+  charSize: number;
+}
+
+type measureInput = {
+  font: commentFont;
+  content: commentContentItem[];
+  lineHeight: number;
+  charSize: number;
   lineCount: number;
 };
 
@@ -282,11 +294,32 @@ type flashCharList = {
   [key in "simsunStrong" | "simsunWeak" | "gulim" | "gothic"]: string;
 };
 type fontList = {
-  [key in "gothic" | "mincho" | "defont" | "gulim" | "simsun"]: string;
+  [key in "gulim" | "simsun"]: string;
 };
 type flashMode = "xp" | "vista";
 type flashScriptChar = {
   [key in "super" | "sub"]: string;
+};
+type commentStageSize = { width: number; fullWidth: number; height: number };
+type lineCounts = {
+  [key in "default" | "resized" | "doubleResized"]: configSizeItem<number>;
+};
+type platform =
+  | "win7"
+  | "win8_1"
+  | "win"
+  | "mac10_9"
+  | "mac10_11"
+  | "mac"
+  | "other";
+type HTML5Fonts = "gothic" | "mincho" | "defont";
+type FontItem = {
+  font: string;
+  offset: number;
+  weight: number;
+};
+type platformFont = {
+  [key in HTML5Fonts]: FontItem;
 };
 type Config = {
   cacheAge: number;
@@ -297,10 +330,12 @@ type Config = {
   colors: { [key: string]: string };
   commentDrawPadding: configItem<number>;
   commentDrawRange: configItem<number>;
-  commentWidthLimit: configItem<configFullItem<number>>;
+  commentResizeStep: configItem<number>;
+  commentScale: configItem<number>;
+  commentStageSize: configItem<commentStageSize>;
   commentYMarginBottom: configItem<configSizeItem<number>>;
   commentYOffset: configItem<configSizeItem<configResizedItem<number>>>;
-  commentYPaddingTop: configItem<configSizeItem<number>>;
+  commentYPaddingTop: configItem<configSizeItem<configResizedItem<number>>>;
   contextFillLiveOpacity: number;
   contextLineWidth: number;
   contextStrokeColor: string;
@@ -312,9 +347,12 @@ type Config = {
   flashScriptChar: flashScriptChar;
   flashThreshold: number;
   font: fontList;
+  fonts: platformFont;
   fontSize: configItem<configSizeItem<configResizedItem<number>>>;
   fpsInterval: number;
+  lineCounts: configItem<lineCounts>;
   lineHeight: configItem<configSizeItem<configResizedItem<number>>>;
+  minFontSize: number;
   sameCAGap: number;
   sameCAMinScore: number;
   sameCARange: number;
@@ -329,10 +367,12 @@ type ConfigNullable = {
   colors?: { [key: string]: string };
   commentDrawPadding?: configItem<number>;
   commentDrawRange?: configItem<number>;
-  commentWidthLimit?: configItem<configFullItem<number>>;
+  commentResizeStep?: configItem<number>;
+  commentScale?: configItem<number>;
+  commentStageSize?: configItem<commentStageSize>;
   commentYMarginBottom?: configItem<configSizeItem<number>>;
   commentYOffset?: configItem<configSizeItem<number>>;
-  commentYPaddingTop?: configItem<configSizeItem<number>>;
+  commentYPaddingTop?: configItem<configSizeItem<configResizedItem<number>>>;
   contextFillLiveOpacity?: number;
   contextLineWidth?: number;
   contextStrokeColor?: string;
@@ -346,13 +386,15 @@ type ConfigNullable = {
   font?: fontList;
   fontSize?: configItem<configSizeItem<configResizedItem<number>>>;
   fpsInterval?: number;
+  lineCounts?: configItem<lineCounts>;
   lineHeight?: configItem<configSizeItem<configResizedItem<number>>>;
+  minFontSize?: number;
   sameCAGap?: number;
   sameCAMinScore?: number;
   sameCARange?: number;
 };
 
-type configItem<T> = T | { [key in "html5" | "flash"]: T };
+type configItem<T> = T | { html5: T; flash: T };
 
 type configSizeItem<T> = { big: T; medium: T; small: T };
 type configResizedItem<T> = { default: T; resized: T };

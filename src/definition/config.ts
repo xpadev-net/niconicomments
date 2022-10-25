@@ -46,7 +46,7 @@ const defaultConfig: Config = {
 
   commentScale: {
     html5: 1920 / 683,
-    flash: 1920 / 672,
+    flash: 1920 / 640,
   },
 
   commentStageSize: {
@@ -57,7 +57,7 @@ const defaultConfig: Config = {
     },
     flash: {
       width: 512,
-      fullWidth: 640,
+      fullWidth: 620,
       height: 385,
     },
   },
@@ -80,15 +80,15 @@ const defaultConfig: Config = {
     flash: {
       small: {
         default: 18,
-        resized: 9,
+        resized: 10,
       },
       medium: {
-        default: 27,
-        resized: 13.5,
+        default: 29,
+        resized: 14.5,
       },
       big: {
-        default: 39,
-        resized: 19.5,
+        default: 45,
+        resized: 24,
       },
     },
   },
@@ -96,22 +96,52 @@ const defaultConfig: Config = {
    * html5
    */
   lineCounts: {
-    default: {
-      big: 8.4,
-      medium: 13.1,
-      small: 21,
+    html5: {
+      default: {
+        big: 8.4,
+        medium: 13.1,
+        small: 21,
+      },
+      resized: {
+        big: 16,
+        medium: 25.4,
+        small: 38,
+      },
+      doubleResized: {
+        big: 7.8,
+        medium: 11.3,
+        small: 16.6,
+      },
     },
-    resized: {
-      big: 16,
-      medium: 25.4,
-      small: 38,
-    },
-    doubleResized: {
-      big: 7.8,
-      medium: 11.3,
-      small: 16.6,
+    flash: {
+      default: {
+        big: 8.4,
+        medium: 13.1,
+        small: 21,
+      },
+      resized: {
+        big: 16,
+        medium: 25.4,
+        small: 38,
+      },
+      doubleResized: {
+        big: 7.5,
+        medium: 11.3,
+        small: 16.6,
+      },
     },
   },
+  /**
+   * flash
+   */
+  commentYPadding: {
+    default: 5,
+    resized: 3,
+  },
+  commentYOffset: 0,
+  /**
+   * end flash
+   */
   minFontSize: 10,
   fonts: fonts[platform],
   /**

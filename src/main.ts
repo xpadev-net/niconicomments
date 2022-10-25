@@ -356,6 +356,10 @@ class NiconiComments {
    * @returns {{resized: boolean, width: number, width: number, fontSize: number, width_min: number, height: number, lineHeight: number}} - 描画サイズとリサイズの情報
    */
   measureText(comment: measureTextInput): measureTextResult {
+    const widthLimit = getConfig(config.commentStageSize, comment.flash)[
+        comment.full ? "fullWidth" : "width"
+      ],
+      scale = getConfig(config.commentScale, comment.flash);
     const configFontSize = getConfig(config.fontSize, comment.flash),
       lineHeight = getLineHeight(comment.size, comment.flash),
       charSize = getCharSize(comment.size, comment.flash);
@@ -388,9 +392,6 @@ class NiconiComments {
       width = measureResult.width;
       itemWidth = measureResult.itemWidth;
     }
-    const widthLimit = getConfig(config.commentStageSize, comment.flash)[
-      comment.full ? "fullWidth" : "width"
-    ];
     if (comment.loc !== "naka" && width > widthLimit) {
       const scale = widthLimit / width;
       comment.resizedX = true;
@@ -440,7 +441,6 @@ class NiconiComments {
       item.width = itemWidth[i];
     }
     comment.fontSize = (comment.charSize || 0) * 0.8;
-    const scale = getConfig(config.commentScale, comment.flash);
     return {
       width: width * scale,
       height: height * scale,
@@ -502,6 +502,7 @@ class NiconiComments {
       posY = config.canvasHeight - comment.posY - comment.height;
     }
     if (comment.image && comment.image !== true) {
+      console.log("pos", posX, posY, comment.image.width, comment.image.height);
       this.context.drawImage(comment.image, posX, posY);
     }
     if (this.showCollision) {
@@ -509,7 +510,23 @@ class NiconiComments {
       this.context.strokeStyle = "rgba(0,255,255,1)";
       this.context.strokeRect(posX, posY, comment.width, comment.height);
       for (let i = 0; i < comment.lineCount; i++) {
-        const linePosY = comment.lineHeight * (i + 1) * scale;
+        const linePosY =
+          (function () {
+            if (comment.flash) {
+              return (
+                (comment.lineOffset + i + 1) * comment.fontSize +
+                config.commentYPadding[
+                  comment.resizedY ? "resized" : "default"
+                ] /
+                  2
+              );
+            }
+            return (
+              comment.lineHeight * (i + 1) +
+              comment.lineHeight * -0.16 +
+              (config.fonts[comment.font as unknown as HTML5Fonts]?.offset || 0)
+            );
+          })() * scale;
         this.context.strokeStyle = "rgba(255,255,0,0.5)";
         this.context.strokeRect(
           posX,
@@ -560,8 +577,8 @@ class NiconiComments {
       }
     }
     const image = document.createElement("canvas");
-    image.width = value.width + 19.5 * 2 * 2;
-    image.height = value.height + 19.5 * 2 * 2;
+    image.width = value.width + 2 * 2 * value.charSize;
+    image.height = value.height - (value.charSize - value.lineHeight);
     const context = image.getContext("2d");
     if (!context) throw new Error("Fail to get CanvasRenderingContext2D");
     context.strokeStyle = `rgba(${hex2rgb(
@@ -572,9 +589,12 @@ class NiconiComments {
     context.textAlign = "start";
     context.textBaseline = "alphabetic";
     context.lineWidth = config.contextLineWidth;
-    const { fontSize, scale } = getFontSizeAndScale(value.charSize);
+    const { fontSize, scale } = (function () {
+      return getFontSizeAndScale(value.charSize);
+    })();
     context.font = parseFont(value.font, fontSize);
     const drawScale = getConfig(config.commentScale, value.flash) * scale;
+    console.log(fontSize, scale, drawScale, value.width);
     context.scale(drawScale, drawScale);
     if (value._live) {
       context.fillStyle = `rgba(${hex2rgb(value.color).join(",")},${
@@ -600,10 +620,20 @@ class NiconiComments {
       for (let j = 0; j < lines.length; j++) {
         const line = lines[j];
         if (line === undefined) continue;
-        const posY =
-          value.lineHeight * (lineCount + 1) +
-          value.lineHeight * -0.16 +
-          (config.fonts[value.font as unknown as HTML5Fonts]?.offset || 0);
+        const posY = (function () {
+          if (value.flash) {
+            return (
+              (value.lineOffset + lineCount + 1) * value.fontSize +
+              config.commentYPadding[value.resizedY ? "resized" : "default"] / 2
+            );
+          }
+          return (
+            value.lineHeight * (lineCount + 1) +
+            value.lineHeight * -0.16 +
+            (config.fonts[value.font as unknown as HTML5Fonts]?.offset || 0)
+          );
+        })();
+        console.log(context.measureText(line));
         context.strokeText(line, leftOffset, posY);
         context.fillText(line, leftOffset, posY);
         if (j < lines.length - 1) {
@@ -633,7 +663,8 @@ class NiconiComments {
    * @returns {{loc: string|undefined, size: string|undefined, color: string|undefined, fontSize: number|undefined, ender: boolean, font: string|undefined, full: boolean, _live: boolean, invisible: boolean, long:number|undefined}}
    */
   parseCommand(comment: formattedComment): parsedCommand {
-    const metadata = comment.mail;
+    const metadata = comment.mail,
+      isFlash = isFlashComment(comment);
     const result: parsedCommand = {
       loc: undefined,
       size: undefined,
@@ -655,7 +686,7 @@ class NiconiComments {
         result.loc = command;
       } else if (result.size === undefined && typeGuard.comment.size(command)) {
         result.size = command;
-        result.fontSize = getConfig(config.fontSize)[command].default;
+        result.fontSize = getConfig(config.fontSize, isFlash)[command].default;
       } else {
         if (result.color === undefined) {
           const color = config.colors[command];
@@ -878,7 +909,7 @@ class NiconiComments {
     }
     if (!data.size) {
       data.size = size || "medium";
-      data.fontSize = getConfig(config.fontSize)[data.size].default;
+      data.fontSize = getConfig(config.fontSize, isFlash)[data.size].default;
     }
     if (!data.font) {
       data.font = font || "defont";
@@ -991,10 +1022,10 @@ class NiconiComments {
     const lineOffset = isFlash
       ? (comment.content.match(new RegExp(config.flashScriptChar.super, "g"))
           ?.length || 0) *
-          -0.1 +
+          -0.15 +
         (comment.content.match(new RegExp(config.flashScriptChar.sub, "g"))
           ?.length || 0) *
-          0.1
+          0.4
       : 0;
     return {
       ...comment,

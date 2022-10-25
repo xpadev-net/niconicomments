@@ -332,6 +332,8 @@ type Config = {
   commentDrawRange: configItem<number>;
   commentScale: configItem<number>;
   commentStageSize: configItem<commentStageSize>;
+  commentYPadding: configResizedItem<number>;
+  commentYOffset: number;
   contextFillLiveOpacity: number;
   contextLineWidth: number;
   contextStrokeColor: string;

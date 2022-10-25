@@ -57,7 +57,7 @@ const defaultConfig: Config = {
     },
     flash: {
       width: 512,
-      fullWidth: 672,
+      fullWidth: 640,
       height: 385,
     },
   },
@@ -80,15 +80,15 @@ const defaultConfig: Config = {
     flash: {
       small: {
         default: 18,
-        resized: 10,
+        resized: 9,
       },
       medium: {
         default: 27,
-        resized: 14,
+        resized: 13.5,
       },
       big: {
         default: 39,
-        resized: 20,
+        resized: 19.5,
       },
     },
   },

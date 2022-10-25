@@ -10,7 +10,6 @@ const platform: platform = (function (ua) {
   return "other";
 })(navigator.userAgent);
 
-console.log(platform);
 const defaultConfig: Config = {
   /**
    * コマンドとカラーコードの対応表
@@ -57,7 +56,7 @@ const defaultConfig: Config = {
       height: 384,
     },
     flash: {
-      width: 554,
+      width: 512,
       fullWidth: 672,
       height: 385,
     },
@@ -93,40 +92,24 @@ const defaultConfig: Config = {
       },
     },
   },
+  /**
+   * html5
+   */
   lineCounts: {
-    html5: {
-      default: {
-        big: 8.4,
-        medium: 13.1,
-        small: 21,
-      },
-      resized: {
-        big: 16,
-        medium: 25.4,
-        small: 38,
-      },
-      doubleResized: {
-        big: 7.8,
-        medium: 11.3,
-        small: 16.6,
-      },
+    default: {
+      big: 8.4,
+      medium: 13.1,
+      small: 21,
     },
-    flash: {
-      default: {
-        big: 8.4,
-        medium: 13.1,
-        small: 21,
-      },
-      resized: {
-        big: 16,
-        medium: 25.4,
-        small: 38,
-      },
-      doubleResized: {
-        big: 7.8,
-        medium: 11.3,
-        small: 16.6,
-      },
+    resized: {
+      big: 16,
+      medium: 25.4,
+      small: 38,
+    },
+    doubleResized: {
+      big: 7.8,
+      medium: 11.3,
+      small: 16.6,
     },
   },
   minFontSize: 10,
@@ -230,7 +213,7 @@ const defaultConfig: Config = {
    * vista -> 1又は2種類のみに制限
    * 参考: https://w.atwiki.jp/commentart/pages/44.html
    */
-  flashMode: "xp",
+  flashMode: "vista",
 
   /**
    * Flash版の上付き・下付き文字

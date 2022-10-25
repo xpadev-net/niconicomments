@@ -359,7 +359,6 @@ class NiconiComments {
     const configFontSize = getConfig(config.fontSize, comment.flash),
       lineHeight = getLineHeight(comment.size, comment.flash),
       charSize = getCharSize(comment.size, comment.flash);
-    console.log(lineHeight, charSize);
     const lineCount = comment.lineCount;
     if (!comment.lineHeight) comment.lineHeight = lineHeight;
     if (!comment.charSize) comment.charSize = charSize;
@@ -385,7 +384,6 @@ class NiconiComments {
       itemWidth = measureResult.itemWidth;
     } else {
       const measureResult = measure(comment as measureInput);
-      console.log(measureResult);
       height = measureResult.height;
       width = measureResult.width;
       itemWidth = measureResult.itemWidth;
@@ -393,7 +391,6 @@ class NiconiComments {
     const widthLimit = getConfig(config.commentStageSize, comment.flash)[
       comment.full ? "fullWidth" : "width"
     ];
-    console.log(width, widthLimit, comment);
     if (comment.loc !== "naka" && width > widthLimit) {
       const scale = widthLimit / width;
       comment.resizedX = true;
@@ -592,7 +589,10 @@ class NiconiComments {
     for (let i = 0; i < value.content.length; i++) {
       const item = value.content[i];
       if (!item) continue;
-      if (lastFont !== (item.font || value.font)) {
+      if (
+        (config.flashMode === "xp" && lastFont !== (item.font || value.font)) ||
+        (config.flashMode === "vista" && item.font && lastFont != item.font)
+      ) {
         lastFont = item.font || value.font;
         context.font = parseFont(lastFont, value.fontSize);
       }
@@ -600,10 +600,10 @@ class NiconiComments {
       for (let j = 0; j < lines.length; j++) {
         const line = lines[j];
         if (line === undefined) continue;
-        console.log(config.fonts, value.font);
         const posY =
-          value.lineHeight * (lineCount + 1) + value.lineHeight * -0.16;
-        //(config.fonts[value.font as unknown as HTML5Fonts]?.offset || 0);
+          value.lineHeight * (lineCount + 1) +
+          value.lineHeight * -0.16 +
+          (config.fonts[value.font as unknown as HTML5Fonts]?.offset || 0);
         context.strokeText(line, leftOffset, posY);
         context.fillText(line, leftOffset, posY);
         if (j < lines.length - 1) {

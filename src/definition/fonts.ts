@@ -1,5 +1,4 @@
 const build = (fonts: FontItem[]): FontItem => {
-  console.log(fonts);
   return fonts.reduce(
     (pv, val, index) => {
       if (index === 0) {

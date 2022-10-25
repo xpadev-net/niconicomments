@@ -36,8 +36,6 @@ class NiconiComments {
   public showCommentCount: boolean;
   public video: HTMLVideoElement | undefined;
   private data: parsedComment[];
-  private fps: number;
-  private fpsCount: number;
   private lastVpos: number;
   private readonly cacheIndex: { [key: string]: number };
   private readonly canvas: HTMLCanvasElement;
@@ -116,12 +114,6 @@ class NiconiComments {
     this.data = [];
     this.lastVpos = -1;
     this.preRendering(parsedData, options.drawAllImageOnLoad);
-    this.fpsCount = 0;
-    this.fps = 0;
-    window.setInterval(() => {
-      this.fps = this.fpsCount * (1000 / config.fpsInterval);
-      this.fpsCount = 0;
-    }, config.fpsInterval);
     logger(`constructor complete: ${performance.now() - constructorStart}ms`);
   }
 
@@ -1024,7 +1016,6 @@ class NiconiComments {
     if (this.lastVpos === vpos && !forceRendering) return;
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.lastVpos = vpos;
-    this.fpsCount++;
     if (this.video) {
       let scale;
       const height = this.canvas.height / this.video.videoHeight,
@@ -1067,8 +1058,10 @@ class NiconiComments {
       this.context.strokeStyle = `rgba(${hex2rgb(
         config.contextStrokeColor
       ).join(",")},${config.contextStrokeOpacity})`;
-      this.context.strokeText(`FPS:${this.fps}`, 100, 100);
-      this.context.fillText(`FPS:${this.fps}`, 100, 100);
+      const drawTime = performance.now() - drawCanvasStart;
+      const fps = Math.floor(1000 / (drawTime === 0 ? 1 : drawTime));
+      this.context.strokeText(`FPS:${fps}(${drawTime}ms)`, 100, 100);
+      this.context.fillText(`FPS:${fps}(${drawTime}ms)`, 100, 100);
     }
     if (this.showCommentCount) {
       this.context.font = parseFont("defont", 60);

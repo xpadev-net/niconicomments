@@ -1,6 +1,6 @@
 import { getConfig, parseFont } from "@/util";
 import { config } from "@/definition/config";
-import { context } from "@/definition/context";
+import { context } from "@/contexts/canvas";
 
 /**
  * 各サイズの行高を返す

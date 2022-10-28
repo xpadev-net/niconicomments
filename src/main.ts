@@ -26,6 +26,7 @@ import {
   getLineHeight,
   measure,
 } from "@/nico";
+import { HTML5Comment } from "@/html5/HTML5Comment";
 
 let isDebug = false;
 
@@ -35,7 +36,7 @@ class NiconiComments {
   public showFPS: boolean;
   public showCommentCount: boolean;
   public video: HTMLVideoElement | undefined;
-  private data: parsedComment[];
+  private data: (parsedComment | HTML5Comment)[];
   private lastVpos: number;
   private readonly cacheIndex: { [key: string]: number };
   private readonly canvas: HTMLCanvasElement;
@@ -128,8 +129,13 @@ class NiconiComments {
     if (options.keepCA) {
       rawData = changeCALayer(rawData);
     }
-    const parsedData: parsedComment[] = this.getCommentPos(
-      this.getCommentSize(this.getFont(rawData)) as parsedComment[]
+    const parsedData: (parsedComment | HTML5Comment)[] = this.getCommentPos(
+      rawData.reduce((pv, val) => {
+        if (!isFlashComment(val)) {
+          pv.push(new HTML5Comment(val, this.context));
+        }
+        return pv;
+      }, [] as HTML5Comment[])
     );
     this.data = this.sortComment(parsedData);
     if (drawAll) {
@@ -203,7 +209,7 @@ class NiconiComments {
   /**
    * 計算された描画サイズをもとに各コメントの配置位置を決定する
    */
-  getCommentPos(data: parsedComment[]) {
+  getCommentPos(data: parsedComment[] | HTML5Comment[]) {
     const getCommentPosStart = performance.now();
     data.forEach((comment, index) => {
       if (comment.invisible) return;
@@ -329,7 +335,7 @@ class NiconiComments {
   /**
    * 投稿者コメントを前に移動
    */
-  sortComment(parsedData: parsedComment[]) {
+  sortComment(parsedData: (parsedComment | HTML5Comment)[]) {
     const sortCommentStart = performance.now();
     for (const vpos of Object.keys(this.timeline)) {
       const item = this.timeline[Number(vpos)];
@@ -532,7 +538,7 @@ class NiconiComments {
           posX,
           posY + linePosY,
           comment.width,
-          comment.lineHeight * -1 * scale
+          comment.fontSize * -1 * scale
         );
       }
     }
@@ -554,7 +560,8 @@ class NiconiComments {
    */
   getTextImage(i: number, preRendering = false) {
     const value = this.data[i];
-    if (!value || value.invisible) return;
+    if (!value || value.invisible || value instanceof HTML5Comment) return;
+    console.log("i");
     const cacheKey =
         JSON.stringify(value.content) +
         "@@@" +
@@ -1073,13 +1080,17 @@ class NiconiComments {
         if (!comment || comment.invisible) {
           continue;
         }
-        if (comment.image === undefined) {
-          this.getTextImage(index);
-        }
-        try {
-          this.drawText(comment, vpos);
-        } catch (e) {
-          comment.image = false;
+        if (comment instanceof HTML5Comment) {
+          comment.draw(vpos, this.showCollision, isDebug);
+        } else {
+          if (comment.image === undefined) {
+            this.getTextImage(index);
+          }
+          try {
+            this.drawText(comment, vpos);
+          } catch (e) {
+            comment.image = false;
+          }
         }
       }
     }
@@ -1089,7 +1100,7 @@ class NiconiComments {
       this.context.strokeStyle = `rgba(${hex2rgb(
         config.contextStrokeColor
       ).join(",")},${config.contextStrokeOpacity})`;
-      const drawTime = performance.now() - drawCanvasStart;
+      const drawTime = Math.floor(performance.now() - drawCanvasStart);
       const fps = Math.floor(1000 / (drawTime === 0 ? 1 : drawTime));
       this.context.strokeText(`FPS:${fps}(${drawTime}ms)`, 100, 100);
       this.context.fillText(`FPS:${fps}(${drawTime}ms)`, 100, 100);

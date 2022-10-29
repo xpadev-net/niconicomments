@@ -508,7 +508,6 @@ class NiconiComments {
       posY = config.canvasHeight - comment.posY - comment.height;
     }
     if (comment.image && comment.image !== true) {
-      console.log("pos", posX, posY, comment.image.width, comment.image.height);
       this.context.drawImage(comment.image, posX, posY);
     }
     if (this.showCollision) {
@@ -561,7 +560,6 @@ class NiconiComments {
   getTextImage(i: number, preRendering = false) {
     const value = this.data[i];
     if (!value || value.invisible || value instanceof HTML5Comment) return;
-    console.log("i");
     const cacheKey =
         JSON.stringify(value.content) +
         "@@@" +
@@ -601,7 +599,6 @@ class NiconiComments {
     })();
     context.font = parseFont(value.font, fontSize);
     const drawScale = getConfig(config.commentScale, value.flash) * scale;
-    console.log(fontSize, scale, drawScale, value.width);
     context.scale(drawScale, drawScale);
     if (value._live) {
       context.fillStyle = `rgba(${hex2rgb(value.color).join(",")},${
@@ -640,7 +637,6 @@ class NiconiComments {
             (config.fonts[value.font as unknown as HTML5Fonts]?.offset || 0)
           );
         })();
-        console.log(context.measureText(line));
         context.strokeText(line, leftOffset, posY);
         context.fillText(line, leftOffset, posY);
         if (j < lines.length - 1) {

@@ -478,7 +478,6 @@ class HTML5Comment implements IComment {
   }
 
   draw(vpos: number, showCollision: boolean, debug: boolean) {
-    console.log(Object.keys(imageCache).length);
     let reverse = false;
     for (const range of nicoScripts.reverse) {
       if (
@@ -602,7 +601,6 @@ class HTML5Comment implements IComment {
     const { fontSize, scale } = getFontSizeAndScale(this.comment.charSize);
     context.font = parseFont(this.comment.font, fontSize);
     const drawScale = getConfig(config.commentScale, false) * scale;
-    console.log(measure(this.comment), scale, drawScale, this.comment);
     context.scale(drawScale, drawScale);
     if (this.comment._live) {
       context.fillStyle = `rgba(${hex2rgb(this.comment.color).join(",")},${

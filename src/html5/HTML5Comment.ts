@@ -602,6 +602,7 @@ class HTML5Comment implements IComment {
     const { fontSize, scale } = getFontSizeAndScale(this.comment.charSize);
     context.font = parseFont(this.comment.font, fontSize);
     const drawScale = getConfig(config.commentScale, false) * scale;
+    console.log(measure(this.comment), scale, drawScale, this.comment);
     context.scale(drawScale, drawScale);
     if (this.comment._live) {
       context.fillStyle = `rgba(${hex2rgb(this.comment.color).join(",")},${
@@ -629,10 +630,11 @@ class HTML5Comment implements IComment {
         const line = lines[j];
         if (line === undefined) continue;
         const posY =
-          this.comment.lineHeight * (lineCount + 1) +
-          this.comment.lineHeight * -0.16 +
-          (config.fonts[this.comment.font as unknown as HTML5Fonts]?.offset ||
-            0);
+          (this.comment.lineHeight * (lineCount + 1) +
+            this.comment.lineHeight * -0.16 +
+            (config.fonts[this.comment.font as unknown as HTML5Fonts]?.offset ||
+              0)) /
+          scale;
         context.strokeText(line, leftOffset, posY);
         context.fillText(line, leftOffset, posY);
         if (j < lines.length - 1) {

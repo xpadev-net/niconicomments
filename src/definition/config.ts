@@ -1,4 +1,5 @@
 import { fonts } from "@/definition/fonts";
+import { colors } from "@/definition/colors";
 
 const platform: platform = (function (ua) {
   if (ua.match(/windows nt 6\.[12]/i)) return "win7";
@@ -12,43 +13,42 @@ const platform: platform = (function (ua) {
 
 const defaultConfig: Config = {
   /**
-   * コマンドとカラーコードの対応表
+   * 色コマンド・カラコ対応
+   * -> src/definition/color.ts
    */
-  colors: {
-    white: "#FFFFFF",
-    red: "#FF0000",
-    pink: "#FF8080",
-    orange: "#FFC000",
-    yellow: "#FFFF00",
-    green: "#00FF00",
-    cyan: "#00FFFF",
-    blue: "#0000FF",
-    purple: "#C000FF",
-    black: "#000000",
-    white2: "#CCCC99",
-    niconicowhite: "#CCCC99",
-    red2: "#CC0033",
-    truered: "#CC0033",
-    pink2: "#FF33CC",
-    orange2: "#FF6600",
-    passionorange: "#FF6600",
-    yellow2: "#999900",
-    madyellow: "#999900",
-    green2: "#00CC66",
-    elementalgreen: "#00CC66",
-    cyan2: "#00CCCC",
-    blue2: "#3399FF",
-    marinblue: "#3399FF",
-    purple2: "#6633CC",
-    nobleviolet: "#6633CC",
-    black2: "#666666",
-  },
+  colors: colors,
+  /**
+   * fillColorが#000000以外の時の枠線の色
+   */
+  contextStrokeColor: "#000000",
+  /**
+   * fillColorが#000000の時の枠線の色
+   */
+  contextStrokeInversionColor: "#FFFFFF",
+  /**
+   * 枠線の透明度
+   */
+  contextStrokeOpacity: 0.4,
+  /**
+   * _liveコマンドの透明度
+   */
+  contextFillLiveOpacity: 0.5,
+  /**
+   * 縁取り線の太さ
+   */
+  contextLineWidth: 2.8,
 
+  /**
+   * コメントのリサイズ
+   */
   commentScale: {
     html5: 1920 / 683,
     flash: 1920 / 640,
   },
 
+  /**
+   * 描画範囲(リサイズ前)
+   */
   commentStageSize: {
     html5: {
       width: 512,
@@ -62,6 +62,9 @@ const defaultConfig: Config = {
     },
   },
 
+  /**
+   * フォントサイズ
+   */
   fontSize: {
     html5: {
       small: {
@@ -92,8 +95,9 @@ const defaultConfig: Config = {
       },
     },
   },
+
   /**
-   * html5
+   * 行高
    */
   lineCounts: {
     html5: {
@@ -131,39 +135,35 @@ const defaultConfig: Config = {
       },
     },
   },
+
   /**
-   * flash
+   * コメントの余白 @flash
    */
   commentYPadding: {
     default: 5,
     resized: 3,
   },
+  /**
+   * 未使用
+   */
   commentYOffset: 0,
   /**
-   * end flash
+   * 高解像度時のズレ補正値 @html5?
+   */
+  hiResCommentCorrection: 20,
+  /**
+   * 最小フォントサイズ @html5
+   * 描画時のフォントサイズはこれ以上小さくならない
+   * これ以上縮小する場合はコメントのズレが発生する
    */
   minFontSize: 10,
+  /**
+   * フォント @html5?
+   */
   fonts: fonts[platform],
   /**
-   * fillColorが#000000以外の時の枠線の色
+   * end html5
    */
-  contextStrokeColor: "#000000",
-  /**
-   * fillColorが#000000の時の枠線の色
-   */
-  contextStrokeInversionColor: "#FFFFFF",
-  /**
-   * 枠線の透明度
-   */
-  contextStrokeOpacity: 0.4,
-  /**
-   * _liveコマンドの透明度
-   */
-  contextFillLiveOpacity: 0.5,
-  /**
-   * 枠線の太さ
-   */
-  contextLineWidth: 2.8,
 
   /**
    * fpsを更新する間隔(ms)

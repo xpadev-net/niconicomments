@@ -11,6 +11,7 @@ interface IComment {
   owner: boolean;
   layer: number;
   mail: string[];
+  image?: HTMLCanvasElement | null;
   getTextImage: (vpos: number) => void;
   draw: (vpos: number, showCollision: boolean, isDebug: boolean) => void;
 }

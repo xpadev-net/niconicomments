@@ -8,7 +8,7 @@ class FlashComment implements IComment {
   private readonly context: CanvasRenderingContext2D;
   public readonly comment: formattedCommentWithSize;
   public posY: number;
-  public image?: HTMLCanvasElement;
+  public image?: HTMLCanvasElement | null;
   constructor(comment: formattedComment, context: CanvasRenderingContext2D) {
     this.context = context;
     comment.content = comment.content.replace(/\t/g, "\u2003\u2003");
@@ -538,7 +538,7 @@ class FlashComment implements IComment {
     } else if (this.comment.loc === "shita") {
       posY = config.canvasHeight - this.posY - this.comment.height;
     }
-    if (!this.image) {
+    if (this.image === undefined) {
       this.image = this.getTextImage();
     }
     if (this.image) {
@@ -586,8 +586,12 @@ class FlashComment implements IComment {
   /**
    * drawTextで毎回fill/strokeすると重いので画像化して再利用できるようにする
    */
-  getTextImage(): HTMLCanvasElement | undefined {
-    if (!this.comment || this.comment.invisible) return;
+  getTextImage(): HTMLCanvasElement | null {
+    if (
+      this.comment.invisible ||
+      (this.comment.lineCount === 1 && this.comment.width === 0)
+    )
+      return null;
     const cacheKey =
         JSON.stringify(this.comment.content) +
         "@@FLASH@@" +

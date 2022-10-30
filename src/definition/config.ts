@@ -1,84 +1,22 @@
+import { fonts } from "@/definition/fonts";
+import { colors } from "@/definition/colors";
+
+const platform: platform = (function (ua) {
+  if (ua.match(/windows nt 6\.[12]/i)) return "win7";
+  else if (ua.match(/windows nt (6\.3|10\.\d+)/i)) return "win8_1";
+  else if (ua.match(/windows nt/i)) return "win";
+  else if (ua.match(/mac os x 10(.|_)(9|10)/i)) return "mac10_9";
+  else if (ua.match(/mac os x 10(.|_)\d{2}/i)) return "mac10_11";
+  else if (ua.match(/mac os x/i)) return "mac";
+  return "other";
+})(navigator.userAgent);
+
 const defaultConfig: Config = {
   /**
-   * コマンドとカラーコードの対応表
+   * 色コマンド・カラコ対応
+   * -> src/definition/color.ts
    */
-  colors: {
-    white: "#FFFFFF",
-    red: "#FF0000",
-    pink: "#FF8080",
-    orange: "#FFC000",
-    yellow: "#FFFF00",
-    green: "#00FF00",
-    cyan: "#00FFFF",
-    blue: "#0000FF",
-    purple: "#C000FF",
-    black: "#000000",
-    white2: "#CCCC99",
-    niconicowhite: "#CCCC99",
-    red2: "#CC0033",
-    truered: "#CC0033",
-    pink2: "#FF33CC",
-    orange2: "#FF6600",
-    passionorange: "#FF6600",
-    yellow2: "#999900",
-    madyellow: "#999900",
-    green2: "#00CC66",
-    elementalgreen: "#00CC66",
-    cyan2: "#00CCCC",
-    blue2: "#3399FF",
-    marinblue: "#3399FF",
-    purple2: "#6633CC",
-    nobleviolet: "#6633CC",
-    black2: "#666666",
-  },
-
-  commentYPaddingTop: 0.08,
-  commentYMarginBottom: 0.24,
-
-  /**
-   * font-sizeに対しての倍率
-   */
-  fontSize: {
-    small: {
-      default: 47,
-      resized: 26.1,
-    },
-    medium: {
-      default: 74,
-      resized: 38.7,
-    },
-    big: {
-      default: 110,
-      resized: 61,
-    },
-  },
-  lineHeight: {
-    small: {
-      default: 1,
-      resized: 1,
-    },
-    medium: {
-      default: 1,
-      resized: 1,
-    },
-    big: {
-      default: 1.03,
-      resized: 1.01,
-    },
-  },
-  /**
-   * 臨海+改行リサイズが発生した際(DR)の横幅最大値
-   */
-  doubleResizeMaxWidth: {
-    html5: {
-      full: 3020,
-      normal: 2540,
-    },
-    flash: {
-      full: 3550,
-      normal: 2650,
-    },
-  },
+  colors: colors,
   /**
    * fillColorが#000000以外の時の枠線の色
    */
@@ -90,15 +28,142 @@ const defaultConfig: Config = {
   /**
    * 枠線の透明度
    */
-  contextStrokeOpacity: 0.7,
+  contextStrokeOpacity: 0.4,
   /**
    * _liveコマンドの透明度
    */
   contextFillLiveOpacity: 0.5,
   /**
-   * 枠線の太さ
+   * 縁取り線の太さ
    */
-  contextLineWidth: 4,
+  contextLineWidth: 2.8,
+
+  /**
+   * コメントのリサイズ
+   */
+  commentScale: {
+    html5: 1920 / 683,
+    flash: 1920 / 640,
+  },
+
+  /**
+   * 描画範囲(リサイズ前)
+   */
+  commentStageSize: {
+    html5: {
+      width: 512,
+      fullWidth: 683,
+      height: 384,
+    },
+    flash: {
+      width: 512,
+      fullWidth: 630,
+      height: 385,
+    },
+  },
+
+  /**
+   * フォントサイズ
+   */
+  fontSize: {
+    html5: {
+      small: {
+        default: 18,
+        resized: 10,
+      },
+      medium: {
+        default: 27,
+        resized: 14,
+      },
+      big: {
+        default: 39,
+        resized: 20,
+      },
+    },
+    flash: {
+      small: {
+        default: 15,
+        resized: 7.5,
+      },
+      medium: {
+        default: 24,
+        resized: 12,
+      },
+      big: {
+        default: 39,
+        resized: 19.5,
+      },
+    },
+  },
+
+  /**
+   * 行高
+   */
+  lineCounts: {
+    html5: {
+      default: {
+        big: 8.4,
+        medium: 13.1,
+        small: 21,
+      },
+      resized: {
+        big: 16,
+        medium: 25.4,
+        small: 38,
+      },
+      doubleResized: {
+        big: 7.8,
+        medium: 11.3,
+        small: 16.6,
+      },
+    },
+    flash: {
+      default: {
+        big: 8.4,
+        medium: 13.1,
+        small: 21,
+      },
+      resized: {
+        big: 16,
+        medium: 25.4,
+        small: 38,
+      },
+      doubleResized: {
+        big: 7.5,
+        medium: 11.3,
+        small: 16.6,
+      },
+    },
+  },
+
+  /**
+   * コメントの余白 @flash
+   */
+  commentYPadding: {
+    default: 5,
+    resized: 3,
+  },
+  /**
+   * 未使用
+   */
+  commentYOffset: 0,
+  /**
+   * 高解像度時のズレ補正値 @html5?
+   */
+  hiResCommentCorrection: 20,
+  /**
+   * 最小フォントサイズ @html5
+   * 描画時のフォントサイズはこれ以上小さくならない
+   * これ以上縮小する場合はコメントのズレが発生する
+   */
+  minFontSize: 10,
+  /**
+   * フォント @html5?
+   */
+  fonts: fonts[platform],
+  /**
+   * end html5
+   */
 
   /**
    * fpsを更新する間隔(ms)
@@ -152,6 +217,55 @@ const defaultConfig: Config = {
    * レイヤーを分離する基準値
    */
   sameCAMinScore: 10,
+  /**
+   * コメントをFlash版として処理する上限値
+   * 初期値はHTML5版のリリース日
+   */
+  flashThreshold: 1499871600,
+
+  /**
+   * Flash版のフォント変化文字
+   * todo: ゴシック保護文字を探す
+   */
+  flashChar: {
+    gulim:
+      "[\u0126\u0127\u0132\u0133\u0138\u013f\u0140\u0149-\u014b\u0166\u0167\u02d0\u02da\u2074\u207f\u2081-\u2084\u2113\u2153\u2154\u215c-\u215e\u2194\u2195\u223c\u249c-\u24b5\u24d0-\u24e9\u25a3-\u25a9\u25b6\u25b7\u25c0\u25c1\u25c8\u25d0\u25d1\u260e\u260f\u261c\u261e\u2660\u2661\u2663-\u2665\u2667-\u2669\u266c\u3131-\u316e\u3200-\u321c\u3260-\u327b\u3380-\u3384\u3388-\u338d\u3390-\u339b\u339f\u33a0\u33a2-\u33ca\u33cf\u33d0\u33d3\u33d6\u33d8\u33db-\u33dd\uf900-\uf928\uf92a-\uf994\uf996\ufa0b\uffe6]",
+    simsunStrong:
+      "[\u01ce\u01d0\u01d2\u01d4\u01d6\u01d8\u01da\u01dc\u0251\u0261\u02ca\u02cb\u2016\u2035\u216a\u216b\u2223\u2236\u2237\u224c\u226e\u226f\u2295\u2483-\u249b\u2504-\u250b\u256d-\u2573\u2581-\u2583\u2585-\u2587\u2589-\u258b\u258d-\u258f\u2594\u2595\u25e2-\u25e5\u2609\u3016\u3017\u301e\u3021-\u3029\u3105-\u3129\u3220-\u3229\u32a3\u33ce\u33d1\u33d2\u33d5\ue758-\ue864\ufa0c\ufa0d\ufe30\ufe31\ufe33-\ufe44\ufe49-\ufe52\ufe54-\ufe57\ufe59-\ufe66\ufe68-\ufe6b]",
+    simsunWeak:
+      "[\u02c9\u2105\u2109\u2196-\u2199\u220f\u2215\u2248\u2264\u2265\u2299\u2474-\u2482\u250d\u250e\u2511\u2512\u2515\u2516\u2519\u251a\u251e\u251f\u2521\u2522\u2526\u2527\u2529\u252a\u252d\u252e\u2531\u2532\u2535\u2536\u2539\u253a\u253d\u253e\u2540\u2541\u2543-\u254a\u2550-\u256c\u2584\u2588\u258c\u2593]",
+    gothic: "[\u03fb\uff9f]",
+  },
+
+  /**
+   * Flash版の文字変化規則を設定
+   * xp -> フォント変化文字全て適用
+   * vista -> 1又は2種類のみに制限
+   * 参考: https://w.atwiki.jp/commentart/pages/44.html
+   */
+  flashMode: "vista",
+
+  /**
+   * Flash版の上付き・下付き文字
+   * super: 上付き sub: 下付き
+   * todo: 対象文字を探す
+   */
+  flashScriptChar: {
+    super:
+      "[\u00aa\u00b2\u00b3\u00b9\u00ba\u02b0\u02b2\u02b3\u02b7\u02b8\u02e1-\u02e3\u0304\u1d2c-\u1d43\u1d45-\u1d61\u1d9b-\u1da1\u1da3-\u1dbf\u2070\u2071\u2074-\u207f\u2c7d]",
+    sub: "[\u0320\u1d62-\u1d6a\u2080-\u208e\u2090-\u209c\u2c7c]",
+  },
+
+  /**
+   * 描画に使うフォント
+   * [size]に数値が入る
+   */
+  font: {
+    gulim:
+      'normal 600 [size]px gulim, "Microsoft JhengHei UI", Arial, "ＭＳ Ｐゴシック", "MS PGothic", MSPGothic, MS-PGothic',
+    simsun:
+      'normal 400 [size]px simsun, "游明朝体", "游明朝", "Yu Mincho", YuMincho, yumincho, YuMin-Medium',
+  },
 };
 
 /**
@@ -160,7 +274,6 @@ const defaultConfig: Config = {
 const defaultOptions: Options = {
   config: {},
   debug: false,
-  drawAllImageOnLoad: false,
   enableLegacyPiP: false,
   format: "default",
   formatted: false,

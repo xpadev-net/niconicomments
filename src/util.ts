@@ -1,20 +1,16 @@
-import { config } from "@/definition/config";
-
-let configMode: modeType = "default";
-
+import { config, options } from "@/definition/config";
 /**
  * 配列をフォントとサイズでグループ化する
  * @param {{}} array
  * @returns {{}}
  */
 const groupBy = (array: formattedCommentWithFont[]): groupedComments => {
-  const data = (["defont", "gothic", "mincho"] as commentFont[]).reduce(
-    (pv, font) => {
-      pv[font] = {};
-      return pv;
-    },
-    {} as groupedComments
-  );
+  const data = (
+    ["defont", "gothic", "mincho", "gulim", "simsun"] as commentFont[]
+  ).reduce((pv, font) => {
+    pv[font] = {};
+    return pv;
+  }, {} as groupedComments);
   array.forEach((item, index) => {
     const value = data[item.font][item.fontSize] || [];
     value.push({ ...item, index });
@@ -26,12 +22,16 @@ const groupBy = (array: formattedCommentWithFont[]): groupedComments => {
 };
 /**
  * 当たり判定からコメントを配置できる場所を探す
+ * @param {number} currentPos
+ * @param {parsedComment} targetComment
+ * @param {number[]|undefined} collision
+ * @param {parsedComment[]} data
  */
 const getPosY = (
   currentPos: number,
-  targetComment: parsedComment,
+  targetComment: IComment,
   collision: number[] | undefined,
-  data: parsedComment[]
+  data: IComment[]
 ): { currentPos: number; isChanged: boolean; isBreak: boolean } => {
   let isChanged = false,
     isBreak = false;
@@ -68,39 +68,45 @@ const getPosY = (
   }
   return { currentPos, isChanged, isBreak };
 };
-const getPosX = (width: number, vpos: number, long: number): number => {
+/**
+ * コメントのvposと現在のvposから左右の位置を返す
+ * @param {number} width
+ * @param {number} vpos
+ * @param {number} long
+ * @param {boolean} isFlash
+ */
+const getPosX = (
+  width: number,
+  vpos: number,
+  long: number,
+  isFlash: boolean
+): number => {
   return (
-    getConfig(config.commentDrawRange) -
-    ((((width + getConfig(config.commentDrawRange)) * ((vpos + 100) / 100)) /
+    getConfig(config.commentDrawRange, isFlash) -
+    ((((width + getConfig(config.commentDrawRange, isFlash)) *
+      ((vpos + 100) / 100)) /
       4) *
       300) /
       long +
-    getConfig(config.commentDrawPadding)
+    getConfig(config.commentDrawPadding, isFlash)
   );
 };
 /**
  * フォント名とサイズをもとにcontextで使えるフォントを生成する
  * @param {string} font
  * @param {string|number} size
- * @param {modeType} mode
  * @returns {string}
  */
-const parseFont = (
-  font: commentFont,
-  size: string | number,
-  mode: modeType = "default"
-): string => {
+const parseFont = (font: commentFont, size: string | number): string => {
   switch (font) {
+    case "gulim":
+    case "simsun":
+      return config.font[font].replace("[size]", `${size}`);
     case "gothic":
-      return `normal 400 ${size}px "游ゴシック体", "游ゴシック", "Yu Gothic", YuGothic, yugothic, YuGo-Medium`;
     case "mincho":
-      return `normal 400 ${size}px "游明朝体", "游明朝", "Yu Mincho", YuMincho, yumincho, YuMin-Medium`;
+      return `${config.fonts[font].weight} ${size}px ${config.fonts[font].font}`;
     default:
-      if (mode === "html5") {
-        return `normal 600 ${size}px Arial, "ＭＳ Ｐゴシック", "MS PGothic", MSPGothic, MS-PGothic`;
-      } else {
-        return `normal 600 ${size}px sans-serif, Arial, "ＭＳ Ｐゴシック", "MS PGothic", MSPGothic, MS-PGothic`;
-      }
+      return `${config.fonts.defont.weight} ${size}px ${config.fonts.defont.font}`;
   }
 };
 /**
@@ -155,7 +161,7 @@ const replaceAll = (string: string, target: string, replace: string) => {
 };
 /**
  * CAと思われるコメントのレイヤーを分離する
- * @param rawData
+ * @param {formattedComment[]} rawData
  */
 const changeCALayer = (rawData: formattedComment[]): formattedComment[] => {
   const userList: { [key: number]: number } = {};
@@ -200,20 +206,37 @@ const changeCALayer = (rawData: formattedComment[]): formattedComment[] => {
   return data;
 };
 
-const setConfigMode = (mode: modeType) => {
-  configMode = mode;
-};
-const getConfig = <T>(input: configItem<T>, mode = configMode): T => {
-  mode = configMode === "default" ? "html5" : configMode;
+/**
+ * Configがhtml5とflashで別れてる場合は対応するものを、そうでなければ初期値を返す
+ * @param {configItem} input
+ * @param {boolean} isFlash
+ */
+const getConfig = <T>(input: configItem<T>, isFlash = false): T => {
   if (
     Object.prototype.hasOwnProperty.call(input, "html5") &&
     Object.prototype.hasOwnProperty.call(input, "flash")
   ) {
-    return (input as { [key in "html5" | "flash"]: T })[mode];
+    return (input as { [key in "html5" | "flash"]: T })[
+      isFlash ? "flash" : "html5"
+    ];
   } else {
     return input as T;
   }
 };
+
+/**
+ * コメントがFlash適用対象化判定返す
+ * @param {formattedComment} comment
+ */
+const isFlashComment = (comment: formattedComment): boolean =>
+  !(
+    comment.mail.includes("gothic") ||
+    comment.mail.includes("defont") ||
+    comment.mail.includes("mincho")
+  ) &&
+  ((comment.date < config.flashThreshold && options.mode === "default") ||
+    options.mode === "flash" ||
+    comment.mail.includes("nico:flash"));
 
 export {
   groupBy,
@@ -225,5 +248,5 @@ export {
   replaceAll,
   changeCALayer,
   getConfig,
-  setConfigMode,
+  isFlashComment,
 };

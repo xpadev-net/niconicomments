@@ -1,3 +1,7 @@
+const isBoolean = (i: unknown): i is boolean => typeof i === "boolean";
+const isNumber = (i: unknown): i is number => typeof i === "number";
+const isObject = (i: unknown): i is object => typeof i === "object";
+
 const typeGuard = {
   formatted: {
     comment: (i: unknown): i is formattedComment =>
@@ -225,7 +229,7 @@ const typeGuard = {
         enableLegacyPiP: isBoolean,
         keepCA: isBoolean,
         scale: isNumber,
-        config: typeGuard.config.config,
+        config: isObject,
         format: (i: unknown) =>
           typeof i === "string" &&
           !!i.match(
@@ -251,116 +255,8 @@ const typeGuard = {
       }
       return true;
     },
-    config: (item: unknown): item is ConfigNullable => {
-      if (!isStringKeyObject(item)) return false;
-      const isFontSize = (i: unknown) => {
-        if (!isStringKeyObject(i)) return false;
-        type fontSize = { [key: string]: { default: number; resized: number } };
-        return (
-          Object.keys(i).reduce(
-            (pv, cv) =>
-              pv +
-              Number(
-                !cv.match(/^(ue|shita|naka)$/) ||
-                  typeof i[cv] !== "object" ||
-                  !(i as fontSize)[cv]?.default ||
-                  !(i as fontSize)[cv]?.resized
-              ),
-            0
-          ) === 0
-        );
-      };
-      const isDoubleResizeMaxWidth = (i: unknown) => {
-        if (!isStringKeyObject(i)) return false;
-        type doubleResizeMaxWidth = {
-          [key: string]: { default: number; html5: number; flash: number };
-        };
-        return (
-          typeof i === "object" &&
-          Object.keys(i).reduce(
-            (pv, cv) =>
-              pv +
-              Number(
-                !cv.match(/^(full|normal)$/) ||
-                  typeof (i as { [key: string]: unknown })[cv] !== "object" ||
-                  !(i as doubleResizeMaxWidth)[cv]?.default ||
-                  !(i as doubleResizeMaxWidth)[cv]?.html5 ||
-                  !(i as doubleResizeMaxWidth)[cv]?.flash
-              ),
-            0
-          ) === 0
-        );
-      };
-      const keys: { [key: string]: (i: unknown) => boolean } = {
-        commentYPaddingTop: isNumber,
-        commentYMarginBottom: isNumber,
-        fpsInterval: isNumber,
-        cacheAge: isNumber,
-        canvasWidth: isNumber,
-        canvasHeight: isNumber,
-        commentDrawRange: isNumber,
-        commentDrawPadding: isNumber,
-        collisionWidth: isNumber,
-        sameCARange: isNumber,
-        sameCAGap: isNumber,
-        sameCAMinScore: isNumber,
-        contextStrokeOpacity: isNumber,
-        contextFillLiveOpacity: isNumber,
-        contextLineWidth: isNumber,
-        contextStrokeColor: isString,
-        contextStrokeInversionColor: isString,
-        colors: (i: unknown) =>
-          typeof i === "object" &&
-          Object.keys(i as { [key: string]: unknown }).reduce(
-            (pv, cv) =>
-              pv +
-              Number(typeof (i as { [key: string]: unknown })[cv] !== "string"),
-            0
-          ) === 0,
-        fontSize: isFontSize,
-        lineHeight: isFontSize,
-        doubleResizeMaxWidth: isDoubleResizeMaxWidth,
-        collisionRange: (i: unknown) =>
-          typeof i === "object" &&
-          Object.keys(i as { [key: string]: number }).reduce(
-            (pv, cv) =>
-              pv +
-              Number(
-                !cv.match(/^(left|right)$/) ||
-                  typeof (i as { [key: string]: unknown })[cv] !== "number"
-              ),
-            0
-          ) === 0,
-      };
-      for (const key in item) {
-        if (
-          (item as { [key: string]: unknown })[key] !== undefined &&
-          !(keys[key] as (i: unknown) => boolean)(
-            (item as { [key: string]: unknown })[key]
-          )
-        ) {
-          console.warn(
-            `[Incorrect input] var: initOptions, key: ${key}, value: ${
-              (item as { [key: string]: unknown })[key]
-            }`
-          );
-          return false;
-        }
-      }
-      return true;
-    },
-    configKey: (item: unknown): item is ConfigKeys =>
-      typeof item === "string" &&
-      !!item.match(
-        /^(colors|commentYPaddingTop|commentYMarginBottom|fontSize|lineHeight|doubleResizeMaxWidth|fpsInterval|cacheAge|canvasWidth|canvasHeight|commentDrawRange|commentDrawPadding|collisionWidth|collisionRange|sameCARange|sameCAGap|sameCAMinScore)$/
-      ),
   },
 };
-const isBoolean = (i: unknown): i is boolean => typeof i === "boolean";
-const isNumber = (i: unknown): i is number => typeof i === "number";
-const isString = (i: unknown): i is string => typeof i === "string";
-const isStringKeyObject = (i: unknown): i is { [key: string]: unknown } =>
-  typeof i === "object";
 
 const objectVerify = (item: unknown, keys: string[]): boolean => {
   if (typeof item !== "object" || !item) return false;

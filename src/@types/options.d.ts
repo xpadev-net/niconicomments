@@ -10,7 +10,6 @@ type modeType = "default" | "html5" | "flash";
 type InitOptions = {
   config?: ConfigNullable;
   debug?: boolean;
-  drawAllImageOnLoad?: boolean;
   enableLegacyPiP?: boolean;
   format?: inputFormatType;
   formatted?: boolean;
@@ -26,7 +25,6 @@ type InitOptions = {
 type Options = {
   config: ConfigNullable;
   debug: boolean;
-  drawAllImageOnLoad: boolean;
   enableLegacyPiP: boolean;
   format: inputFormatType;
   formatted: boolean;

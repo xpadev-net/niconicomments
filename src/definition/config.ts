@@ -274,7 +274,6 @@ const defaultConfig: Config = {
 const defaultOptions: Options = {
   config: {},
   debug: false,
-  drawAllImageOnLoad: false,
   enableLegacyPiP: false,
   format: "default",
   formatted: false,

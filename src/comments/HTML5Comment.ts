@@ -523,6 +523,11 @@ class HTML5Comment implements IComment {
       this.image = this.getTextImage();
     }
     if (this.image) {
+      if (this.comment._live) {
+        this.context.globalAlpha = config.contextFillLiveOpacity;
+      } else {
+        this.context.globalAlpha = 1;
+      }
       this.context.drawImage(this.image, posX, posY);
     }
     if (showCollision) {
@@ -602,13 +607,7 @@ class HTML5Comment implements IComment {
     context.font = parseFont(this.comment.font, fontSize);
     const drawScale = getConfig(config.commentScale, false) * scale;
     context.scale(drawScale, drawScale);
-    if (this.comment._live) {
-      context.fillStyle = `rgba(${hex2rgb(this.comment.color).join(",")},${
-        config.contextFillLiveOpacity
-      })`;
-    } else {
-      context.fillStyle = this.comment.color;
-    }
+    context.fillStyle = this.comment.color;
     let leftOffset = 0,
       lineCount = 0;
     const paddingTop =

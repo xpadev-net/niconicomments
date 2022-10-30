@@ -1,5 +1,4 @@
 import { config, options } from "@/definition/config";
-import { HTML5Comment } from "@/html5/HTML5Comment";
 /**
  * 配列をフォントとサイズでグループ化する
  * @param {{}} array
@@ -30,9 +29,9 @@ const groupBy = (array: formattedCommentWithFont[]): groupedComments => {
  */
 const getPosY = (
   currentPos: number,
-  targetComment: parsedComment | HTML5Comment,
+  targetComment: IComment,
   collision: number[] | undefined,
-  data: (parsedComment | HTML5Comment)[]
+  data: IComment[]
 ): { currentPos: number; isChanged: boolean; isBreak: boolean } => {
   let isChanged = false,
     isBreak = false;

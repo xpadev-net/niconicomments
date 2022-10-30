@@ -609,26 +609,20 @@ class HTML5Comment implements IComment {
     } else {
       context.fillStyle = this.comment.color;
     }
-    let lastFont = this.comment.font,
-      leftOffset = 0,
+    let leftOffset = 0,
       lineCount = 0;
+    const paddingTop =
+      (10 - scale * 10) *
+      (this.comment.lineCount / config.hiResCommentCorrection);
     for (let i = 0; i < this.comment.content.length; i++) {
       const item = this.comment.content[i];
       if (!item) continue;
-      if (
-        (config.flashMode === "xp" &&
-          lastFont !== (item.font || this.comment.font)) ||
-        (config.flashMode === "vista" && item.font && lastFont != item.font)
-      ) {
-        lastFont = item.font || this.comment.font;
-        context.font = parseFont(lastFont, this.comment.fontSize);
-      }
       const lines = item.content.split("\n");
       for (let j = 0; j < lines.length; j++) {
         const line = lines[j];
         if (line === undefined) continue;
         const posY =
-          (this.comment.lineHeight * (lineCount + 1) +
+          (this.comment.lineHeight * (lineCount + 1 + paddingTop) +
             this.comment.lineHeight * -0.16 +
             (config.fonts[this.comment.font as unknown as HTML5Fonts]?.offset ||
               0)) /

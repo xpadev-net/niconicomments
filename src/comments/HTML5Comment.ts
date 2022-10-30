@@ -605,7 +605,10 @@ class HTML5Comment implements IComment {
     context.lineWidth = config.contextLineWidth;
     const { fontSize, scale } = getFontSizeAndScale(this.comment.charSize);
     context.font = parseFont(this.comment.font, fontSize);
-    const drawScale = getConfig(config.commentScale, false) * scale;
+    const drawScale =
+      getConfig(config.commentScale, false) *
+      scale *
+      (this.comment.layer !== -1 ? 1 : options.scale);
     context.scale(drawScale, drawScale);
     context.fillStyle = this.comment.color;
     let leftOffset = 0,

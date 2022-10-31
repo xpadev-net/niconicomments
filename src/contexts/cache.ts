@@ -1,4 +1,7 @@
-const imageCache: {
+let imageCache: {
   [key: string]: { image: HTMLCanvasElement; timeout: number };
 } = {};
-export { imageCache };
+const resetImageCache = () => {
+  imageCache = {};
+};
+export { imageCache, resetImageCache };

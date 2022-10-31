@@ -1,7 +1,15 @@
-const nicoScripts: nicoScript = {
+let nicoScripts: nicoScript = {
   reverse: [],
   default: [],
   replace: [],
   ban: [],
 };
-export { nicoScripts };
+const resetNicoScripts = () => {
+  nicoScripts = {
+    reverse: [],
+    default: [],
+    replace: [],
+    ban: [],
+  };
+};
+export { nicoScripts, resetNicoScripts };

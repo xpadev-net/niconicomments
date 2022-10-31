@@ -19,6 +19,8 @@ import {
 } from "@/util";
 import { HTML5Comment } from "@/comments/HTML5Comment";
 import { FlashComment } from "@/comments/FlashComment";
+import { resetImageCache } from "@/contexts/cache";
+import { resetNicoScripts } from "@/contexts/nicoscript";
 
 let isDebug = false;
 
@@ -54,7 +56,8 @@ class NiconiComments {
     setOptions(Object.assign(defaultOptions, initOptions));
     setConfig(Object.assign(defaultConfig, options.config));
     isDebug = options.debug;
-
+    resetImageCache();
+    resetNicoScripts();
     this.canvas = canvas;
     const context = canvas.getContext("2d");
     if (!context) throw new Error("Fail to get CanvasRenderingContext2D");

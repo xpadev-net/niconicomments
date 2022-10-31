@@ -22,6 +22,24 @@
         <select name="video" id="control-video" autocomplete="off"></select>
       </label>
       <label>
+        モード
+        <select name="mode" id="mode">
+          <option value="default">自動</option>
+          <option value="flash">Flash</option>
+          <option value="html5">HTML5</option>
+        </select>
+      </label>
+      <label>
+        スケール
+        <input
+                type="number"
+                name="scale"
+                id="scale"
+                autocomplete="off"
+                value="1"
+        />
+      </label>
+      <label>
         <input
           type="checkbox"
           name="show-fps"
@@ -49,35 +67,8 @@
         コメント数表示
       </label>
       <label>
-        <input
-          type="checkbox"
-          name="use-legacy"
-          id="use-legacy"
-          autocomplete="off"
-        />
-        ニコ動互換モード
-      </label>
-      <label>
         <input type="checkbox" name="keep-ca" id="keep-ca" autocomplete="off" />
         CA衝突回避
-      </label>
-      <label>
-        <input
-          type="checkbox"
-          name="draw-all"
-          id="draw-all"
-          autocomplete="off"
-        />
-        事前に全コメントを描画する
-      </label>
-      <label>
-        <input
-                type="checkbox"
-                name="smoothing"
-                id="smoothing"
-                autocomplete="off"
-        />
-        スムージング処理
       </label>
       <label>
         <input
@@ -87,16 +78,6 @@
                 autocomplete="off"
         />
         デバッグ
-      </label>
-      <label>
-        スケール
-        <input
-                type="number"
-                name="scale"
-                id="scale"
-                autocomplete="off"
-                value="1"
-        />
       </label>
       <div id="toggle"><p>&lt;</p></div>
     </div>
@@ -113,6 +94,8 @@
     height: 100vh;
     width: 100vw;
     z-index: 0;
+    background-color: #333333;
+    overflow: hidden;
   }
 
   #container {
@@ -150,16 +133,32 @@
     z-index: 1;
     top: 0;
     right: 0;
-    background-color: white;
+    background-color: rgba(0,0,0,0.75);
     border-radius: 0 0 0 10px;
     padding: 10px 10px 20px 10px;
     display: flex;
     flex-direction: column;
     transition: top 500ms ease;
+    color: white;
+  }
+
+  #control label{
+    display: block;
+    height: 30px;
+    line-height: 30px;
+  }
+  input[type="number"],select {
+    background-color: rgba(25,25,25,0.75);
+    border: solid 1px white;
+    border-radius: 2px;
+    color: white;
+    height: 26px;
+    padding: 0;
+    margin: 2px;
   }
 
   #control label:hover {
-    background-color: #ccc;
+    background-color: rgba(100,100,100,0.75);
   }
 
   #toggle {
@@ -190,12 +189,18 @@
     transform: rotateZ(-90deg);
   }
 
+
   body,
   html {
     height: 100%;
     width: 100%;
     margin: 0;
     padding: 0;
+  }
+  *{
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
   }
 </style>
 <script
@@ -381,13 +386,11 @@
     player,
     interval = null,
     nico = null,
-    useLegacy = false,
+    mode = "default",
     showFPS = false,
     showCollision = false,
     showCommentCount = false,
-    smoothing = false,
     videoMicroSec = false,
-    drawAllImageOnLoad = false,
     keepCA = false,
     debug = false,
     scale = 1;
@@ -459,23 +462,14 @@
     nico.showCommentCount = showCommentCount;
     e.target.checked = showCommentCount;
   };
-  document.getElementById("use-legacy").onchange = (e) => {
-    useLegacy = !useLegacy;
-    e.target.checked = useLegacy;
+  document.getElementById("mode").onchange = (e) => {
+    mode = e.target.value;
     loadComments();
   };
   document.getElementById("keep-ca").onchange = (e) => {
     keepCA = !keepCA;
     e.target.checked = keepCA;
     loadComments();
-  };
-  document.getElementById("smoothing").onchange = (e) => {
-    smoothing = !smoothing;
-    e.target.checked = smoothing;
-  };
-  document.getElementById("draw-all").onchange = (e) => {
-    drawAllImageOnLoad = !drawAllImageOnLoad;
-    e.target.checked = drawAllImageOnLoad;
   };
   document.getElementById("debug").onchange = (e) => {
     debug = !debug;
@@ -515,10 +509,9 @@
     const res = await req.json();
 
     nico = new NiconiComments(canvas, res, {
-      useLegacy: useLegacy,
+      mode: mode,
       keepCA: keepCA,
       format: "formatted",
-      drawAllImageOnLoad: drawAllImageOnLoad,
       debug: debug,
       scale: Number(scale),
     });
@@ -534,17 +527,7 @@
     }
     if (!interval) {
       interval = setInterval(() => {
-        if (smoothing && videoMicroSec) {
-          nico.drawCanvas(
-            Math.floor(
-              ((performance.now() - videoMicroSec.microsec) / 10) *
-                player.getPlaybackRate() +
-                videoMicroSec.currentTime * 100
-            )
-          );
-        } else {
-          nico.drawCanvas(Math.floor(player.getCurrentTime() * 100));
-        }
+        nico.drawCanvas(Math.floor(player.getCurrentTime() * 100));
       }, 10);
     }
   }

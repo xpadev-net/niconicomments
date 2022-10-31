@@ -594,7 +594,6 @@ class FlashComment implements IComment {
     if (options.scale !== 1 && size.layer === -1) {
       measure.height *= options.scale;
       measure.width *= options.scale;
-      measure.fontSize *= options.scale;
     }
     size.height = measure.height * getConfig(config.commentScale, true);
     size.width = measure.width * getConfig(config.commentScale, true);
@@ -671,10 +670,14 @@ class FlashComment implements IComment {
       );
       for (let i = 0; i < this.comment.lineCount; i++) {
         const linePosY =
-          this.comment.fontSize * this.comment.lineHeight +
-          Number(i) *
-            (this.comment.fontSize * this.comment.lineHeight) *
-            (1 + getConfig(config.commentYPaddingTop, true)[this.comment.size]);
+          (this.comment.fontSize * this.comment.lineHeight +
+            Number(i) *
+              (this.comment.fontSize * this.comment.lineHeight) *
+              (1 +
+                getConfig(config.commentYPaddingTop, true)[
+                  this.comment.size
+                ])) *
+          (this.comment.layer === -1 ? options.scale : 1);
         this.context.strokeStyle = "rgba(255,255,0,0.5)";
         this.context.strokeRect(
           posX,
@@ -683,7 +686,8 @@ class FlashComment implements IComment {
           this.comment.fontSize *
             this.comment.lineHeight *
             -1 *
-            this._globalScale
+            this._globalScale *
+            (this.comment.layer === -1 ? options.scale : 1)
         );
       }
     }
@@ -739,16 +743,14 @@ class FlashComment implements IComment {
     context.lineWidth = 4;
     context.font = parseFont(this.comment.font, this.comment.fontSize);
     context.scale(
-      this._globalScale * this.scale,
-      this._globalScale * this.scale
+      this._globalScale *
+        this.scale *
+        (this.comment.layer === -1 ? options.scale : 1),
+      this._globalScale *
+        this.scale *
+        (this.comment.layer === -1 ? options.scale : 1)
     );
-    if (this.comment._live) {
-      context.fillStyle = `rgba(${hex2rgb(this.comment.color).join(",")},${
-        config.contextFillLiveOpacity
-      })`;
-    } else {
-      context.fillStyle = this.comment.color;
-    }
+    context.fillStyle = this.comment.color;
     const lineOffset = this.comment.lineOffset;
     let lastFont = this.comment.font,
       leftOffset = 0,

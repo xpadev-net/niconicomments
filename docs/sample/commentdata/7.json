@@ -1,1144 +1,894 @@
 [
-	{
-		"id": 0,
-		"vpos": 0,
-		"content": " \n\n\n \nこのコメントは\nFate/Zero 第十五話\n「黄金の輝き」 \nのオープニング周辺から\n抽出したものになります\nそのため1:28前後に\nコメントと動画のズレが\n発生しています\n\n \n\n",
-		"date": 0,
-		"date_usec": 0,
-		"owner": true,
-		"premium": true,
-		"mail": [
-			"ue",
-			"big",
-			"full",
-			"#e0ffff"
-		]
-	},
-	{
-		"id": 30555,
-		"vpos": 94,
-		"content": "ちらｗｗ",
-		"date": 1335530859,
-		"owner": false,
-		"premium": true,
-		"mail": []
-	},
-	{
-		"id": 31051,
-		"vpos": 192,
-		"content": "ミサワ帰れｗ",
-		"date": 1335557871,
-		"owner": false,
-		"premium": false,
-		"mail": []
-	},
-	{
-		"id": 30539,
-		"vpos": 198,
-		"content": "ﾁﾗｯ",
-		"date": 1335530421,
-		"owner": false,
-		"premium": true,
-		"mail": []
-	},
-	{
-		"id": 30145,
-		"vpos": 414,
-		"content": "傍観ｗｗｗ",
-		"date": 1335481443,
-		"owner": false,
-		"premium": false,
-		"mail": []
-	},
-	{
-		"id": 30302,
-		"vpos": 493,
-		"content": "wwww",
-		"date": 1335511750,
-		"owner": false,
-		"premium": false,
-		"mail": []
-	},
-	{
-		"id": 30896,
-		"vpos": 1180,
-		"content": "wwwwwwwwwwww",
-		"date": 1335545131,
-		"owner": false,
-		"premium": true,
-		"mail": []
-	},
-	{
-		"id": 30928,
-		"vpos": 1193,
-		"content": "チラ見やめろｗｗｗ",
-		"date": 1335547514,
-		"owner": false,
-		"premium": false,
-		"mail": []
-	},
-	{
-		"id": 30251,
-		"vpos": 1248,
-		"content": "イリヤたーん",
-		"date": 1335508090,
-		"owner": false,
-		"premium": false,
-		"mail": []
-	},
-	{
-		"id": 30264,
-		"vpos": 1256,
-		"content": "いりやたんｗｗ",
-		"date": 1335509748,
-		"owner": false,
-		"premium": false,
-		"mail": []
-	},
-	{
-		"id": 30078,
-		"vpos": 1525,
-		"content": "俺は右手を使って",
-		"date": 1335463275,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"docomo"
-		]
-	},
-	{
-		"id": 30365,
-		"vpos": 1654,
-		"content": "おい、聖杯戦争しろよ",
-		"date": 1335518930,
-		"owner": false,
-		"premium": false,
-		"mail": []
-	},
-	{
-		"id": 30723,
-		"vpos": 2007,
-		"content": "左手はやめろww",
-		"date": 1335536756,
-		"owner": false,
-		"premium": true,
-		"mail": []
-	},
-	{
-		"id": 30923,
-		"vpos": 2070,
-		"content": "█■■■　　 　　　　　　　　　あと一度だけ　　は ■■■█\n█■■■　　 　　　　　　　　　　　　起こるだろう ■■■█\n\n \n\n\n \n\n\n ",
-		"date": 1335547431,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"green",
-			"big"
-		]
-	},
-	{
-		"id": 31055,
-		"vpos": 2099,
-		"content": "イリヤたんｗｗｗ",
-		"date": 1335558351,
-		"owner": false,
-		"premium": false,
-		"mail": []
-	},
-	{
-		"id": 30271,
-		"vpos": 2320,
-		"content": "ewwwwww",
-		"date": 1335509991,
-		"owner": false,
-		"premium": false,
-		"mail": []
-	},
-	{
-		"id": 30076,
-		"vpos": 2332,
-		"content": "今期覇権アニメ",
-		"date": 1335463070,
-		"owner": false,
-		"premium": false,
-		"mail": []
-	},
-	{
-		"id": 30924,
-		"vpos": 2365,
-		"content": "█■■■　　 　　　　　　　　　　　　　　　奇跡　 ■■■█\n\n\n \n\n\n \n\n\n ",
-		"date": 1335547450,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"yellow",
-			"big"
-		]
-	},
-	{
-		"id": 30925,
-		"vpos": 2365,
-		"content": "█■■■　　 　　　　　　　　　あと一度だけ　　は ■■■█\n█■■■　　 　　　　　　　　　　　　起こるだろう ■■■█\n\n \n\n\n \n\n\n ",
-		"date": 1335547466,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"green",
-			"big"
-		]
-	},
-	{
-		"id": 31029,
-		"vpos": 2496,
-		"content": "いリアたんw",
-		"date": 1335552285,
-		"owner": false,
-		"premium": false,
-		"mail": []
-	},
-	{
-		"id": 30926,
-		"vpos": 2692,
-		"content": " \n\n\n \n\n\n \n\n█■■■ 　　 　　　　　　　　　　　　優しい声で　■■■█\n█■■■ 　　 　　　　　　　　　　描く歪んだ未来　■■■█",
-		"date": 1335547489,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"pink",
-			"big"
-		]
-	},
-	{
-		"id": 30929,
-		"vpos": 2968,
-		"content": "  \n\n\n \n\n\n \n\n█■■■ 　　 　　　　　　　　　　　　優しい声で　■■■█\n█■■■ 　　 　　　　　　　　　　描く歪んだ未来　■■■█",
-		"date": 1335547522,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"pink",
-			"big"
-		]
-	},
-	{
-		"id": 30836,
-		"vpos": 3056,
-		"content": "＿|￣|○",
-		"date": 1335540833,
-		"owner": false,
-		"premium": false,
-		"mail": []
-	},
-	{
-		"id": 31056,
-		"vpos": 3280,
-		"content": "職人すげえｗ",
-		"date": 1335558363,
-		"owner": false,
-		"premium": false,
-		"mail": []
-	},
-	{
-		"id": 30930,
-		"vpos": 3291,
-		"content": " \n\n█■■■ 　　もう誰も　　　　　　　　　　　　 　　■■■█\n█■■■ 　　　　　泣かない　　　　　　　　　 　　■■■█\n\n\n \n\n\n ",
-		"date": 1335547573,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"cyan",
-			"big"
-		]
-	},
-	{
-		"id": 31013,
-		"vpos": 3438,
-		"content": "   █■■■ 　　 　　　　　　　　　　　　優しい声で　■■■██■■■ 　　 　　　　　　　　　　描く歪んだ未来　■■■█",
-		"date": 1335551256,
-		"owner": false,
-		"premium": false,
-		"mail": []
-	},
-	{
-		"id": 30266,
-		"vpos": 3450,
-		"content": "職人きた！",
-		"date": 1335509770,
-		"owner": false,
-		"premium": false,
-		"mail": []
-	},
-	{
-		"id": 30348,
-		"vpos": 3538,
-		"content": "ラストに家族再会するから安心しろ",
-		"date": 1335516615,
-		"owner": false,
-		"premium": false,
-		"mail": []
-	},
-	{
-		"id": 30931,
-		"vpos": 3635,
-		"content": " \n\n\n \n█■■■　　　　　　　　　　 　　　　　世界の 　　■■■█\n█■■■　　　　　　　　　　 　　　　　　ために 　■■■█\n \n\n\n ",
-		"date": 1335547599,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"purple",
-			"big"
-		]
-	},
-	{
-		"id": 30933,
-		"vpos": 3951,
-		"content": "█■■■ 　　　　　　　　　さ　　　　　　　　　　 ■■■█\n█■■■ 　　　　　く　　　　　　　た　　　　　　 ■■■█\n\n \n\n\n \n\n\n ",
-		"date": 1335547619,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"red",
-			"big"
-		]
-	},
-	{
-		"id": 30934,
-		"vpos": 3951,
-		"content": " \n\n█■■■ 　　　　　　　汚　　　れ　　　空　　　　 ■■■█\n█■■■ 　　　赤　　　　　　　　　　　　　の　　 ■■■█\n\n\n \n\n\n ",
-		"date": 1335547634,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"red",
-			"big"
-		]
-	},
-	{
-		"id": 30936,
-		"vpos": 4077,
-		"content": "█■■■ 　　　　　　　　　さ　　　　　　　　　　 ■■■█\n█■■■ 　　　　　く　　　　　　　た　　　　　　 ■■■█\n\n \n\n\n \n\n\n ",
-		"date": 1335547669,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"red",
-			"big"
-		]
-	},
-	{
-		"id": 30937,
-		"vpos": 4077,
-		"content": " \n\n█■■■ 　　　　　　　汚　　　れ　　　空　　　　 ■■■█\n█■■■ 　　　赤　　　　　　　　　　　　　の　　 ■■■█\n\n\n \n\n\n ",
-		"date": 1335547683,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"red",
-			"big"
-		]
-	},
-	{
-		"id": 30626,
-		"vpos": 4342,
-		"content": "オリコン週間ランキング７位やったっけ・・・・アイマス勢にフルボッコされてたなｗ",
-		"date": 1335532400,
-		"owner": false,
-		"premium": false,
-		"mail": []
-	},
-	{
-		"id": 30938,
-		"vpos": 4422,
-		"content": " \n\n\n \n█■■■ 　　　　　　　　　　　　　ど　　　　　　 ■■■█\n\n \n\n\n ",
-		"date": 1335547717,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"orange",
-			"big"
-		]
-	},
-	{
-		"id": 30939,
-		"vpos": 4483,
-		"content": " \n\n\n \n\n█■■■ 　　　　　　　こ　　　　　　　　　　　　 ■■■█\n \n\n\n ",
-		"date": 1335547733,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"orange",
-			"big"
-		]
-	},
-	{
-		"id": 30940,
-		"vpos": 4515,
-		"content": " \n\n\n \n\n\n█■■■ 　　　　　　　　　　　　　に　　　　　　 ■■■█\n\n\n ",
-		"date": 1335547755,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"orange",
-			"big"
-		]
-	},
-	{
-		"id": 30941,
-		"vpos": 4557,
-		"content": " \n\n\n \n\n\n \n█■■■ 　　　　　　　も　　　　　　　　　　　　 ■■■█\n\n ",
-		"date": 1335547773,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"orange",
-			"big"
-		]
-	},
-	{
-		"id": 30942,
-		"vpos": 4601,
-		"content": " \n\n\n \n\n\n \n\n█■■■ 　　 　　　　　　　　　　　届かず消える　■■■█\n ",
-		"date": 1335547791,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"white",
-			"big"
-		]
-	},
-	{
-		"id": 30903,
-		"vpos": 4735,
-		"content": "やっぱいい曲だなあ",
-		"date": 1335546193,
-		"owner": false,
-		"premium": true,
-		"mail": []
-	},
-	{
-		"id": 30943,
-		"vpos": 4898,
-		"content": " \n\n\n \n\n\n \n\n\n█■■■ 　　 　　　　　　　　　　　　叫びと祈り　■■■█",
-		"date": 1335547811,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"black",
-			"big"
-		]
-	},
-	{
-		"id": 30064,
-		"vpos": 5018,
-		"content": "█ 　　　　赤く　汚　　れ　　　　　　　　　　 　　　　　█    ",
-		"date": 1335460121,
-		"owner": false,
-		"premium": false,
-		"mail": []
-	},
-	{
-		"id": 30650,
-		"vpos": 5275,
-		"content": "墨汁",
-		"date": 1335533331,
-		"owner": false,
-		"premium": false,
-		"mail": []
-	},
-	{
-		"id": 30944,
-		"vpos": 5311,
-		"content": "慰　　め　　は　　捨　　て　　て　　行　　け　　る",
-		"date": 1335547845,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"red",
-			"big"
-		]
-	},
-	{
-		"id": 30921,
-		"vpos": 5414,
-		"content": "ああああああああああ",
-		"date": 1335547164,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ああああああ"
-		]
-	},
-	{
-		"id": 30267,
-		"vpos": 5422,
-		"content": "すげええ",
-		"date": 1335509790,
-		"owner": false,
-		"premium": false,
-		"mail": []
-	},
-	{
-		"id": 30945,
-		"vpos": 5613,
-		"content": "█■■■　　　　　　　　　　綺　　　　　　　　　　■■■█\n\n\n \n\n\n \n\n\n ",
-		"date": 1335547884,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"yellow",
-			"big"
-		]
-	},
-	{
-		"id": 30946,
-		"vpos": 5664,
-		"content": "█■■■　　　　　　　　　麗　麗　　　　　　　　　■■■█\n\n\n \n\n\n \n\n\n ",
-		"date": 1335547897,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"yellow",
-			"big"
-		]
-	},
-	{
-		"id": 30556,
-		"vpos": 5748,
-		"content": "職人すげー",
-		"date": 1335530916,
-		"owner": false,
-		"premium": true,
-		"mail": []
-	},
-	{
-		"id": 30947,
-		"vpos": 5776,
-		"content": "█■■■　　　　　　　　な　　　な　　　　　　　　■■■█\n\n\n \n\n\n \n\n\n ",
-		"date": 1335547916,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"yellow",
-			"big"
-		]
-	},
-	{
-		"id": 30948,
-		"vpos": 5801,
-		"content": "█■■■　　　　　　　月　　　　　月　　　　　　　■■■█\n\n\n \n\n\n \n\n\n ",
-		"date": 1335547953,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"yellow",
-			"big"
-		]
-	},
-	{
-		"id": 30932,
-		"vpos": 5811,
-		"content": "なぜサビが舞弥なのか・・・",
-		"date": 1335547607,
-		"owner": false,
-		"premium": false,
-		"mail": []
-	},
-	{
-		"id": 30949,
-		"vpos": 5891,
-		"content": "█■■■　　　　　　の　　　　　　　の　　　　　　■■■█\n\n\n \n\n\n \n\n\n ",
-		"date": 1335547966,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"yellow",
-			"big"
-		]
-	},
-	{
-		"id": 30951,
-		"vpos": 5919,
-		"content": "█■■■　　　　　光　　　　　　　　　光　　　　　■■■█\n\n\n \n\n\n \n\n\n ",
-		"date": 1335547993,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"yellow",
-			"big"
-		]
-	},
-	{
-		"id": 30917,
-		"vpos": 6069,
-		"content": "サビ抜き",
-		"date": 1335547043,
-		"owner": false,
-		"premium": true,
-		"mail": []
-	},
-	{
-		"id": 30952,
-		"vpos": 6081,
-		"content": " \n█■■■　　　　が　　　　　　　　　　　が　　　　■■■█\n\n \n\n\n \n\n\n ",
-		"date": 1335548020,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"yellow",
-			"big"
-		]
-	},
-	{
-		"id": 30953,
-		"vpos": 6157,
-		"content": " \n\n█■■■　　　始　　　　　　　　　　　　　始　　　■■■█\n \n\n\n \n\n\n ",
-		"date": 1335548035,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"yellow",
-			"big"
-		]
-	},
-	{
-		"id": 30954,
-		"vpos": 6245,
-		"content": " \n\n\n█■■■　　ま　　　　　　　　　　　　　　　ま　　■■■█\n\n\n \n\n\n ",
-		"date": 1335548052,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"yellow",
-			"big"
-		]
-	},
-	{
-		"id": 30717,
-		"vpos": 6251,
-		"content": "理想を抱いて溺死シロウ",
-		"date": 1335536427,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"softbank"
-		]
-	},
-	{
-		"id": 30866,
-		"vpos": 6301,
-		"content": "貴様らには水底が似合いだ",
-		"date": 1335542535,
-		"owner": false,
-		"premium": true,
-		"mail": []
-	},
-	{
-		"id": 30955,
-		"vpos": 6310,
-		"content": " \n\n\n \n█■■■　り　　　　　　　　　　　　　　　　　り　■■■█\n\n \n\n\n ",
-		"date": 1335548079,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"yellow",
-			"big"
-		]
-	},
-	{
-		"id": 30956,
-		"vpos": 6362,
-		"content": " \n\n\n \n\n█■■■　へ　　　　　　　　　　　　　　　　　へ　■■■█\n \n\n\n ",
-		"date": 1335548106,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"yellow",
-			"big"
-		]
-	},
-	{
-		"id": 30957,
-		"vpos": 6407,
-		"content": " \n\n\n \n\n\n█■■■　と　　　　　　　　　　　　　　　　　と　■■■█\n\n\n ",
-		"date": 1335548155,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"yellow",
-			"big"
-		]
-	},
-	{
-		"id": 30958,
-		"vpos": 6469,
-		"content": " \n\n\n \n\n\n \n█■■■　　沈　　　　　　　　　　　　　　　沈　　■■■█\n\n ",
-		"date": 1335548169,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"yellow",
-			"big"
-		]
-	},
-	{
-		"id": 30960,
-		"vpos": 6551,
-		"content": " \n\n\n \n\n\n \n\n█■■■　　　み　　　　　　　　　　　　　み　　　■■■█\n ",
-		"date": 1335548186,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"yellow",
-			"big"
-		]
-	},
-	{
-		"id": 30962,
-		"vpos": 6613,
-		"content": " \n\n\n \n\n\n \n\n\n█■■■　　　　ゆ　　　　　　　　　　　ゆ　　　　■■■█",
-		"date": 1335548199,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"yellow",
-			"big"
-		]
-	},
-	{
-		"id": 30965,
-		"vpos": 6652,
-		"content": " \n\n\n \n\n\n \n\n\n█■■■　　　　　く　　　　　　　　　く　　　　　■■■█",
-		"date": 1335548214,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"yellow",
-			"big"
-		]
-	},
-	{
-		"id": 30966,
-		"vpos": 6682,
-		"content": " \n\n\n \n\n\n \n\n\n█■■■　　　　　　そ　　　　　　　そ　　　　　　■■■█",
-		"date": 1335548270,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"yellow",
-			"big"
-		]
-	},
-	{
-		"id": 30967,
-		"vpos": 6722,
-		"content": " \n\n\n \n\n\n \n\n\n█■■■　　　　　　　の　　　　　の　　　　　　　■■■█",
-		"date": 1335548287,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"yellow",
-			"big"
-		]
-	},
-	{
-		"id": 30968,
-		"vpos": 6750,
-		"content": " \n\n\n \n\n\n \n\n\n█■■■　　　　　　　　彼　　　彼　　　　　　　　■■■█",
-		"date": 1335548306,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"yellow",
-			"big"
-		]
-	},
-	{
-		"id": 30724,
-		"vpos": 6765,
-		"content": "職人すげーw",
-		"date": 1335536803,
-		"owner": false,
-		"premium": true,
-		"mail": []
-	},
-	{
-		"id": 30969,
-		"vpos": 6820,
-		"content": " \n\n\n \n\n\n \n\n\n█■■■　　　　　　　　　方　方　　　　　　　　　■■■█",
-		"date": 1335548323,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"yellow",
-			"big"
-		]
-	},
-	{
-		"id": 30557,
-		"vpos": 6849,
-		"content": "すっげええええｗｗｗｗｗ",
-		"date": 1335530927,
-		"owner": false,
-		"premium": true,
-		"mail": []
-	},
-	{
-		"id": 30970,
-		"vpos": 6876,
-		"content": " \n\n\n \n\n\n \n\n\n█■■■　　　　　　　　　　へ　　　　　　　　　　■■■█",
-		"date": 1335548338,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"yellow",
-			"big"
-		]
-	},
-	{
-		"id": 30971,
-		"vpos": 6937,
-		"content": " \n\n\n \n\n\n \n\n█■■■　　　　　　　　　　閉　　　　　　　　　　■■■█\n ",
-		"date": 1335548360,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"blue",
-			"big"
-		]
-	},
-	{
-		"id": 30972,
-		"vpos": 6937,
-		"content": "  \n\n\n \n\n\n \n\n█■■■　　　　　　　　　　閉　　　　　　　　　　■■■█\n ",
-		"date": 1335548389,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"cyan",
-			"big"
-		]
-	},
-	{
-		"id": 30974,
-		"vpos": 6965,
-		"content": " \n\n\n \n\n\n \n\n█■■■　　　　　　　　　ざ　ざ　　　　　　　　　■■■█\n ",
-		"date": 1335548416,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"cyan",
-			"big"
-		]
-	},
-	{
-		"id": 30976,
-		"vpos": 7020,
-		"content": " \n\n\n \n\n\n \n\n█■■■　　　　　　　　さ　　　さ　　　　　　　　■■■█\n ",
-		"date": 1335548444,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"cyan",
-			"big"
-		]
-	},
-	{
-		"id": 30977,
-		"vpos": 7058,
-		"content": " \n\n\n \n\n\n \n\n█■■■　　　　　　　れ　　　　　れ　　　　　　　■■■█\n ",
-		"date": 1335548463,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"cyan",
-			"big"
-		]
-	},
-	{
-		"id": 31057,
-		"vpos": 7112,
-		"content": "職人すげえｗｗｗ",
-		"date": 1335558401,
-		"owner": false,
-		"premium": false,
-		"mail": []
-	},
-	{
-		"id": 30978,
-		"vpos": 7115,
-		"content": " \n\n\n \n\n\n \n\n█■■■　　　　　　て　　　　　　　て　　　　　　■■■█\n ",
-		"date": 1335548478,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"cyan",
-			"big"
-		]
-	},
-	{
-		"id": 30979,
-		"vpos": 7128,
-		"content": " \n\n\n \n\n\n \n\n█■■■　　　　　く　　　　　　　　　く　　　　　■■■█\n ",
-		"date": 1335548499,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"cyan",
-			"big"
-		]
-	},
-	{
-		"id": 30980,
-		"vpos": 7187,
-		"content": " \n\n\n \n\n\n \n█■■■　　　　瞳　　　　　　　　　　　瞳　　　　■■■█\n\n ",
-		"date": 1335548514,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"cyan",
-			"big"
-		]
-	},
-	{
-		"id": 30982,
-		"vpos": 7326,
-		"content": " \n\n\n \n\n\n█■■■　　　で　　　　　　　　　　　　　で　　　■■■█\n\n\n ",
-		"date": 1335548544,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"cyan",
-			"big"
-		]
-	},
-	{
-		"id": 30983,
-		"vpos": 7405,
-		"content": " \n\n\n \n\n█■■■　　ま　　　　　　　　　　　　　　　ま　　■■■█\n \n\n\n ",
-		"date": 1335548563,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"cyan",
-			"big"
-		]
-	},
-	{
-		"id": 30984,
-		"vpos": 7464,
-		"content": " \n\n\n \n█■■■　　だ　　　　　　　　　　　　　　　だ　　■■■█\n\n \n\n\n ",
-		"date": 1335548595,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"cyan",
-			"big"
-		]
-	},
-	{
-		"id": 30985,
-		"vpos": 7504,
-		"content": " \n\n\n█■■■　　　遠　　　　　　　　　　　　　遠　　　■■■█\n\n\n \n\n\n ",
-		"date": 1335548632,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"cyan",
-			"big"
-		]
-	},
-	{
-		"id": 30986,
-		"vpos": 7614,
-		"content": " \n\n█■■■　　　　く　　　　　　　　　　　く　　　　■■■█\n \n\n\n \n\n\n ",
-		"date": 1335548650,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"cyan",
-			"big"
-		]
-	},
-	{
-		"id": 30781,
-		"vpos": 7633,
-		"content": "職人GJ",
-		"date": 1335538769,
-		"owner": false,
-		"premium": false,
-		"mail": []
-	},
-	{
-		"id": 30990,
-		"vpos": 7634,
-		"content": " \n█■■■　　　　　へ　　　　　　　　　へ　　　　　■■■█\n\n \n\n\n \n\n\n ",
-		"date": 1335548767,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"cyan",
-			"big"
-		]
-	},
-	{
-		"id": 30991,
-		"vpos": 7722,
-		"content": "█■■■　　　　　　手　　　　　　　手　　　　　　■■■█\n\n\n \n\n\n \n\n\n ",
-		"date": 1335548779,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"cyan",
-			"big"
-		]
-	},
-	{
-		"id": 30992,
-		"vpos": 7773,
-		"content": "█■■■　　　　　　　を　　　　　を　　　　　　　■■■█\n\n\n \n\n\n \n\n\n ",
-		"date": 1335548795,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"cyan",
-			"big"
-		]
-	},
-	{
-		"id": 30993,
-		"vpos": 7810,
-		"content": "█■■■　　　　　　　　伸　　　伸　　　　　　　　■■■█\n\n\n \n\n\n \n\n\n ",
-		"date": 1335548835,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"cyan",
-			"big"
-		]
-	},
-	{
-		"id": 30994,
-		"vpos": 7873,
-		"content": "█■■■　　　　　　　　　ば　ば　　　　　　　　　■■■█\n\n\n \n\n\n \n\n\n ",
-		"date": 1335548846,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"cyan",
-			"big"
-		]
-	},
-	{
-		"id": 30995,
-		"vpos": 7891,
-		"content": "█■■■　　　　　　　　　　す　　　　　　　　　　■■■█\n\n\n \n\n\n \n\n\n ",
-		"date": 1335548866,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"cyan",
-			"big"
-		]
-	},
-	{
-		"id": 30997,
-		"vpos": 7953,
-		"content": " \n\n\n \n\n█■■■ 君の嘆きを　　　　　　　　　　　　　 　　■■■█\n \n\n\n ",
-		"date": 1335548894,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"white",
-			"big"
-		]
-	},
-	{
-		"id": 31000,
-		"vpos": 8266,
-		"content": " \n\n\n \n\n█■■■　　　　　　　　　　　　　　　信じて　 　 ■■■█\n \n\n\n ",
-		"date": 1335548931,
-		"owner": false,
-		"premium": false,
-		"mail": [
-			"ue",
-			"white",
-			"big"
-		]
-	},
-	{
-		"id": 30558,
-		"vpos": 8683,
-		"content": "キルアきたｗｗｗ",
-		"date": 1335530945,
-		"owner": false,
-		"premium": true,
-		"mail": []
-	},
-	{
-		"id": 30105,
-		"vpos": 8880,
-		"content": "職人おつ！",
-		"date": 1335475707,
-		"owner": false,
-		"premium": false,
-		"mail": []
-	}
+  {
+    "id": 0,
+    "vpos": 0,
+    "content": " \n\n\n \nこのコメントは\nFate/Zero 第十五話\n「黄金の輝き」 \nのオープニング周辺から\n抽出したものになります\nそのため1:28前後に\nコメントと動画のズレが\n発生しています\n\n \n\n",
+    "date": 0,
+    "date_usec": 0,
+    "owner": true,
+    "premium": true,
+    "mail": ["ue", "big", "full", "#e0ffff"]
+  },
+  {
+    "id": 30555,
+    "vpos": 94,
+    "content": "ちらｗｗ",
+    "date": 1335530859,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 31051,
+    "vpos": 192,
+    "content": "ミサワ帰れｗ",
+    "date": 1335557871,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30539,
+    "vpos": 198,
+    "content": "ﾁﾗｯ",
+    "date": 1335530421,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30145,
+    "vpos": 414,
+    "content": "傍観ｗｗｗ",
+    "date": 1335481443,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30302,
+    "vpos": 493,
+    "content": "wwww",
+    "date": 1335511750,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30896,
+    "vpos": 1180,
+    "content": "wwwwwwwwwwww",
+    "date": 1335545131,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30928,
+    "vpos": 1193,
+    "content": "チラ見やめろｗｗｗ",
+    "date": 1335547514,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30251,
+    "vpos": 1248,
+    "content": "イリヤたーん",
+    "date": 1335508090,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30264,
+    "vpos": 1256,
+    "content": "いりやたんｗｗ",
+    "date": 1335509748,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30078,
+    "vpos": 1525,
+    "content": "俺は右手を使って",
+    "date": 1335463275,
+    "owner": false,
+    "premium": false,
+    "mail": ["docomo"]
+  },
+  {
+    "id": 30365,
+    "vpos": 1654,
+    "content": "おい、聖杯戦争しろよ",
+    "date": 1335518930,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30723,
+    "vpos": 2007,
+    "content": "左手はやめろww",
+    "date": 1335536756,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30923,
+    "vpos": 2070,
+    "content": "█■■■　　 　　　　　　　　　あと一度だけ　　は ■■■█\n█■■■　　 　　　　　　　　　　　　起こるだろう ■■■█\n\n \n\n\n \n\n\n ",
+    "date": 1335547431,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "green", "big"]
+  },
+  {
+    "id": 31055,
+    "vpos": 2099,
+    "content": "イリヤたんｗｗｗ",
+    "date": 1335558351,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30271,
+    "vpos": 2320,
+    "content": "ewwwwww",
+    "date": 1335509991,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30076,
+    "vpos": 2332,
+    "content": "今期覇権アニメ",
+    "date": 1335463070,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30924,
+    "vpos": 2365,
+    "content": "█■■■　　 　　　　　　　　　　　　　　　奇跡　 ■■■█\n\n\n \n\n\n \n\n\n ",
+    "date": 1335547450,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "yellow", "big"]
+  },
+  {
+    "id": 30925,
+    "vpos": 2365,
+    "content": "█■■■　　 　　　　　　　　　あと一度だけ　　は ■■■█\n█■■■　　 　　　　　　　　　　　　起こるだろう ■■■█\n\n \n\n\n \n\n\n ",
+    "date": 1335547466,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "green", "big"]
+  },
+  {
+    "id": 31029,
+    "vpos": 2496,
+    "content": "いリアたんw",
+    "date": 1335552285,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30926,
+    "vpos": 2692,
+    "content": " \n\n\n \n\n\n \n\n█■■■ 　　 　　　　　　　　　　　　優しい声で　■■■█\n█■■■ 　　 　　　　　　　　　　描く歪んだ未来　■■■█",
+    "date": 1335547489,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "pink", "big"]
+  },
+  {
+    "id": 30929,
+    "vpos": 2968,
+    "content": "  \n\n\n \n\n\n \n\n█■■■ 　　 　　　　　　　　　　　　優しい声で　■■■█\n█■■■ 　　 　　　　　　　　　　描く歪んだ未来　■■■█",
+    "date": 1335547522,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "pink", "big"]
+  },
+  {
+    "id": 30836,
+    "vpos": 3056,
+    "content": "＿|￣|○",
+    "date": 1335540833,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 31056,
+    "vpos": 3280,
+    "content": "職人すげえｗ",
+    "date": 1335558363,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30930,
+    "vpos": 3291,
+    "content": " \n\n█■■■ 　　もう誰も　　　　　　　　　　　　 　　■■■█\n█■■■ 　　　　　泣かない　　　　　　　　　 　　■■■█\n\n\n \n\n\n ",
+    "date": 1335547573,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "cyan", "big"]
+  },
+  {
+    "id": 31013,
+    "vpos": 3438,
+    "content": "   █■■■ 　　 　　　　　　　　　　　　優しい声で　■■■██■■■ 　　 　　　　　　　　　　描く歪んだ未来　■■■█",
+    "date": 1335551256,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30266,
+    "vpos": 3450,
+    "content": "職人きた！",
+    "date": 1335509770,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30348,
+    "vpos": 3538,
+    "content": "ラストに家族再会するから安心しろ",
+    "date": 1335516615,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30931,
+    "vpos": 3635,
+    "content": " \n\n\n \n█■■■　　　　　　　　　　 　　　　　世界の 　　■■■█\n█■■■　　　　　　　　　　 　　　　　　ために 　■■■█\n \n\n\n ",
+    "date": 1335547599,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "purple", "big"]
+  },
+  {
+    "id": 30933,
+    "vpos": 3951,
+    "content": "█■■■ 　　　　　　　　　さ　　　　　　　　　　 ■■■█\n█■■■ 　　　　　く　　　　　　　た　　　　　　 ■■■█\n\n \n\n\n \n\n\n ",
+    "date": 1335547619,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "red", "big"]
+  },
+  {
+    "id": 30934,
+    "vpos": 3951,
+    "content": " \n\n█■■■ 　　　　　　　汚　　　れ　　　空　　　　 ■■■█\n█■■■ 　　　赤　　　　　　　　　　　　　の　　 ■■■█\n\n\n \n\n\n ",
+    "date": 1335547634,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "red", "big"]
+  },
+  {
+    "id": 30936,
+    "vpos": 4077,
+    "content": "█■■■ 　　　　　　　　　さ　　　　　　　　　　 ■■■█\n█■■■ 　　　　　く　　　　　　　た　　　　　　 ■■■█\n\n \n\n\n \n\n\n ",
+    "date": 1335547669,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "red", "big"]
+  },
+  {
+    "id": 30937,
+    "vpos": 4077,
+    "content": " \n\n█■■■ 　　　　　　　汚　　　れ　　　空　　　　 ■■■█\n█■■■ 　　　赤　　　　　　　　　　　　　の　　 ■■■█\n\n\n \n\n\n ",
+    "date": 1335547683,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "red", "big"]
+  },
+  {
+    "id": 30626,
+    "vpos": 4342,
+    "content": "オリコン週間ランキング７位やったっけ・・・・アイマス勢にフルボッコされてたなｗ",
+    "date": 1335532400,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30938,
+    "vpos": 4422,
+    "content": " \n\n\n \n█■■■ 　　　　　　　　　　　　　ど　　　　　　 ■■■█\n\n \n\n\n ",
+    "date": 1335547717,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "orange", "big"]
+  },
+  {
+    "id": 30939,
+    "vpos": 4483,
+    "content": " \n\n\n \n\n█■■■ 　　　　　　　こ　　　　　　　　　　　　 ■■■█\n \n\n\n ",
+    "date": 1335547733,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "orange", "big"]
+  },
+  {
+    "id": 30940,
+    "vpos": 4515,
+    "content": " \n\n\n \n\n\n█■■■ 　　　　　　　　　　　　　に　　　　　　 ■■■█\n\n\n ",
+    "date": 1335547755,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "orange", "big"]
+  },
+  {
+    "id": 30941,
+    "vpos": 4557,
+    "content": " \n\n\n \n\n\n \n█■■■ 　　　　　　　も　　　　　　　　　　　　 ■■■█\n\n ",
+    "date": 1335547773,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "orange", "big"]
+  },
+  {
+    "id": 30942,
+    "vpos": 4601,
+    "content": " \n\n\n \n\n\n \n\n█■■■ 　　 　　　　　　　　　　　届かず消える　■■■█\n ",
+    "date": 1335547791,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "white", "big"]
+  },
+  {
+    "id": 30903,
+    "vpos": 4735,
+    "content": "やっぱいい曲だなあ",
+    "date": 1335546193,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30943,
+    "vpos": 4898,
+    "content": " \n\n\n \n\n\n \n\n\n█■■■ 　　 　　　　　　　　　　　　叫びと祈り　■■■█",
+    "date": 1335547811,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "black", "big"]
+  },
+  {
+    "id": 30064,
+    "vpos": 5018,
+    "content": "█ 　　　　赤く　汚　　れ　　　　　　　　　　 　　　　　█    ",
+    "date": 1335460121,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30650,
+    "vpos": 5275,
+    "content": "墨汁",
+    "date": 1335533331,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30944,
+    "vpos": 5311,
+    "content": "慰　　め　　は　　捨　　て　　て　　行　　け　　る",
+    "date": 1335547845,
+    "owner": false,
+    "premium": false,
+    "mail": ["red", "big"]
+  },
+  {
+    "id": 30921,
+    "vpos": 5414,
+    "content": "ああああああああああ",
+    "date": 1335547164,
+    "owner": false,
+    "premium": false,
+    "mail": ["ああああああ"]
+  },
+  {
+    "id": 30267,
+    "vpos": 5422,
+    "content": "すげええ",
+    "date": 1335509790,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30945,
+    "vpos": 5613,
+    "content": "█■■■　　　　　　　　　　綺　　　　　　　　　　■■■█\n\n\n \n\n\n \n\n\n ",
+    "date": 1335547884,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "yellow", "big"]
+  },
+  {
+    "id": 30946,
+    "vpos": 5664,
+    "content": "█■■■　　　　　　　　　麗　麗　　　　　　　　　■■■█\n\n\n \n\n\n \n\n\n ",
+    "date": 1335547897,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "yellow", "big"]
+  },
+  {
+    "id": 30556,
+    "vpos": 5748,
+    "content": "職人すげー",
+    "date": 1335530916,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30947,
+    "vpos": 5776,
+    "content": "█■■■　　　　　　　　な　　　な　　　　　　　　■■■█\n\n\n \n\n\n \n\n\n ",
+    "date": 1335547916,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "yellow", "big"]
+  },
+  {
+    "id": 30948,
+    "vpos": 5801,
+    "content": "█■■■　　　　　　　月　　　　　月　　　　　　　■■■█\n\n\n \n\n\n \n\n\n ",
+    "date": 1335547953,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "yellow", "big"]
+  },
+  {
+    "id": 30932,
+    "vpos": 5811,
+    "content": "なぜサビが舞弥なのか・・・",
+    "date": 1335547607,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30949,
+    "vpos": 5891,
+    "content": "█■■■　　　　　　の　　　　　　　の　　　　　　■■■█\n\n\n \n\n\n \n\n\n ",
+    "date": 1335547966,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "yellow", "big"]
+  },
+  {
+    "id": 30951,
+    "vpos": 5919,
+    "content": "█■■■　　　　　光　　　　　　　　　光　　　　　■■■█\n\n\n \n\n\n \n\n\n ",
+    "date": 1335547993,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "yellow", "big"]
+  },
+  {
+    "id": 30917,
+    "vpos": 6069,
+    "content": "サビ抜き",
+    "date": 1335547043,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30952,
+    "vpos": 6081,
+    "content": " \n█■■■　　　　が　　　　　　　　　　　が　　　　■■■█\n\n \n\n\n \n\n\n ",
+    "date": 1335548020,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "yellow", "big"]
+  },
+  {
+    "id": 30953,
+    "vpos": 6157,
+    "content": " \n\n█■■■　　　始　　　　　　　　　　　　　始　　　■■■█\n \n\n\n \n\n\n ",
+    "date": 1335548035,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "yellow", "big"]
+  },
+  {
+    "id": 30954,
+    "vpos": 6245,
+    "content": " \n\n\n█■■■　　ま　　　　　　　　　　　　　　　ま　　■■■█\n\n\n \n\n\n ",
+    "date": 1335548052,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "yellow", "big"]
+  },
+  {
+    "id": 30717,
+    "vpos": 6251,
+    "content": "理想を抱いて溺死シロウ",
+    "date": 1335536427,
+    "owner": false,
+    "premium": false,
+    "mail": ["softbank"]
+  },
+  {
+    "id": 30866,
+    "vpos": 6301,
+    "content": "貴様らには水底が似合いだ",
+    "date": 1335542535,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30955,
+    "vpos": 6310,
+    "content": " \n\n\n \n█■■■　り　　　　　　　　　　　　　　　　　り　■■■█\n\n \n\n\n ",
+    "date": 1335548079,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "yellow", "big"]
+  },
+  {
+    "id": 30956,
+    "vpos": 6362,
+    "content": " \n\n\n \n\n█■■■　へ　　　　　　　　　　　　　　　　　へ　■■■█\n \n\n\n ",
+    "date": 1335548106,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "yellow", "big"]
+  },
+  {
+    "id": 30957,
+    "vpos": 6407,
+    "content": " \n\n\n \n\n\n█■■■　と　　　　　　　　　　　　　　　　　と　■■■█\n\n\n ",
+    "date": 1335548155,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "yellow", "big"]
+  },
+  {
+    "id": 30958,
+    "vpos": 6469,
+    "content": " \n\n\n \n\n\n \n█■■■　　沈　　　　　　　　　　　　　　　沈　　■■■█\n\n ",
+    "date": 1335548169,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "yellow", "big"]
+  },
+  {
+    "id": 30960,
+    "vpos": 6551,
+    "content": " \n\n\n \n\n\n \n\n█■■■　　　み　　　　　　　　　　　　　み　　　■■■█\n ",
+    "date": 1335548186,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "yellow", "big"]
+  },
+  {
+    "id": 30962,
+    "vpos": 6613,
+    "content": " \n\n\n \n\n\n \n\n\n█■■■　　　　ゆ　　　　　　　　　　　ゆ　　　　■■■█",
+    "date": 1335548199,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "yellow", "big"]
+  },
+  {
+    "id": 30965,
+    "vpos": 6652,
+    "content": " \n\n\n \n\n\n \n\n\n█■■■　　　　　く　　　　　　　　　く　　　　　■■■█",
+    "date": 1335548214,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "yellow", "big"]
+  },
+  {
+    "id": 30966,
+    "vpos": 6682,
+    "content": " \n\n\n \n\n\n \n\n\n█■■■　　　　　　そ　　　　　　　そ　　　　　　■■■█",
+    "date": 1335548270,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "yellow", "big"]
+  },
+  {
+    "id": 30967,
+    "vpos": 6722,
+    "content": " \n\n\n \n\n\n \n\n\n█■■■　　　　　　　の　　　　　の　　　　　　　■■■█",
+    "date": 1335548287,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "yellow", "big"]
+  },
+  {
+    "id": 30968,
+    "vpos": 6750,
+    "content": " \n\n\n \n\n\n \n\n\n█■■■　　　　　　　　彼　　　彼　　　　　　　　■■■█",
+    "date": 1335548306,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "yellow", "big"]
+  },
+  {
+    "id": 30724,
+    "vpos": 6765,
+    "content": "職人すげーw",
+    "date": 1335536803,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30969,
+    "vpos": 6820,
+    "content": " \n\n\n \n\n\n \n\n\n█■■■　　　　　　　　　方　方　　　　　　　　　■■■█",
+    "date": 1335548323,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "yellow", "big"]
+  },
+  {
+    "id": 30557,
+    "vpos": 6849,
+    "content": "すっげええええｗｗｗｗｗ",
+    "date": 1335530927,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30970,
+    "vpos": 6876,
+    "content": " \n\n\n \n\n\n \n\n\n█■■■　　　　　　　　　　へ　　　　　　　　　　■■■█",
+    "date": 1335548338,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "yellow", "big"]
+  },
+  {
+    "id": 30971,
+    "vpos": 6937,
+    "content": " \n\n\n \n\n\n \n\n█■■■　　　　　　　　　　閉　　　　　　　　　　■■■█\n ",
+    "date": 1335548360,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "blue", "big"]
+  },
+  {
+    "id": 30972,
+    "vpos": 6937,
+    "content": "  \n\n\n \n\n\n \n\n█■■■　　　　　　　　　　閉　　　　　　　　　　■■■█\n ",
+    "date": 1335548389,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "cyan", "big"]
+  },
+  {
+    "id": 30974,
+    "vpos": 6965,
+    "content": " \n\n\n \n\n\n \n\n█■■■　　　　　　　　　ざ　ざ　　　　　　　　　■■■█\n ",
+    "date": 1335548416,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "cyan", "big"]
+  },
+  {
+    "id": 30976,
+    "vpos": 7020,
+    "content": " \n\n\n \n\n\n \n\n█■■■　　　　　　　　さ　　　さ　　　　　　　　■■■█\n ",
+    "date": 1335548444,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "cyan", "big"]
+  },
+  {
+    "id": 30977,
+    "vpos": 7058,
+    "content": " \n\n\n \n\n\n \n\n█■■■　　　　　　　れ　　　　　れ　　　　　　　■■■█\n ",
+    "date": 1335548463,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "cyan", "big"]
+  },
+  {
+    "id": 31057,
+    "vpos": 7112,
+    "content": "職人すげえｗｗｗ",
+    "date": 1335558401,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30978,
+    "vpos": 7115,
+    "content": " \n\n\n \n\n\n \n\n█■■■　　　　　　て　　　　　　　て　　　　　　■■■█\n ",
+    "date": 1335548478,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "cyan", "big"]
+  },
+  {
+    "id": 30979,
+    "vpos": 7128,
+    "content": " \n\n\n \n\n\n \n\n█■■■　　　　　く　　　　　　　　　く　　　　　■■■█\n ",
+    "date": 1335548499,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "cyan", "big"]
+  },
+  {
+    "id": 30980,
+    "vpos": 7187,
+    "content": " \n\n\n \n\n\n \n█■■■　　　　瞳　　　　　　　　　　　瞳　　　　■■■█\n\n ",
+    "date": 1335548514,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "cyan", "big"]
+  },
+  {
+    "id": 30982,
+    "vpos": 7326,
+    "content": " \n\n\n \n\n\n█■■■　　　で　　　　　　　　　　　　　で　　　■■■█\n\n\n ",
+    "date": 1335548544,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "cyan", "big"]
+  },
+  {
+    "id": 30983,
+    "vpos": 7405,
+    "content": " \n\n\n \n\n█■■■　　ま　　　　　　　　　　　　　　　ま　　■■■█\n \n\n\n ",
+    "date": 1335548563,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "cyan", "big"]
+  },
+  {
+    "id": 30984,
+    "vpos": 7464,
+    "content": " \n\n\n \n█■■■　　だ　　　　　　　　　　　　　　　だ　　■■■█\n\n \n\n\n ",
+    "date": 1335548595,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "cyan", "big"]
+  },
+  {
+    "id": 30985,
+    "vpos": 7504,
+    "content": " \n\n\n█■■■　　　遠　　　　　　　　　　　　　遠　　　■■■█\n\n\n \n\n\n ",
+    "date": 1335548632,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "cyan", "big"]
+  },
+  {
+    "id": 30986,
+    "vpos": 7614,
+    "content": " \n\n█■■■　　　　く　　　　　　　　　　　く　　　　■■■█\n \n\n\n \n\n\n ",
+    "date": 1335548650,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "cyan", "big"]
+  },
+  {
+    "id": 30781,
+    "vpos": 7633,
+    "content": "職人GJ",
+    "date": 1335538769,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30990,
+    "vpos": 7634,
+    "content": " \n█■■■　　　　　へ　　　　　　　　　へ　　　　　■■■█\n\n \n\n\n \n\n\n ",
+    "date": 1335548767,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "cyan", "big"]
+  },
+  {
+    "id": 30991,
+    "vpos": 7722,
+    "content": "█■■■　　　　　　手　　　　　　　手　　　　　　■■■█\n\n\n \n\n\n \n\n\n ",
+    "date": 1335548779,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "cyan", "big"]
+  },
+  {
+    "id": 30992,
+    "vpos": 7773,
+    "content": "█■■■　　　　　　　を　　　　　を　　　　　　　■■■█\n\n\n \n\n\n \n\n\n ",
+    "date": 1335548795,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "cyan", "big"]
+  },
+  {
+    "id": 30993,
+    "vpos": 7810,
+    "content": "█■■■　　　　　　　　伸　　　伸　　　　　　　　■■■█\n\n\n \n\n\n \n\n\n ",
+    "date": 1335548835,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "cyan", "big"]
+  },
+  {
+    "id": 30994,
+    "vpos": 7873,
+    "content": "█■■■　　　　　　　　　ば　ば　　　　　　　　　■■■█\n\n\n \n\n\n \n\n\n ",
+    "date": 1335548846,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "cyan", "big"]
+  },
+  {
+    "id": 30995,
+    "vpos": 7891,
+    "content": "█■■■　　　　　　　　　　す　　　　　　　　　　■■■█\n\n\n \n\n\n \n\n\n ",
+    "date": 1335548866,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "cyan", "big"]
+  },
+  {
+    "id": 30997,
+    "vpos": 7953,
+    "content": " \n\n\n \n\n█■■■ 君の嘆きを　　　　　　　　　　　　　 　　■■■█\n \n\n\n ",
+    "date": 1335548894,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "white", "big"]
+  },
+  {
+    "id": 31000,
+    "vpos": 8266,
+    "content": " \n\n\n \n\n█■■■　　　　　　　　　　　　　　　信じて　 　 ■■■█\n \n\n\n ",
+    "date": 1335548931,
+    "owner": false,
+    "premium": false,
+    "mail": ["ue", "white", "big"]
+  },
+  {
+    "id": 30558,
+    "vpos": 8683,
+    "content": "キルアきたｗｗｗ",
+    "date": 1335530945,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30105,
+    "vpos": 8880,
+    "content": "職人おつ！",
+    "date": 1335475707,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  }
 ]

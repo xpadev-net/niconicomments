@@ -7,10 +7,7 @@
     "date_usec": 957476,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 20683,
@@ -20,10 +17,7 @@
     "date_usec": 331343,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 23319,
@@ -33,15 +27,7 @@
     "date_usec": 537872,
     "owner": false,
     "premium": false,
-    "mail": [
-      "shita",
-      "black",
-      "medium",
-      "mincho",
-      "ender",
-      "full",
-      "184"
-    ]
+    "mail": ["shita", "black", "medium", "mincho", "ender", "full", "184"]
   },
   {
     "id": 50,
@@ -51,12 +37,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#010101",
-      "big",
-      "full"
-    ]
+    "mail": ["ue", "#010101", "big", "full"]
   },
   {
     "id": 51,
@@ -66,10 +47,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#ffffff"
-    ]
+    "mail": ["ue", "#ffffff"]
   },
   {
     "id": 52,
@@ -79,11 +57,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#ff0000",
-      "big"
-    ]
+    "mail": ["ue", "#ff0000", "big"]
   },
   {
     "id": 53,
@@ -93,12 +67,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "shita",
-      "#010101",
-      "big",
-      "full"
-    ]
+    "mail": ["shita", "#010101", "big", "full"]
   },
   {
     "id": 54,
@@ -108,10 +77,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "shita",
-      "#ffffff"
-    ]
+    "mail": ["shita", "#ffffff"]
   },
   {
     "id": 23373,
@@ -121,13 +87,7 @@
     "date_usec": 477669,
     "owner": false,
     "premium": false,
-    "mail": [
-      "shita",
-      "black",
-      "big",
-      "mincho",
-      "184"
-    ]
+    "mail": ["shita", "black", "big", "mincho", "184"]
   },
   {
     "id": 23386,
@@ -137,13 +97,7 @@
     "date_usec": 118481,
     "owner": false,
     "premium": false,
-    "mail": [
-      "naka",
-      "black",
-      "medium",
-      "mincho",
-      "184"
-    ]
+    "mail": ["naka", "black", "medium", "mincho", "184"]
   },
   {
     "id": 23368,
@@ -153,10 +107,7 @@
     "date_usec": 270985,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 55,
@@ -166,11 +117,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "naka",
-      "#ffffff",
-      "big"
-    ]
+    "mail": ["naka", "#ffffff", "big"]
   },
   {
     "id": 14,
@@ -180,9 +127,7 @@
     "date_usec": 827223,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 75,
@@ -192,12 +137,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#555555",
-      "big",
-      "full"
-    ]
+    "mail": ["ue", "#555555", "big", "full"]
   },
   {
     "id": 56,
@@ -207,11 +147,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "naka",
-      "#777777",
-      "big"
-    ]
+    "mail": ["naka", "#777777", "big"]
   },
   {
     "id": 57,
@@ -221,11 +157,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "naka",
-      "#aaaaaa",
-      "big"
-    ]
+    "mail": ["naka", "#aaaaaa", "big"]
   },
   {
     "id": 58,
@@ -235,11 +167,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "naka",
-      "#dddddd",
-      "big"
-    ]
+    "mail": ["naka", "#dddddd", "big"]
   },
   {
     "id": 59,
@@ -249,11 +177,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "naka",
-      "#ffffff",
-      "big"
-    ]
+    "mail": ["naka", "#ffffff", "big"]
   },
   {
     "id": 65,
@@ -263,12 +187,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#555555",
-      "big",
-      "full"
-    ]
+    "mail": ["ue", "#555555", "big", "full"]
   },
   {
     "id": 66,
@@ -278,12 +197,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#777777",
-      "big",
-      "full"
-    ]
+    "mail": ["ue", "#777777", "big", "full"]
   },
   {
     "id": 60,
@@ -293,12 +207,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#999999",
-      "big",
-      "full"
-    ]
+    "mail": ["ue", "#999999", "big", "full"]
   },
   {
     "id": 61,
@@ -308,12 +217,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#bbbbbb",
-      "big",
-      "full"
-    ]
+    "mail": ["ue", "#bbbbbb", "big", "full"]
   },
   {
     "id": 62,
@@ -323,12 +227,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#cccccc",
-      "big",
-      "full"
-    ]
+    "mail": ["ue", "#cccccc", "big", "full"]
   },
   {
     "id": 63,
@@ -338,12 +237,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#dddddd",
-      "big",
-      "full"
-    ]
+    "mail": ["ue", "#dddddd", "big", "full"]
   },
   {
     "id": 64,
@@ -353,12 +247,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#ffffff",
-      "big",
-      "full"
-    ]
+    "mail": ["ue", "#ffffff", "big", "full"]
   },
   {
     "id": 67,
@@ -368,11 +257,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "naka",
-      "#aa0000",
-      "big"
-    ]
+    "mail": ["naka", "#aa0000", "big"]
   },
   {
     "id": 68,
@@ -382,12 +267,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#9900ff",
-      "big",
-      "full"
-    ]
+    "mail": ["ue", "#9900ff", "big", "full"]
   },
   {
     "id": 69,
@@ -397,12 +277,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#0000ff",
-      "big",
-      "full"
-    ]
+    "mail": ["ue", "#0000ff", "big", "full"]
   },
   {
     "id": 70,
@@ -412,12 +287,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#00ffff",
-      "big",
-      "full"
-    ]
+    "mail": ["ue", "#00ffff", "big", "full"]
   },
   {
     "id": 71,
@@ -427,12 +297,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#33ff00",
-      "big",
-      "full"
-    ]
+    "mail": ["ue", "#33ff00", "big", "full"]
   },
   {
     "id": 72,
@@ -442,12 +307,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#ffff00",
-      "big",
-      "full"
-    ]
+    "mail": ["ue", "#ffff00", "big", "full"]
   },
   {
     "id": 73,
@@ -457,12 +317,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#ffaa00",
-      "big",
-      "full"
-    ]
+    "mail": ["ue", "#ffaa00", "big", "full"]
   },
   {
     "id": 74,
@@ -472,12 +327,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#ff0000",
-      "big",
-      "full"
-    ]
+    "mail": ["ue", "#ff0000", "big", "full"]
   },
   {
     "id": 1,
@@ -487,9 +337,7 @@
     "date_usec": 184995,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 76,
@@ -499,11 +347,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "naka",
-      "#999999",
-      "big"
-    ]
+    "mail": ["naka", "#999999", "big"]
   },
   {
     "id": 77,
@@ -513,11 +357,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "naka",
-      "#bbbbbb",
-      "big"
-    ]
+    "mail": ["naka", "#bbbbbb", "big"]
   },
   {
     "id": 78,
@@ -527,11 +367,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "naka",
-      "#dddddd",
-      "big"
-    ]
+    "mail": ["naka", "#dddddd", "big"]
   },
   {
     "id": 79,
@@ -541,11 +377,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "naka",
-      "#ffffff",
-      "big"
-    ]
+    "mail": ["naka", "#ffffff", "big"]
   },
   {
     "id": 17,
@@ -555,9 +387,7 @@
     "date_usec": 610077,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 80,
@@ -567,9 +397,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "@11"
-    ]
+    "mail": ["@11"]
   },
   {
     "id": 81,
@@ -579,12 +407,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#ffffff",
-      "big",
-      "full"
-    ]
+    "mail": ["ue", "#ffffff", "big", "full"]
   },
   {
     "id": 82,
@@ -594,11 +417,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "naka",
-      "#ffffff",
-      "big"
-    ]
+    "mail": ["naka", "#ffffff", "big"]
   },
   {
     "id": 83,
@@ -608,12 +427,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#dddddd",
-      "big",
-      "full"
-    ]
+    "mail": ["ue", "#dddddd", "big", "full"]
   },
   {
     "id": 84,
@@ -623,12 +437,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#aaaaaa",
-      "big",
-      "full"
-    ]
+    "mail": ["ue", "#aaaaaa", "big", "full"]
   },
   {
     "id": 85,
@@ -638,12 +447,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#888888",
-      "big",
-      "full"
-    ]
+    "mail": ["ue", "#888888", "big", "full"]
   },
   {
     "id": 86,
@@ -653,12 +457,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#666666",
-      "big",
-      "full"
-    ]
+    "mail": ["ue", "#666666", "big", "full"]
   },
   {
     "id": 87,
@@ -668,12 +467,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#555555",
-      "big",
-      "full"
-    ]
+    "mail": ["ue", "#555555", "big", "full"]
   },
   {
     "id": 88,
@@ -683,12 +477,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#333333",
-      "big",
-      "full"
-    ]
+    "mail": ["ue", "#333333", "big", "full"]
   },
   {
     "id": 16,
@@ -698,9 +487,7 @@
     "date_usec": 588536,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 89,
@@ -710,12 +497,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#550000",
-      "big",
-      "full"
-    ]
+    "mail": ["ue", "#550000", "big", "full"]
   },
   {
     "id": 90,
@@ -725,11 +507,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "naka",
-      "#ff0000",
-      "big"
-    ]
+    "mail": ["naka", "#ff0000", "big"]
   },
   {
     "id": 91,
@@ -739,12 +517,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#770000",
-      "big",
-      "full"
-    ]
+    "mail": ["ue", "#770000", "big", "full"]
   },
   {
     "id": 92,
@@ -754,12 +527,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#990000",
-      "big",
-      "full"
-    ]
+    "mail": ["ue", "#990000", "big", "full"]
   },
   {
     "id": 23324,
@@ -769,10 +537,7 @@
     "date_usec": 792526,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 93,
@@ -782,12 +547,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#aa0000",
-      "big",
-      "full"
-    ]
+    "mail": ["ue", "#aa0000", "big", "full"]
   },
   {
     "id": 94,
@@ -797,12 +557,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#cc0000",
-      "big",
-      "full"
-    ]
+    "mail": ["ue", "#cc0000", "big", "full"]
   },
   {
     "id": 95,
@@ -812,12 +567,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#dd0000",
-      "big",
-      "full"
-    ]
+    "mail": ["ue", "#dd0000", "big", "full"]
   },
   {
     "id": 96,
@@ -827,12 +577,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#ff0000",
-      "big",
-      "full"
-    ]
+    "mail": ["ue", "#ff0000", "big", "full"]
   },
   {
     "id": 25,
@@ -842,9 +587,7 @@
     "date_usec": 332140,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 97,
@@ -854,11 +597,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "naka",
-      "#ffffff",
-      "big"
-    ]
+    "mail": ["naka", "#ffffff", "big"]
   },
   {
     "id": 98,
@@ -868,12 +607,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#eeeeee",
-      "big",
-      "full"
-    ]
+    "mail": ["ue", "#eeeeee", "big", "full"]
   },
   {
     "id": 99,
@@ -883,12 +617,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#bbbbbb",
-      "big",
-      "full"
-    ]
+    "mail": ["ue", "#bbbbbb", "big", "full"]
   },
   {
     "id": 2,
@@ -898,9 +627,7 @@
     "date_usec": 178901,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 100,
@@ -910,12 +637,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#888888",
-      "big",
-      "full"
-    ]
+    "mail": ["ue", "#888888", "big", "full"]
   },
   {
     "id": 23383,
@@ -925,10 +647,7 @@
     "date_usec": 603402,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 101,
@@ -938,12 +657,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#555555",
-      "big",
-      "full"
-    ]
+    "mail": ["ue", "#555555", "big", "full"]
   },
   {
     "id": 15,
@@ -953,9 +667,7 @@
     "date_usec": 662932,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 102,
@@ -965,12 +677,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#333333",
-      "big",
-      "full"
-    ]
+    "mail": ["ue", "#333333", "big", "full"]
   },
   {
     "id": 103,
@@ -980,11 +687,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "naka",
-      "#7f7f7f",
-      "big"
-    ]
+    "mail": ["naka", "#7f7f7f", "big"]
   },
   {
     "id": 104,
@@ -994,11 +697,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "naka",
-      "#aaaaaa",
-      "big"
-    ]
+    "mail": ["naka", "#aaaaaa", "big"]
   },
   {
     "id": 105,
@@ -1008,11 +707,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "naka",
-      "#d4d4d4",
-      "big"
-    ]
+    "mail": ["naka", "#d4d4d4", "big"]
   },
   {
     "id": 106,
@@ -1022,11 +717,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "naka",
-      "#efefef",
-      "big"
-    ]
+    "mail": ["naka", "#efefef", "big"]
   },
   {
     "id": 107,
@@ -1036,12 +727,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#ffffff",
-      "big",
-      "full"
-    ]
+    "mail": ["ue", "#ffffff", "big", "full"]
   },
   {
     "id": 108,
@@ -1051,12 +737,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#e9e9e9",
-      "big",
-      "full"
-    ]
+    "mail": ["ue", "#e9e9e9", "big", "full"]
   },
   {
     "id": 109,
@@ -1066,12 +747,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#bfbfbf",
-      "big",
-      "full"
-    ]
+    "mail": ["ue", "#bfbfbf", "big", "full"]
   },
   {
     "id": 110,
@@ -1081,12 +757,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#9f9f9f",
-      "big",
-      "full"
-    ]
+    "mail": ["ue", "#9f9f9f", "big", "full"]
   },
   {
     "id": 111,
@@ -1096,12 +767,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#7f7f7f",
-      "big",
-      "full"
-    ]
+    "mail": ["ue", "#7f7f7f", "big", "full"]
   },
   {
     "id": 112,
@@ -1111,12 +777,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#5f5f5f",
-      "big",
-      "full"
-    ]
+    "mail": ["ue", "#5f5f5f", "big", "full"]
   },
   {
     "id": 113,
@@ -1126,12 +787,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#4a4a4a",
-      "big",
-      "full"
-    ]
+    "mail": ["ue", "#4a4a4a", "big", "full"]
   },
   {
     "id": 114,
@@ -1141,11 +797,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "naka",
-      "#ffaaaa",
-      "big"
-    ]
+    "mail": ["naka", "#ffaaaa", "big"]
   },
   {
     "id": 115,
@@ -1155,11 +807,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "naka",
-      "#ff5555",
-      "big"
-    ]
+    "mail": ["naka", "#ff5555", "big"]
   },
   {
     "id": 116,
@@ -1169,11 +817,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "naka",
-      "#ff0000",
-      "big"
-    ]
+    "mail": ["naka", "#ff0000", "big"]
   },
   {
     "id": 117,
@@ -1183,11 +827,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "naka",
-      "#aa0000",
-      "big"
-    ]
+    "mail": ["naka", "#aa0000", "big"]
   },
   {
     "id": 118,
@@ -1197,12 +837,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#ff0000",
-      "full",
-      "big"
-    ]
+    "mail": ["ue", "#ff0000", "full", "big"]
   },
   {
     "id": 119,
@@ -1212,12 +847,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#d50000",
-      "full",
-      "big"
-    ]
+    "mail": ["ue", "#d50000", "full", "big"]
   },
   {
     "id": 120,
@@ -1227,12 +857,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#ff2b2b",
-      "full",
-      "big"
-    ]
+    "mail": ["ue", "#ff2b2b", "full", "big"]
   },
   {
     "id": 121,
@@ -1242,12 +867,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#aa0000",
-      "full",
-      "big"
-    ]
+    "mail": ["ue", "#aa0000", "full", "big"]
   },
   {
     "id": 122,
@@ -1257,12 +877,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#ff5555",
-      "full",
-      "big"
-    ]
+    "mail": ["ue", "#ff5555", "full", "big"]
   },
   {
     "id": 123,
@@ -1272,12 +887,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#800000",
-      "full",
-      "big"
-    ]
+    "mail": ["ue", "#800000", "full", "big"]
   },
   {
     "id": 124,
@@ -1287,12 +897,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#ff8080",
-      "full",
-      "big"
-    ]
+    "mail": ["ue", "#ff8080", "full", "big"]
   },
   {
     "id": 125,
@@ -1302,11 +907,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "naka",
-      "#f4f4f4",
-      "big"
-    ]
+    "mail": ["naka", "#f4f4f4", "big"]
   },
   {
     "id": 126,
@@ -1316,11 +917,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "naka",
-      "#d4d4d4",
-      "big"
-    ]
+    "mail": ["naka", "#d4d4d4", "big"]
   },
   {
     "id": 127,
@@ -1330,11 +927,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "naka",
-      "#aaaaaa",
-      "big"
-    ]
+    "mail": ["naka", "#aaaaaa", "big"]
   },
   {
     "id": 128,
@@ -1344,11 +937,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "naka",
-      "#7f7f7f",
-      "big"
-    ]
+    "mail": ["naka", "#7f7f7f", "big"]
   },
   {
     "id": 129,
@@ -1358,12 +947,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#555555",
-      "full",
-      "big"
-    ]
+    "mail": ["ue", "#555555", "full", "big"]
   },
   {
     "id": 130,
@@ -1373,12 +957,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#bbbbbb",
-      "full",
-      "big"
-    ]
+    "mail": ["ue", "#bbbbbb", "full", "big"]
   },
   {
     "id": 131,
@@ -1388,12 +967,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#bbbbbb",
-      "full",
-      "big"
-    ]
+    "mail": ["ue", "#bbbbbb", "full", "big"]
   },
   {
     "id": 132,
@@ -1403,12 +977,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#888888",
-      "full",
-      "big"
-    ]
+    "mail": ["ue", "#888888", "full", "big"]
   },
   {
     "id": 133,
@@ -1418,12 +987,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#888888",
-      "full",
-      "big"
-    ]
+    "mail": ["ue", "#888888", "full", "big"]
   },
   {
     "id": 134,
@@ -1433,12 +997,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#ffffff",
-      "full",
-      "big"
-    ]
+    "mail": ["ue", "#ffffff", "full", "big"]
   },
   {
     "id": 135,
@@ -1448,12 +1007,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#ffffff",
-      "full",
-      "big"
-    ]
+    "mail": ["ue", "#ffffff", "full", "big"]
   },
   {
     "id": 136,
@@ -1463,11 +1017,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "naka",
-      "#ff2b2b",
-      "big"
-    ]
+    "mail": ["naka", "#ff2b2b", "big"]
   },
   {
     "id": 137,
@@ -1477,11 +1027,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "naka",
-      "#aa0000",
-      "big"
-    ]
+    "mail": ["naka", "#aa0000", "big"]
   },
   {
     "id": 138,
@@ -1491,11 +1037,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "naka",
-      "#8d1d1d",
-      "big"
-    ]
+    "mail": ["naka", "#8d1d1d", "big"]
   },
   {
     "id": 139,
@@ -1505,11 +1047,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "naka",
-      "#dc4e4e",
-      "big"
-    ]
+    "mail": ["naka", "#dc4e4e", "big"]
   },
   {
     "id": 23,
@@ -1519,9 +1057,7 @@
     "date_usec": 625335,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 140,
@@ -1531,12 +1067,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "full",
-      "shita",
-      "#ff2b2b",
-      "big"
-    ]
+    "mail": ["full", "shita", "#ff2b2b", "big"]
   },
   {
     "id": 141,
@@ -1546,12 +1077,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "full",
-      "shita",
-      "#470e0e",
-      "big"
-    ]
+    "mail": ["full", "shita", "#470e0e", "big"]
   },
   {
     "id": 142,
@@ -1561,12 +1087,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "full",
-      "shita",
-      "#ff0000",
-      "big"
-    ]
+    "mail": ["full", "shita", "#ff0000", "big"]
   },
   {
     "id": 143,
@@ -1576,13 +1097,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ender",
-      "full",
-      "shita",
-      "#d50000",
-      "big"
-    ]
+    "mail": ["ender", "full", "shita", "#d50000", "big"]
   },
   {
     "id": 144,
@@ -1592,12 +1107,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "full",
-      "shita",
-      "#aa0000",
-      "big"
-    ]
+    "mail": ["full", "shita", "#aa0000", "big"]
   },
   {
     "id": 24,
@@ -1607,9 +1117,7 @@
     "date_usec": 879160,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 23382,
@@ -1619,10 +1127,7 @@
     "date_usec": 615230,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 23387,
@@ -1632,9 +1137,7 @@
     "date_usec": 211625,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 23388,
@@ -2003,16 +1506,7 @@
     "date_usec": 738767,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "full",
-      "mincho",
-      "patissier",
-      "ca",
-      "#a40404",
-      "184"
-    ]
+    "mail": ["ue", "big", "full", "mincho", "patissier", "ca", "#a40404", "184"]
   },
   {
     "id": 23406,
@@ -2022,16 +1516,7 @@
     "date_usec": 609091,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "full",
-      "mincho",
-      "patissier",
-      "ca",
-      "#B40404",
-      "184"
-    ]
+    "mail": ["ue", "big", "full", "mincho", "patissier", "ca", "#B40404", "184"]
   },
   {
     "id": 23407,
@@ -2041,16 +1526,7 @@
     "date_usec": 425179,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "full",
-      "mincho",
-      "patissier",
-      "ca",
-      "#CCCCCC",
-      "184"
-    ]
+    "mail": ["ue", "big", "full", "mincho", "patissier", "ca", "#CCCCCC", "184"]
   },
   {
     "id": 23408,
@@ -2140,16 +1616,7 @@
     "date_usec": 466552,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "full",
-      "mincho",
-      "patissier",
-      "ca",
-      "#CCCCCC",
-      "184"
-    ]
+    "mail": ["ue", "big", "full", "mincho", "patissier", "ca", "#CCCCCC", "184"]
   },
   {
     "id": 23414,
@@ -2159,16 +1626,7 @@
     "date_usec": 320444,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "full",
-      "mincho",
-      "patissier",
-      "ca",
-      "#CCCCCC",
-      "184"
-    ]
+    "mail": ["ue", "big", "full", "mincho", "patissier", "ca", "#CCCCCC", "184"]
   },
   {
     "id": 23415,
@@ -2178,16 +1636,7 @@
     "date_usec": 202163,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "full",
-      "mincho",
-      "patissier",
-      "ca",
-      "#CCCCCC",
-      "184"
-    ]
+    "mail": ["ue", "big", "full", "mincho", "patissier", "ca", "#CCCCCC", "184"]
   },
   {
     "id": 23416,
@@ -2197,16 +1646,7 @@
     "date_usec": 43675,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "full",
-      "mincho",
-      "patissier",
-      "ca",
-      "#CCCCCC",
-      "184"
-    ]
+    "mail": ["ue", "big", "full", "mincho", "patissier", "ca", "#CCCCCC", "184"]
   },
   {
     "id": 23417,
@@ -2216,16 +1656,7 @@
     "date_usec": 895603,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "full",
-      "mincho",
-      "patissier",
-      "ca",
-      "#CCCCCC",
-      "184"
-    ]
+    "mail": ["ue", "big", "full", "mincho", "patissier", "ca", "#CCCCCC", "184"]
   },
   {
     "id": 23418,
@@ -2235,16 +1666,7 @@
     "date_usec": 749255,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "full",
-      "mincho",
-      "patissier",
-      "ca",
-      "#CCCCCC",
-      "184"
-    ]
+    "mail": ["ue", "big", "full", "mincho", "patissier", "ca", "#CCCCCC", "184"]
   },
   {
     "id": 23419,
@@ -2334,16 +1756,7 @@
     "date_usec": 944758,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "full",
-      "mincho",
-      "patissier",
-      "ca",
-      "#CCCCCC",
-      "184"
-    ]
+    "mail": ["ue", "big", "full", "mincho", "patissier", "ca", "#CCCCCC", "184"]
   },
   {
     "id": 23424,
@@ -2473,9 +1886,7 @@
     "date_usec": 832180,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 23385,
@@ -2485,12 +1896,7 @@
     "date_usec": 184307,
     "owner": false,
     "premium": false,
-    "mail": [
-      "naka",
-      "black",
-      "mincho",
-      "184"
-    ]
+    "mail": ["naka", "black", "mincho", "184"]
   },
   {
     "id": 23430,
@@ -2520,12 +1926,7 @@
     "date_usec": 160307,
     "owner": false,
     "premium": false,
-    "mail": [
-      "naka",
-      "black",
-      "micnho",
-      "184"
-    ]
+    "mail": ["naka", "black", "micnho", "184"]
   },
   {
     "id": 23431,
@@ -2555,13 +1956,7 @@
     "date_usec": 377518,
     "owner": false,
     "premium": false,
-    "mail": [
-      "naka",
-      "black",
-      "medium",
-      "mincho",
-      "184"
-    ]
+    "mail": ["naka", "black", "medium", "mincho", "184"]
   },
   {
     "id": 23432,
@@ -2711,9 +2106,7 @@
     "date_usec": 251438,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 23440,
@@ -3615,16 +3008,7 @@
     "date_usec": 367311,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ender",
-      "ue",
-      "big",
-      "mincho",
-      "full",
-      "ca",
-      "#A901DB",
-      "184"
-    ]
+    "mail": ["ender", "ue", "big", "mincho", "full", "ca", "#A901DB", "184"]
   },
   {
     "id": 23485,
@@ -3634,16 +3018,7 @@
     "date_usec": 233057,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ender",
-      "ue",
-      "big",
-      "mincho",
-      "full",
-      "ca",
-      "#010101",
-      "184"
-    ]
+    "mail": ["ender", "ue", "big", "mincho", "full", "ca", "#010101", "184"]
   },
   {
     "id": 23486,
@@ -3653,16 +3028,7 @@
     "date_usec": 45715,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ender",
-      "ue",
-      "big",
-      "mincho",
-      "full",
-      "ca",
-      "#8904B1",
-      "184"
-    ]
+    "mail": ["ender", "ue", "big", "mincho", "full", "ca", "#8904B1", "184"]
   },
   {
     "id": 23487,
@@ -3672,16 +3038,7 @@
     "date_usec": 889287,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ender",
-      "ue",
-      "big",
-      "mincho",
-      "full",
-      "ca",
-      "#010101",
-      "184"
-    ]
+    "mail": ["ender", "ue", "big", "mincho", "full", "ca", "#010101", "184"]
   },
   {
     "id": 23488,
@@ -3691,16 +3048,7 @@
     "date_usec": 693142,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ender",
-      "ue",
-      "big",
-      "mincho",
-      "full",
-      "ca",
-      "#ffffff",
-      "184"
-    ]
+    "mail": ["ender", "ue", "big", "mincho", "full", "ca", "#ffffff", "184"]
   },
   {
     "id": 23489,
@@ -3710,16 +3058,7 @@
     "date_usec": 549413,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ender",
-      "ue",
-      "big",
-      "mincho",
-      "full",
-      "ca",
-      "#010101",
-      "184"
-    ]
+    "mail": ["ender", "ue", "big", "mincho", "full", "ca", "#010101", "184"]
   },
   {
     "id": 23490,
@@ -3729,16 +3068,7 @@
     "date_usec": 390661,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ender",
-      "ue",
-      "big",
-      "mincho",
-      "full",
-      "ca",
-      "#ff0000",
-      "184"
-    ]
+    "mail": ["ender", "ue", "big", "mincho", "full", "ca", "#ff0000", "184"]
   },
   {
     "id": 23491,
@@ -3748,16 +3078,7 @@
     "date_usec": 250376,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ender",
-      "ue",
-      "big",
-      "mincho",
-      "full",
-      "ca",
-      "#010101",
-      "184"
-    ]
+    "mail": ["ender", "ue", "big", "mincho", "full", "ca", "#010101", "184"]
   },
   {
     "id": 23492,
@@ -3767,16 +3088,7 @@
     "date_usec": 129448,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ender",
-      "ue",
-      "big",
-      "mincho",
-      "full",
-      "ca",
-      "#ffffff",
-      "184"
-    ]
+    "mail": ["ender", "ue", "big", "mincho", "full", "ca", "#ffffff", "184"]
   },
   {
     "id": 23493,
@@ -3786,16 +3098,7 @@
     "date_usec": 965807,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ender",
-      "ue",
-      "big",
-      "mincho",
-      "full",
-      "ca",
-      "#010101",
-      "184"
-    ]
+    "mail": ["ender", "ue", "big", "mincho", "full", "ca", "#010101", "184"]
   },
   {
     "id": 23494,
@@ -3805,16 +3108,7 @@
     "date_usec": 797475,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ender",
-      "ue",
-      "big",
-      "mincho",
-      "full",
-      "ca",
-      "#ffffff",
-      "184"
-    ]
+    "mail": ["ender", "ue", "big", "mincho", "full", "ca", "#ffffff", "184"]
   },
   {
     "id": 23495,
@@ -3824,16 +3118,7 @@
     "date_usec": 624933,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ender",
-      "ue",
-      "big",
-      "mincho",
-      "full",
-      "ca",
-      "#010101",
-      "184"
-    ]
+    "mail": ["ender", "ue", "big", "mincho", "full", "ca", "#010101", "184"]
   },
   {
     "id": 23496,
@@ -3843,16 +3128,7 @@
     "date_usec": 468688,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ender",
-      "ue",
-      "big",
-      "mincho",
-      "full",
-      "ca",
-      "#010101",
-      "184"
-    ]
+    "mail": ["ender", "ue", "big", "mincho", "full", "ca", "#010101", "184"]
   },
   {
     "id": 23497,
@@ -3862,16 +3138,7 @@
     "date_usec": 292767,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ender",
-      "ue",
-      "big",
-      "mincho",
-      "full",
-      "ca",
-      "#ffffff",
-      "184"
-    ]
+    "mail": ["ender", "ue", "big", "mincho", "full", "ca", "#ffffff", "184"]
   },
   {
     "id": 23498,
@@ -3881,16 +3148,7 @@
     "date_usec": 139480,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ender",
-      "ue",
-      "big",
-      "mincho",
-      "full",
-      "ca",
-      "#010101",
-      "184"
-    ]
+    "mail": ["ender", "ue", "big", "mincho", "full", "ca", "#010101", "184"]
   },
   {
     "id": 23499,
@@ -3900,16 +3158,7 @@
     "date_usec": 10293,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ender",
-      "ue",
-      "big",
-      "mincho",
-      "full",
-      "ca",
-      "#8a0808",
-      "184"
-    ]
+    "mail": ["ender", "ue", "big", "mincho", "full", "ca", "#8a0808", "184"]
   },
   {
     "id": 23500,
@@ -3919,16 +3168,7 @@
     "date_usec": 863205,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ender",
-      "ue",
-      "big",
-      "mincho",
-      "full",
-      "ca",
-      "#010101",
-      "184"
-    ]
+    "mail": ["ender", "ue", "big", "mincho", "full", "ca", "#010101", "184"]
   },
   {
     "id": 23501,
@@ -3938,16 +3178,7 @@
     "date_usec": 734379,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ender",
-      "ue",
-      "big",
-      "mincho",
-      "full",
-      "ca",
-      "#8a0808",
-      "184"
-    ]
+    "mail": ["ender", "ue", "big", "mincho", "full", "ca", "#8a0808", "184"]
   },
   {
     "id": 23502,
@@ -3957,16 +3188,7 @@
     "date_usec": 546290,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ender",
-      "ue",
-      "big",
-      "mincho",
-      "full",
-      "ca",
-      "#ffffff",
-      "184"
-    ]
+    "mail": ["ender", "ue", "big", "mincho", "full", "ca", "#ffffff", "184"]
   },
   {
     "id": 23503,
@@ -3976,16 +3198,7 @@
     "date_usec": 387192,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ender",
-      "ue",
-      "big",
-      "mincho",
-      "full",
-      "ca",
-      "#A901DB",
-      "184"
-    ]
+    "mail": ["ender", "ue", "big", "mincho", "full", "ca", "#A901DB", "184"]
   },
   {
     "id": 23504,
@@ -3995,16 +3208,7 @@
     "date_usec": 251226,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ender",
-      "ue",
-      "big",
-      "mincho",
-      "full",
-      "ca",
-      "#ffffff",
-      "184"
-    ]
+    "mail": ["ender", "ue", "big", "mincho", "full", "ca", "#ffffff", "184"]
   },
   {
     "id": 23505,
@@ -4014,16 +3218,7 @@
     "date_usec": 124732,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ender",
-      "ue",
-      "big",
-      "mincho",
-      "full",
-      "ca",
-      "#ff0000",
-      "184"
-    ]
+    "mail": ["ender", "ue", "big", "mincho", "full", "ca", "#ff0000", "184"]
   },
   {
     "id": 23506,
@@ -4033,16 +3228,7 @@
     "date_usec": 997345,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ender",
-      "ue",
-      "big",
-      "mincho",
-      "full",
-      "ca",
-      "#8a0808",
-      "184"
-    ]
+    "mail": ["ender", "ue", "big", "mincho", "full", "ca", "#8a0808", "184"]
   },
   {
     "id": 23507,
@@ -4052,16 +3238,7 @@
     "date_usec": 862203,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ender",
-      "ue",
-      "big",
-      "mincho",
-      "full",
-      "ca",
-      "#8a0808",
-      "184"
-    ]
+    "mail": ["ender", "ue", "big", "mincho", "full", "ca", "#8a0808", "184"]
   },
   {
     "id": 23508,
@@ -4071,16 +3248,7 @@
     "date_usec": 694331,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ender",
-      "ue",
-      "big",
-      "mincho",
-      "full",
-      "ca",
-      "#010101",
-      "184"
-    ]
+    "mail": ["ender", "ue", "big", "mincho", "full", "ca", "#010101", "184"]
   },
   {
     "id": 23509,
@@ -4090,16 +3258,7 @@
     "date_usec": 562416,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ender",
-      "ue",
-      "big",
-      "mincho",
-      "full",
-      "ca",
-      "#010101",
-      "184"
-    ]
+    "mail": ["ender", "ue", "big", "mincho", "full", "ca", "#010101", "184"]
   },
   {
     "id": 23510,
@@ -4289,9 +3448,7 @@
     "date_usec": 234573,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 5,
@@ -4301,9 +3458,7 @@
     "date_usec": 388258,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 6,
@@ -4313,9 +3468,7 @@
     "date_usec": 609139,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 7,
@@ -4325,9 +3478,7 @@
     "date_usec": 112926,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 8,
@@ -4337,9 +3488,7 @@
     "date_usec": 647741,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 18,
@@ -4349,9 +3498,7 @@
     "date_usec": 321868,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 9,
@@ -4361,9 +3508,7 @@
     "date_usec": 423769,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 10,
@@ -4373,9 +3518,7 @@
     "date_usec": 57110,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 23519,
@@ -4705,9 +3848,7 @@
     "date_usec": 608275,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 23535,
@@ -4777,9 +3918,7 @@
     "date_usec": 320069,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 23538,
@@ -4809,9 +3948,7 @@
     "date_usec": 725628,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 23539,
@@ -5336,16 +4473,7 @@
     "date_usec": 455890,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#ffffff",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#ffffff", "184"]
   },
   {
     "id": 23584,
@@ -5355,16 +4483,7 @@
     "date_usec": 312866,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#505050",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#505050", "184"]
   },
   {
     "id": 23586,
@@ -5374,16 +4493,7 @@
     "date_usec": 59080,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#5b0b0b",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#5b0b0b", "184"]
   },
   {
     "id": 23588,
@@ -5393,16 +4503,7 @@
     "date_usec": 688012,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#9b0b0b",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#9b0b0b", "184"]
   },
   {
     "id": 23592,
@@ -5412,16 +4513,7 @@
     "date_usec": 27025,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#cb0b0b",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#cb0b0b", "184"]
   },
   {
     "id": 23585,
@@ -5431,16 +4523,7 @@
     "date_usec": 154817,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#010101",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#010101", "184"]
   },
   {
     "id": 23587,
@@ -5450,15 +4533,7 @@
     "date_usec": 839764,
     "owner": false,
     "premium": true,
-    "mail": [
-      "naka",
-      "big",
-      "mincho",
-      "full",
-      "ca",
-      "#ffffff",
-      "184"
-    ]
+    "mail": ["naka", "big", "mincho", "full", "ca", "#ffffff", "184"]
   },
   {
     "id": 23669,
@@ -5468,14 +4543,7 @@
     "date_usec": 554211,
     "owner": false,
     "premium": true,
-    "mail": [
-      "shita",
-      "big",
-      "full",
-      "mincho",
-      "#010101",
-      "184"
-    ]
+    "mail": ["shita", "big", "full", "mincho", "#010101", "184"]
   },
   {
     "id": 23670,
@@ -5485,14 +4553,7 @@
     "date_usec": 374454,
     "owner": false,
     "premium": true,
-    "mail": [
-      "shita",
-      "big",
-      "full",
-      "mincho",
-      "#010101",
-      "184"
-    ]
+    "mail": ["shita", "big", "full", "mincho", "#010101", "184"]
   },
   {
     "id": 23671,
@@ -5502,14 +4563,7 @@
     "date_usec": 233775,
     "owner": false,
     "premium": true,
-    "mail": [
-      "shita",
-      "big",
-      "full",
-      "mincho",
-      "#010101",
-      "184"
-    ]
+    "mail": ["shita", "big", "full", "mincho", "#010101", "184"]
   },
   {
     "id": 23672,
@@ -5519,14 +4573,7 @@
     "date_usec": 81000,
     "owner": false,
     "premium": true,
-    "mail": [
-      "shita",
-      "big",
-      "full",
-      "mincho",
-      "#010101",
-      "184"
-    ]
+    "mail": ["shita", "big", "full", "mincho", "#010101", "184"]
   },
   {
     "id": 23673,
@@ -5536,14 +4583,7 @@
     "date_usec": 930720,
     "owner": false,
     "premium": true,
-    "mail": [
-      "shita",
-      "big",
-      "full",
-      "mincho",
-      "#010101",
-      "184"
-    ]
+    "mail": ["shita", "big", "full", "mincho", "#010101", "184"]
   },
   {
     "id": 23674,
@@ -5553,14 +4593,7 @@
     "date_usec": 779016,
     "owner": false,
     "premium": true,
-    "mail": [
-      "shita",
-      "big",
-      "full",
-      "mincho",
-      "#010101",
-      "184"
-    ]
+    "mail": ["shita", "big", "full", "mincho", "#010101", "184"]
   },
   {
     "id": 23675,
@@ -5570,14 +4603,7 @@
     "date_usec": 585020,
     "owner": false,
     "premium": true,
-    "mail": [
-      "shita",
-      "big",
-      "full",
-      "mincho",
-      "#8b0b0b",
-      "184"
-    ]
+    "mail": ["shita", "big", "full", "mincho", "#8b0b0b", "184"]
   },
   {
     "id": 23589,
@@ -5644,15 +4670,7 @@
     "date_usec": 877721,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "full",
-      "mincho",
-      "patissier",
-      "#000001",
-      "184"
-    ]
+    "mail": ["ue", "big", "full", "mincho", "patissier", "#000001", "184"]
   },
   {
     "id": 23594,
@@ -5662,14 +4680,7 @@
     "date_usec": 686654,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "mincho",
-      "patissier",
-      "#000001",
-      "184"
-    ]
+    "mail": ["ue", "big", "mincho", "patissier", "#000001", "184"]
   },
   {
     "id": 23595,
@@ -5679,15 +4690,7 @@
     "date_usec": 556123,
     "owner": false,
     "premium": true,
-    "mail": [
-      "shita",
-      "big",
-      "mincho",
-      "full",
-      "ca",
-      "#010101",
-      "184"
-    ]
+    "mail": ["shita", "big", "mincho", "full", "ca", "#010101", "184"]
   },
   {
     "id": 23596,
@@ -5697,15 +4700,7 @@
     "date_usec": 380956,
     "owner": false,
     "premium": true,
-    "mail": [
-      "shita",
-      "big",
-      "mincho",
-      "full",
-      "ca",
-      "#9a0a0a",
-      "184"
-    ]
+    "mail": ["shita", "big", "mincho", "full", "ca", "#9a0a0a", "184"]
   },
   {
     "id": 23597,
@@ -5715,16 +4710,7 @@
     "date_usec": 243878,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#ffffff",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#ffffff", "184"]
   },
   {
     "id": 23598,
@@ -5734,16 +4720,7 @@
     "date_usec": 67407,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#ffffff",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#ffffff", "184"]
   },
   {
     "id": 23599,
@@ -5753,16 +4730,7 @@
     "date_usec": 885620,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#a0a0a0",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#a0a0a0", "184"]
   },
   {
     "id": 23600,
@@ -5772,16 +4740,7 @@
     "date_usec": 723321,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#010101",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#010101", "184"]
   },
   {
     "id": 23601,
@@ -5791,16 +4750,7 @@
     "date_usec": 563979,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#868a08",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#868a08", "184"]
   },
   {
     "id": 23602,
@@ -5810,16 +4760,7 @@
     "date_usec": 426172,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#010101",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#010101", "184"]
   },
   {
     "id": 23603,
@@ -5829,16 +4770,7 @@
     "date_usec": 269794,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#a0a0a0",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#a0a0a0", "184"]
   },
   {
     "id": 23604,
@@ -5848,16 +4780,7 @@
     "date_usec": 137814,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#3b0b0b",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#3b0b0b", "184"]
   },
   {
     "id": 23605,
@@ -5867,16 +4790,7 @@
     "date_usec": 937859,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#5E610B",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#5E610B", "184"]
   },
   {
     "id": 23606,
@@ -5886,16 +4800,7 @@
     "date_usec": 776376,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#010101",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#010101", "184"]
   },
   {
     "id": 23607,
@@ -5905,16 +4810,7 @@
     "date_usec": 610430,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#a0a0a0",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#a0a0a0", "184"]
   },
   {
     "id": 23608,
@@ -5924,16 +4820,7 @@
     "date_usec": 466683,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#a0a0a0",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#a0a0a0", "184"]
   },
   {
     "id": 23609,
@@ -5943,16 +4830,7 @@
     "date_usec": 310661,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#a0a0a0",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#a0a0a0", "184"]
   },
   {
     "id": 23613,
@@ -5962,16 +4840,7 @@
     "date_usec": 595377,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#010101",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#010101", "184"]
   },
   {
     "id": 23614,
@@ -5981,16 +4850,7 @@
     "date_usec": 463942,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#0b3b0b",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#0b3b0b", "184"]
   },
   {
     "id": 23615,
@@ -6000,16 +4860,7 @@
     "date_usec": 276308,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#3b0b0b",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#3b0b0b", "184"]
   },
   {
     "id": 23616,
@@ -6019,16 +4870,7 @@
     "date_usec": 135314,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#010101",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#010101", "184"]
   },
   {
     "id": 23617,
@@ -6038,16 +4880,7 @@
     "date_usec": 952491,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#ffffff",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#ffffff", "184"]
   },
   {
     "id": 23610,
@@ -6057,16 +4890,7 @@
     "date_usec": 107541,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#a0a0a0",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#a0a0a0", "184"]
   },
   {
     "id": 23618,
@@ -6076,16 +4900,7 @@
     "date_usec": 783546,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#010101",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#010101", "184"]
   },
   {
     "id": 23619,
@@ -6095,16 +4910,7 @@
     "date_usec": 647343,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#3b0b0b",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#3b0b0b", "184"]
   },
   {
     "id": 23620,
@@ -6114,16 +4920,7 @@
     "date_usec": 867645,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#0a2a12",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#0a2a12", "184"]
   },
   {
     "id": 23621,
@@ -6133,16 +4930,7 @@
     "date_usec": 337234,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#010101",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#010101", "184"]
   },
   {
     "id": 23611,
@@ -6152,16 +4940,7 @@
     "date_usec": 936517,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#a0a0a0",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#a0a0a0", "184"]
   },
   {
     "id": 23622,
@@ -6171,16 +4950,7 @@
     "date_usec": 184548,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#ffffff",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#ffffff", "184"]
   },
   {
     "id": 23612,
@@ -6190,16 +4960,7 @@
     "date_usec": 758857,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#a0a0a0",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#a0a0a0", "184"]
   },
   {
     "id": 23623,
@@ -6209,16 +4970,7 @@
     "date_usec": 16574,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#010101",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#010101", "184"]
   },
   {
     "id": 23624,
@@ -6228,16 +4980,7 @@
     "date_usec": 871151,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#010101",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#010101", "184"]
   },
   {
     "id": 23625,
@@ -6247,16 +4990,7 @@
     "date_usec": 715486,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#010101",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#010101", "184"]
   },
   {
     "id": 23626,
@@ -6266,16 +5000,7 @@
     "date_usec": 562477,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#8a0808",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#8a0808", "184"]
   },
   {
     "id": 23627,
@@ -6285,16 +5010,7 @@
     "date_usec": 421588,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#010101",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#010101", "184"]
   },
   {
     "id": 23628,
@@ -6304,16 +5020,7 @@
     "date_usec": 276162,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#8a0808",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#8a0808", "184"]
   },
   {
     "id": 23629,
@@ -6323,16 +5030,7 @@
     "date_usec": 96223,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#010101",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#010101", "184"]
   },
   {
     "id": 23630,
@@ -6342,16 +5040,7 @@
     "date_usec": 956004,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#9a0a0a",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#9a0a0a", "184"]
   },
   {
     "id": 23631,
@@ -6361,16 +5050,7 @@
     "date_usec": 773301,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#010101",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#010101", "184"]
   },
   {
     "id": 23632,
@@ -6380,16 +5060,7 @@
     "date_usec": 576748,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#990000",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#990000", "184"]
   },
   {
     "id": 23643,
@@ -6418,16 +5089,7 @@
     "date_usec": 394668,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#010101",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#010101", "184"]
   },
   {
     "id": 23634,
@@ -6437,16 +5099,7 @@
     "date_usec": 220140,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#9a0a0a",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#9a0a0a", "184"]
   },
   {
     "id": 23644,
@@ -6684,15 +5337,7 @@
     "date_usec": 915086,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "ender",
-      "full",
-      "mincho",
-      "patissier",
-      "#E0D5E0",
-      "184"
-    ]
+    "mail": ["ue", "ender", "full", "mincho", "patissier", "#E0D5E0", "184"]
   },
   {
     "id": 23649,
@@ -6702,15 +5347,7 @@
     "date_usec": 774970,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "ender",
-      "full",
-      "mincho",
-      "patissier",
-      "#55C684",
-      "184"
-    ]
+    "mail": ["ue", "ender", "full", "mincho", "patissier", "#55C684", "184"]
   },
   {
     "id": 23650,
@@ -6720,15 +5357,7 @@
     "date_usec": 622039,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "ender",
-      "full",
-      "mincho",
-      "patissier",
-      "#AE690A",
-      "184"
-    ]
+    "mail": ["ue", "ender", "full", "mincho", "patissier", "#AE690A", "184"]
   },
   {
     "id": 23651,
@@ -6738,15 +5367,7 @@
     "date_usec": 463487,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "ender",
-      "full",
-      "mincho",
-      "patissier",
-      "#5CB7B1",
-      "184"
-    ]
+    "mail": ["ue", "ender", "full", "mincho", "patissier", "#5CB7B1", "184"]
   },
   {
     "id": 23652,
@@ -6965,10 +5586,7 @@
     "date_usec": 306144,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 23549,
@@ -7149,16 +5767,7 @@
     "date_usec": 810597,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#ffffff",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#ffffff", "184"]
   },
   {
     "id": 23656,
@@ -7168,16 +5777,7 @@
     "date_usec": 657934,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#ffffff",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#ffffff", "184"]
   },
   {
     "id": 23661,
@@ -7187,15 +5787,7 @@
     "date_usec": 841208,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "mincho",
-      "full",
-      "ca",
-      "#707070",
-      "184"
-    ]
+    "mail": ["ue", "big", "mincho", "full", "ca", "#707070", "184"]
   },
   {
     "id": 23662,
@@ -7205,15 +5797,7 @@
     "date_usec": 675128,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "mincho",
-      "full",
-      "ca",
-      "#707070",
-      "184"
-    ]
+    "mail": ["ue", "big", "mincho", "full", "ca", "#707070", "184"]
   },
   {
     "id": 23663,
@@ -7223,15 +5807,7 @@
     "date_usec": 543776,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "mincho",
-      "full",
-      "ca",
-      "#707070",
-      "184"
-    ]
+    "mail": ["ue", "big", "mincho", "full", "ca", "#707070", "184"]
   },
   {
     "id": 23657,
@@ -7241,16 +5817,7 @@
     "date_usec": 508501,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#ffffff",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#ffffff", "184"]
   },
   {
     "id": 23658,
@@ -7260,16 +5827,7 @@
     "date_usec": 339077,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#ffffff",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#ffffff", "184"]
   },
   {
     "id": 23659,
@@ -7279,16 +5837,7 @@
     "date_usec": 189430,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#ffffff",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#ffffff", "184"]
   },
   {
     "id": 23660,
@@ -7298,16 +5847,7 @@
     "date_usec": 988835,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "mincho",
-      "full",
-      "ca",
-      "#ffffff",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "mincho", "full", "ca", "#ffffff", "184"]
   },
   {
     "id": 23664,
@@ -7317,16 +5857,7 @@
     "date_usec": 359788,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ender",
-      "ue",
-      "big",
-      "mincho",
-      "full",
-      "ca",
-      "#010101",
-      "184"
-    ]
+    "mail": ["ender", "ue", "big", "mincho", "full", "ca", "#010101", "184"]
   },
   {
     "id": 23665,
@@ -7336,15 +5867,7 @@
     "date_usec": 198265,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "mincho",
-      "full",
-      "ca",
-      "#3b0b0b",
-      "184"
-    ]
+    "mail": ["ue", "big", "mincho", "full", "ca", "#3b0b0b", "184"]
   },
   {
     "id": 23666,
@@ -7354,15 +5877,7 @@
     "date_usec": 56570,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "mincho",
-      "full",
-      "ca",
-      "#3b0b0b",
-      "184"
-    ]
+    "mail": ["ue", "big", "mincho", "full", "ca", "#3b0b0b", "184"]
   },
   {
     "id": 23667,
@@ -7372,15 +5887,7 @@
     "date_usec": 917001,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "mincho",
-      "full",
-      "ca",
-      "#3b0b0b",
-      "184"
-    ]
+    "mail": ["ue", "big", "mincho", "full", "ca", "#3b0b0b", "184"]
   },
   {
     "id": 23668,
@@ -7390,16 +5897,7 @@
     "date_usec": 737025,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ender",
-      "ue",
-      "big",
-      "mincho",
-      "full",
-      "ca",
-      "#909090",
-      "184"
-    ]
+    "mail": ["ender", "ue", "big", "mincho", "full", "ca", "#909090", "184"]
   },
   {
     "id": 23676,
@@ -7409,15 +5907,7 @@
     "date_usec": 445064,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#010101",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "#010101", "184"]
   },
   {
     "id": 23677,
@@ -7427,14 +5917,7 @@
     "date_usec": 295886,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "full",
-      "mincho",
-      "#010101",
-      "184"
-    ]
+    "mail": ["ue", "big", "full", "mincho", "#010101", "184"]
   },
   {
     "id": 23678,
@@ -7444,14 +5927,7 @@
     "date_usec": 105263,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "full",
-      "mincho",
-      "#010101",
-      "184"
-    ]
+    "mail": ["ue", "big", "full", "mincho", "#010101", "184"]
   },
   {
     "id": 23679,
@@ -7461,14 +5937,7 @@
     "date_usec": 946243,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "full",
-      "mincho",
-      "#010101",
-      "184"
-    ]
+    "mail": ["ue", "big", "full", "mincho", "#010101", "184"]
   },
   {
     "id": 23680,
@@ -7478,15 +5947,7 @@
     "date_usec": 795492,
     "owner": false,
     "premium": true,
-    "mail": [
-      "naka",
-      "ender",
-      "big",
-      "full",
-      "mincho",
-      "#c0c0c0",
-      "184"
-    ]
+    "mail": ["naka", "ender", "big", "full", "mincho", "#c0c0c0", "184"]
   },
   {
     "id": 23681,
@@ -7496,15 +5957,7 @@
     "date_usec": 603663,
     "owner": false,
     "premium": true,
-    "mail": [
-      "naka",
-      "ender",
-      "big",
-      "full",
-      "mincho",
-      "#808080",
-      "184"
-    ]
+    "mail": ["naka", "ender", "big", "full", "mincho", "#808080", "184"]
   },
   {
     "id": 23682,
@@ -7514,15 +5967,7 @@
     "date_usec": 419114,
     "owner": false,
     "premium": true,
-    "mail": [
-      "naka",
-      "ender",
-      "big",
-      "full",
-      "mincho",
-      "#505050",
-      "184"
-    ]
+    "mail": ["naka", "ender", "big", "full", "mincho", "#505050", "184"]
   },
   {
     "id": 23683,
@@ -7532,15 +5977,7 @@
     "date_usec": 289752,
     "owner": false,
     "premium": true,
-    "mail": [
-      "naka",
-      "ender",
-      "big",
-      "full",
-      "mincho",
-      "#424242",
-      "184"
-    ]
+    "mail": ["naka", "ender", "big", "full", "mincho", "#424242", "184"]
   },
   {
     "id": 23684,
@@ -7550,15 +5987,7 @@
     "date_usec": 142747,
     "owner": false,
     "premium": true,
-    "mail": [
-      "naka",
-      "ender",
-      "big",
-      "full",
-      "mincho",
-      "#606060",
-      "184"
-    ]
+    "mail": ["naka", "ender", "big", "full", "mincho", "#606060", "184"]
   },
   {
     "id": 23685,
@@ -7568,15 +5997,7 @@
     "date_usec": 972849,
     "owner": false,
     "premium": true,
-    "mail": [
-      "naka",
-      "ender",
-      "big",
-      "full",
-      "mincho",
-      "#808080",
-      "184"
-    ]
+    "mail": ["naka", "ender", "big", "full", "mincho", "#808080", "184"]
   },
   {
     "id": 23686,
@@ -7586,15 +6007,7 @@
     "date_usec": 785042,
     "owner": false,
     "premium": true,
-    "mail": [
-      "naka",
-      "ender",
-      "big",
-      "full",
-      "mincho",
-      "#a0a0a0",
-      "184"
-    ]
+    "mail": ["naka", "ender", "big", "full", "mincho", "#a0a0a0", "184"]
   },
   {
     "id": 23687,
@@ -7604,15 +6017,7 @@
     "date_usec": 611033,
     "owner": false,
     "premium": true,
-    "mail": [
-      "naka",
-      "ender",
-      "big",
-      "full",
-      "mincho",
-      "#cccccc",
-      "184"
-    ]
+    "mail": ["naka", "ender", "big", "full", "mincho", "#cccccc", "184"]
   },
   {
     "id": 23688,
@@ -7622,15 +6027,7 @@
     "date_usec": 442443,
     "owner": false,
     "premium": true,
-    "mail": [
-      "naka",
-      "ender",
-      "big",
-      "full",
-      "mincho",
-      "#a0a0a0",
-      "184"
-    ]
+    "mail": ["naka", "ender", "big", "full", "mincho", "#a0a0a0", "184"]
   },
   {
     "id": 23689,
@@ -7640,15 +6037,7 @@
     "date_usec": 255052,
     "owner": false,
     "premium": true,
-    "mail": [
-      "naka",
-      "ender",
-      "big",
-      "full",
-      "mincho",
-      "#707070",
-      "184"
-    ]
+    "mail": ["naka", "ender", "big", "full", "mincho", "#707070", "184"]
   },
   {
     "id": 23690,
@@ -7658,15 +6047,7 @@
     "date_usec": 127178,
     "owner": false,
     "premium": true,
-    "mail": [
-      "naka",
-      "ender",
-      "big",
-      "full",
-      "mincho",
-      "#a0a0a0",
-      "184"
-    ]
+    "mail": ["naka", "ender", "big", "full", "mincho", "#a0a0a0", "184"]
   },
   {
     "id": 23691,
@@ -7676,15 +6057,7 @@
     "date_usec": 916074,
     "owner": false,
     "premium": true,
-    "mail": [
-      "naka",
-      "ender",
-      "big",
-      "full",
-      "mincho",
-      "#ffffff",
-      "184"
-    ]
+    "mail": ["naka", "ender", "big", "full", "mincho", "#ffffff", "184"]
   },
   {
     "id": 23692,
@@ -7732,9 +6105,7 @@
     "date_usec": 607888,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 23694,
@@ -7953,10 +6324,7 @@
     "date_usec": 984655,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 23705,
@@ -7966,15 +6334,7 @@
     "date_usec": 598714,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#303030",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "#303030", "184"]
   },
   {
     "id": 23706,
@@ -7984,15 +6344,7 @@
     "date_usec": 400287,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#010101",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "#010101", "184"]
   },
   {
     "id": 23707,
@@ -8002,15 +6354,7 @@
     "date_usec": 232890,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#505050",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "#505050", "184"]
   },
   {
     "id": 23708,
@@ -8020,15 +6364,7 @@
     "date_usec": 13959,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#010101",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "#010101", "184"]
   },
   {
     "id": 23709,
@@ -8038,15 +6374,7 @@
     "date_usec": 847134,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#707070",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "#707070", "184"]
   },
   {
     "id": 23710,
@@ -8056,15 +6384,7 @@
     "date_usec": 689810,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#010101",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "#010101", "184"]
   },
   {
     "id": 23711,
@@ -8074,15 +6394,7 @@
     "date_usec": 500941,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#909090",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "#909090", "184"]
   },
   {
     "id": 23712,
@@ -8092,15 +6404,7 @@
     "date_usec": 352742,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "mincho",
-      "full",
-      "ender",
-      "patissier",
-      "184"
-    ]
+    "mail": ["ue", "big", "mincho", "full", "ender", "patissier", "184"]
   },
   {
     "id": 23713,
@@ -8357,15 +6661,7 @@
     "date_usec": 516673,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#990000",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "#990000", "184"]
   },
   {
     "id": 23759,
@@ -8375,15 +6671,7 @@
     "date_usec": 384076,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#990000",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "#990000", "184"]
   },
   {
     "id": 23760,
@@ -8393,15 +6681,7 @@
     "date_usec": 170778,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#990000",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "#990000", "184"]
   },
   {
     "id": 23761,
@@ -8411,15 +6691,7 @@
     "date_usec": 992856,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#990000",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "#990000", "184"]
   },
   {
     "id": 23762,
@@ -8429,15 +6701,7 @@
     "date_usec": 854628,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#990000",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "#990000", "184"]
   },
   {
     "id": 23763,
@@ -8447,15 +6711,7 @@
     "date_usec": 657184,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#990000",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "#990000", "184"]
   },
   {
     "id": 23767,
@@ -8465,15 +6721,7 @@
     "date_usec": 5038,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#000001",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "#000001", "184"]
   },
   {
     "id": 23768,
@@ -8483,15 +6731,7 @@
     "date_usec": 817790,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#000001",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "#000001", "184"]
   },
   {
     "id": 23764,
@@ -8501,15 +6741,7 @@
     "date_usec": 502374,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#990000",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "#990000", "184"]
   },
   {
     "id": 23769,
@@ -8519,15 +6751,7 @@
     "date_usec": 647274,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#000001",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "#000001", "184"]
   },
   {
     "id": 23770,
@@ -8537,15 +6761,7 @@
     "date_usec": 455030,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#000001",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "#000001", "184"]
   },
   {
     "id": 23771,
@@ -8555,15 +6771,7 @@
     "date_usec": 279633,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#000001",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "#000001", "184"]
   },
   {
     "id": 23726,
@@ -8592,15 +6800,7 @@
     "date_usec": 361663,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#990000",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "#990000", "184"]
   },
   {
     "id": 23772,
@@ -8610,15 +6810,7 @@
     "date_usec": 105566,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#000001",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "#000001", "184"]
   },
   {
     "id": 23766,
@@ -8628,15 +6820,7 @@
     "date_usec": 178758,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#990000",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "#990000", "184"]
   },
   {
     "id": 23773,
@@ -8646,15 +6830,7 @@
     "date_usec": 919121,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#000001",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "#000001", "184"]
   },
   {
     "id": 23731,
@@ -8664,15 +6840,7 @@
     "date_usec": 161173,
     "owner": false,
     "premium": true,
-    "mail": [
-      "shita",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#B40404",
-      "184"
-    ]
+    "mail": ["shita", "big", "ender", "full", "mincho", "#B40404", "184"]
   },
   {
     "id": 23774,
@@ -8682,15 +6850,7 @@
     "date_usec": 732614,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#000001",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "#000001", "184"]
   },
   {
     "id": 23727,
@@ -8738,15 +6898,7 @@
     "date_usec": 574607,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#000001",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "#000001", "184"]
   },
   {
     "id": 23732,
@@ -8756,15 +6908,7 @@
     "date_usec": 10547,
     "owner": false,
     "premium": true,
-    "mail": [
-      "shita",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#000001",
-      "184"
-    ]
+    "mail": ["shita", "big", "ender", "full", "mincho", "#000001", "184"]
   },
   {
     "id": 23733,
@@ -8774,15 +6918,7 @@
     "date_usec": 837859,
     "owner": false,
     "premium": true,
-    "mail": [
-      "shita",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#B40404",
-      "184"
-    ]
+    "mail": ["shita", "big", "ender", "full", "mincho", "#B40404", "184"]
   },
   {
     "id": 23736,
@@ -8792,15 +6928,7 @@
     "date_usec": 274306,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#B40404",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "#B40404", "184"]
   },
   {
     "id": 23729,
@@ -8848,15 +6976,7 @@
     "date_usec": 644549,
     "owner": false,
     "premium": true,
-    "mail": [
-      "shita",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#000001",
-      "184"
-    ]
+    "mail": ["shita", "big", "ender", "full", "mincho", "#000001", "184"]
   },
   {
     "id": 23735,
@@ -8866,15 +6986,7 @@
     "date_usec": 469346,
     "owner": false,
     "premium": true,
-    "mail": [
-      "shita",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#B40404",
-      "184"
-    ]
+    "mail": ["shita", "big", "ender", "full", "mincho", "#B40404", "184"]
   },
   {
     "id": 23737,
@@ -8884,15 +6996,7 @@
     "date_usec": 99520,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#000001",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "#000001", "184"]
   },
   {
     "id": 23738,
@@ -8902,15 +7006,7 @@
     "date_usec": 925292,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#B40404",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "#B40404", "184"]
   },
   {
     "id": 23741,
@@ -8920,15 +7016,7 @@
     "date_usec": 453696,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#B40404",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "#B40404", "184"]
   },
   {
     "id": 23739,
@@ -8938,15 +7026,7 @@
     "date_usec": 753487,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#000001",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "#000001", "184"]
   },
   {
     "id": 23740,
@@ -8956,15 +7036,7 @@
     "date_usec": 612926,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#B40404",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "#B40404", "184"]
   },
   {
     "id": 23742,
@@ -8974,15 +7046,7 @@
     "date_usec": 288453,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#000001",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "#000001", "184"]
   },
   {
     "id": 23743,
@@ -8992,15 +7056,7 @@
     "date_usec": 140688,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#B40404",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "#B40404", "184"]
   },
   {
     "id": 23746,
@@ -9010,15 +7066,7 @@
     "date_usec": 620008,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#b40404",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "#b40404", "184"]
   },
   {
     "id": 23744,
@@ -9028,15 +7076,7 @@
     "date_usec": 936178,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#000001",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "#000001", "184"]
   },
   {
     "id": 23745,
@@ -9046,15 +7086,7 @@
     "date_usec": 797131,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#b40404",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "#b40404", "184"]
   },
   {
     "id": 23747,
@@ -9064,15 +7096,7 @@
     "date_usec": 429211,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#000001",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "#000001", "184"]
   },
   {
     "id": 23748,
@@ -9082,15 +7106,7 @@
     "date_usec": 247299,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#B40404",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "#B40404", "184"]
   },
   {
     "id": 23749,
@@ -9100,15 +7116,7 @@
     "date_usec": 81274,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#000001",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "#000001", "184"]
   },
   {
     "id": 23750,
@@ -9118,15 +7126,7 @@
     "date_usec": 893088,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#B40404",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "#B40404", "184"]
   },
   {
     "id": 23751,
@@ -9136,15 +7136,7 @@
     "date_usec": 764963,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#B40404",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "#B40404", "184"]
   },
   {
     "id": 23752,
@@ -9154,15 +7146,7 @@
     "date_usec": 596925,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#000001",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "#000001", "184"]
   },
   {
     "id": 23753,
@@ -9172,15 +7156,7 @@
     "date_usec": 440663,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#B40404",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "#B40404", "184"]
   },
   {
     "id": 23754,
@@ -9190,15 +7166,7 @@
     "date_usec": 258789,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#000001",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "#000001", "184"]
   },
   {
     "id": 23755,
@@ -9208,15 +7176,7 @@
     "date_usec": 80512,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#B40404",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "#B40404", "184"]
   },
   {
     "id": 23756,
@@ -9226,15 +7186,7 @@
     "date_usec": 891848,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#000001",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "#000001", "184"]
   },
   {
     "id": 23757,
@@ -9244,15 +7196,7 @@
     "date_usec": 711106,
     "owner": false,
     "premium": true,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "#b40404",
-      "184"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "#b40404", "184"]
   },
   {
     "id": 23837,
@@ -9908,9 +7852,7 @@
     "date_usec": 837888,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 23810,
@@ -10452,9 +8394,7 @@
     "date_usec": 970766,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 22727,
@@ -10464,10 +8404,7 @@
     "date_usec": 579425,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 23178,
@@ -10477,9 +8414,7 @@
     "date_usec": 829468,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 2,
@@ -10489,10 +8424,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "big"
-    ]
+    "mail": ["ue", "big"]
   },
   {
     "id": 3,
@@ -10502,10 +8434,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "big"
-    ]
+    "mail": ["ue", "big"]
   },
   {
     "id": 4,
@@ -10515,9 +8444,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue"
-    ]
+    "mail": ["ue"]
   },
   {
     "id": 23838,
@@ -10527,9 +8454,7 @@
     "date_usec": 414423,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 23840,
@@ -10539,13 +8464,7 @@
     "date_usec": 122120,
     "owner": false,
     "premium": false,
-    "mail": [
-      "naka",
-      "black",
-      "medium",
-      "mincho",
-      "184"
-    ]
+    "mail": ["naka", "black", "medium", "mincho", "184"]
   },
   {
     "id": 5,
@@ -10555,10 +8474,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "big"
-    ]
+    "mail": ["ue", "big"]
   },
   {
     "id": 6,
@@ -10568,11 +8484,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#800000",
-      "small"
-    ]
+    "mail": ["ue", "#800000", "small"]
   },
   {
     "id": 7,
@@ -10582,11 +8494,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#aa0000",
-      "small"
-    ]
+    "mail": ["ue", "#aa0000", "small"]
   },
   {
     "id": 8,
@@ -10596,11 +8504,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#d50000",
-      "small"
-    ]
+    "mail": ["ue", "#d50000", "small"]
   },
   {
     "id": 9,
@@ -10610,11 +8514,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#ff0000",
-      "small"
-    ]
+    "mail": ["ue", "#ff0000", "small"]
   },
   {
     "id": 10,
@@ -10624,11 +8524,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#ff2b2b",
-      "small"
-    ]
+    "mail": ["ue", "#ff2b2b", "small"]
   },
   {
     "id": 11,
@@ -10638,11 +8534,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#ff5555",
-      "small"
-    ]
+    "mail": ["ue", "#ff5555", "small"]
   },
   {
     "id": 12,
@@ -10652,11 +8544,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#ff5555",
-      "small"
-    ]
+    "mail": ["ue", "#ff5555", "small"]
   },
   {
     "id": 13,
@@ -10666,11 +8554,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#ff2b2b",
-      "small"
-    ]
+    "mail": ["ue", "#ff2b2b", "small"]
   },
   {
     "id": 14,
@@ -10680,11 +8564,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#ff0000",
-      "small"
-    ]
+    "mail": ["ue", "#ff0000", "small"]
   },
   {
     "id": 15,
@@ -10694,11 +8574,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#d50000",
-      "small"
-    ]
+    "mail": ["ue", "#d50000", "small"]
   },
   {
     "id": 16,
@@ -10708,11 +8584,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#aa0000",
-      "small"
-    ]
+    "mail": ["ue", "#aa0000", "small"]
   },
   {
     "id": 17,
@@ -10722,11 +8594,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#800000",
-      "small"
-    ]
+    "mail": ["ue", "#800000", "small"]
   },
   {
     "id": 18,
@@ -10736,10 +8604,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "shita",
-      "big"
-    ]
+    "mail": ["shita", "big"]
   },
   {
     "id": 19,
@@ -10749,11 +8614,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "shita",
-      "#004080",
-      "small"
-    ]
+    "mail": ["shita", "#004080", "small"]
   },
   {
     "id": 20,
@@ -10763,11 +8624,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "shita",
-      "#0055aa",
-      "small"
-    ]
+    "mail": ["shita", "#0055aa", "small"]
   },
   {
     "id": 21,
@@ -10777,11 +8634,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "shita",
-      "#006ad5",
-      "small"
-    ]
+    "mail": ["shita", "#006ad5", "small"]
   },
   {
     "id": 22,
@@ -10791,11 +8644,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "shita",
-      "#0080ff",
-      "small"
-    ]
+    "mail": ["shita", "#0080ff", "small"]
   },
   {
     "id": 23,
@@ -10805,11 +8654,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "shita",
-      "#2b95ff",
-      "small"
-    ]
+    "mail": ["shita", "#2b95ff", "small"]
   },
   {
     "id": 24,
@@ -10819,11 +8664,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "shita",
-      "#55aaff",
-      "small"
-    ]
+    "mail": ["shita", "#55aaff", "small"]
   },
   {
     "id": 25,
@@ -10833,11 +8674,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "shita",
-      "#80bfff",
-      "small"
-    ]
+    "mail": ["shita", "#80bfff", "small"]
   },
   {
     "id": 26,
@@ -10847,11 +8684,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "shita",
-      "#80bfff",
-      "small"
-    ]
+    "mail": ["shita", "#80bfff", "small"]
   },
   {
     "id": 27,
@@ -10861,11 +8694,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "shita",
-      "#55aaff",
-      "small"
-    ]
+    "mail": ["shita", "#55aaff", "small"]
   },
   {
     "id": 28,
@@ -10875,11 +8704,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "shita",
-      "#2b95ff",
-      "small"
-    ]
+    "mail": ["shita", "#2b95ff", "small"]
   },
   {
     "id": 29,
@@ -10889,11 +8714,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "shita",
-      "#0080ff",
-      "small"
-    ]
+    "mail": ["shita", "#0080ff", "small"]
   },
   {
     "id": 30,
@@ -10903,11 +8724,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "shita",
-      "#006ad5",
-      "small"
-    ]
+    "mail": ["shita", "#006ad5", "small"]
   },
   {
     "id": 31,
@@ -10917,11 +8734,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "shita",
-      "#0055aa",
-      "small"
-    ]
+    "mail": ["shita", "#0055aa", "small"]
   },
   {
     "id": 32,
@@ -10931,10 +8744,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "shita",
-      "big"
-    ]
+    "mail": ["shita", "big"]
   },
   {
     "id": 33,
@@ -10944,10 +8754,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "shita",
-      "ender"
-    ]
+    "mail": ["shita", "ender"]
   },
   {
     "id": 22737,
@@ -10957,9 +8764,7 @@
     "date_usec": 588312,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 23159,
@@ -10969,10 +8774,7 @@
     "date_usec": 883709,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 34,
@@ -10982,9 +8784,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue"
-    ]
+    "mail": ["ue"]
   },
   {
     "id": 35,
@@ -10994,10 +8794,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "#ff3333"
-    ]
+    "mail": ["ue", "#ff3333"]
   },
   {
     "id": 36,
@@ -11007,10 +8804,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "small"
-    ]
+    "mail": ["ue", "small"]
   },
   {
     "id": 37,
@@ -11020,10 +8814,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "small"
-    ]
+    "mail": ["ue", "small"]
   },
   {
     "id": 38,
@@ -11033,10 +8824,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "shita",
-      "small"
-    ]
+    "mail": ["shita", "small"]
   },
   {
     "id": 39,
@@ -11046,10 +8834,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "shita",
-      "small"
-    ]
+    "mail": ["shita", "small"]
   },
   {
     "id": 40,
@@ -11059,10 +8844,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "shita",
-      "#cccccc"
-    ]
+    "mail": ["shita", "#cccccc"]
   },
   {
     "id": 41,
@@ -11072,10 +8854,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "shita",
-      "small"
-    ]
+    "mail": ["shita", "small"]
   },
   {
     "id": 42,
@@ -11085,10 +8864,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "shita",
-      "#3333ff"
-    ]
+    "mail": ["shita", "#3333ff"]
   },
   {
     "id": 43,
@@ -11098,10 +8874,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "small"
-    ]
+    "mail": ["ue", "small"]
   },
   {
     "id": 22768,
@@ -11111,12 +8884,7 @@
     "date_usec": 137780,
     "owner": false,
     "premium": false,
-    "mail": [
-      "black",
-      "",
-      "#010101",
-      "184"
-    ]
+    "mail": ["black", "", "#010101", "184"]
   },
   {
     "id": 22730,
@@ -11126,12 +8894,7 @@
     "date_usec": 998264,
     "owner": false,
     "premium": false,
-    "mail": [
-      "@20",
-      "blue",
-      "speed",
-      "184"
-    ]
+    "mail": ["@20", "blue", "speed", "184"]
   },
   {
     "id": 23147,
@@ -11141,11 +8904,7 @@
     "date_usec": 596965,
     "owner": false,
     "premium": false,
-    "mail": [
-      "naka",
-      "medium",
-      "184"
-    ]
+    "mail": ["naka", "medium", "184"]
   },
   {
     "id": 23148,
@@ -11155,11 +8914,7 @@
     "date_usec": 120054,
     "owner": false,
     "premium": false,
-    "mail": [
-      "naka",
-      "medium",
-      "184"
-    ]
+    "mail": ["naka", "medium", "184"]
   },
   {
     "id": 22720,
@@ -11169,10 +8924,7 @@
     "date_usec": 126757,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 22721,
@@ -11182,10 +8934,7 @@
     "date_usec": 249487,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 22722,
@@ -11195,10 +8944,7 @@
     "date_usec": 688240,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 44,
@@ -11208,10 +8954,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "big"
-    ]
+    "mail": ["ue", "big"]
   },
   {
     "id": 45,
@@ -11221,9 +8964,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue"
-    ]
+    "mail": ["ue"]
   },
   {
     "id": 46,
@@ -11233,10 +8974,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "pink"
-    ]
+    "mail": ["ue", "pink"]
   },
   {
     "id": 47,
@@ -11246,10 +8984,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "cyan"
-    ]
+    "mail": ["ue", "cyan"]
   },
   {
     "id": 48,
@@ -11259,10 +8994,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "yellow"
-    ]
+    "mail": ["ue", "yellow"]
   },
   {
     "id": 49,
@@ -11272,10 +9004,7 @@
     "date_usec": 37000,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ue",
-      "white"
-    ]
+    "mail": ["ue", "white"]
   },
   {
     "id": 22790,
@@ -11285,10 +9014,7 @@
     "date_usec": 711783,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 22791,
@@ -11298,10 +9024,7 @@
     "date_usec": 110530,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 22792,
@@ -11311,10 +9034,7 @@
     "date_usec": 719930,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 22793,
@@ -11324,10 +9044,7 @@
     "date_usec": 117656,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 22794,
@@ -11337,10 +9054,7 @@
     "date_usec": 147240,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 22629,
@@ -11350,14 +9064,7 @@
     "date_usec": 803716,
     "owner": false,
     "premium": false,
-    "mail": [
-      "shita",
-      "red",
-      "big",
-      "mincho",
-      "ender",
-      "184"
-    ]
+    "mail": ["shita", "red", "big", "mincho", "ender", "184"]
   },
   {
     "id": 22630,
@@ -11367,14 +9074,7 @@
     "date_usec": 166271,
     "owner": false,
     "premium": false,
-    "mail": [
-      "shita",
-      "red",
-      "big",
-      "mincho",
-      "ender",
-      "184"
-    ]
+    "mail": ["shita", "red", "big", "mincho", "ender", "184"]
   },
   {
     "id": 22631,
@@ -11384,14 +9084,7 @@
     "date_usec": 775853,
     "owner": false,
     "premium": false,
-    "mail": [
-      "shita",
-      "red",
-      "big",
-      "mincho",
-      "ender",
-      "184"
-    ]
+    "mail": ["shita", "red", "big", "mincho", "ender", "184"]
   },
   {
     "id": 22632,
@@ -11401,14 +9094,7 @@
     "date_usec": 844812,
     "owner": false,
     "premium": false,
-    "mail": [
-      "shita",
-      "red",
-      "big",
-      "mincho",
-      "ender",
-      "184"
-    ]
+    "mail": ["shita", "red", "big", "mincho", "ender", "184"]
   },
   {
     "id": 22633,
@@ -11418,14 +9104,7 @@
     "date_usec": 92855,
     "owner": false,
     "premium": false,
-    "mail": [
-      "shita",
-      "red",
-      "big",
-      "mincho",
-      "ender",
-      "184"
-    ]
+    "mail": ["shita", "red", "big", "mincho", "ender", "184"]
   },
   {
     "id": 23149,
@@ -11435,11 +9114,7 @@
     "date_usec": 536338,
     "owner": false,
     "premium": false,
-    "mail": [
-      "naka",
-      "medium",
-      "184"
-    ]
+    "mail": ["naka", "medium", "184"]
   },
   {
     "id": 23150,
@@ -11449,11 +9124,7 @@
     "date_usec": 239942,
     "owner": false,
     "premium": false,
-    "mail": [
-      "naka",
-      "medium",
-      "184"
-    ]
+    "mail": ["naka", "medium", "184"]
   },
   {
     "id": 23151,
@@ -11463,11 +9134,7 @@
     "date_usec": 23408,
     "owner": false,
     "premium": false,
-    "mail": [
-      "naka",
-      "medium",
-      "184"
-    ]
+    "mail": ["naka", "medium", "184"]
   },
   {
     "id": 22634,
@@ -11477,14 +9144,7 @@
     "date_usec": 51006,
     "owner": false,
     "premium": false,
-    "mail": [
-      "shita",
-      "red",
-      "big",
-      "mincho",
-      "ender",
-      "184"
-    ]
+    "mail": ["shita", "red", "big", "mincho", "ender", "184"]
   },
   {
     "id": 23139,
@@ -11494,12 +9154,7 @@
     "date_usec": 9087,
     "owner": false,
     "premium": false,
-    "mail": [
-      "cyan",
-      "big",
-      "shita",
-      "184"
-    ]
+    "mail": ["cyan", "big", "shita", "184"]
   },
   {
     "id": 22729,
@@ -11509,14 +9164,7 @@
     "date_usec": 223110,
     "owner": false,
     "premium": false,
-    "mail": [
-      "@20",
-      "blue",
-      "mincho",
-      "ender",
-      "speed",
-      "184"
-    ]
+    "mail": ["@20", "blue", "mincho", "ender", "speed", "184"]
   },
   {
     "id": 23141,
@@ -11526,13 +9174,7 @@
     "date_usec": 591915,
     "owner": false,
     "premium": false,
-    "mail": [
-      "shita",
-      "white",
-      "big",
-      "ender",
-      "184"
-    ]
+    "mail": ["shita", "white", "big", "ender", "184"]
   },
   {
     "id": 22728,
@@ -11542,10 +9184,7 @@
     "date_usec": 515365,
     "owner": false,
     "premium": false,
-    "mail": [
-      "@20",
-      "184"
-    ]
+    "mail": ["@20", "184"]
   },
   {
     "id": 22771,
@@ -11555,10 +9194,7 @@
     "date_usec": 651825,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 23326,
@@ -11568,10 +9204,7 @@
     "date_usec": 156455,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 23145,
@@ -11581,13 +9214,7 @@
     "date_usec": 670437,
     "owner": false,
     "premium": false,
-    "mail": [
-      "naka",
-      "white",
-      "medium",
-      "ender",
-      "184"
-    ]
+    "mail": ["naka", "white", "medium", "ender", "184"]
   },
   {
     "id": 23321,
@@ -11597,9 +9224,7 @@
     "date_usec": 446545,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 22647,
@@ -11609,13 +9234,7 @@
     "date_usec": 484210,
     "owner": false,
     "premium": false,
-    "mail": [
-      "naka",
-      "black",
-      "medium",
-      "mincho",
-      "184"
-    ]
+    "mail": ["naka", "black", "medium", "mincho", "184"]
   },
   {
     "id": 22436,
@@ -11625,10 +9244,7 @@
     "date_usec": 97317,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 22785,
@@ -11638,10 +9254,7 @@
     "date_usec": 267489,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 22734,
@@ -11651,10 +9264,7 @@
     "date_usec": 165064,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 23140,
@@ -11664,12 +9274,7 @@
     "date_usec": 246393,
     "owner": false,
     "premium": false,
-    "mail": [
-      "shita",
-      "white",
-      "big",
-      "184"
-    ]
+    "mail": ["shita", "white", "big", "184"]
   },
   {
     "id": 23138,
@@ -11679,12 +9284,7 @@
     "date_usec": 559772,
     "owner": false,
     "premium": false,
-    "mail": [
-      "naka",
-      "white",
-      "big",
-      "184"
-    ]
+    "mail": ["naka", "white", "big", "184"]
   },
   {
     "id": 23322,
@@ -11694,9 +9294,7 @@
     "date_usec": 453103,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 23162,
@@ -11706,10 +9304,7 @@
     "date_usec": 682211,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 23156,
@@ -11719,13 +9314,7 @@
     "date_usec": 775007,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "big",
-      "red",
-      "184",
-      "device:Switch"
-    ]
+    "mail": ["ue", "big", "red", "184", "device:Switch"]
   },
   {
     "id": 22963,
@@ -11735,10 +9324,7 @@
     "date_usec": 730229,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 22964,
@@ -11748,10 +9334,7 @@
     "date_usec": 113628,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 22965,
@@ -11761,10 +9344,7 @@
     "date_usec": 842547,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 22966,
@@ -11774,10 +9354,7 @@
     "date_usec": 106133,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 22967,
@@ -11787,10 +9364,7 @@
     "date_usec": 777501,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 22968,
@@ -11800,10 +9374,7 @@
     "date_usec": 453611,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 22969,
@@ -11813,10 +9384,7 @@
     "date_usec": 59974,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 22970,
@@ -11826,10 +9394,7 @@
     "date_usec": 196782,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 23160,
@@ -11839,10 +9404,7 @@
     "date_usec": 796551,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 23071,
@@ -11852,10 +9414,7 @@
     "date_usec": 884016,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 23157,
@@ -11865,13 +9424,7 @@
     "date_usec": 802383,
     "owner": false,
     "premium": false,
-    "mail": [
-      "naka",
-      "big",
-      "red",
-      "184",
-      "device:Switch"
-    ]
+    "mail": ["naka", "big", "red", "184", "device:Switch"]
   },
   {
     "id": 22811,
@@ -11881,10 +9434,7 @@
     "date_usec": 672433,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 23163,
@@ -11894,10 +9444,7 @@
     "date_usec": 877251,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 23164,
@@ -11907,10 +9454,7 @@
     "date_usec": 94912,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 23165,
@@ -11920,10 +9464,7 @@
     "date_usec": 183769,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 23166,
@@ -11933,10 +9474,7 @@
     "date_usec": 66993,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 23167,
@@ -11946,10 +9484,7 @@
     "date_usec": 145197,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 23168,
@@ -11959,10 +9494,7 @@
     "date_usec": 9203,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 23169,
@@ -11972,10 +9504,7 @@
     "date_usec": 966816,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 23839,
@@ -11985,10 +9514,7 @@
     "date_usec": 886056,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:Switch"
-    ]
+    "mail": ["184", "device:Switch"]
   },
   {
     "id": 22809,
@@ -11998,10 +9524,7 @@
     "date_usec": 744726,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      ""
-    ]
+    "mail": ["184", ""]
   },
   {
     "id": 23170,
@@ -12011,10 +9534,7 @@
     "date_usec": 203590,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 23171,
@@ -12024,10 +9544,7 @@
     "date_usec": 818355,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 23172,
@@ -12037,10 +9554,7 @@
     "date_usec": 136759,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 23173,
@@ -12050,10 +9564,7 @@
     "date_usec": 672408,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 23174,
@@ -12063,10 +9574,7 @@
     "date_usec": 720166,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 23175,
@@ -12076,10 +9584,7 @@
     "date_usec": 393978,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 23176,
@@ -12089,10 +9594,7 @@
     "date_usec": 695968,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 23177,
@@ -12102,10 +9604,7 @@
     "date_usec": 188245,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 23144,
@@ -12115,13 +9614,7 @@
     "date_usec": 633328,
     "owner": false,
     "premium": false,
-    "mail": [
-      "naka",
-      "white",
-      "medium",
-      "ender",
-      "184"
-    ]
+    "mail": ["naka", "white", "medium", "ender", "184"]
   },
   {
     "id": 23142,
@@ -12131,13 +9624,7 @@
     "date_usec": 896988,
     "owner": false,
     "premium": false,
-    "mail": [
-      "shita",
-      "white",
-      "small",
-      "ender",
-      "184"
-    ]
+    "mail": ["shita", "white", "small", "ender", "184"]
   },
   {
     "id": 20,
@@ -12147,9 +9634,7 @@
     "date_usec": 129586,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 22,
@@ -12159,9 +9644,7 @@
     "date_usec": 662731,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 15319,
@@ -12171,9 +9654,7 @@
     "date_usec": 800838,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1,
@@ -12193,10 +9674,7 @@
     "date_usec": 271817,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "device:3DS"
-    ]
+    "mail": ["184", "device:3DS"]
   },
   {
     "id": 17664,
@@ -12206,9 +9684,7 @@
     "date_usec": 146689,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 11775,
@@ -12218,11 +9694,7 @@
     "date_usec": 205029,
     "owner": false,
     "premium": true,
-    "mail": [
-      "white",
-      "medium",
-      "184"
-    ]
+    "mail": ["white", "medium", "184"]
   },
   {
     "id": 1079,
@@ -12231,9 +9703,7 @@
     "date": 1435568412,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1792,
@@ -12242,9 +9712,7 @@
     "date": 1436671590,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 3523,
@@ -12253,10 +9721,7 @@
     "date": 1442683455,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "ue"
-    ]
+    "mail": ["184", "ue"]
   },
   {
     "id": 4932,
@@ -12265,9 +9730,7 @@
     "date": 1450967832,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 7124,
@@ -12276,9 +9739,7 @@
     "date": 1466522179,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 9461,
@@ -12288,9 +9749,7 @@
     "date_usec": 899661,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 14629,
@@ -12300,12 +9759,7 @@
     "date_usec": 846693,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "ue",
-      "black",
-      "big"
-    ]
+    "mail": ["184", "ue", "black", "big"]
   },
   {
     "id": 19634,
@@ -12315,9 +9769,7 @@
     "date_usec": 283103,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 5254,
@@ -12326,9 +9778,7 @@
     "date": 1456331026,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 5446,
@@ -12337,9 +9787,7 @@
     "date": 1456629515,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 3442,
@@ -12348,9 +9796,7 @@
     "date": 1442598125,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 2166,
@@ -12359,9 +9805,7 @@
     "date": 1437911920,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 2183,
@@ -12370,11 +9814,7 @@
     "date": 1437912598,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "shita",
-      "yellow"
-    ]
+    "mail": ["184", "shita", "yellow"]
   },
   {
     "id": 1072,
@@ -12383,9 +9823,7 @@
     "date": 1435314225,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 3040,
@@ -12394,9 +9832,7 @@
     "date": 1439556483,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1203,
@@ -12405,9 +9841,7 @@
     "date": 1436125245,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 17893,
@@ -12417,15 +9851,7 @@
     "date_usec": 203240,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "white",
-      "big",
-      "mincho",
-      "full",
-      "ender",
-      "184"
-    ]
+    "mail": ["ue", "white", "big", "mincho", "full", "ender", "184"]
   },
   {
     "id": 17894,
@@ -12435,15 +9861,7 @@
     "date_usec": 486426,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "white",
-      "big",
-      "mincho",
-      "full",
-      "ender",
-      "184"
-    ]
+    "mail": ["ue", "white", "big", "mincho", "full", "ender", "184"]
   },
   {
     "id": 17895,
@@ -12453,15 +9871,7 @@
     "date_usec": 861063,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "pink",
-      "big",
-      "mincho",
-      "full",
-      "ender",
-      "184"
-    ]
+    "mail": ["ue", "pink", "big", "mincho", "full", "ender", "184"]
   },
   {
     "id": 3584,
@@ -12470,9 +9880,7 @@
     "date": 1442809230,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 2394,
@@ -12481,12 +9889,7 @@
     "date": 1438065585,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "shita",
-      "cyan",
-      "small"
-    ]
+    "mail": ["184", "shita", "cyan", "small"]
   },
   {
     "id": 9310,
@@ -12496,9 +9899,7 @@
     "date_usec": 891271,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 7203,
@@ -12507,9 +9908,7 @@
     "date": 1466658039,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 17967,
@@ -12519,15 +9918,7 @@
     "date_usec": 205811,
     "owner": false,
     "premium": false,
-    "mail": [
-      "naka",
-      "black",
-      "big",
-      "mincho",
-      "full",
-      "ender",
-      "184"
-    ]
+    "mail": ["naka", "black", "big", "mincho", "full", "ender", "184"]
   },
   {
     "id": 2866,
@@ -12536,9 +9927,7 @@
     "date": 1439391483,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 11173,
@@ -12548,10 +9937,7 @@
     "date_usec": 408227,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "black"
-    ]
+    "mail": ["184", "black"]
   },
   {
     "id": 17929,
@@ -12561,14 +9947,7 @@
     "date_usec": 640478,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "black",
-      "big",
-      "full",
-      "ender",
-      "184"
-    ]
+    "mail": ["ue", "black", "big", "full", "ender", "184"]
   },
   {
     "id": 17931,
@@ -12578,14 +9957,7 @@
     "date_usec": 11447,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "black",
-      "big",
-      "full",
-      "ender",
-      "184"
-    ]
+    "mail": ["ue", "black", "big", "full", "ender", "184"]
   },
   {
     "id": 11401,
@@ -12595,9 +9967,7 @@
     "date_usec": 713475,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 5823,
@@ -12606,10 +9976,7 @@
     "date": 1457347744,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184",
-      "shita"
-    ]
+    "mail": ["184", "shita"]
   },
   {
     "id": 17933,
@@ -12619,14 +9986,7 @@
     "date_usec": 256810,
     "owner": false,
     "premium": false,
-    "mail": [
-      "naka",
-      "white",
-      "medium",
-      "full",
-      "ender",
-      "184"
-    ]
+    "mail": ["naka", "white", "medium", "full", "ender", "184"]
   },
   {
     "id": 1269,
@@ -12635,9 +9995,7 @@
     "date": 1436198632,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 17974,
@@ -12647,15 +10005,7 @@
     "date_usec": 717183,
     "owner": false,
     "premium": false,
-    "mail": [
-      "naka",
-      "white",
-      "medium",
-      "mincho",
-      "full",
-      "ender",
-      "184"
-    ]
+    "mail": ["naka", "white", "medium", "mincho", "full", "ender", "184"]
   },
   {
     "id": 17896,
@@ -12665,15 +10015,7 @@
     "date_usec": 164805,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "white",
-      "big",
-      "mincho",
-      "full",
-      "ender",
-      "184"
-    ]
+    "mail": ["ue", "white", "big", "mincho", "full", "ender", "184"]
   },
   {
     "id": 17937,
@@ -12683,14 +10025,7 @@
     "date_usec": 408452,
     "owner": false,
     "premium": false,
-    "mail": [
-      "naka",
-      "white",
-      "medium",
-      "full",
-      "ender",
-      "184"
-    ]
+    "mail": ["naka", "white", "medium", "full", "ender", "184"]
   },
   {
     "id": 17952,
@@ -12700,15 +10035,7 @@
     "date_usec": 366580,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "red",
-      "big",
-      "mincho",
-      "full",
-      "ender",
-      "184"
-    ]
+    "mail": ["ue", "red", "big", "mincho", "full", "ender", "184"]
   },
   {
     "id": 17948,
@@ -12718,15 +10045,7 @@
     "date_usec": 290944,
     "owner": false,
     "premium": false,
-    "mail": [
-      "mincho",
-      "ue",
-      "red",
-      "big",
-      "full",
-      "ender",
-      "184"
-    ]
+    "mail": ["mincho", "ue", "red", "big", "full", "ender", "184"]
   },
   {
     "id": 8266,
@@ -12735,9 +10054,7 @@
     "date": 1472434137,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1670,
@@ -12746,9 +10063,7 @@
     "date": 1436627416,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 5951,
@@ -12757,9 +10072,7 @@
     "date": 1458991452,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 8638,
@@ -12769,9 +10082,7 @@
     "date_usec": 905309,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 17950,
@@ -12781,14 +10092,6 @@
     "date_usec": 253493,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "white",
-      "big",
-      "mincho",
-      "full",
-      "ender",
-      "184"
-    ]
+    "mail": ["ue", "white", "big", "mincho", "full", "ender", "184"]
   }
 ]

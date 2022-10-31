@@ -608,16 +608,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "セリフ",
-      "@3",
-      "big",
-      "gothic",
-      "ca",
-      "",
-      "full",
-      "#010101"
-    ]
+    "mail": ["セリフ", "@3", "big", "gothic", "ca", "", "full", "#010101"]
   },
   {
     "id": 32,
@@ -1770,16 +1761,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "セリフ",
-      "@3",
-      "big",
-      "gothic",
-      "ca",
-      "",
-      "full",
-      "#010101"
-    ]
+    "mail": ["セリフ", "@3", "big", "gothic", "ca", "", "full", "#010101"]
   },
   {
     "id": 109,
@@ -2169,16 +2151,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "セリフ",
-      "@3",
-      "big",
-      "gothic",
-      "ca",
-      "",
-      "full",
-      "#010101"
-    ]
+    "mail": ["セリフ", "@3", "big", "gothic", "ca", "", "full", "#010101"]
   },
   {
     "id": 95,
@@ -2188,15 +2161,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "blue",
-      "ボス",
-      "@3",
-      "small",
-      "gothic",
-      "full",
-      "ender"
-    ]
+    "mail": ["blue", "ボス", "@3", "small", "gothic", "full", "ender"]
   },
   {
     "id": 96,
@@ -2206,15 +2171,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "blue",
-      "ボス",
-      "@3",
-      "small",
-      "gothic",
-      "full",
-      "ender"
-    ]
+    "mail": ["blue", "ボス", "@3", "small", "gothic", "full", "ender"]
   },
   {
     "id": 97,
@@ -2224,15 +2181,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "blue",
-      "ボス",
-      "@3",
-      "small",
-      "gothic",
-      "full",
-      "ender"
-    ]
+    "mail": ["blue", "ボス", "@3", "small", "gothic", "full", "ender"]
   },
   {
     "id": 98,
@@ -2242,15 +2191,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "blue",
-      "ボス",
-      "@3",
-      "small",
-      "gothic",
-      "full",
-      "ender"
-    ]
+    "mail": ["blue", "ボス", "@3", "small", "gothic", "full", "ender"]
   },
   {
     "id": 99,
@@ -2260,15 +2201,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "cyan",
-      "ボス",
-      "@3",
-      "small",
-      "gothic",
-      "full",
-      "ender"
-    ]
+    "mail": ["cyan", "ボス", "@3", "small", "gothic", "full", "ender"]
   },
   {
     "id": 100,
@@ -2278,15 +2211,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "cyan",
-      "ボス",
-      "@3",
-      "small",
-      "gothic",
-      "full",
-      "ender"
-    ]
+    "mail": ["cyan", "ボス", "@3", "small", "gothic", "full", "ender"]
   },
   {
     "id": 101,
@@ -2296,15 +2221,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "cyan",
-      "ボス",
-      "@3",
-      "small",
-      "gothic",
-      "full",
-      "ender"
-    ]
+    "mail": ["cyan", "ボス", "@3", "small", "gothic", "full", "ender"]
   },
   {
     "id": 102,
@@ -2314,15 +2231,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "white",
-      "ボス",
-      "@3",
-      "small",
-      "gothic",
-      "full",
-      "ender"
-    ]
+    "mail": ["white", "ボス", "@3", "small", "gothic", "full", "ender"]
   },
   {
     "id": 103,
@@ -2332,15 +2241,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "white",
-      "ボス",
-      "@3",
-      "small",
-      "gothic",
-      "full",
-      "ender"
-    ]
+    "mail": ["white", "ボス", "@3", "small", "gothic", "full", "ender"]
   },
   {
     "id": 104,
@@ -2350,15 +2251,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "black",
-      "ボス",
-      "@3",
-      "small",
-      "gothic",
-      "full",
-      "ender"
-    ]
+    "mail": ["black", "ボス", "@3", "small", "gothic", "full", "ender"]
   },
   {
     "id": 105,
@@ -2368,15 +2261,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "black",
-      "ボス",
-      "@3",
-      "small",
-      "gothic",
-      "full",
-      "ender"
-    ]
+    "mail": ["black", "ボス", "@3", "small", "gothic", "full", "ender"]
   },
   {
     "id": 106,
@@ -2386,15 +2271,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "black",
-      "ボス",
-      "@3",
-      "small",
-      "gothic",
-      "full",
-      "ender"
-    ]
+    "mail": ["black", "ボス", "@3", "small", "gothic", "full", "ender"]
   },
   {
     "id": 107,
@@ -2404,15 +2281,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "black",
-      "ボス",
-      "@3",
-      "small",
-      "gothic",
-      "full",
-      "ender"
-    ]
+    "mail": ["black", "ボス", "@3", "small", "gothic", "full", "ender"]
   },
   {
     "id": 108,
@@ -2422,15 +2291,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "セリフ",
-      "@3",
-      "small",
-      "gothic",
-      "full",
-      "ender",
-      "#010101"
-    ]
+    "mail": ["セリフ", "@3", "small", "gothic", "full", "ender", "#010101"]
   },
   {
     "id": 130,
@@ -2440,16 +2301,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "トキ",
-      "@3",
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "full",
-      "#FFDDCC"
-    ]
+    "mail": ["トキ", "@3", "small", "naka", "gothic", "ca", "full", "#FFDDCC"]
   },
   {
     "id": 131,
@@ -2459,16 +2311,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "トキ",
-      "@3",
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "full",
-      "#FFDDCC"
-    ]
+    "mail": ["トキ", "@3", "small", "naka", "gothic", "ca", "full", "#FFDDCC"]
   },
   {
     "id": 132,
@@ -2478,16 +2321,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "トキ",
-      "@3",
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "full",
-      "#FAC6C3"
-    ]
+    "mail": ["トキ", "@3", "small", "naka", "gothic", "ca", "full", "#FAC6C3"]
   },
   {
     "id": 133,
@@ -2497,16 +2331,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "トキ",
-      "@3",
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "full",
-      "#FAC6C3"
-    ]
+    "mail": ["トキ", "@3", "small", "naka", "gothic", "ca", "full", "#FAC6C3"]
   },
   {
     "id": 134,
@@ -2516,16 +2341,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "トキ",
-      "@3",
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "full",
-      "#F0F0F0"
-    ]
+    "mail": ["トキ", "@3", "small", "naka", "gothic", "ca", "full", "#F0F0F0"]
   },
   {
     "id": 135,
@@ -2535,16 +2351,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "トキ",
-      "@3",
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "full",
-      "#F0F0F0"
-    ]
+    "mail": ["トキ", "@3", "small", "naka", "gothic", "ca", "full", "#F0F0F0"]
   },
   {
     "id": 136,
@@ -2554,16 +2361,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "トキ",
-      "@3",
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "full",
-      "#ED4F46"
-    ]
+    "mail": ["トキ", "@3", "small", "naka", "gothic", "ca", "full", "#ED4F46"]
   },
   {
     "id": 137,
@@ -2573,16 +2371,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "トキ",
-      "@3",
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "full",
-      "#ED4F46"
-    ]
+    "mail": ["トキ", "@3", "small", "naka", "gothic", "ca", "full", "#ED4F46"]
   },
   {
     "id": 138,
@@ -2592,16 +2381,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "トキ",
-      "@3",
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "full",
-      "#D4333B"
-    ]
+    "mail": ["トキ", "@3", "small", "naka", "gothic", "ca", "full", "#D4333B"]
   },
   {
     "id": 139,
@@ -2611,16 +2391,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "トキ",
-      "@3",
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "full",
-      "#D4333B"
-    ]
+    "mail": ["トキ", "@3", "small", "naka", "gothic", "ca", "full", "#D4333B"]
   },
   {
     "id": 140,
@@ -2630,16 +2401,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "トキ",
-      "@3",
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "full",
-      "#010101"
-    ]
+    "mail": ["トキ", "@3", "small", "naka", "gothic", "ca", "full", "#010101"]
   },
   {
     "id": 141,
@@ -2649,16 +2411,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "トキ",
-      "@3",
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "full",
-      "#010101"
-    ]
+    "mail": ["トキ", "@3", "small", "naka", "gothic", "ca", "full", "#010101"]
   },
   {
     "id": 142,
@@ -2668,16 +2421,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "トキ",
-      "@3",
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "full",
-      "#010101"
-    ]
+    "mail": ["トキ", "@3", "small", "naka", "gothic", "ca", "full", "#010101"]
   },
   {
     "id": 143,
@@ -2687,16 +2431,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "トキ",
-      "@3",
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "full",
-      "#010101"
-    ]
+    "mail": ["トキ", "@3", "small", "naka", "gothic", "ca", "full", "#010101"]
   },
   {
     "id": 144,
@@ -3086,16 +2821,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "セリフ",
-      "@3",
-      "big",
-      "gothic",
-      "ca",
-      "",
-      "full",
-      "#010101"
-    ]
+    "mail": ["セリフ", "@3", "big", "gothic", "ca", "", "full", "#010101"]
   },
   {
     "id": 165,
@@ -3105,15 +2831,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "みゆはん",
-      "@3",
-      "small",
-      "ender",
-      "full",
-      "gothic",
-      "#010101"
-    ]
+    "mail": ["みゆはん", "@3", "small", "ender", "full", "gothic", "#010101"]
   },
   {
     "id": 166,
@@ -3123,15 +2841,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "みゆはん",
-      "@3",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "#ffede5"
-    ]
+    "mail": ["みゆはん", "@3", "small", "ender", "full", "mincho", "#ffede5"]
   },
   {
     "id": 167,
@@ -3141,15 +2851,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "みゆはん",
-      "@3",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "#fefefe"
-    ]
+    "mail": ["みゆはん", "@3", "small", "ender", "full", "mincho", "#fefefe"]
   },
   {
     "id": 168,
@@ -3159,15 +2861,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "みゆはん",
-      "@3",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "#fefefe"
-    ]
+    "mail": ["みゆはん", "@3", "small", "ender", "full", "mincho", "#fefefe"]
   },
   {
     "id": 169,
@@ -3177,15 +2871,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "みゆはん",
-      "@3",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "#fefefe"
-    ]
+    "mail": ["みゆはん", "@3", "small", "ender", "full", "mincho", "#fefefe"]
   },
   {
     "id": 170,
@@ -3195,15 +2881,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "みゆはん",
-      "@3",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "#f7abab"
-    ]
+    "mail": ["みゆはん", "@3", "small", "ender", "full", "mincho", "#f7abab"]
   },
   {
     "id": 171,
@@ -3213,15 +2891,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "みゆはん",
-      "@3",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "#ffebc6"
-    ]
+    "mail": ["みゆはん", "@3", "small", "ender", "full", "mincho", "#ffebc6"]
   },
   {
     "id": 172,
@@ -3231,15 +2901,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "みゆはん",
-      "@3",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "#ffebc6"
-    ]
+    "mail": ["みゆはん", "@3", "small", "ender", "full", "mincho", "#ffebc6"]
   },
   {
     "id": 173,
@@ -3249,15 +2911,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "みゆはん",
-      "@3",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "#ffebc6"
-    ]
+    "mail": ["みゆはん", "@3", "small", "ender", "full", "mincho", "#ffebc6"]
   },
   {
     "id": 174,
@@ -3267,15 +2921,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "みゆはん",
-      "@3",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "#5a4b3c"
-    ]
+    "mail": ["みゆはん", "@3", "small", "ender", "full", "mincho", "#5a4b3c"]
   },
   {
     "id": 175,
@@ -3285,15 +2931,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "みゆはん",
-      "@3",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "#5a4b3c"
-    ]
+    "mail": ["みゆはん", "@3", "small", "ender", "full", "mincho", "#5a4b3c"]
   },
   {
     "id": 176,
@@ -3303,15 +2941,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "みゆはん",
-      "@3",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "#5a4b3c"
-    ]
+    "mail": ["みゆはん", "@3", "small", "ender", "full", "mincho", "#5a4b3c"]
   },
   {
     "id": 177,
@@ -3321,15 +2951,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "みゆはん",
-      "@3",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "#5a4b3c"
-    ]
+    "mail": ["みゆはん", "@3", "small", "ender", "full", "mincho", "#5a4b3c"]
   },
   {
     "id": 178,
@@ -3339,15 +2961,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "みゆはん",
-      "@3",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "#5a4b3c"
-    ]
+    "mail": ["みゆはん", "@3", "small", "ender", "full", "mincho", "#5a4b3c"]
   },
   {
     "id": 179,
@@ -3357,16 +2971,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "シャー",
-      "@3",
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "full",
-      "#804000"
-    ]
+    "mail": ["シャー", "@3", "small", "naka", "gothic", "ca", "full", "#804000"]
   },
   {
     "id": 180,
@@ -3376,16 +2981,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "シャー",
-      "@3",
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "full",
-      "#FFDDCC"
-    ]
+    "mail": ["シャー", "@3", "small", "naka", "gothic", "ca", "full", "#FFDDCC"]
   },
   {
     "id": 181,
@@ -3395,16 +2991,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "シャー",
-      "@3",
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "full",
-      "#997755"
-    ]
+    "mail": ["シャー", "@3", "small", "naka", "gothic", "ca", "full", "#997755"]
   },
   {
     "id": 182,
@@ -3414,16 +3001,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "シャー",
-      "@3",
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "full",
-      "#997755"
-    ]
+    "mail": ["シャー", "@3", "small", "naka", "gothic", "ca", "full", "#997755"]
   },
   {
     "id": 183,
@@ -3433,16 +3011,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "シャー",
-      "@3",
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "full",
-      "#400000"
-    ]
+    "mail": ["シャー", "@3", "small", "naka", "gothic", "ca", "full", "#400000"]
   },
   {
     "id": 184,
@@ -3452,16 +3021,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "シャー",
-      "@3",
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "full",
-      "#400000"
-    ]
+    "mail": ["シャー", "@3", "small", "naka", "gothic", "ca", "full", "#400000"]
   },
   {
     "id": 185,
@@ -3471,16 +3031,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "シャー",
-      "@3",
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "full",
-      "#FC241F"
-    ]
+    "mail": ["シャー", "@3", "small", "naka", "gothic", "ca", "full", "#FC241F"]
   },
   {
     "id": 186,
@@ -3490,16 +3041,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "シャー",
-      "@3",
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "full",
-      "#FC241F"
-    ]
+    "mail": ["シャー", "@3", "small", "naka", "gothic", "ca", "full", "#FC241F"]
   },
   {
     "id": 187,
@@ -3509,16 +3051,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "シャー",
-      "@3",
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "full",
-      "#FFFFFF"
-    ]
+    "mail": ["シャー", "@3", "small", "naka", "gothic", "ca", "full", "#FFFFFF"]
   },
   {
     "id": 188,
@@ -3528,16 +3061,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "シャー",
-      "@3",
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "full",
-      "#88DDDD"
-    ]
+    "mail": ["シャー", "@3", "small", "naka", "gothic", "ca", "full", "#88DDDD"]
   },
   {
     "id": 189,
@@ -3547,16 +3071,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "シャー",
-      "@3",
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "full",
-      "#88DDDD"
-    ]
+    "mail": ["シャー", "@3", "small", "naka", "gothic", "ca", "full", "#88DDDD"]
   },
   {
     "id": 190,
@@ -3566,16 +3081,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "シャー",
-      "@3",
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "full",
-      "#FF80C0"
-    ]
+    "mail": ["シャー", "@3", "small", "naka", "gothic", "ca", "full", "#FF80C0"]
   },
   {
     "id": 191,
@@ -3585,16 +3091,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "シャー",
-      "@3",
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "full",
-      "#00FFFF"
-    ]
+    "mail": ["シャー", "@3", "small", "naka", "gothic", "ca", "full", "#00FFFF"]
   },
   {
     "id": 192,
@@ -3604,16 +3101,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "シャー",
-      "@3",
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "full",
-      "#0080FF"
-    ]
+    "mail": ["シャー", "@3", "small", "naka", "gothic", "ca", "full", "#0080FF"]
   },
   {
     "id": 193,
@@ -3623,16 +3111,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "シャー",
-      "@3",
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "full",
-      "#010101"
-    ]
+    "mail": ["シャー", "@3", "small", "naka", "gothic", "ca", "full", "#010101"]
   },
   {
     "id": 194,
@@ -3642,16 +3121,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "シャー",
-      "@3",
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "full",
-      "#010101"
-    ]
+    "mail": ["シャー", "@3", "small", "naka", "gothic", "ca", "full", "#010101"]
   },
   {
     "id": 195,
@@ -3661,16 +3131,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "シャー",
-      "@3",
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "full",
-      "#010101"
-    ]
+    "mail": ["シャー", "@3", "small", "naka", "gothic", "ca", "full", "#010101"]
   },
   {
     "id": 196,
@@ -3680,16 +3141,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "シャー",
-      "@3",
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "full",
-      "#010101"
-    ]
+    "mail": ["シャー", "@3", "small", "naka", "gothic", "ca", "full", "#010101"]
   },
   {
     "id": 197,
@@ -3761,15 +3213,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "オイゴラァ",
-      "@3",
-      "green",
-      "small",
-      "gothic",
-      "full",
-      "ender"
-    ]
+    "mail": ["オイゴラァ", "@3", "green", "small", "gothic", "full", "ender"]
   },
   {
     "id": 199,
@@ -3779,15 +3223,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "black",
-      "small",
-      "オイゴラァ",
-      "@3",
-      "gothic",
-      "full",
-      "ender"
-    ]
+    "mail": ["black", "small", "オイゴラァ", "@3", "gothic", "full", "ender"]
   },
   {
     "id": 200,
@@ -3797,15 +3233,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "cyan",
-      "small",
-      "オイゴラァ",
-      "@3",
-      "gothic",
-      "full",
-      "ender"
-    ]
+    "mail": ["cyan", "small", "オイゴラァ", "@3", "gothic", "full", "ender"]
   },
   {
     "id": 201,
@@ -3815,15 +3243,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "yellow",
-      "small",
-      "オイゴラァ",
-      "@3",
-      "gothic",
-      "full",
-      "ender"
-    ]
+    "mail": ["yellow", "small", "オイゴラァ", "@3", "gothic", "full", "ender"]
   },
   {
     "id": 202,
@@ -3833,15 +3253,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "yellow",
-      "small",
-      "オイゴラァ",
-      "@3",
-      "gothic",
-      "full",
-      "ender"
-    ]
+    "mail": ["yellow", "small", "オイゴラァ", "@3", "gothic", "full", "ender"]
   },
   {
     "id": 203,
@@ -3851,15 +3263,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "cyan",
-      "small",
-      "オイゴラァ",
-      "@3",
-      "gothic",
-      "full",
-      "ender"
-    ]
+    "mail": ["cyan", "small", "オイゴラァ", "@3", "gothic", "full", "ender"]
   },
   {
     "id": 204,
@@ -3869,15 +3273,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "blue",
-      "small",
-      "オイゴラァ",
-      "@3",
-      "gothic",
-      "full",
-      "ender"
-    ]
+    "mail": ["blue", "small", "オイゴラァ", "@3", "gothic", "full", "ender"]
   },
   {
     "id": 205,
@@ -3887,15 +3283,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "orange",
-      "small",
-      "オイゴラァ",
-      "@3",
-      "gothic",
-      "full",
-      "ender"
-    ]
+    "mail": ["orange", "small", "オイゴラァ", "@3", "gothic", "full", "ender"]
   },
   {
     "id": 206,
@@ -3905,15 +3293,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "yellow",
-      "small",
-      "オイゴラァ",
-      "@3",
-      "gothic",
-      "full",
-      "ender"
-    ]
+    "mail": ["yellow", "small", "オイゴラァ", "@3", "gothic", "full", "ender"]
   },
   {
     "id": 207,
@@ -3923,15 +3303,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "green",
-      "small",
-      "オイゴラァ",
-      "@3",
-      "gothic",
-      "full",
-      "ender"
-    ]
+    "mail": ["green", "small", "オイゴラァ", "@3", "gothic", "full", "ender"]
   },
   {
     "id": 208,
@@ -3941,15 +3313,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "red",
-      "small",
-      "オイゴラァ",
-      "@3",
-      "gothic",
-      "full",
-      "ender"
-    ]
+    "mail": ["red", "small", "オイゴラァ", "@3", "gothic", "full", "ender"]
   },
   {
     "id": 209,
@@ -3959,15 +3323,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "black",
-      "small",
-      "オイゴラァ",
-      "@3",
-      "gothic",
-      "full",
-      "ender"
-    ]
+    "mail": ["black", "small", "オイゴラァ", "@3", "gothic", "full", "ender"]
   },
   {
     "id": 210,
@@ -3977,15 +3333,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "black",
-      "small",
-      "オイゴラァ",
-      "@3",
-      "gothic",
-      "full",
-      "ender"
-    ]
+    "mail": ["black", "small", "オイゴラァ", "@3", "gothic", "full", "ender"]
   },
   {
     "id": 211,
@@ -3995,15 +3343,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "red",
-      "small",
-      "オイゴラァ",
-      "@3",
-      "gothic",
-      "full",
-      "ender"
-    ]
+    "mail": ["red", "small", "オイゴラァ", "@3", "gothic", "full", "ender"]
   },
   {
     "id": 212,
@@ -4013,15 +3353,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "black",
-      "small",
-      "オイゴラァ",
-      "@3",
-      "gothic",
-      "full",
-      "ender"
-    ]
+    "mail": ["black", "small", "オイゴラァ", "@3", "gothic", "full", "ender"]
   },
   {
     "id": 213,
@@ -4031,15 +3363,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "yellow",
-      "small",
-      "オイゴラァ",
-      "@3",
-      "gothic",
-      "full",
-      "ender"
-    ]
+    "mail": ["yellow", "small", "オイゴラァ", "@3", "gothic", "full", "ender"]
   },
   {
     "id": 214,
@@ -4049,15 +3373,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "orange",
-      "small",
-      "オイゴラァ",
-      "@3",
-      "gothic",
-      "full",
-      "ender"
-    ]
+    "mail": ["orange", "small", "オイゴラァ", "@3", "gothic", "full", "ender"]
   },
   {
     "id": 215,
@@ -4067,15 +3383,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "white",
-      "small",
-      "オイゴラァ",
-      "@3",
-      "gothic",
-      "full",
-      "ender"
-    ]
+    "mail": ["white", "small", "オイゴラァ", "@3", "gothic", "full", "ender"]
   },
   {
     "id": 216,
@@ -4085,15 +3393,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "red2",
-      "small",
-      "オイゴラァ",
-      "@3",
-      "gothic",
-      "full",
-      "ender"
-    ]
+    "mail": ["red2", "small", "オイゴラァ", "@3", "gothic", "full", "ender"]
   },
   {
     "id": 219,
@@ -4873,15 +4173,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "#d6d3b5",
-      "@3",
-      "ふすま",
-      "small",
-      "ender",
-      "full",
-      "gothic"
-    ]
+    "mail": ["#d6d3b5", "@3", "ふすま", "small", "ender", "full", "gothic"]
   },
   {
     "id": 260,
@@ -4891,15 +4183,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "#b5aa5a",
-      "@3",
-      "ふすま",
-      "small",
-      "ender",
-      "full",
-      "gothic"
-    ]
+    "mail": ["#b5aa5a", "@3", "ふすま", "small", "ender", "full", "gothic"]
   },
   {
     "id": 261,
@@ -4909,15 +4193,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "#293439",
-      "@3",
-      "ふすま",
-      "small",
-      "ender",
-      "full",
-      "gothic"
-    ]
+    "mail": ["#293439", "@3", "ふすま", "small", "ender", "full", "gothic"]
   },
   {
     "id": 262,
@@ -5197,15 +4473,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "#d6d3b5",
-      "@3",
-      "ふすま",
-      "small",
-      "ender",
-      "full",
-      "gothic"
-    ]
+    "mail": ["#d6d3b5", "@3", "ふすま", "small", "ender", "full", "gothic"]
   },
   {
     "id": 278,
@@ -5215,15 +4483,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "#b5aa5a",
-      "@3",
-      "ふすま",
-      "small",
-      "ender",
-      "full",
-      "gothic"
-    ]
+    "mail": ["#b5aa5a", "@3", "ふすま", "small", "ender", "full", "gothic"]
   },
   {
     "id": 279,
@@ -5233,15 +4493,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "#293439",
-      "@3",
-      "ふすま",
-      "small",
-      "ender",
-      "full",
-      "gothic"
-    ]
+    "mail": ["#293439", "@3", "ふすま", "small", "ender", "full", "gothic"]
   },
   {
     "id": 280,
@@ -5311,15 +4563,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ライオン",
-      "@3",
-      "small",
-      "gothic",
-      "full",
-      "ender",
-      "#ffdcd4"
-    ]
+    "mail": ["ライオン", "@3", "small", "gothic", "full", "ender", "#ffdcd4"]
   },
   {
     "id": 284,
@@ -5329,15 +4573,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ライオン",
-      "@3",
-      "small",
-      "gothic",
-      "full",
-      "ender",
-      "#ffdcd4"
-    ]
+    "mail": ["ライオン", "@3", "small", "gothic", "full", "ender", "#ffdcd4"]
   },
   {
     "id": 285,
@@ -5347,15 +4583,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ライオン",
-      "@3",
-      "small",
-      "gothic",
-      "full",
-      "ender",
-      "#b3aaa1"
-    ]
+    "mail": ["ライオン", "@3", "small", "gothic", "full", "ender", "#b3aaa1"]
   },
   {
     "id": 286,
@@ -5365,15 +4593,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ライオン",
-      "@3",
-      "small",
-      "gothic",
-      "full",
-      "ender",
-      "#b3aaa1"
-    ]
+    "mail": ["ライオン", "@3", "small", "gothic", "full", "ender", "#b3aaa1"]
   },
   {
     "id": 287,
@@ -5383,15 +4603,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ライオン",
-      "@3",
-      "small",
-      "gothic",
-      "full",
-      "ender",
-      "#ffdcd4"
-    ]
+    "mail": ["ライオン", "@3", "small", "gothic", "full", "ender", "#ffdcd4"]
   },
   {
     "id": 288,
@@ -5401,15 +4613,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ライオン",
-      "@3",
-      "small",
-      "gothic",
-      "full",
-      "ender",
-      "#ffdcd4"
-    ]
+    "mail": ["ライオン", "@3", "small", "gothic", "full", "ender", "#ffdcd4"]
   },
   {
     "id": 289,
@@ -5419,15 +4623,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ライオン",
-      "@3",
-      "small",
-      "gothic",
-      "full",
-      "ender",
-      "#cc0604"
-    ]
+    "mail": ["ライオン", "@3", "small", "gothic", "full", "ender", "#cc0604"]
   },
   {
     "id": 290,
@@ -5437,15 +4633,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ライオン",
-      "@3",
-      "small",
-      "gothic",
-      "full",
-      "ender",
-      "#ede4e6"
-    ]
+    "mail": ["ライオン", "@3", "small", "gothic", "full", "ender", "#ede4e6"]
   },
   {
     "id": 291,
@@ -5455,15 +4643,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ライオン",
-      "@3",
-      "small",
-      "gothic",
-      "full",
-      "ender",
-      "#ede4e6"
-    ]
+    "mail": ["ライオン", "@3", "small", "gothic", "full", "ender", "#ede4e6"]
   },
   {
     "id": 292,
@@ -5473,15 +4653,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ライオン",
-      "@3",
-      "small",
-      "gothic",
-      "full",
-      "ender",
-      "#ede4e6"
-    ]
+    "mail": ["ライオン", "@3", "small", "gothic", "full", "ender", "#ede4e6"]
   },
   {
     "id": 293,
@@ -5491,15 +4663,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ライオン",
-      "@3",
-      "small",
-      "gothic",
-      "full",
-      "ender",
-      "#dddddd"
-    ]
+    "mail": ["ライオン", "@3", "small", "gothic", "full", "ender", "#dddddd"]
   },
   {
     "id": 294,
@@ -5509,15 +4673,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ライオン",
-      "@3",
-      "small",
-      "gothic",
-      "full",
-      "ender",
-      "#dddddd"
-    ]
+    "mail": ["ライオン", "@3", "small", "gothic", "full", "ender", "#dddddd"]
   },
   {
     "id": 295,
@@ -5527,15 +4683,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ライオン",
-      "@3",
-      "small",
-      "gothic",
-      "full",
-      "ender",
-      "#523623"
-    ]
+    "mail": ["ライオン", "@3", "small", "gothic", "full", "ender", "#523623"]
   },
   {
     "id": 296,
@@ -5545,15 +4693,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ライオン",
-      "@3",
-      "small",
-      "gothic",
-      "full",
-      "ender",
-      "#ffc90e"
-    ]
+    "mail": ["ライオン", "@3", "small", "gothic", "full", "ender", "#ffc90e"]
   },
   {
     "id": 297,
@@ -5563,15 +4703,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ライオン",
-      "@3",
-      "small",
-      "gothic",
-      "full",
-      "ender",
-      "#ffc90e"
-    ]
+    "mail": ["ライオン", "@3", "small", "gothic", "full", "ender", "#ffc90e"]
   },
   {
     "id": 298,
@@ -5581,15 +4713,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ライオン",
-      "@3",
-      "small",
-      "gothic",
-      "full",
-      "ender",
-      "#cc0604"
-    ]
+    "mail": ["ライオン", "@3", "small", "gothic", "full", "ender", "#cc0604"]
   },
   {
     "id": 299,
@@ -5599,15 +4723,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ライオン",
-      "@3",
-      "small",
-      "gothic",
-      "full",
-      "ender",
-      "#cc0604"
-    ]
+    "mail": ["ライオン", "@3", "small", "gothic", "full", "ender", "#cc0604"]
   },
   {
     "id": 300,
@@ -5617,15 +4733,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ライオン",
-      "@3",
-      "small",
-      "gothic",
-      "full",
-      "ender",
-      "#523623"
-    ]
+    "mail": ["ライオン", "@3", "small", "gothic", "full", "ender", "#523623"]
   },
   {
     "id": 301,
@@ -5635,15 +4743,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ライオン",
-      "@3",
-      "small",
-      "gothic",
-      "full",
-      "ender",
-      "#523623"
-    ]
+    "mail": ["ライオン", "@3", "small", "gothic", "full", "ender", "#523623"]
   },
   {
     "id": 302,
@@ -5960,16 +5060,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "big",
-      "ender",
-      "naka",
-      "gothic",
-      "ca",
-      "",
-      "full",
-      "#010101"
-    ]
+    "mail": ["big", "ender", "naka", "gothic", "ca", "", "full", "#010101"]
   },
   {
     "id": 320,
@@ -5979,16 +5070,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "big",
-      "ender",
-      "naka",
-      "gothic",
-      "ca",
-      "",
-      "full",
-      "#010101"
-    ]
+    "mail": ["big", "ender", "naka", "gothic", "ca", "", "full", "#010101"]
   },
   {
     "id": 321,
@@ -7981,15 +7063,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "",
-      "full",
-      "#DDCCBB"
-    ]
+    "mail": ["small", "naka", "gothic", "ca", "", "full", "#DDCCBB"]
   },
   {
     "id": 428,
@@ -7999,15 +7073,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "",
-      "full",
-      "#777777"
-    ]
+    "mail": ["small", "naka", "gothic", "ca", "", "full", "#777777"]
   },
   {
     "id": 429,
@@ -8017,15 +7083,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "",
-      "full",
-      "#EECC88"
-    ]
+    "mail": ["small", "naka", "gothic", "ca", "", "full", "#EECC88"]
   },
   {
     "id": 430,
@@ -8035,15 +7093,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "",
-      "full",
-      "#FFAA66"
-    ]
+    "mail": ["small", "naka", "gothic", "ca", "", "full", "#FFAA66"]
   },
   {
     "id": 431,
@@ -8053,15 +7103,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "",
-      "full",
-      "#DD5544"
-    ]
+    "mail": ["small", "naka", "gothic", "ca", "", "full", "#DD5544"]
   },
   {
     "id": 432,
@@ -8071,15 +7113,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "",
-      "full",
-      "#777777"
-    ]
+    "mail": ["small", "naka", "gothic", "ca", "", "full", "#777777"]
   },
   {
     "id": 433,
@@ -8089,15 +7123,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "",
-      "full",
-      "#999999"
-    ]
+    "mail": ["small", "naka", "gothic", "ca", "", "full", "#999999"]
   },
   {
     "id": 434,
@@ -8107,15 +7133,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "",
-      "full",
-      "#EEEEEE"
-    ]
+    "mail": ["small", "naka", "gothic", "ca", "", "full", "#EEEEEE"]
   },
   {
     "id": 435,
@@ -8125,15 +7143,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "",
-      "full",
-      "#88CC88"
-    ]
+    "mail": ["small", "naka", "gothic", "ca", "", "full", "#88CC88"]
   },
   {
     "id": 436,
@@ -8143,15 +7153,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "",
-      "full",
-      "#010101"
-    ]
+    "mail": ["small", "naka", "gothic", "ca", "", "full", "#010101"]
   },
   {
     "id": 437,
@@ -8161,15 +7163,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "",
-      "full",
-      "#88CC88"
-    ]
+    "mail": ["small", "naka", "gothic", "ca", "", "full", "#88CC88"]
   },
   {
     "id": 438,
@@ -8179,15 +7173,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "",
-      "full",
-      "#886655"
-    ]
+    "mail": ["small", "naka", "gothic", "ca", "", "full", "#886655"]
   },
   {
     "id": 439,
@@ -8197,15 +7183,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "",
-      "full",
-      "#CC9977"
-    ]
+    "mail": ["small", "naka", "gothic", "ca", "", "full", "#CC9977"]
   },
   {
     "id": 440,
@@ -8215,15 +7193,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "",
-      "full",
-      "#DDAAAA"
-    ]
+    "mail": ["small", "naka", "gothic", "ca", "", "full", "#DDAAAA"]
   },
   {
     "id": 441,
@@ -8233,15 +7203,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "",
-      "full",
-      "#FFDDCC"
-    ]
+    "mail": ["small", "naka", "gothic", "ca", "", "full", "#FFDDCC"]
   },
   {
     "id": 442,
@@ -8251,15 +7213,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "",
-      "full",
-      "#DD7777"
-    ]
+    "mail": ["small", "naka", "gothic", "ca", "", "full", "#DD7777"]
   },
   {
     "id": 443,
@@ -8269,15 +7223,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "",
-      "full",
-      "#443333"
-    ]
+    "mail": ["small", "naka", "gothic", "ca", "", "full", "#443333"]
   },
   {
     "id": 444,
@@ -8287,15 +7233,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "",
-      "full",
-      "#DD7777"
-    ]
+    "mail": ["small", "naka", "gothic", "ca", "", "full", "#DD7777"]
   },
   {
     "id": 445,
@@ -8305,15 +7243,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "",
-      "full",
-      "#010101"
-    ]
+    "mail": ["small", "naka", "gothic", "ca", "", "full", "#010101"]
   },
   {
     "id": 446,
@@ -8323,15 +7253,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "",
-      "full",
-      "#010101"
-    ]
+    "mail": ["small", "naka", "gothic", "ca", "", "full", "#010101"]
   },
   {
     "id": 447,
@@ -8341,15 +7263,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "",
-      "full",
-      "#DD5544"
-    ]
+    "mail": ["small", "naka", "gothic", "ca", "", "full", "#DD5544"]
   },
   {
     "id": 448,
@@ -8359,15 +7273,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "",
-      "full",
-      "#BB3322"
-    ]
+    "mail": ["small", "naka", "gothic", "ca", "", "full", "#BB3322"]
   },
   {
     "id": 449,
@@ -8377,15 +7283,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "",
-      "full",
-      "#FFFF00"
-    ]
+    "mail": ["small", "naka", "gothic", "ca", "", "full", "#FFFF00"]
   },
   {
     "id": 450,
@@ -8395,15 +7293,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "",
-      "full",
-      "#EEEEEE"
-    ]
+    "mail": ["small", "naka", "gothic", "ca", "", "full", "#EEEEEE"]
   },
   {
     "id": 451,
@@ -8413,15 +7303,7 @@
     "date_usec": 946511,
     "owner": true,
     "premium": true,
-    "mail": [
-      "small",
-      "naka",
-      "gothic",
-      "ca",
-      "",
-      "full",
-      "#EEEEEE"
-    ]
+    "mail": ["small", "naka", "gothic", "ca", "", "full", "#EEEEEE"]
   },
   {
     "id": 452,

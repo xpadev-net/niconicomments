@@ -7,9 +7,7 @@
     "date_usec": 518240,
     "owner": true,
     "premium": true,
-    "mail": [
-      "blue2"
-    ]
+    "mail": ["blue2"]
   },
   {
     "id": 1,
@@ -261,17 +259,7 @@
     "date_usec": 518240,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ca",
-      "#010101",
-      "big",
-      "ue",
-      "full",
-      "mincho",
-      "W34",
-      "L16",
-      "@1"
-    ]
+    "mail": ["ca", "#010101", "big", "ue", "full", "mincho", "W34", "L16", "@1"]
   },
   {
     "id": 74,
@@ -281,17 +269,7 @@
     "date_usec": 518240,
     "owner": true,
     "premium": true,
-    "mail": [
-      "ca",
-      "#010101",
-      "big",
-      "ue",
-      "full",
-      "mincho",
-      "W34",
-      "L16",
-      "@1"
-    ]
+    "mail": ["ca", "#010101", "big", "ue", "full", "mincho", "W34", "L16", "@1"]
   },
   {
     "id": 13,
@@ -1155,14 +1133,7 @@
     "date_usec": 518240,
     "owner": true,
     "premium": true,
-    "mail": [
-      "patissier",
-      "#006aff",
-      "small",
-      "ue",
-      "gothic",
-      ""
-    ]
+    "mail": ["patissier", "#006aff", "small", "ue", "gothic", ""]
   },
   {
     "id": 64,
@@ -1172,14 +1143,7 @@
     "date_usec": 518240,
     "owner": true,
     "premium": true,
-    "mail": [
-      "patissier",
-      "#008cff",
-      "small",
-      "ue",
-      "gothic",
-      ""
-    ]
+    "mail": ["patissier", "#008cff", "small", "ue", "gothic", ""]
   },
   {
     "id": 65,
@@ -1189,14 +1153,7 @@
     "date_usec": 518240,
     "owner": true,
     "premium": true,
-    "mail": [
-      "patissier",
-      "#009dff",
-      "small",
-      "ue",
-      "gothic",
-      ""
-    ]
+    "mail": ["patissier", "#009dff", "small", "ue", "gothic", ""]
   },
   {
     "id": 66,
@@ -1206,14 +1163,7 @@
     "date_usec": 518240,
     "owner": true,
     "premium": true,
-    "mail": [
-      "patissier",
-      "#00aeff",
-      "small",
-      "ue",
-      "gothic",
-      ""
-    ]
+    "mail": ["patissier", "#00aeff", "small", "ue", "gothic", ""]
   },
   {
     "id": 67,
@@ -1223,14 +1173,7 @@
     "date_usec": 518240,
     "owner": true,
     "premium": true,
-    "mail": [
-      "patissier",
-      "#00d0ff",
-      "small",
-      "ue",
-      "gothic",
-      ""
-    ]
+    "mail": ["patissier", "#00d0ff", "small", "ue", "gothic", ""]
   },
   {
     "id": 68,
@@ -1240,14 +1183,7 @@
     "date_usec": 518240,
     "owner": true,
     "premium": true,
-    "mail": [
-      "patissier",
-      "#00e1ff",
-      "small",
-      "ue",
-      "gothic",
-      ""
-    ]
+    "mail": ["patissier", "#00e1ff", "small", "ue", "gothic", ""]
   },
   {
     "id": 69,
@@ -1257,14 +1193,7 @@
     "date_usec": 518240,
     "owner": true,
     "premium": true,
-    "mail": [
-      "patissier",
-      "#00f2ff",
-      "small",
-      "ue",
-      "gothic",
-      ""
-    ]
+    "mail": ["patissier", "#00f2ff", "small", "ue", "gothic", ""]
   },
   {
     "id": 70,
@@ -1274,14 +1203,7 @@
     "date_usec": 518240,
     "owner": true,
     "premium": true,
-    "mail": [
-      "patissier",
-      "#00fffb",
-      "small",
-      "ue",
-      "gothic",
-      ""
-    ]
+    "mail": ["patissier", "#00fffb", "small", "ue", "gothic", ""]
   },
   {
     "id": 71,

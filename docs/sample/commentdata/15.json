@@ -7,9 +7,7 @@
     "date_usec": 899560,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 34923,
@@ -19,12 +17,7 @@
     "date_usec": 836395,
     "owner": false,
     "premium": true,
-    "mail": [
-      "shita",
-      "big",
-      "green2",
-      "device:Switch"
-    ]
+    "mail": ["shita", "big", "green2", "device:Switch"]
   },
   {
     "id": 34991,
@@ -34,9 +27,7 @@
     "date_usec": 317946,
     "owner": false,
     "premium": true,
-    "mail": [
-      "device:Switch"
-    ]
+    "mail": ["device:Switch"]
   },
   {
     "id": 34992,
@@ -46,12 +37,7 @@
     "date_usec": 689275,
     "owner": false,
     "premium": true,
-    "mail": [
-      "shita",
-      "big",
-      "green2",
-      "device:Switch"
-    ]
+    "mail": ["shita", "big", "green2", "device:Switch"]
   },
   {
     "id": 35798,
@@ -61,9 +47,7 @@
     "date_usec": 146926,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 515,
@@ -83,9 +67,7 @@
     "date_usec": 424500,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 34,
@@ -95,9 +77,7 @@
     "date_usec": 577844,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1306,
@@ -107,9 +87,7 @@
     "date_usec": 324958,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35692,
@@ -129,9 +107,7 @@
     "date_usec": 550797,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1296,
@@ -141,9 +117,7 @@
     "date_usec": 729614,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1345,
@@ -153,9 +127,7 @@
     "date_usec": 728695,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35278,
@@ -175,9 +147,7 @@
     "date_usec": 694205,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35071,
@@ -187,9 +157,7 @@
     "date_usec": 59570,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35251,
@@ -199,9 +167,7 @@
     "date_usec": 996372,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:Switch"
-    ]
+    "mail": ["device:Switch"]
   },
   {
     "id": 35204,
@@ -211,9 +177,7 @@
     "date_usec": 945125,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1304,
@@ -223,9 +187,7 @@
     "date_usec": 103361,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1428,
@@ -235,9 +197,7 @@
     "date_usec": 393672,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 514,
@@ -307,9 +267,7 @@
     "date_usec": 714786,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1474,
@@ -329,9 +287,7 @@
     "date_usec": 945118,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 698,
@@ -351,9 +307,7 @@
     "date_usec": 929539,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35230,
@@ -383,9 +337,7 @@
     "date_usec": 459999,
     "owner": false,
     "premium": true,
-    "mail": [
-      "shita"
-    ]
+    "mail": ["shita"]
   },
   {
     "id": 35482,
@@ -395,9 +347,7 @@
     "date_usec": 537926,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:Switch"
-    ]
+    "mail": ["device:Switch"]
   },
   {
     "id": 35031,
@@ -407,9 +357,7 @@
     "date_usec": 536860,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1466,
@@ -429,11 +377,7 @@
     "date_usec": 607273,
     "owner": false,
     "premium": false,
-    "mail": [
-      "big",
-      "red",
-      "device:Switch"
-    ]
+    "mail": ["big", "red", "device:Switch"]
   },
   {
     "id": 1382,
@@ -453,9 +397,7 @@
     "date_usec": 262940,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:Switch"
-    ]
+    "mail": ["device:Switch"]
   },
   {
     "id": 35398,
@@ -465,9 +407,7 @@
     "date_usec": 204636,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35122,
@@ -477,9 +417,7 @@
     "date_usec": 425656,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1215,
@@ -489,9 +427,7 @@
     "date_usec": 967262,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 885,
@@ -511,9 +447,7 @@
     "date_usec": 83522,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1217,
@@ -523,9 +457,7 @@
     "date_usec": 138123,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 868,
@@ -545,9 +477,7 @@
     "date_usec": 760236,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1219,
@@ -557,9 +487,7 @@
     "date_usec": 261646,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35032,
@@ -569,9 +497,7 @@
     "date_usec": 767211,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1220,
@@ -581,9 +507,7 @@
     "date_usec": 111168,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35497,
@@ -593,9 +517,7 @@
     "date_usec": 585531,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:Switch"
-    ]
+    "mail": ["device:Switch"]
   },
   {
     "id": 35000,
@@ -605,9 +527,7 @@
     "date_usec": 652398,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1221,
@@ -617,9 +537,7 @@
     "date_usec": 179524,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 34832,
@@ -629,9 +547,7 @@
     "date_usec": 297317,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35330,
@@ -661,9 +577,7 @@
     "date_usec": 549916,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35466,
@@ -683,9 +597,7 @@
     "date_usec": 581998,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1223,
@@ -695,9 +607,7 @@
     "date_usec": 347866,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35589,
@@ -707,9 +617,7 @@
     "date_usec": 768796,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35502,
@@ -719,9 +627,7 @@
     "date_usec": 422827,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:Switch"
-    ]
+    "mail": ["device:Switch"]
   },
   {
     "id": 566,
@@ -771,9 +677,7 @@
     "date_usec": 300028,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1225,
@@ -783,9 +687,7 @@
     "date_usec": 591980,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 34950,
@@ -795,9 +697,7 @@
     "date_usec": 267349,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:Switch"
-    ]
+    "mail": ["device:Switch"]
   },
   {
     "id": 35075,
@@ -847,9 +747,7 @@
     "date_usec": 674679,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:Switch"
-    ]
+    "mail": ["device:Switch"]
   },
   {
     "id": 1219,
@@ -869,9 +767,7 @@
     "date_usec": 614487,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35229,
@@ -881,9 +777,7 @@
     "date_usec": 703210,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35405,
@@ -943,9 +837,7 @@
     "date_usec": 785983,
     "owner": false,
     "premium": true,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 34912,
@@ -955,9 +847,7 @@
     "date_usec": 171949,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35336,
@@ -977,12 +867,7 @@
     "date_usec": 203542,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "big",
-      "red",
-      "device:Switch"
-    ]
+    "mail": ["ue", "big", "red", "device:Switch"]
   },
   {
     "id": 938,
@@ -1002,11 +887,7 @@
     "date_usec": 83186,
     "owner": false,
     "premium": true,
-    "mail": [
-      "big",
-      "black2",
-      "device:3DS"
-    ]
+    "mail": ["big", "black2", "device:3DS"]
   },
   {
     "id": 1467,
@@ -1026,9 +907,7 @@
     "date_usec": 44494,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 568,
@@ -1078,9 +957,7 @@
     "date_usec": 50236,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35037,
@@ -1090,9 +967,7 @@
     "date_usec": 500687,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35436,
@@ -1102,9 +977,7 @@
     "date_usec": 252960,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1226,
@@ -1114,9 +987,7 @@
     "date_usec": 940621,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 809,
@@ -1136,9 +1007,7 @@
     "date_usec": 303110,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1224,
@@ -1168,12 +1037,7 @@
     "date_usec": 876240,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "big",
-      "red",
-      "device:Switch"
-    ]
+    "mail": ["ue", "big", "red", "device:Switch"]
   },
   {
     "id": 482,
@@ -1203,9 +1067,7 @@
     "date_usec": 860255,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:Switch"
-    ]
+    "mail": ["device:Switch"]
   },
   {
     "id": 906,
@@ -1235,9 +1097,7 @@
     "date_usec": 919565,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 810,
@@ -1277,10 +1137,7 @@
     "date_usec": 911500,
     "owner": false,
     "premium": true,
-    "mail": [
-      "black2",
-      "small"
-    ]
+    "mail": ["black2", "small"]
   },
   {
     "id": 35682,
@@ -1350,9 +1207,7 @@
     "date_usec": 775045,
     "owner": false,
     "premium": false,
-    "mail": [
-      "shita"
-    ]
+    "mail": ["shita"]
   },
   {
     "id": 35231,
@@ -1362,9 +1217,7 @@
     "date_usec": 714541,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 971,
@@ -1404,9 +1257,7 @@
     "date_usec": 209212,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1231,
@@ -1416,9 +1267,7 @@
     "date_usec": 280399,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35219,
@@ -1428,9 +1277,7 @@
     "date_usec": 770670,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1009,
@@ -1480,9 +1327,7 @@
     "date_usec": 277494,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35684,
@@ -1502,9 +1347,7 @@
     "date_usec": 348905,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:Switch"
-    ]
+    "mail": ["device:Switch"]
   },
   {
     "id": 1281,
@@ -1514,9 +1357,7 @@
     "date_usec": 612391,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35040,
@@ -1526,9 +1367,7 @@
     "date_usec": 438260,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1186,
@@ -1538,9 +1377,7 @@
     "date_usec": 188060,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1384,
@@ -1550,9 +1387,7 @@
     "date_usec": 570189,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1299,
@@ -1562,9 +1397,7 @@
     "date_usec": 667662,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1070,
@@ -1584,9 +1417,7 @@
     "date_usec": 568204,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 23,
@@ -1596,9 +1427,7 @@
     "date_usec": 36692,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1351,
@@ -1618,9 +1447,7 @@
     "date_usec": 802986,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1386,
@@ -1640,9 +1467,7 @@
     "date_usec": 272436,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1,
@@ -1652,9 +1477,7 @@
     "date_usec": 37483,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 570,
@@ -1664,9 +1487,7 @@
     "date_usec": 404591,
     "owner": false,
     "premium": true,
-    "mail": [
-      "pink2"
-    ]
+    "mail": ["pink2"]
   },
   {
     "id": 35006,
@@ -1676,9 +1497,7 @@
     "date_usec": 300260,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35007,
@@ -1688,9 +1507,7 @@
     "date_usec": 427421,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35009,
@@ -1700,9 +1517,7 @@
     "date_usec": 706883,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 541,
@@ -1722,9 +1537,7 @@
     "date_usec": 273325,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 19,
@@ -1734,9 +1547,7 @@
     "date_usec": 693865,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 8,
@@ -1746,9 +1557,7 @@
     "date_usec": 868348,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1164,
@@ -1788,9 +1597,7 @@
     "date_usec": 132024,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1165,
@@ -1830,9 +1637,7 @@
     "date_usec": 777276,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1427,
@@ -1842,9 +1647,7 @@
     "date_usec": 824535,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 968,
@@ -1864,9 +1667,7 @@
     "date_usec": 515146,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1387,
@@ -1916,9 +1717,7 @@
     "date_usec": 659477,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1046,
@@ -1938,9 +1737,7 @@
     "date_usec": 344206,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35034,
@@ -1960,9 +1757,7 @@
     "date_usec": 831041,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35041,
@@ -1972,9 +1767,7 @@
     "date_usec": 810349,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35133,
@@ -1984,9 +1777,7 @@
     "date_usec": 211826,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 811,
@@ -2026,9 +1817,7 @@
     "date_usec": 264843,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 520,
@@ -2108,9 +1897,7 @@
     "date_usec": 155339,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:Switch"
-    ]
+    "mail": ["device:Switch"]
   },
   {
     "id": 35159,
@@ -2120,9 +1907,7 @@
     "date_usec": 177106,
     "owner": false,
     "premium": true,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 56,
@@ -2132,9 +1917,7 @@
     "date_usec": 90415,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1189,
@@ -2144,9 +1927,7 @@
     "date_usec": 381508,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 11,
@@ -2156,9 +1937,7 @@
     "date_usec": 961754,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1282,
@@ -2168,9 +1947,7 @@
     "date_usec": 236708,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1283,
@@ -2180,9 +1957,7 @@
     "date_usec": 559178,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 34930,
@@ -2192,11 +1967,7 @@
     "date_usec": 65442,
     "owner": false,
     "premium": false,
-    "mail": [
-      "big",
-      "red",
-      "device:Switch"
-    ]
+    "mail": ["big", "red", "device:Switch"]
   },
   {
     "id": 1410,
@@ -2206,9 +1977,7 @@
     "date_usec": 128872,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35042,
@@ -2218,9 +1987,7 @@
     "date_usec": 475689,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1225,
@@ -2260,9 +2027,7 @@
     "date_usec": 144062,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 57,
@@ -2272,9 +2037,7 @@
     "date_usec": 793474,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35309,
@@ -2294,9 +2057,7 @@
     "date_usec": 257859,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1412,
@@ -2306,9 +2067,7 @@
     "date_usec": 377885,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 26,
@@ -2318,9 +2077,7 @@
     "date_usec": 747332,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1337,
@@ -2350,9 +2107,7 @@
     "date_usec": 209670,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1388,
@@ -2382,9 +2137,7 @@
     "date_usec": 424142,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1414,
@@ -2394,9 +2147,7 @@
     "date_usec": 168450,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 3,
@@ -2406,9 +2157,7 @@
     "date_usec": 65171,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1415,
@@ -2418,9 +2167,7 @@
     "date_usec": 470807,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1416,
@@ -2430,9 +2177,7 @@
     "date_usec": 999620,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1352,
@@ -2462,12 +2207,7 @@
     "date_usec": 364302,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "big",
-      "red",
-      "device:Switch"
-    ]
+    "mail": ["ue", "big", "red", "device:Switch"]
   },
   {
     "id": 34961,
@@ -2477,9 +2217,7 @@
     "date_usec": 784746,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:Switch"
-    ]
+    "mail": ["device:Switch"]
   },
   {
     "id": 1258,
@@ -2499,9 +2237,7 @@
     "date_usec": 261861,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 34817,
@@ -2511,9 +2247,7 @@
     "date_usec": 1622,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 485,
@@ -2533,9 +2267,7 @@
     "date_usec": 47289,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1382,
@@ -2545,9 +2277,7 @@
     "date_usec": 924475,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 34962,
@@ -2557,9 +2287,7 @@
     "date_usec": 866242,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:Switch"
-    ]
+    "mail": ["device:Switch"]
   },
   {
     "id": 867,
@@ -2579,9 +2307,7 @@
     "date_usec": 404091,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1012,
@@ -2691,9 +2417,7 @@
     "date_usec": 726362,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35045,
@@ -2703,9 +2427,7 @@
     "date_usec": 304622,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35454,
@@ -2715,9 +2437,7 @@
     "date_usec": 75728,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1260,
@@ -2757,9 +2477,7 @@
     "date_usec": 285684,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1253,
@@ -2809,9 +2527,7 @@
     "date_usec": 239763,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 812,
@@ -2871,9 +2587,7 @@
     "date_usec": 740173,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35203,
@@ -2963,9 +2677,7 @@
     "date_usec": 434701,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 34798,
@@ -2995,9 +2707,7 @@
     "date_usec": 792766,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 34792,
@@ -3057,9 +2767,7 @@
     "date_usec": 980458,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35444,
@@ -3069,9 +2777,7 @@
     "date_usec": 138678,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35789,
@@ -3141,9 +2847,7 @@
     "date_usec": 736551,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:Switch"
-    ]
+    "mail": ["device:Switch"]
   },
   {
     "id": 34787,
@@ -3153,12 +2857,7 @@
     "date_usec": 586269,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "big",
-      "red",
-      "device:Switch"
-    ]
+    "mail": ["ue", "big", "red", "device:Switch"]
   },
   {
     "id": 1390,
@@ -3168,9 +2867,7 @@
     "date_usec": 408720,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35563,
@@ -3260,9 +2957,7 @@
     "date_usec": 351205,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 486,
@@ -3352,9 +3047,7 @@
     "date_usec": 508093,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35239,
@@ -3364,9 +3057,7 @@
     "date_usec": 99329,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1114,
@@ -3396,9 +3087,7 @@
     "date_usec": 121566,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 42,
@@ -3408,9 +3097,7 @@
     "date_usec": 946490,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35240,
@@ -3420,9 +3107,7 @@
     "date_usec": 311559,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1392,
@@ -3442,9 +3127,7 @@
     "date_usec": 829083,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35439,
@@ -3454,9 +3137,7 @@
     "date_usec": 144954,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1234,
@@ -3476,9 +3157,7 @@
     "date_usec": 243479,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 888,
@@ -3518,9 +3197,7 @@
     "date_usec": 302601,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1393,
@@ -3550,9 +3227,7 @@
     "date_usec": 445529,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 895,
@@ -3592,9 +3267,7 @@
     "date_usec": 887351,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 704,
@@ -3634,9 +3307,7 @@
     "date_usec": 499078,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 869,
@@ -3666,11 +3337,7 @@
     "date_usec": 458757,
     "owner": false,
     "premium": false,
-    "mail": [
-      "shita",
-      "big",
-      "red"
-    ]
+    "mail": ["shita", "big", "red"]
   },
   {
     "id": 35445,
@@ -3680,9 +3347,7 @@
     "date_usec": 538115,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35810,
@@ -3742,9 +3407,7 @@
     "date_usec": 279027,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35013,
@@ -3754,9 +3417,7 @@
     "date_usec": 898482,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35051,
@@ -3766,9 +3427,7 @@
     "date_usec": 570504,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 576,
@@ -3798,9 +3457,7 @@
     "date_usec": 418853,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:Switch"
-    ]
+    "mail": ["device:Switch"]
   },
   {
     "id": 35092,
@@ -3840,9 +3497,7 @@
     "date_usec": 996555,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 766,
@@ -3872,9 +3527,7 @@
     "date_usec": 259229,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1347,
@@ -3884,9 +3537,7 @@
     "date_usec": 378474,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 577,
@@ -3906,9 +3557,7 @@
     "date_usec": 674781,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:Switch"
-    ]
+    "mail": ["device:Switch"]
   },
   {
     "id": 34833,
@@ -3918,9 +3567,7 @@
     "date_usec": 770403,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35411,
@@ -3970,9 +3617,7 @@
     "date_usec": 429888,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35126,
@@ -4102,9 +3747,7 @@
     "date_usec": 751981,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 489,
@@ -4154,9 +3797,7 @@
     "date_usec": 753099,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:Switch"
-    ]
+    "mail": ["device:Switch"]
   },
   {
     "id": 573,
@@ -4266,9 +3907,7 @@
     "date_usec": 940952,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 928,
@@ -4308,9 +3947,7 @@
     "date_usec": 189928,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35128,
@@ -4340,9 +3977,7 @@
     "date_usec": 388575,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35352,
@@ -4382,9 +4017,7 @@
     "date_usec": 881837,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 544,
@@ -4414,9 +4047,7 @@
     "date_usec": 746491,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35414,
@@ -4526,9 +4157,7 @@
     "date_usec": 607715,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 599,
@@ -4568,9 +4197,7 @@
     "date_usec": 45188,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1397,
@@ -4600,9 +4227,7 @@
     "date_usec": 258272,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 872,
@@ -4642,9 +4267,7 @@
     "date_usec": 327835,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 851,
@@ -4704,9 +4327,7 @@
     "date_usec": 296642,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35468,
@@ -4746,9 +4367,7 @@
     "date_usec": 166268,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35400,
@@ -4768,9 +4387,7 @@
     "date_usec": 818120,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35141,
@@ -4780,9 +4397,7 @@
     "date_usec": 628441,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 890,
@@ -4812,9 +4427,7 @@
     "date_usec": 89167,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35261,
@@ -4824,9 +4437,7 @@
     "date_usec": 895045,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1328,
@@ -4836,9 +4447,7 @@
     "date_usec": 805983,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 794,
@@ -4858,9 +4467,7 @@
     "date_usec": 427203,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 490,
@@ -4880,9 +4487,7 @@
     "date_usec": 474758,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1353,
@@ -4912,9 +4517,7 @@
     "date_usec": 24066,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35201,
@@ -4954,9 +4557,7 @@
     "date_usec": 690426,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35580,
@@ -4966,9 +4567,7 @@
     "date_usec": 214110,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 891,
@@ -5018,9 +4617,7 @@
     "date_usec": 343837,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1320,
@@ -5040,9 +4637,7 @@
     "date_usec": 77642,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1285,
@@ -5062,9 +4657,7 @@
     "date_usec": 548998,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 34983,
@@ -5104,9 +4697,7 @@
     "date_usec": 63327,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35270,
@@ -5116,9 +4707,7 @@
     "date_usec": 569335,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 918,
@@ -5188,9 +4777,7 @@
     "date_usec": 348475,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 20,
@@ -5200,9 +4787,7 @@
     "date_usec": 420041,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1078,
@@ -5252,9 +4837,7 @@
     "date_usec": 836724,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35425,
@@ -5264,9 +4847,7 @@
     "date_usec": 386021,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1321,
@@ -5276,9 +4857,7 @@
     "date_usec": 364941,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 582,
@@ -5308,9 +4887,7 @@
     "date_usec": 381620,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1362,
@@ -5320,9 +4897,7 @@
     "date_usec": 595646,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 853,
@@ -5362,9 +4937,7 @@
     "date_usec": 815434,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35469,
@@ -5414,9 +4987,7 @@
     "date_usec": 803231,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35112,
@@ -5446,9 +5017,7 @@
     "date_usec": 702152,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 914,
@@ -5478,9 +5047,7 @@
     "date_usec": 476178,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 27,
@@ -5490,9 +5057,7 @@
     "date_usec": 532447,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 940,
@@ -5512,11 +5077,7 @@
     "date_usec": 614411,
     "owner": false,
     "premium": true,
-    "mail": [
-      "shita",
-      "red",
-      "big"
-    ]
+    "mail": ["shita", "red", "big"]
   },
   {
     "id": 1250,
@@ -5536,9 +5097,7 @@
     "date_usec": 79626,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 545,
@@ -5558,9 +5117,7 @@
     "date_usec": 90774,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35015,
@@ -5570,9 +5127,7 @@
     "date_usec": 801789,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 919,
@@ -5652,9 +5207,7 @@
     "date_usec": 780726,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35072,
@@ -5784,9 +5337,7 @@
     "date_usec": 501401,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1108,
@@ -5806,9 +5357,7 @@
     "date_usec": 451618,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1400,
@@ -5838,10 +5387,7 @@
     "date_usec": 352176,
     "owner": false,
     "premium": true,
-    "mail": [
-      "shita",
-      "medium"
-    ]
+    "mail": ["shita", "medium"]
   },
   {
     "id": 34836,
@@ -5851,9 +5397,7 @@
     "date_usec": 317683,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35697,
@@ -5863,9 +5407,7 @@
     "date_usec": 717096,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35061,
@@ -5875,9 +5417,7 @@
     "date_usec": 679614,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35277,
@@ -5887,9 +5427,7 @@
     "date_usec": 316977,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1135,
@@ -5919,10 +5457,7 @@
     "date_usec": 106579,
     "owner": false,
     "premium": true,
-    "mail": [
-      "shita",
-      "big"
-    ]
+    "mail": ["shita", "big"]
   },
   {
     "id": 819,
@@ -5962,9 +5497,7 @@
     "date_usec": 513131,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 525,
@@ -6054,9 +5587,7 @@
     "date_usec": 304929,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1171,
@@ -6076,9 +5607,7 @@
     "date_usec": 637937,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35472,
@@ -6128,9 +5657,7 @@
     "date_usec": 450011,
     "owner": false,
     "premium": true,
-    "mail": [
-      "shita"
-    ]
+    "mail": ["shita"]
   },
   {
     "id": 35360,
@@ -6140,9 +5667,7 @@
     "date_usec": 377398,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35139,
@@ -6152,10 +5677,7 @@
     "date_usec": 119583,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "big"
-    ]
+    "mail": ["ue", "big"]
   },
   {
     "id": 830,
@@ -6185,9 +5707,7 @@
     "date_usec": 467638,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 682,
@@ -6217,9 +5737,7 @@
     "date_usec": 342314,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 820,
@@ -6249,9 +5767,7 @@
     "date_usec": 160773,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1270,
@@ -6291,9 +5807,7 @@
     "date_usec": 996953,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1330,
@@ -6303,9 +5817,7 @@
     "date_usec": 808601,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1051,
@@ -6325,9 +5837,7 @@
     "date_usec": 496721,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35147,
@@ -6337,9 +5847,7 @@
     "date_usec": 235835,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35361,
@@ -6369,9 +5877,7 @@
     "date_usec": 700036,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35463,
@@ -6381,9 +5887,7 @@
     "date_usec": 123704,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 776,
@@ -6403,9 +5907,7 @@
     "date_usec": 352643,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:Switch"
-    ]
+    "mail": ["device:Switch"]
   },
   {
     "id": 35474,
@@ -6425,9 +5927,7 @@
     "date_usec": 529357,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 676,
@@ -6447,9 +5947,7 @@
     "date_usec": 106129,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1417,
@@ -6459,9 +5957,7 @@
     "date_usec": 675573,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1364,
@@ -6471,9 +5967,7 @@
     "date_usec": 804455,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 633,
@@ -6503,9 +5997,7 @@
     "date_usec": 219637,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35062,
@@ -6515,9 +6007,7 @@
     "date_usec": 124060,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1419,
@@ -6527,9 +6017,7 @@
     "date_usec": 434421,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 34797,
@@ -6539,12 +6027,7 @@
     "date_usec": 562809,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "big",
-      "red",
-      "device:Switch"
-    ]
+    "mail": ["ue", "big", "red", "device:Switch"]
   },
   {
     "id": 1420,
@@ -6554,9 +6037,7 @@
     "date_usec": 263479,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1421,
@@ -6566,9 +6047,7 @@
     "date_usec": 393503,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1422,
@@ -6578,9 +6057,7 @@
     "date_usec": 907780,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1455,
@@ -6650,9 +6127,7 @@
     "date_usec": 713075,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 889,
@@ -6662,10 +6137,7 @@
     "date_usec": 690996,
     "owner": false,
     "premium": true,
-    "mail": [
-      "shita",
-      "big"
-    ]
+    "mail": ["shita", "big"]
   },
   {
     "id": 1304,
@@ -6695,9 +6167,7 @@
     "date_usec": 273532,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1206,
@@ -6707,9 +6177,7 @@
     "date_usec": 929273,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 519,
@@ -6729,9 +6197,7 @@
     "date_usec": 695259,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1071,
@@ -6751,9 +6217,7 @@
     "date_usec": 87963,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1183,
@@ -6763,9 +6227,7 @@
     "date_usec": 633020,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 551,
@@ -6785,9 +6247,7 @@
     "date_usec": 334230,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1367,
@@ -6797,9 +6257,7 @@
     "date_usec": 633936,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1423,
@@ -6809,9 +6267,7 @@
     "date_usec": 896126,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 34952,
@@ -6821,9 +6277,7 @@
     "date_usec": 776892,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 14,
@@ -6833,9 +6287,7 @@
     "date_usec": 844817,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1366,
@@ -6845,9 +6297,7 @@
     "date_usec": 168811,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 34859,
@@ -6867,9 +6317,7 @@
     "date_usec": 823310,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35430,
@@ -6879,9 +6327,7 @@
     "date_usec": 307124,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35064,
@@ -6891,9 +6337,7 @@
     "date_usec": 588263,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 821,
@@ -6923,9 +6367,7 @@
     "date_usec": 256680,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 994,
@@ -6955,9 +6397,7 @@
     "date_usec": 123655,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1184,
@@ -6967,9 +6407,7 @@
     "date_usec": 493070,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35595,
@@ -6979,9 +6417,7 @@
     "date_usec": 375470,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 34922,
@@ -7071,9 +6507,7 @@
     "date_usec": 874210,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 860,
@@ -7103,11 +6537,7 @@
     "date_usec": 741861,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "big",
-      "red"
-    ]
+    "mail": ["ue", "big", "red"]
   },
   {
     "id": 35274,
@@ -7117,9 +6547,7 @@
     "date_usec": 243775,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 636,
@@ -7239,9 +6667,7 @@
     "date_usec": 51040,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35167,
@@ -7251,9 +6677,7 @@
     "date_usec": 619449,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 656,
@@ -7403,9 +6827,7 @@
     "date_usec": 227783,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 34977,
@@ -7445,9 +6867,7 @@
     "date_usec": 363742,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:Switch"
-    ]
+    "mail": ["device:Switch"]
   },
   {
     "id": 1310,
@@ -7457,9 +6877,7 @@
     "date_usec": 413367,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 824,
@@ -7479,9 +6897,7 @@
     "date_usec": 599692,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1237,
@@ -7491,9 +6907,7 @@
     "date_usec": 988949,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 41,
@@ -7503,9 +6917,7 @@
     "date_usec": 756619,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35317,
@@ -7565,9 +6977,7 @@
     "date_usec": 820049,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1312,
@@ -7577,9 +6987,7 @@
     "date_usec": 766898,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35457,
@@ -7599,9 +7007,7 @@
     "date_usec": 153863,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 34796,
@@ -7641,9 +7047,7 @@
     "date_usec": 824113,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 715,
@@ -7733,9 +7137,7 @@
     "date_usec": 729597,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1025,
@@ -7785,9 +7187,7 @@
     "date_usec": 369115,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 59,
@@ -7797,9 +7197,7 @@
     "date_usec": 733210,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1275,
@@ -7869,9 +7267,7 @@
     "date_usec": 480642,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1062,
@@ -7911,9 +7307,7 @@
     "date_usec": 31522,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1470,
@@ -7983,9 +7377,7 @@
     "date_usec": 307412,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 641,
@@ -8035,9 +7427,7 @@
     "date_usec": 612228,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1052,
@@ -8087,9 +7477,7 @@
     "date_usec": 498428,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 874,
@@ -8149,9 +7537,7 @@
     "date_usec": 821753,
     "owner": false,
     "premium": true,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1063,
@@ -8221,9 +7607,7 @@
     "date_usec": 420847,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:Switch"
-    ]
+    "mail": ["device:Switch"]
   },
   {
     "id": 588,
@@ -8243,9 +7627,7 @@
     "date_usec": 875852,
     "owner": false,
     "premium": true,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 34845,
@@ -8255,9 +7637,7 @@
     "date_usec": 20510,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 991,
@@ -8277,9 +7657,7 @@
     "date_usec": 872537,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35152,
@@ -8319,9 +7697,7 @@
     "date_usec": 458331,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1053,
@@ -8351,11 +7727,7 @@
     "date_usec": 496569,
     "owner": false,
     "premium": true,
-    "mail": [
-      "shita",
-      "red",
-      "big"
-    ]
+    "mail": ["shita", "red", "big"]
   },
   {
     "id": 589,
@@ -8375,9 +7747,7 @@
     "date_usec": 306605,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 681,
@@ -8447,9 +7817,7 @@
     "date_usec": 29463,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35743,
@@ -8469,9 +7837,7 @@
     "date_usec": 415094,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 590,
@@ -8601,9 +7967,7 @@
     "date_usec": 625123,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 987,
@@ -8623,9 +7987,7 @@
     "date_usec": 208938,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 646,
@@ -8675,9 +8037,7 @@
     "date_usec": 317489,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1231,
@@ -8757,9 +8117,7 @@
     "date_usec": 551938,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35392,
@@ -8779,9 +8137,7 @@
     "date_usec": 843218,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35717,
@@ -8851,9 +8207,7 @@
     "date_usec": 668696,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 993,
@@ -8873,9 +8227,7 @@
     "date_usec": 382427,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 34935,
@@ -8885,9 +8237,7 @@
     "date_usec": 574910,
     "owner": false,
     "premium": true,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35372,
@@ -8897,9 +8247,7 @@
     "date_usec": 777350,
     "owner": false,
     "premium": true,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 995,
@@ -8929,9 +8277,7 @@
     "date_usec": 707268,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 592,
@@ -8951,9 +8297,7 @@
     "date_usec": 905306,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35080,
@@ -8963,9 +8307,7 @@
     "date_usec": 594925,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1338,
@@ -8975,9 +8317,7 @@
     "date_usec": 653476,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35169,
@@ -8987,11 +8327,7 @@
     "date_usec": 248127,
     "owner": false,
     "premium": true,
-    "mail": [
-      "shita",
-      "red",
-      "big"
-    ]
+    "mail": ["shita", "red", "big"]
   },
   {
     "id": 35307,
@@ -9001,9 +8337,7 @@
     "date_usec": 207451,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1185,
@@ -9013,9 +8347,7 @@
     "date_usec": 713652,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 62,
@@ -9025,9 +8357,7 @@
     "date_usec": 488644,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1172,
@@ -9057,9 +8387,7 @@
     "date_usec": 504304,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 828,
@@ -9089,9 +8417,7 @@
     "date_usec": 326991,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 548,
@@ -9111,9 +8437,7 @@
     "date_usec": 347416,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1402,
@@ -9123,9 +8447,7 @@
     "date_usec": 416493,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 593,
@@ -9145,9 +8467,7 @@
     "date_usec": 337334,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1297,
@@ -9157,9 +8477,7 @@
     "date_usec": 193530,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 718,
@@ -9179,9 +8497,7 @@
     "date_usec": 305608,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1137,
@@ -9221,9 +8537,7 @@
     "date_usec": 312491,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1358,
@@ -9233,9 +8547,7 @@
     "date_usec": 65690,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1138,
@@ -9305,9 +8617,7 @@
     "date_usec": 415077,
     "owner": false,
     "premium": true,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35207,
@@ -9337,11 +8647,7 @@
     "date_usec": 494931,
     "owner": false,
     "premium": true,
-    "mail": [
-      "big",
-      "red",
-      "device:3DS"
-    ]
+    "mail": ["big", "red", "device:3DS"]
   },
   {
     "id": 878,
@@ -9371,9 +8677,7 @@
     "date_usec": 588334,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35434,
@@ -9383,9 +8687,7 @@
     "date_usec": 5897,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35765,
@@ -9395,9 +8697,7 @@
     "date_usec": 447829,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1280,
@@ -9487,12 +8787,7 @@
     "date_usec": 817888,
     "owner": false,
     "premium": true,
-    "mail": [
-      "shita",
-      "big",
-      "blue",
-      "device:3DS"
-    ]
+    "mail": ["shita", "big", "blue", "device:3DS"]
   },
   {
     "id": 34835,
@@ -9512,9 +8807,7 @@
     "date_usec": 685336,
     "owner": false,
     "premium": true,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1309,
@@ -9534,9 +8827,7 @@
     "date_usec": 730657,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35483,
@@ -9546,9 +8837,7 @@
     "date_usec": 298364,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1371,
@@ -9578,9 +8867,7 @@
     "date_usec": 733650,
     "owner": false,
     "premium": true,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35176,
@@ -9590,9 +8877,7 @@
     "date_usec": 722235,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1414,
@@ -9622,9 +8907,7 @@
     "date_usec": 325123,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 596,
@@ -9654,9 +8937,7 @@
     "date_usec": 421150,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1182,
@@ -9696,9 +8977,7 @@
     "date_usec": 212104,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 831,
@@ -9718,9 +8997,7 @@
     "date_usec": 627115,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35043,
@@ -9730,9 +9007,7 @@
     "date_usec": 483516,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1307,
@@ -9772,9 +9047,7 @@
     "date_usec": 25908,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35488,
@@ -9784,9 +9057,7 @@
     "date_usec": 149165,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35088,
@@ -9796,9 +9067,7 @@
     "date_usec": 120349,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 720,
@@ -9818,9 +9087,7 @@
     "date_usec": 233212,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1379,
@@ -9830,9 +9097,7 @@
     "date_usec": 99415,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1416,
@@ -9882,9 +9147,7 @@
     "date_usec": 384994,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 654,
@@ -9954,9 +9217,7 @@
     "date_usec": 220308,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 32,
@@ -9966,9 +9227,7 @@
     "date_usec": 683697,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1312,
@@ -9998,9 +9257,7 @@
     "date_usec": 651189,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 832,
@@ -10030,9 +9287,7 @@
     "date_usec": 614479,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1417,
@@ -10082,9 +9337,7 @@
     "date_usec": 192247,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 601,
@@ -10204,9 +9457,7 @@
     "date_usec": 877268,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1284,
@@ -10226,9 +9477,7 @@
     "date_usec": 297240,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1305,
@@ -10278,11 +9527,7 @@
     "date_usec": 974032,
     "owner": false,
     "premium": false,
-    "mail": [
-      "shita",
-      "cyan",
-      "big"
-    ]
+    "mail": ["shita", "cyan", "big"]
   },
   {
     "id": 722,
@@ -10302,11 +9547,7 @@
     "date_usec": 899227,
     "owner": false,
     "premium": false,
-    "mail": [
-      "shita",
-      "green",
-      "big"
-    ]
+    "mail": ["shita", "green", "big"]
   },
   {
     "id": 34854,
@@ -10326,9 +9567,7 @@
     "date_usec": 517854,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1174,
@@ -10388,9 +9627,7 @@
     "date_usec": 522340,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35505,
@@ -10400,9 +9637,7 @@
     "date_usec": 558250,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35384,
@@ -10412,11 +9647,7 @@
     "date_usec": 34036,
     "owner": false,
     "premium": false,
-    "mail": [
-      "naka",
-      "white",
-      "medium"
-    ]
+    "mail": ["naka", "white", "medium"]
   },
   {
     "id": 834,
@@ -10506,9 +9737,7 @@
     "date_usec": 285510,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35375,
@@ -10528,9 +9757,7 @@
     "date_usec": 978466,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35337,
@@ -10560,11 +9787,7 @@
     "date_usec": 498568,
     "owner": false,
     "premium": false,
-    "mail": [
-      "naka",
-      "white",
-      "medium"
-    ]
+    "mail": ["naka", "white", "medium"]
   },
   {
     "id": 761,
@@ -10594,9 +9817,7 @@
     "date_usec": 177459,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35056,
@@ -10606,9 +9827,7 @@
     "date_usec": 287307,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1420,
@@ -10658,9 +9877,7 @@
     "date_usec": 90048,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1355,
@@ -10700,9 +9917,7 @@
     "date_usec": 613314,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35518,
@@ -10712,9 +9927,7 @@
     "date_usec": 134396,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 567,
@@ -10754,9 +9967,7 @@
     "date_usec": 374684,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1431,
@@ -10766,9 +9977,7 @@
     "date_usec": 949317,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1255,
@@ -10778,9 +9987,7 @@
     "date_usec": 824896,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1323,
@@ -10790,9 +9997,7 @@
     "date_usec": 139270,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1141,
@@ -10812,9 +10017,7 @@
     "date_usec": 958145,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35520,
@@ -10824,9 +10027,7 @@
     "date_usec": 953847,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1190,
@@ -10836,9 +10037,7 @@
     "date_usec": 735236,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1212,
@@ -10848,9 +10047,7 @@
     "date_usec": 569749,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35184,
@@ -10860,9 +10057,7 @@
     "date_usec": 502364,
     "owner": false,
     "premium": true,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 38,
@@ -10872,9 +10067,7 @@
     "date_usec": 583706,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35799,
@@ -10894,9 +10087,7 @@
     "date_usec": 626092,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35220,
@@ -10916,9 +10107,7 @@
     "date_usec": 249334,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1371,
@@ -10928,9 +10117,7 @@
     "date_usec": 499860,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1421,
@@ -10970,9 +10157,7 @@
     "date_usec": 557853,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 21,
@@ -10982,9 +10167,7 @@
     "date_usec": 545449,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 497,
@@ -11014,9 +10197,7 @@
     "date_usec": 118518,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1124,
@@ -11056,11 +10237,7 @@
     "date_usec": 549017,
     "owner": false,
     "premium": false,
-    "mail": [
-      "small",
-      "white",
-      "device:Switch"
-    ]
+    "mail": ["small", "white", "device:Switch"]
   },
   {
     "id": 1055,
@@ -11130,9 +10307,7 @@
     "date_usec": 559675,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35813,
@@ -11152,9 +10327,7 @@
     "date_usec": 498022,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1432,
@@ -11164,9 +10337,7 @@
     "date_usec": 777192,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1324,
@@ -11176,9 +10347,7 @@
     "date_usec": 455333,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 900,
@@ -11208,9 +10377,7 @@
     "date_usec": 721876,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 604,
@@ -11240,11 +10407,7 @@
     "date_usec": 645396,
     "owner": false,
     "premium": false,
-    "mail": [
-      "naka",
-      "white",
-      "medium"
-    ]
+    "mail": ["naka", "white", "medium"]
   },
   {
     "id": 34955,
@@ -11364,9 +10527,7 @@
     "date_usec": 781838,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35063,
@@ -11376,9 +10537,7 @@
     "date_usec": 753964,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35805,
@@ -11418,9 +10577,7 @@
     "date_usec": 256474,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35334,
@@ -11490,9 +10647,7 @@
     "date_usec": 955935,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35504,
@@ -11572,10 +10727,7 @@
     "date_usec": 7289,
     "owner": false,
     "premium": false,
-    "mail": [
-      "big",
-      "red"
-    ]
+    "mail": ["big", "red"]
   },
   {
     "id": 35107,
@@ -11585,9 +10737,7 @@
     "date_usec": 706797,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 572,
@@ -11677,11 +10827,7 @@
     "date_usec": 513920,
     "owner": false,
     "premium": false,
-    "mail": [
-      "naka",
-      "white",
-      "medium"
-    ]
+    "mail": ["naka", "white", "medium"]
   },
   {
     "id": 913,
@@ -11701,9 +10847,7 @@
     "date_usec": 731691,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1039,
@@ -11753,9 +10897,7 @@
     "date_usec": 912885,
     "owner": false,
     "premium": false,
-    "mail": [
-      "red"
-    ]
+    "mail": ["red"]
   },
   {
     "id": 35113,
@@ -11765,9 +10907,7 @@
     "date_usec": 657039,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 714,
@@ -11807,9 +10947,7 @@
     "date_usec": 714597,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 727,
@@ -11839,9 +10977,7 @@
     "date_usec": 104515,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1245,
@@ -11881,9 +11017,7 @@
     "date_usec": 225218,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 34861,
@@ -11893,9 +11027,7 @@
     "date_usec": 46307,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35060,
@@ -11905,9 +11037,7 @@
     "date_usec": 395039,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1240,
@@ -11937,9 +11067,7 @@
     "date_usec": 104799,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35442,
@@ -11949,9 +11077,7 @@
     "date_usec": 544240,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35345,
@@ -11991,9 +11117,7 @@
     "date_usec": 473621,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 34799,
@@ -12013,9 +11137,7 @@
     "date_usec": 85288,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 998,
@@ -12035,9 +11157,7 @@
     "date_usec": 648944,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1196,
@@ -12087,9 +11207,7 @@
     "date_usec": 232728,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35489,
@@ -12099,9 +11217,7 @@
     "date_usec": 700883,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35396,
@@ -12111,11 +11227,7 @@
     "date_usec": 902825,
     "owner": false,
     "premium": false,
-    "mail": [
-      "naka",
-      "white",
-      "medium"
-    ]
+    "mail": ["naka", "white", "medium"]
   },
   {
     "id": 35050,
@@ -12135,9 +11247,7 @@
     "date_usec": 319396,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 608,
@@ -12207,9 +11317,7 @@
     "date_usec": 534052,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 931,
@@ -12249,9 +11357,7 @@
     "date_usec": 905995,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35402,
@@ -12261,11 +11367,7 @@
     "date_usec": 401518,
     "owner": false,
     "premium": false,
-    "mail": [
-      "naka",
-      "white",
-      "medium"
-    ]
+    "mail": ["naka", "white", "medium"]
   },
   {
     "id": 35081,
@@ -12275,9 +11377,7 @@
     "date_usec": 755621,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35058,
@@ -12357,9 +11457,7 @@
     "date_usec": 776690,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35125,
@@ -12369,9 +11467,7 @@
     "date_usec": 878974,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1326,
@@ -12401,9 +11497,7 @@
     "date_usec": 875296,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 689,
@@ -12423,9 +11517,7 @@
     "date_usec": 533692,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 806,
@@ -12455,9 +11547,7 @@
     "date_usec": 885037,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35346,
@@ -12517,9 +11607,7 @@
     "date_usec": 536819,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 833,
@@ -12559,9 +11647,7 @@
     "date_usec": 157607,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1358,
@@ -12591,9 +11677,7 @@
     "date_usec": 433524,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35174,
@@ -12643,9 +11727,7 @@
     "date_usec": 485858,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35404,
@@ -12655,11 +11737,7 @@
     "date_usec": 194465,
     "owner": false,
     "premium": false,
-    "mail": [
-      "naka",
-      "white",
-      "medium"
-    ]
+    "mail": ["naka", "white", "medium"]
   },
   {
     "id": 1008,
@@ -12729,9 +11807,7 @@
     "date_usec": 689191,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1146,
@@ -12791,9 +11867,7 @@
     "date_usec": 267991,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 34870,
@@ -12803,9 +11877,7 @@
     "date_usec": 557627,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35137,
@@ -12815,9 +11887,7 @@
     "date_usec": 896038,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 786,
@@ -12897,11 +11967,7 @@
     "date_usec": 692682,
     "owner": false,
     "premium": false,
-    "mail": [
-      "naka",
-      "white",
-      "medium"
-    ]
+    "mail": ["naka", "white", "medium"]
   },
   {
     "id": 733,
@@ -12941,10 +12007,7 @@
     "date_usec": 977072,
     "owner": false,
     "premium": true,
-    "mail": [
-      "white2",
-      "device:3DS"
-    ]
+    "mail": ["white2", "device:3DS"]
   },
   {
     "id": 34869,
@@ -12964,9 +12027,7 @@
     "date_usec": 275697,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35,
@@ -12976,9 +12037,7 @@
     "date_usec": 854788,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 933,
@@ -13018,9 +12077,7 @@
     "date_usec": 289142,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1430,
@@ -13120,9 +12177,7 @@
     "date_usec": 833068,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 34888,
@@ -13142,9 +12197,7 @@
     "date_usec": 8068,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35585,
@@ -13164,9 +12217,7 @@
     "date_usec": 959274,
     "owner": false,
     "premium": true,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1077,
@@ -13186,9 +12237,7 @@
     "date_usec": 99844,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 763,
@@ -13208,11 +12257,7 @@
     "date_usec": 32452,
     "owner": false,
     "premium": true,
-    "mail": [
-      "big",
-      "red",
-      "device:3DS"
-    ]
+    "mail": ["big", "red", "device:3DS"]
   },
   {
     "id": 35591,
@@ -13222,10 +12267,7 @@
     "date_usec": 394454,
     "owner": false,
     "premium": false,
-    "mail": [
-      "blue",
-      "big"
-    ]
+    "mail": ["blue", "big"]
   },
   {
     "id": 34891,
@@ -13325,9 +12367,7 @@
     "date_usec": 32531,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35557,
@@ -13347,10 +12387,7 @@
     "date_usec": 26106,
     "owner": false,
     "premium": false,
-    "mail": [
-      "naka",
-      "big"
-    ]
+    "mail": ["naka", "big"]
   },
   {
     "id": 1014,
@@ -13380,9 +12417,7 @@
     "date_usec": 801244,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 555,
@@ -13432,9 +12467,7 @@
     "date_usec": 571426,
     "owner": false,
     "premium": false,
-    "mail": [
-      "white"
-    ]
+    "mail": ["white"]
   },
   {
     "id": 532,
@@ -13464,9 +12497,7 @@
     "date_usec": 152587,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1285,
@@ -13476,9 +12507,7 @@
     "date_usec": 757165,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35408,
@@ -13488,11 +12517,7 @@
     "date_usec": 74924,
     "owner": false,
     "premium": false,
-    "mail": [
-      "naka",
-      "white",
-      "medium"
-    ]
+    "mail": ["naka", "white", "medium"]
   },
   {
     "id": 1176,
@@ -13522,9 +12547,7 @@
     "date_usec": 263589,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35719,
@@ -13534,9 +12557,7 @@
     "date_usec": 745839,
     "owner": false,
     "premium": false,
-    "mail": [
-      "big"
-    ]
+    "mail": ["big"]
   },
   {
     "id": 1460,
@@ -13556,9 +12577,7 @@
     "date_usec": 541749,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 921,
@@ -13628,9 +12647,7 @@
     "date_usec": 898123,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 34873,
@@ -13640,9 +12657,7 @@
     "date_usec": 771425,
     "owner": false,
     "premium": true,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35600,
@@ -13662,9 +12677,7 @@
     "date_usec": 80985,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 762,
@@ -13684,9 +12697,7 @@
     "date_usec": 658063,
     "owner": false,
     "premium": true,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35791,
@@ -13706,9 +12717,7 @@
     "date_usec": 197377,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35356,
@@ -13738,9 +12747,7 @@
     "date_usec": 274148,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 736,
@@ -13790,9 +12797,7 @@
     "date_usec": 951246,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1255,
@@ -13802,9 +12807,7 @@
     "date_usec": 755834,
     "owner": false,
     "premium": true,
-    "mail": [
-      "naka"
-    ]
+    "mail": ["naka"]
   },
   {
     "id": 35385,
@@ -13864,9 +12867,7 @@
     "date_usec": 937691,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1432,
@@ -13906,11 +12907,7 @@
     "date_usec": 657348,
     "owner": false,
     "premium": false,
-    "mail": [
-      "naka",
-      "white",
-      "medium"
-    ]
+    "mail": ["naka", "white", "medium"]
   },
   {
     "id": 35157,
@@ -13920,9 +12917,7 @@
     "date_usec": 897812,
     "owner": false,
     "premium": true,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35412,
@@ -13932,11 +12927,7 @@
     "date_usec": 115500,
     "owner": false,
     "premium": false,
-    "mail": [
-      "shita",
-      "white",
-      "medium"
-    ]
+    "mail": ["shita", "white", "medium"]
   },
   {
     "id": 35182,
@@ -13946,11 +12937,7 @@
     "date_usec": 761889,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "big",
-      "red"
-    ]
+    "mail": ["ue", "big", "red"]
   },
   {
     "id": 35559,
@@ -13980,10 +12967,7 @@
     "date_usec": 892239,
     "owner": false,
     "premium": true,
-    "mail": [
-      "shita",
-      "small"
-    ]
+    "mail": ["shita", "small"]
   },
   {
     "id": 923,
@@ -14043,9 +13027,7 @@
     "date_usec": 362300,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1203,
@@ -14075,9 +13057,7 @@
     "date_usec": 506026,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35736,
@@ -14117,11 +13097,7 @@
     "date_usec": 347748,
     "owner": false,
     "premium": true,
-    "mail": [
-      "shita",
-      "big",
-      "red"
-    ]
+    "mail": ["shita", "big", "red"]
   },
   {
     "id": 1204,
@@ -14221,9 +13197,7 @@
     "date_usec": 7465,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35290,
@@ -14233,9 +13207,7 @@
     "date_usec": 781367,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 30,
@@ -14245,9 +13217,7 @@
     "date_usec": 921638,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1250,
@@ -14257,9 +13227,7 @@
     "date_usec": 263134,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 34899,
@@ -14279,9 +13247,7 @@
     "date_usec": 127949,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1313,
@@ -14291,9 +13257,7 @@
     "date_usec": 606085,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35481,
@@ -14303,9 +13267,7 @@
     "date_usec": 325902,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1019,
@@ -14405,9 +13367,7 @@
     "date_usec": 710695,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1349,
@@ -14447,9 +13407,7 @@
     "date_usec": 200551,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1206,
@@ -14469,9 +13427,7 @@
     "date_usec": 213766,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35227,
@@ -14491,9 +13447,7 @@
     "date_usec": 797410,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1151,
@@ -14523,9 +13477,7 @@
     "date_usec": 495306,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1329,
@@ -14545,9 +13497,7 @@
     "date_usec": 686603,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 924,
@@ -14567,9 +13517,7 @@
     "date_usec": 664973,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1372,
@@ -14579,9 +13527,7 @@
     "date_usec": 791356,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35001,
@@ -14601,9 +13547,7 @@
     "date_usec": 480514,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1239,
@@ -14613,9 +13557,7 @@
     "date_usec": 122749,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1024,
@@ -14645,9 +13587,7 @@
     "date_usec": 281432,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35587,
@@ -14657,9 +13597,7 @@
     "date_usec": 304414,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35645,
@@ -14679,9 +13617,7 @@
     "date_usec": 217143,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 796,
@@ -14761,9 +13697,7 @@
     "date_usec": 668107,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 34906,
@@ -14803,9 +13737,7 @@
     "date_usec": 160714,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1307,
@@ -14815,9 +13747,7 @@
     "date_usec": 519004,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 738,
@@ -14857,9 +13787,7 @@
     "date_usec": 905712,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 479,
@@ -14889,11 +13817,7 @@
     "date_usec": 613148,
     "owner": false,
     "premium": false,
-    "mail": [
-      "naka",
-      "white",
-      "medium"
-    ]
+    "mail": ["naka", "white", "medium"]
   },
   {
     "id": 35150,
@@ -14903,9 +13827,7 @@
     "date_usec": 572029,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35501,
@@ -14995,9 +13917,7 @@
     "date_usec": 135443,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1435,
@@ -15067,9 +13987,7 @@
     "date_usec": 109243,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1295,
@@ -15089,9 +14007,7 @@
     "date_usec": 173671,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1340,
@@ -15101,9 +14017,7 @@
     "date_usec": 459262,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1230,
@@ -15113,9 +14027,7 @@
     "date_usec": 162096,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1192,
@@ -15125,9 +14037,7 @@
     "date_usec": 405856,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35666,
@@ -15147,9 +14057,7 @@
     "date_usec": 362638,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1292,
@@ -15189,11 +14097,7 @@
     "date_usec": 251161,
     "owner": false,
     "premium": true,
-    "mail": [
-      "shita",
-      "big",
-      "red"
-    ]
+    "mail": ["shita", "big", "red"]
   },
   {
     "id": 849,
@@ -15223,9 +14127,7 @@
     "date_usec": 858544,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 34841,
@@ -15245,11 +14147,7 @@
     "date_usec": 93849,
     "owner": false,
     "premium": false,
-    "mail": [
-      "shita",
-      "red",
-      "big"
-    ]
+    "mail": ["shita", "red", "big"]
   },
   {
     "id": 740,
@@ -15269,9 +14167,7 @@
     "date_usec": 323380,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1332,
@@ -15321,9 +14217,7 @@
     "date_usec": 557521,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35399,
@@ -15373,11 +14267,7 @@
     "date_usec": 458645,
     "owner": false,
     "premium": false,
-    "mail": [
-      "naka",
-      "white",
-      "medium"
-    ]
+    "mail": ["naka", "white", "medium"]
   },
   {
     "id": 1373,
@@ -15387,9 +14277,7 @@
     "date_usec": 33770,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35672,
@@ -15439,9 +14327,7 @@
     "date_usec": 493134,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 560,
@@ -15471,9 +14357,7 @@
     "date_usec": 504620,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1110,
@@ -15543,9 +14427,7 @@
     "date_usec": 390621,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1315,
@@ -15555,9 +14437,7 @@
     "date_usec": 114627,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 34801,
@@ -15587,9 +14467,7 @@
     "date_usec": 364437,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 34984,
@@ -15599,9 +14477,7 @@
     "date_usec": 359261,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1374,
@@ -15611,9 +14487,7 @@
     "date_usec": 667569,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1346,
@@ -15623,9 +14497,7 @@
     "date_usec": 503081,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 964,
@@ -15645,9 +14517,7 @@
     "date_usec": 146963,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 696,
@@ -15737,9 +14607,7 @@
     "date_usec": 502861,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 505,
@@ -15769,9 +14637,7 @@
     "date_usec": 802783,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35391,
@@ -15801,9 +14667,7 @@
     "date_usec": 460487,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 625,
@@ -15843,9 +14707,7 @@
     "date_usec": 508097,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35328,
@@ -15855,9 +14717,7 @@
     "date_usec": 678266,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35362,
@@ -15897,11 +14757,7 @@
     "date_usec": 922521,
     "owner": false,
     "premium": false,
-    "mail": [
-      "naka",
-      "white",
-      "medium"
-    ]
+    "mail": ["naka", "white", "medium"]
   },
   {
     "id": 35049,
@@ -15911,9 +14767,7 @@
     "date_usec": 660179,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 668,
@@ -16013,9 +14867,7 @@
     "date_usec": 123921,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 34882,
@@ -16025,9 +14877,7 @@
     "date_usec": 594319,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35777,
@@ -16037,9 +14887,7 @@
     "date_usec": 588531,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35218,
@@ -16049,9 +14897,7 @@
     "date_usec": 659606,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 34831,
@@ -16071,9 +14917,7 @@
     "date_usec": 617125,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1236,
@@ -16083,9 +14927,7 @@
     "date_usec": 175203,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35394,
@@ -16105,9 +14947,7 @@
     "date_usec": 931932,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35211,
@@ -16127,9 +14967,7 @@
     "date_usec": 166667,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1403,
@@ -16139,9 +14977,7 @@
     "date_usec": 925664,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 53,
@@ -16151,9 +14987,7 @@
     "date_usec": 428481,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35160,
@@ -16163,9 +14997,7 @@
     "date_usec": 970847,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 841,
@@ -16185,9 +15017,7 @@
     "date_usec": 835113,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35350,
@@ -16217,9 +15047,7 @@
     "date_usec": 492318,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35212,
@@ -16239,9 +15067,7 @@
     "date_usec": 527265,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35763,
@@ -16261,9 +15087,7 @@
     "date_usec": 807949,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35764,
@@ -16283,9 +15107,7 @@
     "date_usec": 643458,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35608,
@@ -16295,9 +15117,7 @@
     "date_usec": 641700,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1152,
@@ -16337,9 +15157,7 @@
     "date_usec": 131984,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1296,
@@ -16369,9 +15187,7 @@
     "date_usec": 984677,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35222,
@@ -16381,9 +15197,7 @@
     "date_usec": 493744,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1030,
@@ -16403,10 +15217,7 @@
     "date_usec": 596169,
     "owner": false,
     "premium": true,
-    "mail": [
-      "shita",
-      "red2"
-    ]
+    "mail": ["shita", "red2"]
   },
   {
     "id": 1339,
@@ -16426,9 +15237,7 @@
     "date_usec": 311213,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 627,
@@ -16488,9 +15297,7 @@
     "date_usec": 928151,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1446,
@@ -16530,9 +15337,7 @@
     "date_usec": 975221,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1073,
@@ -16572,11 +15377,7 @@
     "date_usec": 923640,
     "owner": false,
     "premium": true,
-    "mail": [
-      "shita",
-      "big",
-      "red"
-    ]
+    "mail": ["shita", "big", "red"]
   },
   {
     "id": 886,
@@ -16696,9 +15497,7 @@
     "date_usec": 45356,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 795,
@@ -16858,11 +15657,7 @@
     "date_usec": 980228,
     "owner": false,
     "premium": false,
-    "mail": [
-      "medium",
-      "green",
-      "device:Switch"
-    ]
+    "mail": ["medium", "green", "device:Switch"]
   },
   {
     "id": 744,
@@ -16882,9 +15677,7 @@
     "date_usec": 607540,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1348,
@@ -16894,9 +15687,7 @@
     "date_usec": 476572,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1347,
@@ -16916,9 +15707,7 @@
     "date_usec": 334406,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35306,
@@ -16938,9 +15727,7 @@
     "date_usec": 173870,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1399,
@@ -16950,9 +15737,7 @@
     "date_usec": 52321,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1240,
@@ -16962,9 +15747,7 @@
     "date_usec": 159146,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1327,
@@ -16974,9 +15757,7 @@
     "date_usec": 982537,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 843,
@@ -17006,9 +15787,7 @@
     "date_usec": 640024,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 28,
@@ -17018,9 +15797,7 @@
     "date_usec": 722951,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35447,
@@ -17030,11 +15807,7 @@
     "date_usec": 92062,
     "owner": false,
     "premium": false,
-    "mail": [
-      "shita",
-      "white",
-      "medium"
-    ]
+    "mail": ["shita", "white", "medium"]
   },
   {
     "id": 35105,
@@ -17074,9 +15847,7 @@
     "date_usec": 450804,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35691,
@@ -17116,9 +15887,7 @@
     "date_usec": 796195,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 36,
@@ -17128,9 +15897,7 @@
     "date_usec": 777527,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 745,
@@ -17180,9 +15947,7 @@
     "date_usec": 364098,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 506,
@@ -17212,11 +15977,7 @@
     "date_usec": 300999,
     "owner": false,
     "premium": false,
-    "mail": [
-      "naka",
-      "white",
-      "medium"
-    ]
+    "mail": ["naka", "white", "medium"]
   },
   {
     "id": 1196,
@@ -17226,9 +15987,7 @@
     "date_usec": 871182,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 34934,
@@ -17248,9 +16007,7 @@
     "date_usec": 3270,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1066,
@@ -17280,9 +16037,7 @@
     "date_usec": 98555,
     "owner": false,
     "premium": true,
-    "mail": [
-      "naka"
-    ]
+    "mail": ["naka"]
   },
   {
     "id": 35800,
@@ -17302,9 +16057,7 @@
     "date_usec": 365520,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35185,
@@ -17334,9 +16087,7 @@
     "date_usec": 59689,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35775,
@@ -17356,9 +16107,7 @@
     "date_usec": 756408,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1297,
@@ -17418,9 +16167,7 @@
     "date_usec": 442710,
     "owner": false,
     "premium": true,
-    "mail": [
-      "naka"
-    ]
+    "mail": ["naka"]
   },
   {
     "id": 864,
@@ -17450,9 +16197,7 @@
     "date_usec": 784557,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 533,
@@ -17502,9 +16247,7 @@
     "date_usec": 812443,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 978,
@@ -17554,9 +16297,7 @@
     "date_usec": 872399,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35626,
@@ -17566,9 +16307,7 @@
     "date_usec": 674136,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 686,
@@ -17618,9 +16357,7 @@
     "date_usec": 451345,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 527,
@@ -17680,9 +16417,7 @@
     "date_usec": 537571,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1213,
@@ -17702,9 +16437,7 @@
     "date_usec": 685869,
     "owner": false,
     "premium": true,
-    "mail": [
-      "shita"
-    ]
+    "mail": ["shita"]
   },
   {
     "id": 34932,
@@ -17714,10 +16447,7 @@
     "date_usec": 777582,
     "owner": false,
     "premium": true,
-    "mail": [
-      "shita",
-      "big"
-    ]
+    "mail": ["shita", "big"]
   },
   {
     "id": 35121,
@@ -17727,10 +16457,7 @@
     "date_usec": 192798,
     "owner": false,
     "premium": true,
-    "mail": [
-      "shita",
-      "big"
-    ]
+    "mail": ["shita", "big"]
   },
   {
     "id": 34807,
@@ -17740,10 +16467,7 @@
     "date_usec": 809852,
     "owner": false,
     "premium": true,
-    "mail": [
-      "shita",
-      "big"
-    ]
+    "mail": ["shita", "big"]
   },
   {
     "id": 484,
@@ -17803,9 +16527,7 @@
     "date_usec": 507641,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1242,
@@ -17815,9 +16537,7 @@
     "date_usec": 518852,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35146,
@@ -17907,9 +16627,7 @@
     "date_usec": 198881,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35776,
@@ -18069,9 +16787,7 @@
     "date_usec": 838445,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 687,
@@ -18091,9 +16807,7 @@
     "date_usec": 291022,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35490,
@@ -18103,9 +16817,7 @@
     "date_usec": 354338,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35459,
@@ -18115,11 +16827,7 @@
     "date_usec": 19851,
     "owner": false,
     "premium": false,
-    "mail": [
-      "naka",
-      "white",
-      "medium"
-    ]
+    "mail": ["naka", "white", "medium"]
   },
   {
     "id": 1443,
@@ -18139,9 +16847,7 @@
     "date_usec": 881057,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35163,
@@ -18161,9 +16867,7 @@
     "date_usec": 302165,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1067,
@@ -18203,9 +16907,7 @@
     "date_usec": 847489,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1132,
@@ -18335,9 +17037,7 @@
     "date_usec": 330969,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35187,
@@ -18367,9 +17067,7 @@
     "date_usec": 856050,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 787,
@@ -18389,9 +17087,7 @@
     "date_usec": 663258,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1218,
@@ -18411,11 +17107,7 @@
     "date_usec": 209762,
     "owner": false,
     "premium": false,
-    "mail": [
-      "naka",
-      "white",
-      "medium"
-    ]
+    "mail": ["naka", "white", "medium"]
   },
   {
     "id": 1189,
@@ -18475,9 +17167,7 @@
     "date_usec": 225700,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35192,
@@ -18497,11 +17187,7 @@
     "date_usec": 832753,
     "owner": false,
     "premium": false,
-    "mail": [
-      "naka",
-      "white",
-      "medium"
-    ]
+    "mail": ["naka", "white", "medium"]
   },
   {
     "id": 746,
@@ -18571,9 +17257,7 @@
     "date_usec": 944869,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35320,
@@ -18583,9 +17267,7 @@
     "date_usec": 709159,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1161,
@@ -18735,9 +17417,7 @@
     "date_usec": 275917,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 550,
@@ -18787,9 +17467,7 @@
     "date_usec": 397013,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1106,
@@ -18829,9 +17507,7 @@
     "date_usec": 151817,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1211,
@@ -18951,9 +17627,7 @@
     "date_usec": 358564,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 749,
@@ -18993,9 +17667,7 @@
     "date_usec": 211567,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35479,
@@ -19005,9 +17677,7 @@
     "date_usec": 831674,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35368,
@@ -19037,9 +17707,7 @@
     "date_usec": 173573,
     "owner": false,
     "premium": true,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1447,
@@ -19059,11 +17727,7 @@
     "date_usec": 961077,
     "owner": false,
     "premium": false,
-    "mail": [
-      "naka",
-      "white",
-      "medium"
-    ]
+    "mail": ["naka", "white", "medium"]
   },
   {
     "id": 35168,
@@ -19073,9 +17737,7 @@
     "date_usec": 561848,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35225,
@@ -19085,9 +17747,7 @@
     "date_usec": 474883,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35371,
@@ -19117,9 +17777,7 @@
     "date_usec": 686544,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 481,
@@ -19159,9 +17817,7 @@
     "date_usec": 550924,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35427,
@@ -19261,9 +17917,7 @@
     "date_usec": 751953,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35108,
@@ -19293,9 +17947,7 @@
     "date_usec": 761277,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35318,
@@ -19325,9 +17977,7 @@
     "date_usec": 669154,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 955,
@@ -19347,9 +17997,7 @@
     "date_usec": 707093,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 750,
@@ -19369,9 +18017,7 @@
     "date_usec": 14964,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1449,
@@ -19451,9 +18097,7 @@
     "date_usec": 341620,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1192,
@@ -19513,10 +18157,7 @@
     "date_usec": 527320,
     "owner": false,
     "premium": true,
-    "mail": [
-      "red",
-      "big"
-    ]
+    "mail": ["red", "big"]
   },
   {
     "id": 784,
@@ -19566,9 +18207,7 @@
     "date_usec": 167162,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1097,
@@ -19658,10 +18297,7 @@
     "date_usec": 863027,
     "owner": false,
     "premium": true,
-    "mail": [
-      "red",
-      "big"
-    ]
+    "mail": ["red", "big"]
   },
   {
     "id": 752,
@@ -19691,9 +18327,7 @@
     "date_usec": 718612,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35528,
@@ -19713,9 +18347,7 @@
     "date_usec": 780026,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1027,
@@ -19745,9 +18377,7 @@
     "date_usec": 924590,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35480,
@@ -19757,11 +18387,7 @@
     "date_usec": 378634,
     "owner": false,
     "premium": false,
-    "mail": [
-      "naka",
-      "white",
-      "medium"
-    ]
+    "mail": ["naka", "white", "medium"]
   },
   {
     "id": 1482,
@@ -19791,9 +18417,7 @@
     "date_usec": 847160,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35324,
@@ -19813,9 +18437,7 @@
     "date_usec": 208009,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 34806,
@@ -19865,9 +18487,7 @@
     "date_usec": 297465,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1450,
@@ -19897,9 +18517,7 @@
     "date_usec": 301274,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1350,
@@ -19909,9 +18527,7 @@
     "date_usec": 174797,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1214,
@@ -19981,9 +18597,7 @@
     "date_usec": 697570,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35485,
@@ -19993,11 +18607,7 @@
     "date_usec": 728678,
     "owner": false,
     "premium": false,
-    "mail": [
-      "naka",
-      "white",
-      "medium"
-    ]
+    "mail": ["naka", "white", "medium"]
   },
   {
     "id": 1252,
@@ -20007,9 +18617,7 @@
     "date_usec": 987366,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 693,
@@ -20029,9 +18637,7 @@
     "date_usec": 923493,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1404,
@@ -20041,9 +18647,7 @@
     "date_usec": 870304,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35326,
@@ -20113,9 +18717,7 @@
     "date_usec": 946518,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35005,
@@ -20135,9 +18737,7 @@
     "date_usec": 802936,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1351,
@@ -20147,9 +18747,7 @@
     "date_usec": 971616,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1197,
@@ -20159,9 +18757,7 @@
     "date_usec": 925364,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35247,
@@ -20181,9 +18777,7 @@
     "date_usec": 118351,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1098,
@@ -20253,9 +18847,7 @@
     "date_usec": 328705,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 34948,
@@ -20325,14 +18917,7 @@
     "date_usec": 477278,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35493,
@@ -20342,14 +18927,7 @@
     "date_usec": 529022,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "pink",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "pink", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35494,
@@ -20359,14 +18937,7 @@
     "date_usec": 860982,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "black",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "black", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 1363,
@@ -20416,13 +18987,7 @@
     "date_usec": 782297,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35500,
@@ -20432,14 +18997,7 @@
     "date_usec": 308532,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "blue",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "blue", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35503,
@@ -20449,14 +19007,7 @@
     "date_usec": 249317,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 31,
@@ -20466,9 +19017,7 @@
     "date_usec": 67821,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1202,
@@ -20478,9 +19027,7 @@
     "date_usec": 503155,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 46,
@@ -20490,9 +19037,7 @@
     "date_usec": 817964,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 25,
@@ -20502,9 +19047,7 @@
     "date_usec": 71129,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35507,
@@ -20514,14 +19057,7 @@
     "date_usec": 619412,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35508,
@@ -20531,14 +19067,7 @@
     "date_usec": 230157,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "red",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "red", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35509,
@@ -20548,14 +19077,7 @@
     "date_usec": 9508,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "yellow",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "yellow", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35511,
@@ -20565,14 +19087,7 @@
     "date_usec": 768247,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "yellow",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "yellow", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35512,
@@ -20582,14 +19097,7 @@
     "date_usec": 136080,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "black",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "black", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 37,
@@ -20599,9 +19107,7 @@
     "date_usec": 247593,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1194,
@@ -20631,9 +19137,7 @@
     "date_usec": 369011,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 54,
@@ -20643,9 +19147,7 @@
     "date_usec": 225818,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 522,
@@ -20665,14 +19167,7 @@
     "date_usec": 78716,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "yellow",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "yellow", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35519,
@@ -20682,14 +19177,7 @@
     "date_usec": 576932,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "black",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "black", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35521,
@@ -20699,15 +19187,7 @@
     "date_usec": 153057,
     "owner": false,
     "premium": false,
-    "mail": [
-      "",
-      "_live",
-      "ue",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["", "_live", "ue", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35523,
@@ -20717,16 +19197,7 @@
     "date_usec": 66109,
     "owner": false,
     "premium": false,
-    "mail": [
-      "",
-      "_live",
-      "ue",
-      "red",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["", "_live", "ue", "red", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35524,
@@ -20736,14 +19207,7 @@
     "date_usec": 788964,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 1452,
@@ -20773,9 +19237,7 @@
     "date_usec": 756732,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 55,
@@ -20785,9 +19247,7 @@
     "date_usec": 294361,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 4,
@@ -20797,9 +19257,7 @@
     "date_usec": 606711,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1364,
@@ -20819,9 +19277,7 @@
     "date_usec": 759043,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35527,
@@ -20831,14 +19287,7 @@
     "date_usec": 293304,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 650,
@@ -20878,9 +19327,7 @@
     "date_usec": 264984,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 60,
@@ -20890,9 +19337,7 @@
     "date_usec": 109060,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 34902,
@@ -20902,9 +19347,7 @@
     "date_usec": 410965,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1287,
@@ -20914,9 +19357,7 @@
     "date_usec": 505394,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35529,
@@ -20926,14 +19367,7 @@
     "date_usec": 969354,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 34995,
@@ -20943,9 +19377,7 @@
     "date_usec": 373448,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 511,
@@ -20965,9 +19397,7 @@
     "date_usec": 685561,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1288,
@@ -20977,9 +19407,7 @@
     "date_usec": 88102,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35778,
@@ -20989,9 +19417,7 @@
     "date_usec": 705360,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1198,
@@ -21001,9 +19427,7 @@
     "date_usec": 787118,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 946,
@@ -21033,9 +19457,7 @@
     "date_usec": 40146,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1289,
@@ -21045,9 +19467,7 @@
     "date_usec": 579609,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35531,
@@ -21057,14 +19477,7 @@
     "date_usec": 161333,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35533,
@@ -21074,14 +19487,7 @@
     "date_usec": 141607,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "yellow",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "yellow", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 1290,
@@ -21091,9 +19497,7 @@
     "date_usec": 466049,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35250,
@@ -21153,14 +19557,7 @@
     "date_usec": 782991,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "black",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "black", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35537,
@@ -21170,14 +19567,7 @@
     "date_usec": 209609,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "red",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "red", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 34964,
@@ -21207,13 +19597,7 @@
     "date_usec": 695830,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35541,
@@ -21223,14 +19607,7 @@
     "date_usec": 901294,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35543,
@@ -21240,14 +19617,7 @@
     "date_usec": 690817,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35544,
@@ -21257,14 +19627,7 @@
     "date_usec": 801038,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 1197,
@@ -21284,9 +19647,7 @@
     "date_usec": 747727,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35809,
@@ -21306,15 +19667,7 @@
     "date_usec": 339013,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "yellow",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "yellow", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35550,
@@ -21324,15 +19677,7 @@
     "date_usec": 956359,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "orange",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "orange", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35552,
@@ -21342,15 +19687,7 @@
     "date_usec": 161829,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "red",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "red", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 34886,
@@ -21370,9 +19707,7 @@
     "date_usec": 913748,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1204,
@@ -21382,9 +19717,7 @@
     "date_usec": 432309,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35556,
@@ -21394,14 +19727,7 @@
     "date_usec": 542329,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 659,
@@ -21421,11 +19747,7 @@
     "date_usec": 167472,
     "owner": false,
     "premium": false,
-    "mail": [
-      "shita",
-      "white",
-      "medium"
-    ]
+    "mail": ["shita", "white", "medium"]
   },
   {
     "id": 35329,
@@ -21445,14 +19767,7 @@
     "date_usec": 23557,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35561,
@@ -21462,13 +19777,7 @@
     "date_usec": 457975,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "big",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "big", "full", "mincho", "ca"]
   },
   {
     "id": 35562,
@@ -21478,13 +19787,7 @@
     "date_usec": 587563,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35564,
@@ -21494,14 +19797,7 @@
     "date_usec": 589835,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35555,
@@ -21511,11 +19807,7 @@
     "date_usec": 730808,
     "owner": false,
     "premium": false,
-    "mail": [
-      "shita",
-      "white",
-      "medium"
-    ]
+    "mail": ["shita", "white", "medium"]
   },
   {
     "id": 1334,
@@ -21535,15 +19827,7 @@
     "date_usec": 788976,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "cyan",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "cyan", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35566,
@@ -21553,15 +19837,7 @@
     "date_usec": 47642,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "cyan",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "cyan", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35567,
@@ -21571,15 +19847,7 @@
     "date_usec": 763449,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "cyan",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "cyan", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35568,
@@ -21589,14 +19857,7 @@
     "date_usec": 679278,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35558,
@@ -21606,11 +19867,7 @@
     "date_usec": 998026,
     "owner": false,
     "premium": false,
-    "mail": [
-      "shita",
-      "white",
-      "medium"
-    ]
+    "mail": ["shita", "white", "medium"]
   },
   {
     "id": 1260,
@@ -21620,9 +19877,7 @@
     "date_usec": 546972,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35569,
@@ -21632,14 +19887,7 @@
     "date_usec": 609488,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 1265,
@@ -21659,9 +19907,7 @@
     "date_usec": 10624,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35496,
@@ -21671,11 +19917,7 @@
     "date_usec": 236565,
     "owner": false,
     "premium": false,
-    "mail": [
-      "shita",
-      "white",
-      "medium"
-    ]
+    "mail": ["shita", "white", "medium"]
   },
   {
     "id": 35570,
@@ -21685,14 +19927,7 @@
     "date_usec": 860527,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35571,
@@ -21702,13 +19937,7 @@
     "date_usec": 546094,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "big",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "big", "full", "mincho", "ca"]
   },
   {
     "id": 1316,
@@ -21728,13 +19957,7 @@
     "date_usec": 88879,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35221,
@@ -21754,11 +19977,7 @@
     "date_usec": 925064,
     "owner": false,
     "premium": false,
-    "mail": [
-      "shita",
-      "white",
-      "medium"
-    ]
+    "mail": ["shita", "white", "medium"]
   },
   {
     "id": 35506,
@@ -21768,11 +19987,7 @@
     "date_usec": 839053,
     "owner": false,
     "premium": false,
-    "mail": [
-      "shita",
-      "white",
-      "medium"
-    ]
+    "mail": ["shita", "white", "medium"]
   },
   {
     "id": 35573,
@@ -21782,14 +19997,7 @@
     "date_usec": 353796,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35575,
@@ -21799,14 +20007,7 @@
     "date_usec": 638633,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "red",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "red", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35576,
@@ -21816,14 +20017,7 @@
     "date_usec": 518788,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "yellow",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "yellow", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35578,
@@ -21833,14 +20027,7 @@
     "date_usec": 832343,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "black",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "black", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 1247,
@@ -21850,9 +20037,7 @@
     "date_usec": 122333,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35513,
@@ -21862,11 +20047,7 @@
     "date_usec": 897380,
     "owner": false,
     "premium": false,
-    "mail": [
-      "shita",
-      "white",
-      "medium"
-    ]
+    "mail": ["shita", "white", "medium"]
   },
   {
     "id": 35579,
@@ -21876,14 +20057,7 @@
     "date_usec": 746492,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35515,
@@ -21893,11 +20067,7 @@
     "date_usec": 771392,
     "owner": false,
     "premium": false,
-    "mail": [
-      "shita",
-      "white",
-      "medium"
-    ]
+    "mail": ["shita", "white", "medium"]
   },
   {
     "id": 35491,
@@ -21907,9 +20077,7 @@
     "date_usec": 294481,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35581,
@@ -21919,14 +20087,7 @@
     "date_usec": 215506,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 34996,
@@ -21936,9 +20097,7 @@
     "date_usec": 824203,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35530,
@@ -21948,11 +20107,7 @@
     "date_usec": 85445,
     "owner": false,
     "premium": false,
-    "mail": [
-      "shita",
-      "white",
-      "medium"
-    ]
+    "mail": ["shita", "white", "medium"]
   },
   {
     "id": 1262,
@@ -21962,9 +20117,7 @@
     "date_usec": 313235,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1465,
@@ -21984,9 +20137,7 @@
     "date_usec": 817419,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35583,
@@ -21996,14 +20147,7 @@
     "date_usec": 940645,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 1264,
@@ -22013,9 +20157,7 @@
     "date_usec": 367083,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1265,
@@ -22025,9 +20167,7 @@
     "date_usec": 711104,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1266,
@@ -22037,9 +20177,7 @@
     "date_usec": 115162,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35534,
@@ -22049,11 +20187,7 @@
     "date_usec": 82337,
     "owner": false,
     "premium": false,
-    "mail": [
-      "shita",
-      "white",
-      "medium"
-    ]
+    "mail": ["shita", "white", "medium"]
   },
   {
     "id": 35538,
@@ -22063,11 +20197,7 @@
     "date_usec": 774981,
     "owner": false,
     "premium": false,
-    "mail": [
-      "shita",
-      "white",
-      "medium"
-    ]
+    "mail": ["shita", "white", "medium"]
   },
   {
     "id": 1267,
@@ -22077,9 +20207,7 @@
     "date_usec": 439491,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1198,
@@ -22099,9 +20227,7 @@
     "date_usec": 858691,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 756,
@@ -22131,14 +20257,7 @@
     "date_usec": 262296,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35588,
@@ -22148,14 +20267,7 @@
     "date_usec": 127803,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35590,
@@ -22165,14 +20277,7 @@
     "date_usec": 848515,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35593,
@@ -22182,14 +20287,7 @@
     "date_usec": 197208,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35594,
@@ -22199,14 +20297,7 @@
     "date_usec": 769484,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 34809,
@@ -22226,11 +20317,7 @@
     "date_usec": 342590,
     "owner": false,
     "premium": false,
-    "mail": [
-      "shita",
-      "white",
-      "medium"
-    ]
+    "mail": ["shita", "white", "medium"]
   },
   {
     "id": 757,
@@ -22250,9 +20337,7 @@
     "date_usec": 302272,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1044,
@@ -22272,14 +20357,7 @@
     "date_usec": 57015,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35597,
@@ -22289,14 +20367,7 @@
     "date_usec": 345404,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 34925,
@@ -22306,12 +20377,7 @@
     "date_usec": 953505,
     "owner": false,
     "premium": true,
-    "mail": [
-      "shita",
-      "big",
-      "green2",
-      "device:Switch"
-    ]
+    "mail": ["shita", "big", "green2", "device:Switch"]
   },
   {
     "id": 35545,
@@ -22321,11 +20387,7 @@
     "date_usec": 438250,
     "owner": false,
     "premium": false,
-    "mail": [
-      "shita",
-      "white",
-      "medium"
-    ]
+    "mail": ["shita", "white", "medium"]
   },
   {
     "id": 34963,
@@ -22355,9 +20417,7 @@
     "date_usec": 221106,
     "owner": false,
     "premium": true,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35598,
@@ -22367,13 +20427,7 @@
     "date_usec": 441747,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35599,
@@ -22383,13 +20437,7 @@
     "date_usec": 123615,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35601,
@@ -22399,13 +20447,7 @@
     "date_usec": 717763,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35604,
@@ -22415,13 +20457,7 @@
     "date_usec": 39947,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35606,
@@ -22431,13 +20467,7 @@
     "date_usec": 56084,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35607,
@@ -22447,13 +20477,7 @@
     "date_usec": 117078,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35609,
@@ -22463,13 +20487,7 @@
     "date_usec": 245882,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 34913,
@@ -22479,9 +20497,7 @@
     "date_usec": 337952,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35610,
@@ -22491,14 +20507,7 @@
     "date_usec": 677728,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "red",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "red", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35611,
@@ -22508,14 +20517,7 @@
     "date_usec": 470797,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "red",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "red", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35612,
@@ -22525,14 +20527,7 @@
     "date_usec": 691580,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "black",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "black", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35546,
@@ -22542,11 +20537,7 @@
     "date_usec": 627264,
     "owner": false,
     "premium": false,
-    "mail": [
-      "shita",
-      "white",
-      "medium"
-    ]
+    "mail": ["shita", "white", "medium"]
   },
   {
     "id": 34926,
@@ -22556,12 +20547,7 @@
     "date_usec": 792205,
     "owner": false,
     "premium": true,
-    "mail": [
-      "shita",
-      "big",
-      "green2",
-      "device:Switch"
-    ]
+    "mail": ["shita", "big", "green2", "device:Switch"]
   },
   {
     "id": 35254,
@@ -22591,9 +20577,7 @@
     "date_usec": 68695,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35316,
@@ -22603,9 +20587,7 @@
     "date_usec": 597271,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 500,
@@ -22645,9 +20627,7 @@
     "date_usec": 24017,
     "owner": false,
     "premium": true,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1453,
@@ -22677,9 +20657,7 @@
     "date_usec": 885713,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35613,
@@ -22689,14 +20667,7 @@
     "date_usec": 174328,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "pink",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "pink", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35615,
@@ -22706,14 +20677,7 @@
     "date_usec": 405107,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35616,
@@ -22723,14 +20687,7 @@
     "date_usec": 996085,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35355,
@@ -22740,9 +20697,7 @@
     "date_usec": 484154,
     "owner": false,
     "premium": true,
-    "mail": [
-      "shita"
-    ]
+    "mail": ["shita"]
   },
   {
     "id": 35353,
@@ -22762,14 +20717,7 @@
     "date_usec": 935991,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35619,
@@ -22779,14 +20727,7 @@
     "date_usec": 173739,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35620,
@@ -22796,14 +20737,7 @@
     "date_usec": 134169,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "pink",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "pink", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35135,
@@ -22813,9 +20747,7 @@
     "date_usec": 442105,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 706,
@@ -22855,9 +20787,7 @@
     "date_usec": 777240,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 957,
@@ -22887,9 +20817,7 @@
     "date_usec": 924010,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1483,
@@ -22909,9 +20837,7 @@
     "date_usec": 498971,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1251,
@@ -22921,9 +20847,7 @@
     "date_usec": 730333,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35621,
@@ -22933,14 +20857,7 @@
     "date_usec": 518612,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "red",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "red", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35624,
@@ -22950,14 +20867,7 @@
     "date_usec": 877757,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "yellow",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "yellow", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35625,
@@ -22967,14 +20877,7 @@
     "date_usec": 362139,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "black",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "black", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35627,
@@ -22984,14 +20887,7 @@
     "date_usec": 814967,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35628,
@@ -23001,14 +20897,7 @@
     "date_usec": 70228,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35629,
@@ -23018,14 +20907,7 @@
     "date_usec": 993112,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 49,
@@ -23035,9 +20917,7 @@
     "date_usec": 215473,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1232,
@@ -23047,9 +20927,7 @@
     "date_usec": 826065,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 34828,
@@ -23069,9 +20947,7 @@
     "date_usec": 367619,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1199,
@@ -23091,9 +20967,7 @@
     "date_usec": 783596,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1454,
@@ -23113,14 +20987,7 @@
     "date_usec": 286303,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35633,
@@ -23130,14 +20997,7 @@
     "date_usec": 583791,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35635,
@@ -23147,14 +21007,7 @@
     "date_usec": 695311,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "red",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "red", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 1243,
@@ -23164,9 +21017,7 @@
     "date_usec": 18677,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1476,
@@ -23206,9 +21057,7 @@
     "date_usec": 603531,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1329,
@@ -23218,9 +21067,7 @@
     "date_usec": 991040,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1378,
@@ -23230,9 +21077,7 @@
     "date_usec": 310885,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 845,
@@ -23262,14 +21107,7 @@
     "date_usec": 89493,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35637,
@@ -23279,14 +21117,7 @@
     "date_usec": 403601,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35638,
@@ -23296,14 +21127,7 @@
     "date_usec": 798905,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 1045,
@@ -23343,9 +21167,7 @@
     "date_usec": 778681,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1301,
@@ -23365,14 +21187,7 @@
     "date_usec": 442044,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35641,
@@ -23382,14 +21197,7 @@
     "date_usec": 541385,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35642,
@@ -23399,14 +21207,7 @@
     "date_usec": 286297,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 1473,
@@ -23426,14 +21227,7 @@
     "date_usec": 856170,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35644,
@@ -23443,13 +21237,7 @@
     "date_usec": 599398,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35647,
@@ -23459,14 +21247,7 @@
     "date_usec": 603033,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "red",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "red", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35648,
@@ -23476,14 +21257,7 @@
     "date_usec": 403353,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "pink",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "pink", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 678,
@@ -23503,14 +21277,7 @@
     "date_usec": 65067,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "yellow",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "yellow", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35651,
@@ -23520,13 +21287,7 @@
     "date_usec": 382817,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35652,
@@ -23536,14 +21297,7 @@
     "date_usec": 648046,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35653,
@@ -23553,15 +21307,7 @@
     "date_usec": 555348,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "red",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "red", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35655,
@@ -23571,15 +21317,7 @@
     "date_usec": 579234,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "pink",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "pink", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35656,
@@ -23589,15 +21327,7 @@
     "date_usec": 771023,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "yellow",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "yellow", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35658,
@@ -23607,14 +21337,7 @@
     "date_usec": 421610,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35660,
@@ -23624,14 +21347,7 @@
     "date_usec": 425809,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 1462,
@@ -23651,14 +21367,7 @@
     "date_usec": 422787,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35663,
@@ -23668,14 +21377,7 @@
     "date_usec": 721714,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35664,
@@ -23685,14 +21387,7 @@
     "date_usec": 739610,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 1268,
@@ -23712,14 +21407,7 @@
     "date_usec": 627865,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35668,
@@ -23729,14 +21417,7 @@
     "date_usec": 147620,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 803,
@@ -23756,14 +21437,7 @@
     "date_usec": 151164,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 1310,
@@ -23783,14 +21457,7 @@
     "date_usec": 872898,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35671,
@@ -23800,14 +21467,7 @@
     "date_usec": 659651,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 759,
@@ -23827,9 +21487,7 @@
     "date_usec": 294850,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1317,
@@ -23849,16 +21507,7 @@
     "date_usec": 868406,
     "owner": false,
     "premium": false,
-    "mail": [
-      "",
-      "_live",
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["", "_live", "ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35674,
@@ -23868,16 +21517,7 @@
     "date_usec": 851032,
     "owner": false,
     "premium": false,
-    "mail": [
-      "",
-      "_liv",
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["", "_liv", "ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35675,
@@ -23887,16 +21527,7 @@
     "date_usec": 104766,
     "owner": false,
     "premium": false,
-    "mail": [
-      "",
-      "_live",
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["", "_live", "ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 1213,
@@ -23906,9 +21537,7 @@
     "date_usec": 454402,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35258,
@@ -23928,9 +21557,7 @@
     "date_usec": 484777,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 731,
@@ -23950,9 +21577,7 @@
     "date_usec": 866536,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 34946,
@@ -23962,9 +21587,7 @@
     "date_usec": 81204,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:Switch"
-    ]
+    "mail": ["device:Switch"]
   },
   {
     "id": 35679,
@@ -23974,13 +21597,7 @@
     "date_usec": 154938,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "big",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "big", "full", "mincho", "ca"]
   },
   {
     "id": 35516,
@@ -23990,9 +21607,7 @@
     "date_usec": 929333,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35686,
@@ -24002,13 +21617,7 @@
     "date_usec": 49553,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "big",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "big", "full", "mincho", "ca"]
   },
   {
     "id": 1311,
@@ -24028,14 +21637,7 @@
     "date_usec": 255159,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "yellow",
-      "big",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "yellow", "big", "full", "mincho", "ca"]
   },
   {
     "id": 35690,
@@ -24045,14 +21647,7 @@
     "date_usec": 29741,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "orange",
-      "big",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "orange", "big", "full", "mincho", "ca"]
   },
   {
     "id": 35694,
@@ -24062,14 +21657,7 @@
     "date_usec": 783761,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "red",
-      "big",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "red", "big", "full", "mincho", "ca"]
   },
   {
     "id": 35695,
@@ -24079,16 +21667,7 @@
     "date_usec": 424956,
     "owner": false,
     "premium": false,
-    "mail": [
-      "",
-      "_live",
-      "ue",
-      "red",
-      "big",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["", "_live", "ue", "red", "big", "full", "mincho", "ca"]
   },
   {
     "id": 1463,
@@ -24108,9 +21687,7 @@
     "date_usec": 98632,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1319,
@@ -24120,9 +21697,7 @@
     "date_usec": 857012,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 34998,
@@ -24132,9 +21707,7 @@
     "date_usec": 16061,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 959,
@@ -24154,9 +21727,7 @@
     "date_usec": 295110,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35696,
@@ -24166,9 +21737,7 @@
     "date_usec": 910966,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35700,
@@ -24178,14 +21747,7 @@
     "date_usec": 845364,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35701,
@@ -24195,14 +21757,7 @@
     "date_usec": 64571,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "red",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "red", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35702,
@@ -24212,15 +21767,7 @@
     "date_usec": 485049,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "red",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "red", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35703,
@@ -24230,14 +21777,7 @@
     "date_usec": 887774,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "red",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "red", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35704,
@@ -24247,14 +21787,7 @@
     "date_usec": 382225,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "yellow",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "yellow", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35705,
@@ -24264,14 +21797,7 @@
     "date_usec": 182298,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "red",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "red", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35708,
@@ -24281,14 +21807,7 @@
     "date_usec": 939610,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 1370,
@@ -24298,9 +21817,7 @@
     "date_usec": 764263,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1111,
@@ -24320,14 +21837,7 @@
     "date_usec": 468676,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35711,
@@ -24337,13 +21847,7 @@
     "date_usec": 444106,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35712,
@@ -24353,14 +21857,7 @@
     "date_usec": 639732,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "black",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "black", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 823,
@@ -24380,14 +21877,7 @@
     "date_usec": 117198,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35716,
@@ -24397,14 +21887,7 @@
     "date_usec": 934453,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35718,
@@ -24414,14 +21897,7 @@
     "date_usec": 235153,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 760,
@@ -24441,12 +21917,7 @@
     "date_usec": 407260,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "full", "mincho", "ca"]
   },
   {
     "id": 35723,
@@ -24456,12 +21927,7 @@
     "date_usec": 153979,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "full", "mincho", "ca"]
   },
   {
     "id": 35725,
@@ -24471,14 +21937,7 @@
     "date_usec": 420090,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35727,
@@ -24488,14 +21947,7 @@
     "date_usec": 585855,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "red",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "red", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35728,
@@ -24505,14 +21957,7 @@
     "date_usec": 485383,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35729,
@@ -24522,14 +21967,7 @@
     "date_usec": 772330,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35731,
@@ -24539,13 +21977,7 @@
     "date_usec": 88850,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35732,
@@ -24555,14 +21987,7 @@
     "date_usec": 628275,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "black",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "black", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35735,
@@ -24572,14 +21997,7 @@
     "date_usec": 950415,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "yellow",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "yellow", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35156,
@@ -24589,9 +22007,7 @@
     "date_usec": 211413,
     "owner": false,
     "premium": true,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35738,
@@ -24601,14 +22017,7 @@
     "date_usec": 271357,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "red",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "red", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35739,
@@ -24618,14 +22027,7 @@
     "date_usec": 786213,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "yellow",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "yellow", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35740,
@@ -24635,14 +22037,7 @@
     "date_usec": 96871,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "black",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "black", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35741,
@@ -24652,14 +22047,7 @@
     "date_usec": 740556,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35646,
@@ -24669,9 +22057,7 @@
     "date_usec": 494149,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35744,
@@ -24681,14 +22067,7 @@
     "date_usec": 651123,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 663,
@@ -24718,14 +22097,7 @@
     "date_usec": 624277,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35746,
@@ -24735,14 +22107,7 @@
     "date_usec": 81462,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35747,
@@ -24752,14 +22117,7 @@
     "date_usec": 468117,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35748,
@@ -24769,14 +22127,7 @@
     "date_usec": 764445,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35749,
@@ -24786,14 +22137,7 @@
     "date_usec": 435542,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 1370,
@@ -24813,14 +22157,7 @@
     "date_usec": 687040,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35751,
@@ -24830,14 +22167,7 @@
     "date_usec": 635805,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 34927,
@@ -24847,12 +22177,7 @@
     "date_usec": 305113,
     "owner": false,
     "premium": true,
-    "mail": [
-      "shita",
-      "big",
-      "green2",
-      "device:Switch"
-    ]
+    "mail": ["shita", "big", "green2", "device:Switch"]
   },
   {
     "id": 35752,
@@ -24862,14 +22187,7 @@
     "date_usec": 630456,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "small",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "small", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35205,
@@ -24879,9 +22197,7 @@
     "date_usec": 865697,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 34823,
@@ -24891,9 +22207,7 @@
     "date_usec": 677153,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:Switch"
-    ]
+    "mail": ["device:Switch"]
   },
   {
     "id": 35262,
@@ -24913,14 +22227,7 @@
     "date_usec": 908294,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35754,
@@ -24930,14 +22237,7 @@
     "date_usec": 528272,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35755,
@@ -24947,14 +22247,7 @@
     "date_usec": 784111,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35756,
@@ -24964,14 +22257,7 @@
     "date_usec": 650465,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35757,
@@ -24981,14 +22267,7 @@
     "date_usec": 112502,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35761,
@@ -24998,14 +22277,7 @@
     "date_usec": 204509,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35762,
@@ -25015,14 +22287,7 @@
     "date_usec": 359903,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "big", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35766,
@@ -25032,15 +22297,7 @@
     "date_usec": 862156,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "red",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "red", "big", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35768,
@@ -25050,15 +22307,7 @@
     "date_usec": 803222,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "red",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "red", "big", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 35769,
@@ -25068,15 +22317,7 @@
     "date_usec": 574841,
     "owner": false,
     "premium": false,
-    "mail": [
-      "ue",
-      "black",
-      "big",
-      "ender",
-      "full",
-      "mincho",
-      "ca"
-    ]
+    "mail": ["ue", "black", "big", "ender", "full", "mincho", "ca"]
   },
   {
     "id": 34915,
@@ -25086,9 +22327,7 @@
     "date_usec": 613436,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 34928,
@@ -25098,12 +22337,7 @@
     "date_usec": 76375,
     "owner": false,
     "premium": true,
-    "mail": [
-      "shita",
-      "big",
-      "green2",
-      "device:Switch"
-    ]
+    "mail": ["shita", "big", "green2", "device:Switch"]
   },
   {
     "id": 35649,
@@ -25113,9 +22347,7 @@
     "date_usec": 611004,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 658,
@@ -25145,9 +22377,7 @@
     "date_usec": 53425,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35335,
@@ -25177,9 +22407,7 @@
     "date_usec": 374358,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35787,
@@ -25189,9 +22417,7 @@
     "date_usec": 956781,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1354,
@@ -25201,9 +22427,7 @@
     "date_usec": 54654,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 516,
@@ -25233,9 +22457,7 @@
     "date_usec": 72049,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35456,
@@ -25245,9 +22467,7 @@
     "date_usec": 892094,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:Switch"
-    ]
+    "mail": ["device:Switch"]
   },
   {
     "id": 1336,
@@ -25277,9 +22497,7 @@
     "date_usec": 356522,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1270,
@@ -25289,9 +22507,7 @@
     "date_usec": 961190,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1271,
@@ -25301,9 +22517,7 @@
     "date_usec": 779053,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1272,
@@ -25313,9 +22527,7 @@
     "date_usec": 967755,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1150,
@@ -25335,9 +22547,7 @@
     "date_usec": 241658,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35657,
@@ -25347,9 +22557,7 @@
     "date_usec": 249272,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1355,
@@ -25359,9 +22567,7 @@
     "date_usec": 188109,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1309,
@@ -25371,9 +22577,7 @@
     "date_usec": 725669,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 34917,
@@ -25383,9 +22587,7 @@
     "date_usec": 603729,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 34824,
@@ -25395,9 +22597,7 @@
     "date_usec": 691921,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:Switch"
-    ]
+    "mail": ["device:Switch"]
   },
   {
     "id": 1274,
@@ -25407,9 +22607,7 @@
     "date_usec": 749701,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1228,
@@ -25419,9 +22617,7 @@
     "date_usec": 550768,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1275,
@@ -25431,9 +22627,7 @@
     "date_usec": 121158,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35661,
@@ -25443,9 +22637,7 @@
     "date_usec": 198587,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1276,
@@ -25455,9 +22647,7 @@
     "date_usec": 439150,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1406,
@@ -25467,9 +22657,7 @@
     "date_usec": 911992,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1343,
@@ -25479,9 +22667,7 @@
     "date_usec": 902137,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35409,
@@ -25491,9 +22677,7 @@
     "date_usec": 16818,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1277,
@@ -25503,9 +22687,7 @@
     "date_usec": 775761,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1407,
@@ -25515,9 +22697,7 @@
     "date_usec": 234140,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35525,
@@ -25527,9 +22707,7 @@
     "date_usec": 724885,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1408,
@@ -25539,9 +22717,7 @@
     "date_usec": 635440,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 487,
@@ -25561,9 +22737,7 @@
     "date_usec": 493867,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1409,
@@ -25573,9 +22747,7 @@
     "date_usec": 871769,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35149,
@@ -25605,9 +22777,7 @@
     "date_usec": 945450,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1377,
@@ -25617,9 +22787,7 @@
     "date_usec": 257421,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 35106,
@@ -25629,9 +22797,7 @@
     "date_usec": 242846,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35665,
@@ -25641,9 +22807,7 @@
     "date_usec": 993387,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1209,
@@ -25653,9 +22817,7 @@
     "date_usec": 989984,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1303,
@@ -25665,9 +22827,7 @@
     "date_usec": 240350,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 34905,
@@ -25677,9 +22837,7 @@
     "date_usec": 613664,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35300,
@@ -25689,9 +22847,7 @@
     "date_usec": 508350,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1430,
@@ -25701,9 +22857,7 @@
     "date_usec": 192673,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 34868,
@@ -25723,9 +22877,7 @@
     "date_usec": 595710,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 664,
@@ -25745,9 +22897,7 @@
     "date_usec": 936700,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 537,
@@ -25777,9 +22927,7 @@
     "date_usec": 431666,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 35788,
@@ -25789,9 +22937,7 @@
     "date_usec": 475786,
     "owner": false,
     "premium": false,
-    "mail": [
-      "device:3DS"
-    ]
+    "mail": ["device:3DS"]
   },
   {
     "id": 1248,
@@ -25801,9 +22947,7 @@
     "date_usec": 790039,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1429,
@@ -25813,9 +22957,7 @@
     "date_usec": 35007,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1359,
@@ -25825,9 +22967,7 @@
     "date_usec": 965122,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1302,
@@ -25837,9 +22977,7 @@
     "date_usec": 614503,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1360,
@@ -25849,9 +22987,7 @@
     "date_usec": 629357,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1200,
@@ -25861,9 +22997,7 @@
     "date_usec": 449441,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1279,
@@ -25873,9 +23007,7 @@
     "date_usec": 984715,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1253,
@@ -25885,9 +23017,7 @@
     "date_usec": 148877,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1293,
@@ -25897,9 +23027,7 @@
     "date_usec": 403031,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1249,
@@ -25909,9 +23037,7 @@
     "date_usec": 23941,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1211,
@@ -25921,9 +23047,7 @@
     "date_usec": 317139,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1320,
@@ -25933,9 +23057,7 @@
     "date_usec": 640004,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1365,
@@ -25945,9 +23067,7 @@
     "date_usec": 817306,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1254,
@@ -25957,9 +23077,7 @@
     "date_usec": 370541,
     "owner": false,
     "premium": false,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1424,
@@ -25969,9 +23087,7 @@
     "date_usec": 293845,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 6,
@@ -25981,9 +23097,7 @@
     "date_usec": 836333,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 5,
@@ -25993,9 +23107,7 @@
     "date_usec": 423298,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 1425,
@@ -26005,9 +23117,7 @@
     "date_usec": 717417,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   },
   {
     "id": 15,
@@ -26017,8 +23127,6 @@
     "date_usec": 608466,
     "owner": false,
     "premium": true,
-    "mail": [
-      "184"
-    ]
+    "mail": ["184"]
   }
 ]

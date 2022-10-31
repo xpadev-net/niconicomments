@@ -60,6 +60,7 @@ pre {
   border: solid 2px #fff;
   padding: 10px;
   color: #fff;
+  overflow: scroll;
 }
 
 ul {
@@ -70,7 +71,7 @@ ul {
   padding: 10px 0;
   margin-left: 10px;
 }
-.item.deprecated {
+.deprecated {
   color: #999;
 }
 

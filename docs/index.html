@@ -136,11 +136,6 @@
               >サンプル</a
             >
           </li>
-          <li>
-            <a href="https://codepen.io/xpadev-net/pen/mdBdQmX"
-              >レッツゴー！陰陽師(CodePen)</a
-            >
-          </li>
         </ul>
       </section>
       <section id="install">
@@ -194,7 +189,7 @@
             </div>
             <h4 id="p_options">
               options<span class="type"
-                >:<a href="./type/modules/_types_types.InitOptions.html"
+                >:<a href="./type/types/_types_options.InitOptions.html"
                   >InitOptions</a
                 ></span
               >
@@ -202,7 +197,7 @@
             <div class="item">
               <h4 id="p_config">
                 config<span class="type"
-                  ><a href="./type/modules/_types_types.ConfigNullable.html"
+                  ><a href="./type/types/_types_config.ConfigNullable.html"
                     >:ConfigNullable</a
                   ></span
                 >
@@ -211,13 +206,13 @@
               <div class="item">
                 <p>
                   <span class="warn"
-                    >このオプションは非推奨です。適当に変更を行うと描画が崩れる場合があります</span
+                    >このオプションは弄らないことを推奨します。描画が崩れる場合があります</span
                   >
                 </p>
                 <p>内部処理用のマジックナンバーを上書きすることができます</p>
                 <p>
                   各変数の詳細は<a
-                    href="https://github.com/xpadev-net/niconicomments/blob/develop/src/definition/config.ts"
+                    href="https://github.com/xpadev-net/niconicomments/blob/master/src/definition/config.ts"
                     >src/definition/config.ts</a
                   >内のdefaultConfigのコメントを参照してください
                 </p>
@@ -229,15 +224,23 @@
               <div class="item">
                 <p>処理の所要時間をブラウザコンソールに出力します</p>
                 <p>
+                  また、各コメントの左上に適用されているコマンドを表示します
+                </p>
+                <p>
                   デフォルト(<span class="yellow">false</span
                   >)の場合は出力を行いません
                 </p>
               </div>
-              <h4 id="p_drawAllImageOnLoad">
+              <h4 id="p_drawAllImageOnLoad" class="deprecated">
                 drawAllImageOnLoad<span class="type">:boolean</span> =
                 <span class="yellow">false</span>
               </h4>
-              <div class="item">
+              <div class="item deprecated">
+                <p>
+                  <span class="warn"
+                    >このオプションはv0.2.28で廃止されました</span
+                  >
+                </p>
                 <p>コメントの描画をどのタイミングで行うかを指定します</p>
                 <p>
                   デフォルト(<span class="yellow">false</span
@@ -297,11 +300,11 @@
                       <td>formatted</td>
                       <td class="type">
                         <a
-                          href="./type/modules/_types_types.formattedComment.html"
+                          href="./type/types/_types_format_formatted.formattedComment.html"
                           >formattedComment</a
                         >[] |
                         <a
-                          href="./type/modules/_types_types.formattedLegacyComment.html"
+                          href="./type/types/_types_format_formatted.formattedLegacyComment.html"
                           >formattedLegacyComment</a
                         >[]
                       </td>
@@ -313,7 +316,7 @@
                       <td>legacy</td>
                       <td class="type">
                         <a
-                          href="./type/modules/_types_types.rawApiResponse.html"
+                          href="./type/types/_types_format_legacy.rawApiResponse.html"
                           >rawApiResponse</a
                         >[]
                       </td>
@@ -325,7 +328,8 @@
                     <tr>
                       <td>owner</td>
                       <td class="type">
-                        <a href="./type/modules/_types_types.ownerComment.html"
+                        <a
+                          href="./type/types/_types_format_owner.ownerComment.html"
                           >ownerComment</a
                         >[]
                       </td>
@@ -343,7 +347,7 @@
                     <tr>
                       <td>v1</td>
                       <td class="type">
-                        <a href="./type/modules/_types_types.v1Thread.html"
+                        <a href="./type/types/_types_format_v1.v1Thread.html"
                           >v1Thread</a
                         >[]
                       </td>
@@ -392,7 +396,7 @@
               </div>
               <h4 id="p_mode">
                 mode<span class="type"
-                  ><a href="./type/modules/_types_types.mode.html"
+                  ><a href="./type/types/_types_options.modeType.html"
                     >:modeType</a
                   ></span
                 >
@@ -402,7 +406,7 @@
                 <p>処理モードを指定します</p>
                 <p>
                   デフォルト(<span class="green">"default"</span
-                  >)の場合はなんとなくCAを再現します
+                  >)の場合はコメントごとに動作モードを自動で切り替えます
                 </p>
                 <p>
                   <span class="green">"html5"</span
@@ -410,7 +414,12 @@
                 </p>
                 <p>
                   <span class="green">"flash"</span
-                  >の場合は、Saccubus/ZenzaWatchなどflash時代の互換プレイヤーに近い動作をします
+                  >の場合は、Saccubus/ZenzaWatchなどFlash時代の互換プレイヤーに近い動作をします
+                </p>
+                <p>
+                  <span class="green">"default"</span>または<span class="green"
+                    >"flash"</span
+                  >の場合はFlashプレイヤー当時のフォント変化文字や分割コメントなどをサポート(仮)します
                 </p>
               </div>
               <h4 id="p_scale">
@@ -437,6 +446,9 @@
                 <p>
                   <span class="yellow">true</span
                   >の場合は、コメントの当たり判定と行の区切りを描画します
+                </p>
+                <p>
+                  HTML5版のコメントは水色に、Flash版のコメントは紫に外枠線の色が変化します
                 </p>
               </div>
               <h4 id="p_showCommentCount">
@@ -470,10 +482,7 @@
                   デフォルト(<span class="yellow">false</span
                   >)の場合は描画を行いません
                 </p>
-                <p>
-                  <span class="yellow">true</span
-                  >の場合は、過去0.5秒間のデータをもとにFPSを計算し、描画します
-                </p>
+                <p><span class="yellow">true</span>の場合は、FPSを表示します</p>
               </div>
               <h4 id="p_useLegacy">
                 useLegacy<span class="type">:boolean</span> =

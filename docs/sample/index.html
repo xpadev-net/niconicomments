@@ -32,11 +32,11 @@
       <label>
         スケール
         <input
-                type="number"
-                name="scale"
-                id="scale"
-                autocomplete="off"
-                value="1"
+          type="number"
+          name="scale"
+          id="scale"
+          autocomplete="off"
+          value="1"
         />
       </label>
       <label>
@@ -71,12 +71,7 @@
         CA衝突回避
       </label>
       <label>
-        <input
-                type="checkbox"
-                name="debug"
-                id="debug"
-                autocomplete="off"
-        />
+        <input type="checkbox" name="debug" id="debug" autocomplete="off" />
         デバッグ
       </label>
       <div id="toggle"><p>&lt;</p></div>
@@ -133,7 +128,7 @@
     z-index: 1;
     top: 0;
     right: 0;
-    background-color: rgba(0,0,0,0.75);
+    background-color: rgba(0, 0, 0, 0.75);
     border-radius: 0 0 0 10px;
     padding: 10px 10px 20px 10px;
     display: flex;
@@ -142,13 +137,14 @@
     color: white;
   }
 
-  #control label{
+  #control label {
     display: block;
     height: 30px;
     line-height: 30px;
   }
-  input[type="number"],select {
-    background-color: rgba(25,25,25,0.75);
+  input[type="number"],
+  select {
+    background-color: rgba(25, 25, 25, 0.75);
     border: solid 1px white;
     border-radius: 2px;
     color: white;
@@ -158,7 +154,7 @@
   }
 
   #control label:hover {
-    background-color: rgba(100,100,100,0.75);
+    background-color: rgba(100, 100, 100, 0.75);
   }
 
   #toggle {
@@ -189,7 +185,6 @@
     transform: rotateZ(-90deg);
   }
 
-
   body,
   html {
     height: 100%;
@@ -197,7 +192,7 @@
     margin: 0;
     padding: 0;
   }
-  *{
+  * {
     box-sizing: border-box;
     padding: 0;
     margin: 0;

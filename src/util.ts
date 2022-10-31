@@ -1,26 +1,5 @@
 import { config, options } from "@/definition/config";
 /**
- * 配列をフォントとサイズでグループ化する
- * @param {{}} array
- * @returns {{}}
- */
-const groupBy = (array: formattedCommentWithFont[]): groupedComments => {
-  const data = (
-    ["defont", "gothic", "mincho", "gulim", "simsun"] as commentFont[]
-  ).reduce((pv, font) => {
-    pv[font] = {};
-    return pv;
-  }, {} as groupedComments);
-  array.forEach((item, index) => {
-    const value = data[item.font][item.fontSize] || [];
-    value.push({ ...item, index });
-    if (value.length === 1) {
-      data[item.font][item.fontSize] = value;
-    }
-  });
-  return data;
-};
-/**
  * 当たり判定からコメントを配置できる場所を探す
  * @param {number} currentPos
  * @param {parsedComment} targetComment
@@ -240,7 +219,6 @@ const isFlashComment = (comment: formattedComment): boolean =>
       comment.mail.includes("nico:flash")));
 
 export {
-  groupBy,
   getPosY,
   getPosX,
   parseFont,

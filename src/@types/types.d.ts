@@ -37,12 +37,6 @@ type parsedComment = formattedCommentWithSize & {
   posY: number;
   image?: HTMLCanvasElement | boolean;
 };
-type groupedResult = formattedCommentWithFont & {
-  index: number;
-};
-type groupedComments = {
-  [key in commentFont]: { [key: string]: groupedResult[] };
-};
 type commentContentItem = {
   content: string;
   font?: commentFlashFont;
@@ -127,7 +121,7 @@ type parsedCommand = {
   long: number | undefined;
 };
 
-interface measureTextInput {
+type measureTextInput = {
   content: commentContentItem[];
   resized?: boolean;
   ender: boolean;
@@ -142,12 +136,7 @@ interface measureTextInput {
   lineCount: number;
   lineHeight?: number;
   charSize?: number;
-}
-
-interface measureTextParam extends measureTextInput {
-  lineHeight: number;
-  charSize: number;
-}
+};
 
 type measureInput = {
   font: commentFont;
@@ -156,32 +145,3 @@ type measureInput = {
   charSize: number;
   lineCount: number;
 };
-
-type ConfigKeys =
-  | "colors"
-  | "commentYPaddingTop"
-  | "commentYMarginBottom"
-  | "fontSize"
-  | "lineHeight"
-  | "doubleResizeMaxWidth"
-  | "fpsInterval"
-  | "cacheAge"
-  | "canvasWidth"
-  | "canvasHeight"
-  | "commentDrawRange"
-  | "commentDrawPadding"
-  | "collisionWidth"
-  | "collisionRange"
-  | "sameCARange"
-  | "sameCAGap"
-  | "sameCAMinScore";
-
-type T_Type =
-  | "string"
-  | "number"
-  | "bigint"
-  | "boolean"
-  | "symbol"
-  | "undefined"
-  | "object"
-  | "function";

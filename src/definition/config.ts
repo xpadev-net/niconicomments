@@ -116,14 +116,6 @@ const defaultConfig: Config = {
       small: 16.6,
     },
   },
-
-  /**
-   * コメントの余白 @flash
-   */
-  commentYPadding: {
-    default: 5,
-    resized: 3,
-  },
   /**
    * 高解像度時のズレ補正値 @html5?
    */
@@ -169,10 +161,6 @@ const defaultConfig: Config = {
    * (config.canvasWidth - config.commentDrawRange) / 2,
    */
   commentDrawPadding: 235,
-  /**
-   * 当たり判定の幅
-   */
-  collisionWidth: 40,
   /**
    * 当たり判定の左右幅
    * left: collisionWidth,

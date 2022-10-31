@@ -504,10 +504,10 @@ class FlashComment implements IComment {
     const height =
       (comment.fontSize *
         comment.lineHeight *
-        (1 + getConfig(config.commentYPaddingTop, true)[comment.size]) *
+        (1 + config.commentYPaddingTop[comment.size]) *
         (lineCount - 1) +
         comment.fontSize * comment.lineHeight +
-        getConfig(config.commentYMarginBottom, true)[comment.size] *
+        config.commentYMarginBottom[comment.size] *
           comment.lineHeight *
           comment.fontSize) *
       this.scale;
@@ -595,8 +595,8 @@ class FlashComment implements IComment {
       measure.height *= options.scale;
       measure.width *= options.scale;
     }
-    size.height = measure.height * getConfig(config.commentScale, true);
-    size.width = measure.width * getConfig(config.commentScale, true);
+    size.height = measure.height * this._globalScale;
+    size.width = measure.width * this._globalScale;
     size.lineHeight = measure.lineHeight;
     size.fontSize = measure.fontSize;
     size.content = measure.content;
@@ -673,10 +673,7 @@ class FlashComment implements IComment {
           (this.comment.fontSize * this.comment.lineHeight +
             Number(i) *
               (this.comment.fontSize * this.comment.lineHeight) *
-              (1 +
-                getConfig(config.commentYPaddingTop, true)[
-                  this.comment.size
-                ])) *
+              (1 + config.commentYPaddingTop[this.comment.size])) *
           (this.comment.layer === -1 ? options.scale : 1);
         this.context.strokeStyle = "rgba(255,255,0,0.5)";
         this.context.strokeRect(
@@ -770,11 +767,10 @@ class FlashComment implements IComment {
           this.comment.fontSize * this.comment.lineHeight +
           (lineOffset + lineCount) *
             (this.comment.fontSize * this.comment.lineHeight) *
-            (1 +
-              getConfig(config.commentYPaddingTop, true)[this.comment.size]) +
+            (1 + config.commentYPaddingTop[this.comment.size]) +
           this.comment.fontSize *
             this.comment.lineHeight *
-            getConfig(config.commentYOffset, true)[this.comment.size][
+            config.commentYOffset[this.comment.size][
               this.comment.resizedY ? "resized" : "default"
             ];
         context.strokeText(line, leftOffset, posY);

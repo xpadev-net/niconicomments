@@ -590,7 +590,6 @@ class FlashComment implements IComment {
       return size;
     }
     const measure = this.measureText(parsedData);
-    console.log(measure, this._globalScale);
     if (options.scale !== 1 && size.layer === -1) {
       measure.height *= options.scale;
       measure.width *= options.scale;

@@ -21,7 +21,7 @@ class HTML5Comment implements IComment {
   private readonly context: CanvasRenderingContext2D;
   public readonly comment: formattedCommentWithSize;
   public posY: number;
-  public image?: HTMLCanvasElement;
+  public image?: HTMLCanvasElement | null;
   constructor(comment: formattedComment, context: CanvasRenderingContext2D) {
     this.context = context;
     comment.content = comment.content.replace(/\t/g, "\u2003\u2003");
@@ -519,7 +519,7 @@ class HTML5Comment implements IComment {
     } else if (this.comment.loc === "shita") {
       posY = config.canvasHeight - this.posY - this.comment.height;
     }
-    if (!this.image) {
+    if (this.image === undefined) {
       this.image = this.getTextImage();
     }
     if (this.image) {
@@ -569,8 +569,12 @@ class HTML5Comment implements IComment {
   /**
    * drawTextで毎回fill/strokeすると重いので画像化して再利用できるようにする
    */
-  getTextImage(): HTMLCanvasElement | undefined {
-    if (this.comment.invisible) return;
+  getTextImage(): HTMLCanvasElement | null {
+    if (
+      this.comment.invisible ||
+      (this.comment.lineCount === 1 && this.comment.width === 0)
+    )
+      return null;
     const cacheKey =
         JSON.stringify(this.comment.content) +
         "@@HTML5@@" +
@@ -605,7 +609,10 @@ class HTML5Comment implements IComment {
     context.lineWidth = config.contextLineWidth;
     const { fontSize, scale } = getFontSizeAndScale(this.comment.charSize);
     context.font = parseFont(this.comment.font, fontSize);
-    const drawScale = getConfig(config.commentScale, false) * scale;
+    const drawScale =
+      getConfig(config.commentScale, false) *
+      scale *
+      (this.comment.layer !== -1 ? 1 : options.scale);
     context.scale(drawScale, drawScale);
     context.fillStyle = this.comment.color;
     let leftOffset = 0,

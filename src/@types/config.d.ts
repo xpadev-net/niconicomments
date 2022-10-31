@@ -33,7 +33,6 @@ type Config = {
   commentScale: configItem<number>;
   commentStageSize: configItem<commentStageSize>;
   commentYPadding: configResizedItem<number>;
-  commentYOffset: number;
   contextFillLiveOpacity: number;
   contextLineWidth: number;
   contextStrokeColor: string;
@@ -48,6 +47,11 @@ type Config = {
   fontSize: configItem<configSizeItem<configResizedItem<number>>>;
   fpsInterval: number;
   lineCounts: configItem<lineCounts>;
+  lineHeight: configItem<configSizeItem<configResizedItem<number>>>;
+  doubleResizeMaxWidth: configItem<typeDoubleResizeMaxWidth>;
+  commentYPaddingTop: configItem<configSizeItem<number>>;
+  commentYMarginBottom: configItem<configSizeItem<number>>;
+  commentYOffset: configItem<configSizeItem<configResizedItem<number>>>;
   hiResCommentCorrection: number;
   minFontSize: number;
   sameCAGap: number;

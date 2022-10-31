@@ -43,7 +43,7 @@ const defaultConfig: Config = {
    */
   commentScale: {
     html5: 1920 / 683,
-    flash: 1920 / 640,
+    flash: 1920 / 683,
   },
 
   /**
@@ -57,7 +57,7 @@ const defaultConfig: Config = {
     },
     flash: {
       width: 512,
-      fullWidth: 630,
+      fullWidth: 610,
       height: 385,
     },
   },
@@ -90,8 +90,8 @@ const defaultConfig: Config = {
         resized: 12,
       },
       big: {
-        default: 39,
-        resized: 19.5,
+        default: 31.4,
+        resized: 20,
       },
     },
   },
@@ -100,39 +100,20 @@ const defaultConfig: Config = {
    * 行高
    */
   lineCounts: {
-    html5: {
-      default: {
-        big: 8.4,
-        medium: 13.1,
-        small: 21,
-      },
-      resized: {
-        big: 16,
-        medium: 25.4,
-        small: 38,
-      },
-      doubleResized: {
-        big: 7.8,
-        medium: 11.3,
-        small: 16.6,
-      },
+    default: {
+      big: 8.4,
+      medium: 13.1,
+      small: 21,
     },
-    flash: {
-      default: {
-        big: 8.4,
-        medium: 13.1,
-        small: 21,
-      },
-      resized: {
-        big: 16,
-        medium: 25.4,
-        small: 38,
-      },
-      doubleResized: {
-        big: 7.5,
-        medium: 11.3,
-        small: 16.6,
-      },
+    resized: {
+      big: 16,
+      medium: 25.4,
+      small: 38,
+    },
+    doubleResized: {
+      big: 7.8,
+      medium: 11.3,
+      small: 16.6,
     },
   },
 
@@ -143,10 +124,6 @@ const defaultConfig: Config = {
     default: 5,
     resized: 3,
   },
-  /**
-   * 未使用
-   */
-  commentYOffset: 0,
   /**
    * 高解像度時のズレ補正値 @html5?
    */
@@ -265,6 +242,42 @@ const defaultConfig: Config = {
       'normal 600 [size]px gulim, "Microsoft JhengHei UI", Arial, "ＭＳ Ｐゴシック", "MS PGothic", MSPGothic, MS-PGothic',
     simsun:
       'normal 400 [size]px simsun, "游明朝体", "游明朝", "Yu Mincho", YuMincho, yumincho, YuMin-Medium',
+  },
+  lineHeight: {
+    small: {
+      default: 1.1,
+      resized: 1,
+    },
+    medium: {
+      default: 1.1,
+      resized: 1,
+    },
+    big: {
+      default: 1.06,
+      resized: 1.1,
+    },
+  },
+  doubleResizeMaxWidth: {
+    full: 1200,
+    normal: 940,
+  },
+  commentYPaddingTop: {
+    small: 0.126,
+    medium: 0.07,
+    big: 0.126,
+  },
+  commentYMarginBottom: {
+    small: 0.24,
+    medium: 0.28,
+    big: 0.24,
+  },
+  commentYOffset: {
+    small: { default: 0, resized: 0 },
+    medium: { default: 0, resized: 0 },
+    big: {
+      default: -1 / 22,
+      resized: 0,
+    },
   },
 };
 

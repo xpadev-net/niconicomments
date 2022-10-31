@@ -326,7 +326,7 @@ class NiconiComments {
           this.context.fillRect(
             config.collisionRange.left,
             value.posY,
-            config.collisionWidth,
+            config.contextLineWidth,
             value.height
           );
         }
@@ -338,7 +338,7 @@ class NiconiComments {
           this.context.fillRect(
             config.collisionRange.right,
             value.posY,
-            config.collisionWidth * -1,
+            config.contextLineWidth * -1,
             value.height
           );
         }

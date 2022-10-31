@@ -612,7 +612,7 @@ class HTML5Comment implements IComment {
     const drawScale =
       getConfig(config.commentScale, false) *
       scale *
-      (this.comment.layer !== -1 ? 1 : options.scale);
+      (this.comment.layer === -1 ? options.scale : 1);
     context.scale(drawScale, drawScale);
     context.fillStyle = this.comment.color;
     let leftOffset = 0,

@@ -229,14 +229,15 @@ const getConfig = <T>(input: configItem<T>, isFlash = false): T => {
  * @param {formattedComment} comment
  */
 const isFlashComment = (comment: formattedComment): boolean =>
-  !(
-    comment.mail.includes("gothic") ||
-    comment.mail.includes("defont") ||
-    comment.mail.includes("mincho")
-  ) &&
-  ((comment.date < config.flashThreshold && options.mode === "default") ||
-    options.mode === "flash" ||
-    comment.mail.includes("nico:flash"));
+  options.mode === "flash" ||
+  (options.mode === "default" &&
+    !(
+      comment.mail.includes("gothic") ||
+      comment.mail.includes("defont") ||
+      comment.mail.includes("mincho")
+    ) &&
+    (comment.date < config.flashThreshold ||
+      comment.mail.includes("nico:flash")));
 
 export {
   groupBy,

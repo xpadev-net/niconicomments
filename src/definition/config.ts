@@ -43,7 +43,7 @@ const defaultConfig: Config = {
    */
   commentScale: {
     html5: 1920 / 683,
-    flash: 1,
+    flash: 1920 / 683,
   },
 
   /**
@@ -56,9 +56,9 @@ const defaultConfig: Config = {
       height: 384,
     },
     flash: {
-      width: 1440,
-      fullWidth: 1920,
-      height: 1080,
+      width: 512,
+      fullWidth: 610,
+      height: 385,
     },
   },
 
@@ -82,16 +82,16 @@ const defaultConfig: Config = {
     },
     flash: {
       small: {
-        default: 47,
-        resized: 26.1,
+        default: 15,
+        resized: 7.5,
       },
       medium: {
-        default: 74,
-        resized: 38.7,
+        default: 24,
+        resized: 12,
       },
       big: {
-        default: 110,
-        resized: 61,
+        default: 31.4,
+        resized: 20,
       },
     },
   },
@@ -100,39 +100,20 @@ const defaultConfig: Config = {
    * 行高
    */
   lineCounts: {
-    html5: {
-      default: {
-        big: 8.4,
-        medium: 13.1,
-        small: 21,
-      },
-      resized: {
-        big: 16,
-        medium: 25.4,
-        small: 38,
-      },
-      doubleResized: {
-        big: 7.8,
-        medium: 11.3,
-        small: 16.6,
-      },
+    default: {
+      big: 8.4,
+      medium: 13.1,
+      small: 21,
     },
-    flash: {
-      default: {
-        big: 8.4,
-        medium: 13.1,
-        small: 21,
-      },
-      resized: {
-        big: 16,
-        medium: 25.4,
-        small: 38,
-      },
-      doubleResized: {
-        big: 7.5,
-        medium: 11.3,
-        small: 16.6,
-      },
+    resized: {
+      big: 16,
+      medium: 25.4,
+      small: 38,
+    },
+    doubleResized: {
+      big: 7.8,
+      medium: 11.3,
+      small: 16.6,
     },
   },
 
@@ -264,21 +245,21 @@ const defaultConfig: Config = {
   },
   lineHeight: {
     small: {
-      default: 1,
+      default: 1.1,
       resized: 1,
     },
     medium: {
-      default: 1,
+      default: 1.1,
       resized: 1,
     },
     big: {
-      default: 1.03,
-      resized: 1.01,
+      default: 1.06,
+      resized: 1.1,
     },
   },
   doubleResizeMaxWidth: {
-    full: 3550,
-    normal: 2650,
+    full: 1200,
+    normal: 940,
   },
   commentYPaddingTop: {
     small: 0.126,

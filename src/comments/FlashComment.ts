@@ -7,13 +7,17 @@ import { imageCache } from "@/contexts/cache";
 class FlashComment implements IComment {
   private readonly context: CanvasRenderingContext2D;
   public readonly comment: formattedCommentWithSize;
+  private readonly _globalScale: number;
+  private scale: number;
   public posY: number;
   public image?: HTMLCanvasElement | null;
   constructor(comment: formattedComment, context: CanvasRenderingContext2D) {
     this.context = context;
+    this.scale = 1;
     comment.content = comment.content.replace(/\t/g, "\u2003\u2003");
     this.comment = this.getCommentSize(this.parseCommandAndNicoscript(comment));
     this.posY = 0;
+    this._globalScale = getConfig(config.commentScale, true);
   }
 
   get invisible() {
@@ -305,11 +309,128 @@ class FlashComment implements IComment {
       data.long = Math.floor(Number(data.long) * 100);
     }
     const content: commentContentItem[] = [];
-    content.push({ content: comment.content });
+    const parts = (comment.content.match(/\n|[^\n]+/g) || []).map((val) =>
+      Array.from(val.match(/[ -~｡-ﾟ]+|[^ -~｡-ﾟ]+/g) || [])
+    );
+    const regex = {
+      simsunStrong: new RegExp(config.flashChar.simsunStrong),
+      simsunWeak: new RegExp(config.flashChar.simsunWeak),
+      gulim: new RegExp(config.flashChar.gulim),
+      gothic: new RegExp(config.flashChar.gothic),
+    };
+    const getFontName = (font: string) =>
+      font.match("^simsun.+")
+        ? "simsun"
+        : font === "gothic"
+        ? "defont"
+        : (font as commentFlashFont);
+    for (const line of parts) {
+      const lineContent: commentContentItem[] = [];
+      for (const part of line) {
+        if (part.match(/[ -~｡-ﾟ]+/g) !== null) {
+          lineContent.push({ content: part });
+          continue;
+        }
+        const index: commentContentIndex[] = [];
+        let match;
+        if ((match = regex.simsunStrong.exec(part)) !== null) {
+          index.push({ font: "simsunStrong", index: match.index });
+        }
+        if ((match = regex.simsunWeak.exec(part)) !== null) {
+          index.push({ font: "simsunWeak", index: match.index });
+        }
+        if ((match = regex.gulim.exec(part)) !== null) {
+          index.push({ font: "gulim", index: match.index });
+        }
+        if ((match = regex.gothic.exec(part)) !== null) {
+          index.push({ font: "gothic", index: match.index });
+        }
+        if (index.length === 0) {
+          lineContent.push({ content: part });
+        } else if (index.length === 1 && index[0]) {
+          lineContent.push({ content: part, font: getFontName(index[0].font) });
+        } else {
+          index.sort((a, b) => {
+            if (a.index > b.index) {
+              return 1;
+            } else if (a.index < b.index) {
+              return -1;
+            } else {
+              return 0;
+            }
+          });
+          if (config.flashMode === "xp") {
+            let offset = 0;
+            for (let i = 1; i < index.length; i++) {
+              const currentVal = index[i],
+                lastVal = index[i - 1];
+              if (currentVal === undefined || lastVal === undefined) continue;
+              lineContent.push({
+                content: part.slice(offset, currentVal.index),
+                font: getFontName(lastVal.font),
+              });
+              offset = currentVal.index;
+            }
+            const val = index[index.length - 1];
+            if (val)
+              lineContent.push({
+                content: part.slice(offset),
+                font: getFontName(val.font),
+              });
+          } else {
+            const firstVal = index[0],
+              secondVal = index[1];
+            if (!firstVal || !secondVal) {
+              lineContent.push({ content: part });
+              continue;
+            }
+            if (firstVal.font !== "gothic") {
+              lineContent.push({
+                content: part,
+                font: getFontName(firstVal.font),
+              });
+            } else {
+              lineContent.push({
+                content: part.slice(0, secondVal.index),
+                font: getFontName(firstVal.font),
+              });
+              lineContent.push({
+                content: part.slice(secondVal.index),
+                font: getFontName(secondVal.font),
+              });
+            }
+          }
+        }
+      }
+      const firstContent = lineContent[0];
+      if (firstContent && firstContent.font) {
+        content.push(
+          ...lineContent.map((val) => {
+            if (!val.font) {
+              val.font = firstContent.font;
+            }
+            return val;
+          })
+        );
+      } else {
+        content.push(...lineContent);
+      }
+    }
+    const val = content[0];
+    if (val && val.font) {
+      data.font = val.font;
+    }
     const lineCount = content.reduce((pv, val) => {
       return pv + (val.content.match(/\n/g)?.length || 0);
     }, 1);
-    const lineOffset = 0;
+    const lineOffset =
+      (comment.content.match(new RegExp(config.flashScriptChar.super, "g"))
+        ?.length || 0) *
+        -0.1125 +
+      (comment.content.match(new RegExp(config.flashScriptChar.sub, "g"))
+        ?.length || 0) *
+        0.1125;
+    console.log(comment, content, data);
     return {
       ...comment,
       content,
@@ -378,25 +499,27 @@ class FlashComment implements IComment {
       width_arr.push(currentWidth);
       item.width = widths;
     }
-    let width_max = Math.max(...width_arr);
+    const width = Math.max(...width_arr);
+    let width_max = width * this.scale;
     const height =
-      comment.fontSize *
+      (comment.fontSize *
         comment.lineHeight *
         (1 + getConfig(config.commentYPaddingTop, true)[comment.size]) *
         (lineCount - 1) +
-      comment.fontSize * comment.lineHeight +
-      getConfig(config.commentYMarginBottom, true)[comment.size] *
-        comment.lineHeight *
-        comment.fontSize;
+        comment.fontSize * comment.lineHeight +
+        getConfig(config.commentYMarginBottom, true)[comment.size] *
+          comment.lineHeight *
+          comment.fontSize) *
+      this.scale;
     const widthLimit = getConfig(config.commentStageSize, true)[
       comment.full ? "fullWidth" : "width"
     ];
     if (comment.loc !== "naka" && !comment.resizedY) {
       if (width_max > widthLimit) {
-        while (width_max > widthLimit) {
-          width_max /= 1.331;
-          comment.fontSize -= 3;
-        }
+        /*while (width * this.scale > widthLimit){
+          this.scale -= 0.01;
+        }*/
+        this.scale = Math.floor((widthLimit / width_max) * 200) / 200;
         comment.resized = true;
         comment.resizedX = true;
         this.context.font = parseFont(comment.font, comment.fontSize);
@@ -408,8 +531,8 @@ class FlashComment implements IComment {
       width_max > widthLimit &&
       !comment.resizedX
     ) {
-      comment.fontSize = configFontSize[comment.size].default;
-      comment.lineHeight = configLineHeight[comment.size].default * 1.05;
+      comment.fontSize = configFontSize[comment.size].default * 1.1;
+      comment.lineHeight = configLineHeight[comment.size].default;
       comment.resized = true;
       comment.resizedX = true;
       this.context.font = parseFont(comment.font, comment.fontSize);
@@ -417,8 +540,8 @@ class FlashComment implements IComment {
     } else if (comment.loc !== "naka" && comment.resizedY && comment.resizedX) {
       if (comment.full && width_max > configDoubleResizeMaxWidth.full) {
         while (width_max > configDoubleResizeMaxWidth.full) {
-          width_max /= 1.331;
-          comment.fontSize -= 3;
+          width_max /= 1.1;
+          comment.fontSize -= 0.1;
         }
         this.context.font = parseFont(comment.font, comment.fontSize);
         return this.measureText(comment);
@@ -427,24 +550,13 @@ class FlashComment implements IComment {
         width_max > configDoubleResizeMaxWidth.normal
       ) {
         while (width_max > configDoubleResizeMaxWidth.normal) {
-          width_max /= 1.331;
-          comment.fontSize -= 3;
+          width_max /= 1.1;
+          comment.fontSize -= 0.1;
         }
         this.context.font = parseFont(comment.font, comment.fontSize);
         return this.measureText(comment);
       }
     }
-    console.log({
-      width: width_max,
-      charSize: 0,
-      height: height,
-      resized: !!comment.resized,
-      fontSize: comment.fontSize,
-      lineHeight: comment.lineHeight,
-      content: comment.content as commentMeasuredContentItem[],
-      resizedX: !!comment.resizedX,
-      resizedY: !!comment.resizedY,
-    });
     return {
       width: width_max,
       charSize: 0,
@@ -484,8 +596,8 @@ class FlashComment implements IComment {
       measure.width *= options.scale;
       measure.fontSize *= options.scale;
     }
-    size.height = measure.height;
-    size.width = measure.width;
+    size.height = measure.height * getConfig(config.commentScale, true);
+    size.width = measure.width * getConfig(config.commentScale, true);
     size.lineHeight = measure.lineHeight;
     size.fontSize = measure.fontSize;
     size.content = measure.content;
@@ -550,7 +662,7 @@ class FlashComment implements IComment {
       this.context.drawImage(this.image, posX, posY);
     }
     if (showCollision) {
-      this.context.strokeStyle = "rgba(0,255,255,1)";
+      this.context.strokeStyle = "rgba(255,0,255,1)";
       this.context.strokeRect(
         posX,
         posY,
@@ -566,9 +678,12 @@ class FlashComment implements IComment {
         this.context.strokeStyle = "rgba(255,255,0,0.5)";
         this.context.strokeRect(
           posX,
-          posY + linePosY,
+          posY + linePosY * this._globalScale,
           this.comment.width,
-          this.comment.fontSize * this.comment.lineHeight * -1
+          this.comment.fontSize *
+            this.comment.lineHeight *
+            -1 *
+            this._globalScale
         );
       }
     }
@@ -623,6 +738,10 @@ class FlashComment implements IComment {
     context.textBaseline = "alphabetic";
     context.lineWidth = 4;
     context.font = parseFont(this.comment.font, this.comment.fontSize);
+    context.scale(
+      this._globalScale * this.scale,
+      this._globalScale * this.scale
+    );
     if (this.comment._live) {
       context.fillStyle = `rgba(${hex2rgb(this.comment.color).join(",")},${
         config.contextFillLiveOpacity

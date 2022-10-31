@@ -273,7 +273,7 @@ class NiconiComments {
           user.push(index);
         }
       }
-      this.timeline[Number(vpos)] = owner.concat(user);
+      this.timeline[Number(vpos)] = user.concat(owner);
     }
     logger(`parseData complete: ${performance.now() - sortCommentStart}ms`);
     return parsedData;

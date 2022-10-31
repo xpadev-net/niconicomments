@@ -14,10 +14,10 @@ class FlashComment implements IComment {
   constructor(comment: formattedComment, context: CanvasRenderingContext2D) {
     this.context = context;
     this.scale = 1;
+    this._globalScale = getConfig(config.commentScale, true);
+    this.posY = 0;
     comment.content = comment.content.replace(/\t/g, "\u2003\u2003");
     this.comment = this.getCommentSize(this.parseCommandAndNicoscript(comment));
-    this.posY = 0;
-    this._globalScale = getConfig(config.commentScale, true);
   }
 
   get invisible() {
@@ -430,7 +430,6 @@ class FlashComment implements IComment {
       (comment.content.match(new RegExp(config.flashScriptChar.sub, "g"))
         ?.length || 0) *
         0.1125;
-    console.log(comment, content, data);
     return {
       ...comment,
       content,
@@ -591,6 +590,7 @@ class FlashComment implements IComment {
       return size;
     }
     const measure = this.measureText(parsedData);
+    console.log(measure, this._globalScale);
     if (options.scale !== 1 && size.layer === -1) {
       measure.height *= options.scale;
       measure.width *= options.scale;

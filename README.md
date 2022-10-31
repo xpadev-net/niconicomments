@@ -14,7 +14,7 @@ npm： https://www.npmjs.com/package/@xpadev-net/niconicomments
 このライブラリ本体は描画部分のみのため特許侵害に当たるとは考えていませんが、ニコニコ動画運営(とその近辺の人)に叩かれる可能性があります  
 (名前は出しませんがすでにいくつかのOSSに被害が出ています)  
 また、このライブラリを使用するかどうかに関わらず、リアルタイムでコメントを取得、画面を描画、コメントの投稿という一連の流れを実装した場合、ニコニコの特許を侵害する可能性があります  
-詳しくはこちら[ニコニコが保有する特許について](https://github.com/xpadev-net/niconicomments/blob/master/ABOUT_PATENT.md)を参照してください  
+詳しくはこちら[ニコニコが保有する特許について](https://github.com/xpadev-net/niconicomments/blob/develop/ABOUT_PATENT.md)を参照してください  
 **※当ライブラリを削除する予定は一切ありません**
 
 ## Installation

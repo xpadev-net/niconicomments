@@ -1,166 +1,171 @@
 * {
-    margin: 0;
-    padding: 0;
-    font-family: system-ui, -apple-system, segoe ui, Roboto, Ubuntu, Cantarell, noto sans, sans-serif, apple color emoji, segoe ui emoji, segoe ui symbol, noto color emoji;
-    font-weight: 300;
-    box-sizing: border-box
+  margin: 0;
+  padding: 0;
+  font-family: system-ui, -apple-system, segoe ui, Roboto, Ubuntu, Cantarell,
+    noto sans, sans-serif, apple color emoji, segoe ui emoji, segoe ui symbol,
+    noto color emoji;
+  font-weight: 300;
+  box-sizing: border-box;
 }
 
 body {
-    color: #fff;
-    background-color: #10141c
+  color: #fff;
+  background-color: #10141c;
 }
 
 a {
-    color: #fff
+  color: #fff;
 }
 
 @media screen and (max-width: 700px) {
-    #aside {
-        display: none
-    }
+  #aside {
+    display: none;
+  }
 
-    #main {
-        width: 100%
-    }
+  #main {
+    width: 100%;
+  }
 }
 
 .package_name {
-    font-weight: 700
+  font-weight: 700;
 }
 
 #index {
-    margin: 20px 0
+  margin: 20px 0;
 }
 
-aside, main {
-    float: left;
-    padding: 10px;
-    max-height: 100vh;
-    overflow-y: scroll
+aside,
+main {
+  float: left;
+  padding: 10px;
+  max-height: 100vh;
+  overflow-y: scroll;
 }
 
 aside {
-    width: 30%;
-    min-height: 100vh
+  width: 30%;
+  min-height: 100vh;
 }
 
 main {
-    width: 70%
+  width: 70%;
 }
 
 section {
-    padding: 10px
+  padding: 10px;
 }
 
 pre {
-    border: solid 2px #fff;
-    padding: 10px;
-    color: #fff
+  border: solid 2px #fff;
+  padding: 10px;
+  color: #fff;
+  overflow: scroll;
 }
 
 ul {
-    padding-left: 20px
+  padding-left: 20px;
 }
 
 .item {
-    padding: 10px 0;
-    margin-left: 10px
+  padding: 10px 0;
+  margin-left: 10px;
 }
-.item.deprecated{
-    color: #999;
+.deprecated {
+  color: #999;
 }
 
 span.red {
-    color: #f07178
+  color: #f07178;
 }
 
 span.green {
-    color: #aad94c
+  color: #aad94c;
 }
 
 span.yellow {
-    color: #ffb454
+  color: #ffb454;
 }
 
 span.blue {
-    color: #39bae6
+  color: #39bae6;
 }
 
 span.orange {
-    color: #ff8f40
+  color: #ff8f40;
 }
 
 span.gray {
-    color: #999
+  color: #999;
 }
 
 span.type {
-    background-color: #333;
-    color: #ccc;
-    border-radius: 5px;
-    font-size: .75em;
-    line-height: inherit;
-    margin-left: 5px;
-    padding: 0 2px
+  background-color: #333;
+  color: #ccc;
+  border-radius: 5px;
+  font-size: 0.75em;
+  line-height: inherit;
+  margin-left: 5px;
+  padding: 0 2px;
 }
-span.important{
-    color: red;
-    font-size: 1.5em;
+span.important {
+  color: red;
+  font-size: 1.5em;
 }
-span.warn::before{
-    content:"⚠";
-    width: 20px;
-    height: 20px;
-    text-align: center;
-    display: inline-block;
-    margin-right: 5px;
+span.warn::before {
+  content: "⚠";
+  width: 20px;
+  height: 20px;
+  text-align: center;
+  display: inline-block;
+  margin-right: 5px;
 }
-.warn{
-    color: #880000;
-    background: #ffcccc;
-    padding: 5px;
-    border: solid 1px #FF0000;
-    margin: 5px 0;
-    display: inline-block;
+.warn {
+  color: #880000;
+  background: #ffcccc;
+  padding: 5px;
+  border: solid 1px #ff0000;
+  margin: 5px 0;
+  display: inline-block;
 }
-.warn a{
-    color: unset;
+.warn a {
+  color: unset;
 }
-span.note::before{
-    content:"i";
-    width: 20px;
-    height: 20px;
-    text-align: center;
-    background: #9CDCFE;
-    color: #0000ff;
-    border: solid #0000FF 1px;
-    border-radius: 50%;
-    display: inline-block;
-    margin-right: 5px;
+span.note::before {
+  content: "i";
+  width: 20px;
+  height: 20px;
+  text-align: center;
+  background: #9cdcfe;
+  color: #0000ff;
+  border: solid #0000ff 1px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 5px;
 }
-.note{
-    color: black;
-    background: #cccccc;
-    padding: 5px;
-    border: solid 1px #666666;
-    margin: 5px 0;
-    display: inline-block;
+.note {
+  color: black;
+  background: #cccccc;
+  padding: 5px;
+  border: solid 1px #666666;
+  margin: 5px 0;
+  display: inline-block;
 }
-table{
-    border-collapse:  collapse;
+table {
+  border-collapse: collapse;
 }
-table .type{
-    color: #ccc;
-    font-size: .75em;
-    line-height: inherit;
-    padding: 0 2px;
-    text-align: center;
+table .type {
+  color: #ccc;
+  font-size: 0.75em;
+  line-height: inherit;
+  padding: 0 2px;
+  text-align: center;
 }
-.type a{
-    color: unset;
+.type a {
+  color: unset;
 }
-td,th{
-    border: solid 1px white;
-    padding: 2px 5px;
+td,
+th {
+  border: solid 1px white;
+  padding: 2px 5px;
 }

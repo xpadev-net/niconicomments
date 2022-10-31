@@ -1,83 +1,6 @@
-type inputFormatType =
-  | "niconicome"
-  | "formatted"
-  | "legacy"
-  | "legacyOwner"
-  | "owner"
-  | "v1"
-  | "default";
-type modeType = "default" | "html5" | "flash";
-type InitOptions = {
-  config?: ConfigNullable;
-  debug?: boolean;
-  drawAllImageOnLoad?: boolean;
-  enableLegacyPiP?: boolean;
-  format?: inputFormatType;
-  formatted?: boolean;
-  keepCA?: boolean;
-  mode?: modeType;
-  scale?: number;
-  showCollision?: boolean;
-  showCommentCount?: boolean;
-  showFPS?: boolean;
-  useLegacy?: boolean;
-  video?: HTMLVideoElement | undefined;
-};
-type Options = {
-  config: ConfigNullable;
-  debug: boolean;
-  drawAllImageOnLoad: boolean;
-  enableLegacyPiP: boolean;
-  format: inputFormatType;
-  formatted: boolean;
-  keepCA: boolean;
-  mode: modeType;
-  scale: number;
-  showCollision: boolean;
-  showCommentCount: boolean;
-  showFPS: boolean;
-  useLegacy: boolean;
-  video: HTMLVideoElement | undefined;
-};
-type rawApiResponse = {
-  [key: string]: apiPing | apiThread | apiLeaf | apiGlobalNumRes | apiChat;
-};
-type apiPing = {
-  content: string;
-};
-type apiThread = {
-  resultcode: number;
-  thread: string;
-  server_time: number;
-  ticket: string;
-  revision: number;
-};
-type apiLeaf = {
-  thread: string;
-  count: number;
-};
-type apiGlobalNumRes = {
-  thread: string;
-  num_res: number;
-};
-type apiChat = {
-  thread: string;
-  no: number;
-  vpos: number;
-  date: number;
-  date_usec: number;
-  nicoru: number;
-  premium: number;
-  anonymity: number;
-  user_id: string;
-  mail: string;
-  content: string;
-  deleted: number;
-};
-type formattedComment = {
+type formattedCommentWithFont = {
   id: number;
   vpos: number;
-  content: string;
   date: number;
   date_usec: number;
   owner: boolean;
@@ -85,18 +8,6 @@ type formattedComment = {
   mail: string[];
   user_id: number;
   layer: number;
-};
-type formattedLegacyComment = {
-  id: number;
-  vpos: number;
-  content: string;
-  date: number;
-  date_usec: number;
-  owner: boolean;
-  premium: boolean;
-  mail: string[];
-};
-type formattedCommentWithFont = formattedComment & {
   loc: commentLoc;
   size: commentSize;
   fontSize: number;
@@ -107,25 +18,39 @@ type formattedCommentWithFont = formattedComment & {
   _live: boolean;
   long: number;
   invisible: boolean;
+  content: commentContentItem[];
+  flash: boolean;
+  lineCount: number;
+  lineOffset: number;
 };
 type formattedCommentWithSize = formattedCommentWithFont & {
   height: number;
   width: number;
-  width_max: number;
-  width_min: number;
   lineHeight: number;
+  resized: boolean;
+  resizedX: boolean;
+  resizedY: boolean;
+  content: commentMeasuredContentItem[];
+  charSize: number;
 };
 type parsedComment = formattedCommentWithSize & {
   posY: number;
   image?: HTMLCanvasElement | boolean;
 };
-type groupedResult = formattedCommentWithFont & {
+type commentContentItem = {
+  content: string;
+  font?: commentFlashFont;
+  width?: number[];
+};
+type commentMeasuredContentItem = commentContentItem & {
+  width: number[];
+};
+type commentContentIndex = {
   index: number;
+  font: "gothic" | "gulim" | "simsunStrong" | "simsunWeak";
 };
-type groupedComments = {
-  [key in commentFont]: { [key: string]: groupedResult[] };
-};
-type commentFont = "defont" | "mincho" | "gothic";
+type commentFont = "defont" | "mincho" | "gothic" | "gulim" | "simsun";
+type commentFlashFont = "defont" | "gulim" | "simsun";
 type commentSize = "big" | "medium" | "small";
 type commentLoc = "ue" | "naka" | "shita";
 type collision = { [key in collisionPos]: collisionItem };
@@ -174,12 +99,14 @@ type nicoScriptDefault = {
 };
 type measureTextResult = {
   width: number;
-  width_max: number;
-  width_min: number;
   height: number;
   resized: boolean;
+  resizedX: boolean;
+  resizedY: boolean;
   fontSize: number;
   lineHeight: number;
+  content: commentMeasuredContentItem[];
+  charSize: number;
 };
 type parsedCommand = {
   loc: commentLoc | undefined;
@@ -193,115 +120,28 @@ type parsedCommand = {
   invisible: boolean;
   long: number | undefined;
 };
-type typeFontSize = {
-  [key in commentSize]: {
-    default: number;
-    resized: number;
-  };
-};
-type typeDoubleResizeMaxWidth = {
-  [key in "full" | "normal"]: {
-    html5: number;
-    default: number;
-    flash: number;
-  };
-};
-type v1Thread = {
-  id: string;
-  fork: string;
-  commentCount: number;
-  comments: { [key: string]: v1Comment };
-};
-type v1Comment = {
-  id: string;
-  no: number;
-  vposMs: number;
-  body: string;
-  commands: string[];
-  userId: string;
-  isPremium: boolean;
-  score: number;
-  postedAt: string;
-  nicoruCount: number;
-  nicoruId: undefined;
-  source: string;
-  isMyPost: boolean;
-};
-type ownerComment = {
-  time: string;
-  command: string;
-  comment: string;
-};
-type Config = {
-  colors: { [key: string]: string };
-  commentYPaddingTop: number;
-  commentYMarginBottom: number;
-  fontSize: typeFontSize;
-  lineHeight: typeFontSize;
-  doubleResizeMaxWidth: typeDoubleResizeMaxWidth;
-  contextStrokeColor: string;
-  contextStrokeInversionColor: string;
-  contextStrokeOpacity: number;
-  contextFillLiveOpacity: number;
-  contextLineWidth: number;
-  fpsInterval: number;
-  cacheAge: number;
-  canvasWidth: number;
-  canvasHeight: number;
-  commentDrawRange: number;
-  commentDrawPadding: number;
-  collisionWidth: number;
-  collisionRange: { [key in "left" | "right"]: number };
-  sameCARange: number;
-  sameCAGap: number;
-  sameCAMinScore: number;
+
+type measureTextInput = {
+  content: commentContentItem[];
+  resized?: boolean;
+  ender: boolean;
+  size: commentSize;
+  fontSize: number;
+  resizedY?: boolean;
+  resizedX?: boolean;
+  font: commentFont;
+  loc: commentLoc;
+  full: boolean;
+  flash: boolean;
+  lineCount: number;
+  lineHeight?: number;
+  charSize?: number;
 };
 
-type ConfigNullable = {
-  colors?: { [key: string]: string };
-  commentYPaddingTop?: number;
-  commentYMarginBottom?: number;
-  fontSize?: typeFontSize;
-  lineHeight?: typeFontSize;
-  doubleResizeMaxWidth?: typeDoubleResizeMaxWidth;
-  fpsInterval?: number;
-  cacheAge?: number;
-  canvasWidth?: number;
-  canvasHeight?: number;
-  commentDrawRange?: number;
-  commentDrawPadding?: number;
-  collisionWidth?: number;
-  collisionRange?: { [key in "left" | "right"]: number };
-  sameCARange?: number;
-  sameCAGap?: number;
-  sameCAMinScore?: number;
+type measureInput = {
+  font: commentFont;
+  content: commentContentItem[];
+  lineHeight: number;
+  charSize: number;
+  lineCount: number;
 };
-
-type ConfigKeys =
-  | "colors"
-  | "commentYPaddingTop"
-  | "commentYMarginBottom"
-  | "fontSize"
-  | "lineHeight"
-  | "doubleResizeMaxWidth"
-  | "fpsInterval"
-  | "cacheAge"
-  | "canvasWidth"
-  | "canvasHeight"
-  | "commentDrawRange"
-  | "commentDrawPadding"
-  | "collisionWidth"
-  | "collisionRange"
-  | "sameCARange"
-  | "sameCAGap"
-  | "sameCAMinScore";
-
-type T_Type =
-  | "string"
-  | "number"
-  | "bigint"
-  | "boolean"
-  | "symbol"
-  | "undefined"
-  | "object"
-  | "function";

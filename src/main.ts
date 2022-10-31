@@ -204,10 +204,16 @@ class NiconiComments {
             comment.flash
           );
           arrayPush(this.timeline, vpos, index);
-          if (left_pos + comment.width >= config.collisionRange.right) {
+          if (
+            left_pos + comment.width >= config.collisionRange.right &&
+            left_pos <= config.collisionRange.right
+          ) {
             arrayPush(this.collision.right, vpos, index);
           }
-          if (left_pos <= config.collisionRange.left) {
+          if (
+            left_pos + comment.width >= config.collisionRange.left &&
+            left_pos <= config.collisionRange.left
+          ) {
             arrayPush(this.collision.left, vpos, index);
           }
         }
@@ -309,6 +315,36 @@ class NiconiComments {
       );
     }
     const timelineRange = this.timeline[vpos];
+    if (this.showCollision) {
+      const leftCollision = this.collision.left[vpos],
+        rightCollision = this.collision.right[vpos];
+      this.context.fillStyle = "red";
+      if (leftCollision) {
+        for (const index of leftCollision) {
+          const value = this.data[index];
+          if (!value) continue;
+          this.context.fillRect(
+            config.collisionRange.left,
+            value.posY,
+            config.collisionWidth,
+            value.height
+          );
+        }
+      }
+      if (rightCollision) {
+        for (const index of rightCollision) {
+          const value = this.data[index];
+          if (!value) continue;
+          this.context.fillRect(
+            config.collisionRange.right,
+            value.posY,
+            config.collisionWidth * -1,
+            value.height
+          );
+        }
+      }
+    }
+
     if (timelineRange) {
       for (const index of timelineRange) {
         const comment = this.data[index];

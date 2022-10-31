@@ -179,8 +179,8 @@ const defaultConfig: Config = {
    * right: canvasWidth - collisionWidth
    */
   collisionRange: {
-    left: 40,
-    right: 1880,
+    left: 235,
+    right: 1685,
   },
   /**
    * 同一CAと判定する投下経過時間の最大値(秒)

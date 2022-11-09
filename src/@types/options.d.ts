@@ -6,6 +6,14 @@ type inputFormatType =
   | "owner"
   | "v1"
   | "default";
+type inputFormat =
+  | XMLDocument
+  | formattedComment[]
+  | formattedLegacyComment[]
+  | rawApiResponse[]
+  | ownerComment[]
+  | v1Thread[]
+  | string;
 type modeType = "default" | "html5" | "flash";
 type Options = {
   config: ConfigNullable;

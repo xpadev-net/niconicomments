@@ -47,7 +47,7 @@ class NiconiComments {
    */
   constructor(
     canvas: HTMLCanvasElement,
-    data: (rawApiResponse | formattedComment)[],
+    data: inputFormat[],
     initOptions: InitOptions = {}
   ) {
     const constructorStart = performance.now();

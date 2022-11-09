@@ -33,7 +33,7 @@ type Config = {
   commentStageSize: configItem<commentStageSize>;
   commentYMarginBottom: configSizeItem<number>;
   commentYOffset: configSizeItem<configResizedItem<number>>;
-  commentYPaddingTop: configSizeItem<number>;
+  commentYPaddingTop: configResizedItem<number>;
   contextFillLiveOpacity: number;
   contextLineWidth: number;
   contextStrokeColor: string;

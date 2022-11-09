@@ -110,6 +110,7 @@ class NiconiComments {
     this.data = [];
     this.lastVpos = -1;
     this.preRendering(parsedData);
+
     logger(`constructor complete: ${performance.now() - constructorStart}ms`);
   }
 

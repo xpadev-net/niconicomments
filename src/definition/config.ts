@@ -57,7 +57,7 @@ const initConfig = () => {
       },
       flash: {
         width: 512,
-        fullWidth: 610,
+        fullWidth: 625,
         height: 385,
       },
     },
@@ -232,26 +232,25 @@ const initConfig = () => {
     },
     lineHeight: {
       small: {
-        default: 1.1,
-        resized: 1,
+        default: 18 / 15,
+        resized: 10 / 7.5,
       },
       medium: {
-        default: 1.1,
-        resized: 1,
+        default: 29 / 24,
+        resized: 15 / 12,
       },
       big: {
-        default: 1.06,
-        resized: 1.1,
+        default: 45 / 39,
+        resized: 24 / 19.5,
       },
     },
     doubleResizeMaxWidth: {
       full: 1200,
-      normal: 940,
+      normal: 960,
     },
     commentYPaddingTop: {
-      small: 0.126,
-      medium: 0.07,
-      big: 0.126,
+      default: 5,
+      resized: 3,
     },
     commentYMarginBottom: {
       small: 0.24,
@@ -259,11 +258,11 @@ const initConfig = () => {
       big: 0.24,
     },
     commentYOffset: {
-      small: { default: 0, resized: 0 },
-      medium: { default: 0, resized: 0 },
+      small: { default: -0.2, resized: -0.2 },
+      medium: { default: -0.2, resized: -0.2 },
       big: {
-        default: -1 / 22,
-        resized: 0,
+        default: -0.2,
+        resized: -0.2,
       },
     },
   };

@@ -682,6 +682,7 @@ class FlashComment implements IComment {
             this.comment.lineHeight *
             -1 *
             this._globalScale *
+            this.scale *
             (this.comment.layer === -1 ? options.scale : 1)
         );
       }

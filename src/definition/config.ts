@@ -57,7 +57,7 @@ const initConfig = () => {
       },
       flash: {
         width: 512,
-        fullWidth: 625,
+        fullWidth: 630,
         height: 385,
       },
     },
@@ -90,8 +90,8 @@ const initConfig = () => {
           resized: 12,
         },
         big: {
-          default: 31.4,
-          resized: 20,
+          default: 39,
+          resized: 19.5,
         },
       },
     },
@@ -236,7 +236,7 @@ const initConfig = () => {
         resized: 10 / 7.5,
       },
       medium: {
-        default: 29 / 24,
+        default: 29 / 25,
         resized: 15 / 12,
       },
       big: {

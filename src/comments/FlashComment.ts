@@ -426,10 +426,10 @@ class FlashComment implements IComment {
     const lineOffset =
       (comment.content.match(new RegExp(config.flashScriptChar.super, "g"))
         ?.length || 0) *
-        -0.1125 +
+        -0.135 +
       (comment.content.match(new RegExp(config.flashScriptChar.sub, "g"))
         ?.length || 0) *
-        0.1125;
+        0.135;
     return {
       ...comment,
       content,
@@ -501,14 +501,8 @@ class FlashComment implements IComment {
     const width = Math.max(...width_arr);
     let width_max = width * this.scale;
     const height =
-      (comment.fontSize *
-        comment.lineHeight *
-        (1 + config.commentYPaddingTop[comment.size]) *
-        (lineCount - 1) +
-        comment.fontSize * comment.lineHeight +
-        config.commentYMarginBottom[comment.size] *
-          comment.lineHeight *
-          comment.fontSize) *
+      (comment.fontSize * comment.lineHeight * lineCount +
+        config.commentYPaddingTop[comment.resizedY ? "resized" : "default"]) *
       this.scale;
     const widthLimit = getConfig(config.commentStageSize, true)[
       comment.full ? "fullWidth" : "width"
@@ -669,12 +663,17 @@ class FlashComment implements IComment {
       );
       for (let i = 0; i < this.comment.lineCount; i++) {
         const linePosY =
-          (this.comment.fontSize * this.comment.lineHeight +
-            Number(i) *
-              (this.comment.fontSize * this.comment.lineHeight) *
-              (1 + config.commentYPaddingTop[this.comment.size])) *
-          (this.comment.layer === -1 ? options.scale : 1);
-        this.context.strokeStyle = "rgba(255,255,0,0.5)";
+          ((i + 1) * (this.comment.fontSize * this.comment.lineHeight) +
+            config.commentYPaddingTop[
+              this.comment.resizedY ? "resized" : "default"
+            ] +
+            this.comment.fontSize *
+              this.comment.lineHeight *
+              config.commentYOffset[this.comment.size][
+                this.comment.resizedY ? "resized" : "default"
+              ]) *
+          this.scale;
+        this.context.strokeStyle = `rgba(255,255,0,0.5)`;
         this.context.strokeRect(
           posX,
           posY + linePosY * this._globalScale,
@@ -683,6 +682,7 @@ class FlashComment implements IComment {
             this.comment.lineHeight *
             -1 *
             this._globalScale *
+            this.scale *
             (this.comment.layer === -1 ? options.scale : 1)
         );
       }
@@ -763,10 +763,11 @@ class FlashComment implements IComment {
         const line = lines[j];
         if (line === undefined) continue;
         const posY =
-          this.comment.fontSize * this.comment.lineHeight +
-          (lineOffset + lineCount) *
-            (this.comment.fontSize * this.comment.lineHeight) *
-            (1 + config.commentYPaddingTop[this.comment.size]) +
+          (lineOffset + lineCount + 1) *
+            (this.comment.fontSize * this.comment.lineHeight) +
+          config.commentYPaddingTop[
+            this.comment.resizedY ? "resized" : "default"
+          ] +
           this.comment.fontSize *
             this.comment.lineHeight *
             config.commentYOffset[this.comment.size][

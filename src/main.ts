@@ -47,7 +47,7 @@ class NiconiComments {
    */
   constructor(
     canvas: HTMLCanvasElement,
-    data: (rawApiResponse | formattedComment)[],
+    data: inputFormat[],
     initOptions: InitOptions = {}
   ) {
     const constructorStart = performance.now();
@@ -110,6 +110,7 @@ class NiconiComments {
     this.data = [];
     this.lastVpos = -1;
     this.preRendering(parsedData);
+
     logger(`constructor complete: ${performance.now() - constructorStart}ms`);
   }
 

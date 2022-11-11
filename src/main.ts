@@ -47,7 +47,7 @@ class NiconiComments {
    */
   constructor(
     canvas: HTMLCanvasElement,
-    data: inputFormat[],
+    data: inputFormat,
     initOptions: InitOptions = {}
   ) {
     const constructorStart = performance.now();

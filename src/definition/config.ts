@@ -56,7 +56,7 @@ const initConfig = () => {
         height: 384,
       },
       flash: {
-        width: 512,
+        width: 506,
         fullWidth: 630,
         height: 385,
       },
@@ -76,7 +76,7 @@ const initConfig = () => {
           resized: 14,
         },
         big: {
-          default: 39,
+          default: 31.4,
           resized: 20,
         },
       },
@@ -246,7 +246,7 @@ const initConfig = () => {
     },
     doubleResizeMaxWidth: {
       full: 1200,
-      normal: 960,
+      normal: 990,
     },
     commentYPaddingTop: {
       default: 5,

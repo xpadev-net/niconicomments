@@ -528,6 +528,7 @@ class FlashComment implements IComment {
       this.context.font = parseFont(comment.font, comment.fontSize);
       return this.measureText(comment);
     } else if (comment.loc !== "naka" && comment.resizedY && comment.resizedX) {
+      const normalDRHeightLimit = -0.024986988777 * width_max + 69.2;
       if (comment.full && width_max > configDoubleResizeMaxWidth.full) {
         while (width_max > configDoubleResizeMaxWidth.full) {
           width_max /= 1.1;
@@ -537,10 +538,10 @@ class FlashComment implements IComment {
         return this.measureText(comment);
       } else if (
         !comment.full &&
-        width_max > configDoubleResizeMaxWidth.normal
+        comment.fontSize * comment.lineHeight > normalDRHeightLimit
       ) {
-        while (width_max > configDoubleResizeMaxWidth.normal) {
-          width_max /= 1.1;
+        console.log(width_max);
+        while (comment.fontSize * comment.lineHeight > normalDRHeightLimit) {
           comment.fontSize -= 0.1;
         }
         this.context.font = parseFont(comment.font, comment.fontSize);
@@ -651,7 +652,7 @@ class FlashComment implements IComment {
       this.context.drawImage(this.image, posX, posY);
     }
     if (showCollision) {
-      this.context.strokeStyle = "rgba(255,0,255,1)";
+      this.context.strokeStyle = "rgba(0,0,255,1)";
       this.context.strokeRect(
         posX,
         posY,
@@ -663,14 +664,9 @@ class FlashComment implements IComment {
           ((i + 1) * (this.comment.fontSize * this.comment.lineHeight) +
             config.commentYPaddingTop[
               this.comment.resizedY ? "resized" : "default"
-            ] +
-            this.comment.fontSize *
-              this.comment.lineHeight *
-              config.commentYOffset[this.comment.size][
-                this.comment.resizedY ? "resized" : "default"
-              ]) *
+            ]) *
           this.scale;
-        this.context.strokeStyle = `rgba(255,255,0,0.5)`;
+        this.context.strokeStyle = `rgba(255,255,0,0.25)`;
         this.context.strokeRect(
           posX,
           posY + linePosY * this._globalScale,

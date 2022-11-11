@@ -509,9 +509,6 @@ class FlashComment implements IComment {
     ];
     if (comment.loc !== "naka" && !comment.resizedY) {
       if (width_max > widthLimit) {
-        /*while (width * this.scale > widthLimit){
-          this.scale -= 0.01;
-        }*/
         this.scale = Math.floor((widthLimit / width_max) * 200) / 200;
         comment.resized = true;
         comment.resizedX = true;

@@ -10,21 +10,734 @@
     "mail": ["ue", "big", "full", "#e0ffff"]
   },
   {
+    "id": 31012,
+    "vpos": -9200,
+    "content": "見納め",
+    "date": 1335551240,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "softbank"
+    ]
+  },
+  {
+    "id": 30354,
+    "vpos": -9149,
+    "content": "ゴールデンウィーー(ﾟ∀ﾟ)ーー",
+    "date": 1335517344,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "softbank"
+    ]
+  },
+  {
+    "id": 30518,
+    "vpos": -9100,
+    "content": "ゴールデン(ﾟ∀ﾟ)ウィーーーク",
+    "date": 1335528198,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "softbank"
+    ]
+  },
+  {
+    "id": 30862,
+    "vpos": -9047,
+    "content": "見納め",
+    "date": 1335542349,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30160,
+    "vpos": -8914,
+    "content": "おお",
+    "date": 1335486753,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30453,
+    "vpos": -8869,
+    "content": "w",
+    "date": 1335522796,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30477,
+    "vpos": -8532,
+    "content": "見納めに",
+    "date": 1335526362,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30869,
+    "vpos": -8400,
+    "content": "見納めに",
+    "date": 1335543090,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "docomo"
+    ]
+  },
+  {
+    "id": 30549,
+    "vpos": -8338,
+    "content": "ジルドレさーん",
+    "date": 1335530775,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30437,
+    "vpos": -8306,
+    "content": "きたあああああああああああああああああああああああああ",
+    "date": 1335521090,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30716,
+    "vpos": -8129,
+    "content": "オジサンの運命が開幕コメで明らかにｗ",
+    "date": 1335536420,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30447,
+    "vpos": -8016,
+    "content": "ﾊｧﾊｧ",
+    "date": 1335521732,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30704,
+    "vpos": -7900,
+    "content": "(*´д｀*)ﾊｧﾊｧ",
+    "date": 1335535913,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "softbank"
+    ]
+  },
+  {
+    "id": 30550,
+    "vpos": -7611,
+    "content": "はぁはぁ",
+    "date": 1335530782,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30356,
+    "vpos": -7500,
+    "content": "タコの名産地になるな",
+    "date": 1335517534,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "softbank"
+    ]
+  },
+  {
+    "id": 30868,
+    "vpos": -7485,
+    "content": "見納めに",
+    "date": 1335543082,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30475,
+    "vpos": -7037,
+    "content": "ここ禁煙だよ",
+    "date": 1335526255,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "red",
+      "iPhone"
+    ]
+  },
+  {
+    "id": 30261,
+    "vpos": -6732,
+    "content": "放射線みてえｗｗ",
+    "date": 1335509668,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30908,
+    "vpos": -6226,
+    "content": "wwwwwwwwwwwwww",
+    "date": 1335546613,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30432,
+    "vpos": -6040,
+    "content": "まだやってるのかこいつらw",
+    "date": 1335520780,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30439,
+    "vpos": -5866,
+    "content": "ヴｨマーナかっけー",
+    "date": 1335521172,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30864,
+    "vpos": -5775,
+    "content": "慢心注意報",
+    "date": 1335542394,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "softbank"
+    ]
+  },
+  {
+    "id": 30419,
+    "vpos": -5755,
+    "content": "フライゴンみたい",
+    "date": 1335520445,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30705,
+    "vpos": -5624,
+    "content": "ギル様楽しそうですねｗ",
+    "date": 1335535996,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "softbank"
+    ]
+  },
+  {
+    "id": 30708,
+    "vpos": -5221,
+    "content": "陸戦メインじゃ使いにくいとかマスターにあまり目立たないようにって言われたりしてるんじゃない？",
+    "date": 1335536169,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30469,
+    "vpos": -5142,
+    "content": "ランスロットかっけぇーわ",
+    "date": 1335525239,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "yellow",
+      "iPhone"
+    ]
+  },
+  {
+    "id": 30195,
+    "vpos": -4823,
+    "content": "何アニメだこれはwww",
+    "date": 1335491500,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30457,
+    "vpos": -4635,
+    "content": "これが昔の英霊の対決かよw",
+    "date": 1335523116,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30675,
+    "vpos": -4615,
+    "content": "解説乙",
+    "date": 1335534278,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30703,
+    "vpos": -4568,
+    "content": "おじさん・・・",
+    "date": 1335535871,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 31003,
+    "vpos": -4546,
+    "content": "解説乙です",
+    "date": 1335549224,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30232,
+    "vpos": -4330,
+    "content": "バサカと手前の二馬力で生命すりつぶしてるな",
+    "date": 1335504280,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30504,
+    "vpos": -4306,
+    "content": "血が・・・",
+    "date": 1335527225,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30482,
+    "vpos": -4251,
+    "content": "羽化するまで待っててもらった…",
+    "date": 1335526648,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30058,
+    "vpos": -4128,
+    "content": "むしタイプはほのおによわいｗｗｗｗｗｗ",
+    "date": 1335459021,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30706,
+    "vpos": -3900,
+    "content": "おじさああああああああああん",
+    "date": 1335536087,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "softbank"
+    ]
+  },
+  {
+    "id": 30887,
+    "vpos": -3636,
+    "content": "←虫コナーズｸｯｿﾜﾛﾀｗｗｗｗｗ",
+    "date": 1335544745,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30584,
+    "vpos": -3615,
+    "content": "おじさあああああああああああああん",
+    "date": 1335531629,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30494,
+    "vpos": -3551,
+    "content": "おじさん・・・・",
+    "date": 1335527007,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30327,
+    "vpos": -3520,
+    "content": "もう左目瞳孔開きっぱなしなんだなぁ・・・",
+    "date": 1335514362,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30334,
+    "vpos": -3410,
+    "content": "もうバーサーカー呼んで殺せばいいんじゃね？",
+    "date": 1335515452,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30483,
+    "vpos": -3384,
+    "content": "もうちょっと強くなってから言おうねー",
+    "date": 1335526674,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30082,
+    "vpos": -3300,
+    "content": "おいたん……",
+    "date": 1335464763,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "docomo"
+    ]
+  },
+  {
+    "id": 30434,
+    "vpos": -3150,
+    "content": "おいたん・・・",
+    "date": 1335520838,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30262,
+    "vpos": -2501,
+    "content": "おいたん…",
+    "date": 1335509710,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30707,
+    "vpos": -2449,
+    "content": "無双",
+    "date": 1335536154,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "softbank"
+    ]
+  },
+  {
+    "id": 30144,
+    "vpos": -2327,
+    "content": "炎四倍ｗ",
+    "date": 1335481416,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30846,
+    "vpos": -2214,
+    "content": "なまなま",
+    "date": 1335541369,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30244,
+    "vpos": -2152,
+    "content": "おいたん・・・",
+    "date": 1335506773,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30747,
+    "vpos": -2081,
+    "content": "触手(;´Д｀)ﾊｧﾊｧ",
+    "date": 1335537566,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30711,
+    "vpos": -2000,
+    "content": "きたああああああああああああ",
+    "date": 1335536246,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "softbank"
+    ]
+  },
+  {
+    "id": 30551,
+    "vpos": -1818,
+    "content": "ｴﾛｽ",
+    "date": 1335530840,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30476,
+    "vpos": -1608,
+    "content": "ちっ",
+    "date": 1335526317,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "red",
+      "iPhone"
+    ]
+  },
+  {
+    "id": 30870,
+    "vpos": -1500,
+    "content": "ちっ",
+    "date": 1335543161,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "docomo"
+    ]
+  },
+  {
+    "id": 30486,
+    "vpos": -1430,
+    "content": "ちっ",
+    "date": 1335526777,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30440,
+    "vpos": -1426,
+    "content": "ちっ",
+    "date": 1335521201,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30872,
+    "vpos": -1351,
+    "content": "ちっ",
+    "date": 1335543657,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30536,
+    "vpos": -1288,
+    "content": "ちっ",
+    "date": 1335530390,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30161,
+    "vpos": -1283,
+    "content": "お前らwwww",
+    "date": 1335486816,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30152,
+    "vpos": -1276,
+    "content": "ちっ",
+    "date": 1335483316,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30676,
+    "vpos": -1243,
+    "content": "ちっ",
+    "date": 1335534312,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30553,
+    "vpos": -1229,
+    "content": "ち",
+    "date": 1335530846,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30257,
+    "vpos": -1164,
+    "content": "チッ",
+    "date": 1335509217,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 31009,
+    "vpos": -1113,
+    "content": "ちっ",
+    "date": 1335550328,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30157,
+    "vpos": -1099,
+    "content": "ちっ",
+    "date": 1335485033,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30537,
+    "vpos": -1069,
+    "content": "薄い本が薄くなった・・・",
+    "date": 1335530399,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30778,
+    "vpos": -1055,
+    "content": "ちっ",
+    "date": 1335538682,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30680,
+    "vpos": -903,
+    "content": "おいたんてwww",
+    "date": 1335534569,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30712,
+    "vpos": -800,
+    "content": "ｗｗｗ",
+    "date": 1335536321,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "softbank"
+    ]
+  },
+  {
+    "id": 30153,
+    "vpos": -792,
+    "content": "前回とは立場が逆になってるのか",
+    "date": 1335483345,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30263,
+    "vpos": -778,
+    "content": "ちっ",
+    "date": 1335509727,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30104,
+    "vpos": -556,
+    "content": "お前らｗｗｗ",
+    "date": 1335475608,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30587,
+    "vpos": -556,
+    "content": "ｗｗｗｗ",
+    "date": 1335531659,
+    "date_usec": 333000,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30435,
+    "vpos": -458,
+    "content": "おまえらｗｗｗ",
+    "date": 1335520862,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30218,
+    "vpos": -139,
+    "content": "かぁーっ！左手さえ使えれば勝てるのにな～！かぁーっ！",
+    "date": 1335500948,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30875,
+    "vpos": -33,
+    "content": "あー左手さえ使えればな―ﾁﾗｯ",
+    "date": 1335543738,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
     "id": 30555,
     "vpos": 94,
     "content": "ちらｗｗ",
     "date": 1335530859,
     "owner": false,
     "premium": true,
-    "mail": []
-  },
-  {
-    "id": 31051,
-    "vpos": 192,
-    "content": "ミサワ帰れｗ",
-    "date": 1335557871,
-    "owner": false,
-    "premium": false,
     "mail": []
   },
   {
@@ -97,7 +810,9 @@
     "date": 1335463275,
     "owner": false,
     "premium": false,
-    "mail": ["docomo"]
+    "mail": [
+      "docomo"
+    ]
   },
   {
     "id": 30365,
@@ -120,20 +835,15 @@
   {
     "id": 30923,
     "vpos": 2070,
-    "content": "█■■■　　 　　　　　　　　　あと一度だけ　　は ■■■█\n█■■■　　 　　　　　　　　　　　　起こるだろう ■■■█\n\n \n\n\n \n\n\n ",
+    "content": "█■■■　　 　　　　　　　　　あと一度だけ　　は ■■■█\n█■■■　　 　　　　　　　　　　　　起こるだろう ■■■█\n\n \n\n\n \n\n\n ",
     "date": 1335547431,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "green", "big"]
-  },
-  {
-    "id": 31055,
-    "vpos": 2099,
-    "content": "イリヤたんｗｗｗ",
-    "date": 1335558351,
-    "owner": false,
-    "premium": false,
-    "mail": []
+    "mail": [
+      "ue",
+      "green",
+      "big"
+    ]
   },
   {
     "id": 30271,
@@ -156,47 +866,54 @@
   {
     "id": 30924,
     "vpos": 2365,
-    "content": "█■■■　　 　　　　　　　　　　　　　　　奇跡　 ■■■█\n\n\n \n\n\n \n\n\n ",
+    "content": "█■■■　　 　　　　　　　　　　　　　　　奇跡　 ■■■█\n\n\n \n\n\n \n\n\n ",
     "date": 1335547450,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "yellow", "big"]
+    "mail": [
+      "ue",
+      "yellow",
+      "big"
+    ]
   },
   {
     "id": 30925,
     "vpos": 2365,
-    "content": "█■■■　　 　　　　　　　　　あと一度だけ　　は ■■■█\n█■■■　　 　　　　　　　　　　　　起こるだろう ■■■█\n\n \n\n\n \n\n\n ",
+    "content": "█■■■　　 　　　　　　　　　あと一度だけ　　は ■■■█\n█■■■　　 　　　　　　　　　　　　起こるだろう ■■■█\n\n \n\n\n \n\n\n ",
     "date": 1335547466,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "green", "big"]
-  },
-  {
-    "id": 31029,
-    "vpos": 2496,
-    "content": "いリアたんw",
-    "date": 1335552285,
-    "owner": false,
-    "premium": false,
-    "mail": []
+    "mail": [
+      "ue",
+      "green",
+      "big"
+    ]
   },
   {
     "id": 30926,
     "vpos": 2692,
-    "content": " \n\n\n \n\n\n \n\n█■■■ 　　 　　　　　　　　　　　　優しい声で　■■■█\n█■■■ 　　 　　　　　　　　　　描く歪んだ未来　■■■█",
+    "content": " \n\n\n \n\n\n \n\n█■■■ 　　 　　　　　　　　　　　　優しい声で　■■■█\n█■■■ 　　 　　　　　　　　　　描く歪んだ未来　■■■█",
     "date": 1335547489,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "pink", "big"]
+    "mail": [
+      "ue",
+      "pink",
+      "big"
+    ]
   },
   {
     "id": 30929,
     "vpos": 2968,
-    "content": "  \n\n\n \n\n\n \n\n█■■■ 　　 　　　　　　　　　　　　優しい声で　■■■█\n█■■■ 　　 　　　　　　　　　　描く歪んだ未来　■■■█",
+    "content": "  \n\n\n \n\n\n \n\n█■■■ 　　 　　　　　　　　　　　　優しい声で　■■■█\n█■■■ 　　 　　　　　　　　　　描く歪んだ未来　■■■█",
     "date": 1335547522,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "pink", "big"]
+    "mail": [
+      "ue",
+      "pink",
+      "big"
+    ]
   },
   {
     "id": 30836,
@@ -208,27 +925,22 @@
     "mail": []
   },
   {
-    "id": 31056,
-    "vpos": 3280,
-    "content": "職人すげえｗ",
-    "date": 1335558363,
-    "owner": false,
-    "premium": false,
-    "mail": []
-  },
-  {
     "id": 30930,
     "vpos": 3291,
-    "content": " \n\n█■■■ 　　もう誰も　　　　　　　　　　　　 　　■■■█\n█■■■ 　　　　　泣かない　　　　　　　　　 　　■■■█\n\n\n \n\n\n ",
+    "content": " \n\n█■■■ 　　もう誰も　　　　　　　　　　　　 　　■■■█\n█■■■ 　　　　　泣かない　　　　　　　　　 　　■■■█\n\n\n \n\n\n ",
     "date": 1335547573,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "cyan", "big"]
+    "mail": [
+      "ue",
+      "cyan",
+      "big"
+    ]
   },
   {
     "id": 31013,
     "vpos": 3438,
-    "content": "   █■■■ 　　 　　　　　　　　　　　　優しい声で　■■■██■■■ 　　 　　　　　　　　　　描く歪んだ未来　■■■█",
+    "content": "   █■■■ 　　 　　　　　　　　　　　　優しい声で　■■■██■■■ 　　 　　　　　　　　　　描く歪んだ未来　■■■█",
     "date": 1335551256,
     "owner": false,
     "premium": false,
@@ -255,47 +967,67 @@
   {
     "id": 30931,
     "vpos": 3635,
-    "content": " \n\n\n \n█■■■　　　　　　　　　　 　　　　　世界の 　　■■■█\n█■■■　　　　　　　　　　 　　　　　　ために 　■■■█\n \n\n\n ",
+    "content": " \n\n\n \n█■■■　　　　　　　　　　 　　　　　世界の 　　■■■█\n█■■■　　　　　　　　　　 　　　　　　ために 　■■■█\n \n\n\n ",
     "date": 1335547599,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "purple", "big"]
+    "mail": [
+      "ue",
+      "purple",
+      "big"
+    ]
   },
   {
     "id": 30933,
     "vpos": 3951,
-    "content": "█■■■ 　　　　　　　　　さ　　　　　　　　　　 ■■■█\n█■■■ 　　　　　く　　　　　　　た　　　　　　 ■■■█\n\n \n\n\n \n\n\n ",
+    "content": "█■■■ 　　　　　　　　　さ　　　　　　　　　　 ■■■█\n█■■■ 　　　　　く　　　　　　　た　　　　　　 ■■■█\n\n \n\n\n \n\n\n ",
     "date": 1335547619,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "red", "big"]
+    "mail": [
+      "ue",
+      "red",
+      "big"
+    ]
   },
   {
     "id": 30934,
     "vpos": 3951,
-    "content": " \n\n█■■■ 　　　　　　　汚　　　れ　　　空　　　　 ■■■█\n█■■■ 　　　赤　　　　　　　　　　　　　の　　 ■■■█\n\n\n \n\n\n ",
+    "content": " \n\n█■■■ 　　　　　　　汚　　　れ　　　空　　　　 ■■■█\n█■■■ 　　　赤　　　　　　　　　　　　　の　　 ■■■█\n\n\n \n\n\n ",
     "date": 1335547634,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "red", "big"]
+    "mail": [
+      "ue",
+      "red",
+      "big"
+    ]
   },
   {
     "id": 30936,
     "vpos": 4077,
-    "content": "█■■■ 　　　　　　　　　さ　　　　　　　　　　 ■■■█\n█■■■ 　　　　　く　　　　　　　た　　　　　　 ■■■█\n\n \n\n\n \n\n\n ",
+    "content": "█■■■ 　　　　　　　　　さ　　　　　　　　　　 ■■■█\n█■■■ 　　　　　く　　　　　　　た　　　　　　 ■■■█\n\n \n\n\n \n\n\n ",
     "date": 1335547669,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "red", "big"]
+    "mail": [
+      "ue",
+      "red",
+      "big"
+    ]
   },
   {
     "id": 30937,
     "vpos": 4077,
-    "content": " \n\n█■■■ 　　　　　　　汚　　　れ　　　空　　　　 ■■■█\n█■■■ 　　　赤　　　　　　　　　　　　　の　　 ■■■█\n\n\n \n\n\n ",
+    "content": " \n\n█■■■ 　　　　　　　汚　　　れ　　　空　　　　 ■■■█\n█■■■ 　　　赤　　　　　　　　　　　　　の　　 ■■■█\n\n\n \n\n\n ",
     "date": 1335547683,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "red", "big"]
+    "mail": [
+      "ue",
+      "red",
+      "big"
+    ]
   },
   {
     "id": 30626,
@@ -309,47 +1041,67 @@
   {
     "id": 30938,
     "vpos": 4422,
-    "content": " \n\n\n \n█■■■ 　　　　　　　　　　　　　ど　　　　　　 ■■■█\n\n \n\n\n ",
+    "content": " \n\n\n \n█■■■ 　　　　　　　　　　　　　ど　　　　　　 ■■■█\n\n \n\n\n ",
     "date": 1335547717,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "orange", "big"]
+    "mail": [
+      "ue",
+      "orange",
+      "big"
+    ]
   },
   {
     "id": 30939,
     "vpos": 4483,
-    "content": " \n\n\n \n\n█■■■ 　　　　　　　こ　　　　　　　　　　　　 ■■■█\n \n\n\n ",
+    "content": " \n\n\n \n\n█■■■ 　　　　　　　こ　　　　　　　　　　　　 ■■■█\n \n\n\n ",
     "date": 1335547733,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "orange", "big"]
+    "mail": [
+      "ue",
+      "orange",
+      "big"
+    ]
   },
   {
     "id": 30940,
     "vpos": 4515,
-    "content": " \n\n\n \n\n\n█■■■ 　　　　　　　　　　　　　に　　　　　　 ■■■█\n\n\n ",
+    "content": " \n\n\n \n\n\n█■■■ 　　　　　　　　　　　　　に　　　　　　 ■■■█\n\n\n ",
     "date": 1335547755,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "orange", "big"]
+    "mail": [
+      "ue",
+      "orange",
+      "big"
+    ]
   },
   {
     "id": 30941,
     "vpos": 4557,
-    "content": " \n\n\n \n\n\n \n█■■■ 　　　　　　　も　　　　　　　　　　　　 ■■■█\n\n ",
+    "content": " \n\n\n \n\n\n \n█■■■ 　　　　　　　も　　　　　　　　　　　　 ■■■█\n\n ",
     "date": 1335547773,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "orange", "big"]
+    "mail": [
+      "ue",
+      "orange",
+      "big"
+    ]
   },
   {
     "id": 30942,
     "vpos": 4601,
-    "content": " \n\n\n \n\n\n \n\n█■■■ 　　 　　　　　　　　　　　届かず消える　■■■█\n ",
+    "content": " \n\n\n \n\n\n \n\n█■■■ 　　 　　　　　　　　　　　届かず消える　■■■█\n ",
     "date": 1335547791,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "white", "big"]
+    "mail": [
+      "ue",
+      "white",
+      "big"
+    ]
   },
   {
     "id": 30903,
@@ -363,16 +1115,20 @@
   {
     "id": 30943,
     "vpos": 4898,
-    "content": " \n\n\n \n\n\n \n\n\n█■■■ 　　 　　　　　　　　　　　　叫びと祈り　■■■█",
+    "content": " \n\n\n \n\n\n \n\n\n█■■■ 　　 　　　　　　　　　　　　叫びと祈り　■■■█",
     "date": 1335547811,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "black", "big"]
+    "mail": [
+      "ue",
+      "black",
+      "big"
+    ]
   },
   {
     "id": 30064,
     "vpos": 5018,
-    "content": "█ 　　　　赤く　汚　　れ　　　　　　　　　　 　　　　　█    ",
+    "content": "█ 　　　　赤く　汚　　れ　　　　　　　　　　 　　　　　█    ",
     "date": 1335460121,
     "owner": false,
     "premium": false,
@@ -394,7 +1150,10 @@
     "date": 1335547845,
     "owner": false,
     "premium": false,
-    "mail": ["red", "big"]
+    "mail": [
+      "red",
+      "big"
+    ]
   },
   {
     "id": 30921,
@@ -403,7 +1162,9 @@
     "date": 1335547164,
     "owner": false,
     "premium": false,
-    "mail": ["ああああああ"]
+    "mail": [
+      "ああああああ"
+    ]
   },
   {
     "id": 30267,
@@ -417,20 +1178,28 @@
   {
     "id": 30945,
     "vpos": 5613,
-    "content": "█■■■　　　　　　　　　　綺　　　　　　　　　　■■■█\n\n\n \n\n\n \n\n\n ",
+    "content": "█■■■　　　　　　　　　　綺　　　　　　　　　　■■■█\n\n\n \n\n\n \n\n\n ",
     "date": 1335547884,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "yellow", "big"]
+    "mail": [
+      "ue",
+      "yellow",
+      "big"
+    ]
   },
   {
     "id": 30946,
     "vpos": 5664,
-    "content": "█■■■　　　　　　　　　麗　麗　　　　　　　　　■■■█\n\n\n \n\n\n \n\n\n ",
+    "content": "█■■■　　　　　　　　　麗　麗　　　　　　　　　■■■█\n\n\n \n\n\n \n\n\n ",
     "date": 1335547897,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "yellow", "big"]
+    "mail": [
+      "ue",
+      "yellow",
+      "big"
+    ]
   },
   {
     "id": 30556,
@@ -444,20 +1213,28 @@
   {
     "id": 30947,
     "vpos": 5776,
-    "content": "█■■■　　　　　　　　な　　　な　　　　　　　　■■■█\n\n\n \n\n\n \n\n\n ",
+    "content": "█■■■　　　　　　　　な　　　な　　　　　　　　■■■█\n\n\n \n\n\n \n\n\n ",
     "date": 1335547916,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "yellow", "big"]
+    "mail": [
+      "ue",
+      "yellow",
+      "big"
+    ]
   },
   {
     "id": 30948,
     "vpos": 5801,
-    "content": "█■■■　　　　　　　月　　　　　月　　　　　　　■■■█\n\n\n \n\n\n \n\n\n ",
+    "content": "█■■■　　　　　　　月　　　　　月　　　　　　　■■■█\n\n\n \n\n\n \n\n\n ",
     "date": 1335547953,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "yellow", "big"]
+    "mail": [
+      "ue",
+      "yellow",
+      "big"
+    ]
   },
   {
     "id": 30932,
@@ -471,20 +1248,28 @@
   {
     "id": 30949,
     "vpos": 5891,
-    "content": "█■■■　　　　　　の　　　　　　　の　　　　　　■■■█\n\n\n \n\n\n \n\n\n ",
+    "content": "█■■■　　　　　　の　　　　　　　の　　　　　　■■■█\n\n\n \n\n\n \n\n\n ",
     "date": 1335547966,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "yellow", "big"]
+    "mail": [
+      "ue",
+      "yellow",
+      "big"
+    ]
   },
   {
     "id": 30951,
     "vpos": 5919,
-    "content": "█■■■　　　　　光　　　　　　　　　光　　　　　■■■█\n\n\n \n\n\n \n\n\n ",
+    "content": "█■■■　　　　　光　　　　　　　　　光　　　　　■■■█\n\n\n \n\n\n \n\n\n ",
     "date": 1335547993,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "yellow", "big"]
+    "mail": [
+      "ue",
+      "yellow",
+      "big"
+    ]
   },
   {
     "id": 30917,
@@ -498,29 +1283,41 @@
   {
     "id": 30952,
     "vpos": 6081,
-    "content": " \n█■■■　　　　が　　　　　　　　　　　が　　　　■■■█\n\n \n\n\n \n\n\n ",
+    "content": " \n█■■■　　　　が　　　　　　　　　　　が　　　　■■■█\n\n \n\n\n \n\n\n ",
     "date": 1335548020,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "yellow", "big"]
+    "mail": [
+      "ue",
+      "yellow",
+      "big"
+    ]
   },
   {
     "id": 30953,
     "vpos": 6157,
-    "content": " \n\n█■■■　　　始　　　　　　　　　　　　　始　　　■■■█\n \n\n\n \n\n\n ",
+    "content": " \n\n█■■■　　　始　　　　　　　　　　　　　始　　　■■■█\n \n\n\n \n\n\n ",
     "date": 1335548035,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "yellow", "big"]
+    "mail": [
+      "ue",
+      "yellow",
+      "big"
+    ]
   },
   {
     "id": 30954,
     "vpos": 6245,
-    "content": " \n\n\n█■■■　　ま　　　　　　　　　　　　　　　ま　　■■■█\n\n\n \n\n\n ",
+    "content": " \n\n\n█■■■　　ま　　　　　　　　　　　　　　　ま　　■■■█\n\n\n \n\n\n ",
     "date": 1335548052,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "yellow", "big"]
+    "mail": [
+      "ue",
+      "yellow",
+      "big"
+    ]
   },
   {
     "id": 30717,
@@ -529,7 +1326,9 @@
     "date": 1335536427,
     "owner": false,
     "premium": false,
-    "mail": ["softbank"]
+    "mail": [
+      "softbank"
+    ]
   },
   {
     "id": 30866,
@@ -543,92 +1342,132 @@
   {
     "id": 30955,
     "vpos": 6310,
-    "content": " \n\n\n \n█■■■　り　　　　　　　　　　　　　　　　　り　■■■█\n\n \n\n\n ",
+    "content": " \n\n\n \n█■■■　り　　　　　　　　　　　　　　　　　り　■■■█\n\n \n\n\n ",
     "date": 1335548079,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "yellow", "big"]
+    "mail": [
+      "ue",
+      "yellow",
+      "big"
+    ]
   },
   {
     "id": 30956,
     "vpos": 6362,
-    "content": " \n\n\n \n\n█■■■　へ　　　　　　　　　　　　　　　　　へ　■■■█\n \n\n\n ",
+    "content": " \n\n\n \n\n█■■■　へ　　　　　　　　　　　　　　　　　へ　■■■█\n \n\n\n ",
     "date": 1335548106,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "yellow", "big"]
+    "mail": [
+      "ue",
+      "yellow",
+      "big"
+    ]
   },
   {
     "id": 30957,
     "vpos": 6407,
-    "content": " \n\n\n \n\n\n█■■■　と　　　　　　　　　　　　　　　　　と　■■■█\n\n\n ",
+    "content": " \n\n\n \n\n\n█■■■　と　　　　　　　　　　　　　　　　　と　■■■█\n\n\n ",
     "date": 1335548155,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "yellow", "big"]
+    "mail": [
+      "ue",
+      "yellow",
+      "big"
+    ]
   },
   {
     "id": 30958,
     "vpos": 6469,
-    "content": " \n\n\n \n\n\n \n█■■■　　沈　　　　　　　　　　　　　　　沈　　■■■█\n\n ",
+    "content": " \n\n\n \n\n\n \n█■■■　　沈　　　　　　　　　　　　　　　沈　　■■■█\n\n ",
     "date": 1335548169,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "yellow", "big"]
+    "mail": [
+      "ue",
+      "yellow",
+      "big"
+    ]
   },
   {
     "id": 30960,
     "vpos": 6551,
-    "content": " \n\n\n \n\n\n \n\n█■■■　　　み　　　　　　　　　　　　　み　　　■■■█\n ",
+    "content": " \n\n\n \n\n\n \n\n█■■■　　　み　　　　　　　　　　　　　み　　　■■■█\n ",
     "date": 1335548186,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "yellow", "big"]
+    "mail": [
+      "ue",
+      "yellow",
+      "big"
+    ]
   },
   {
     "id": 30962,
     "vpos": 6613,
-    "content": " \n\n\n \n\n\n \n\n\n█■■■　　　　ゆ　　　　　　　　　　　ゆ　　　　■■■█",
+    "content": " \n\n\n \n\n\n \n\n\n█■■■　　　　ゆ　　　　　　　　　　　ゆ　　　　■■■█",
     "date": 1335548199,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "yellow", "big"]
+    "mail": [
+      "ue",
+      "yellow",
+      "big"
+    ]
   },
   {
     "id": 30965,
     "vpos": 6652,
-    "content": " \n\n\n \n\n\n \n\n\n█■■■　　　　　く　　　　　　　　　く　　　　　■■■█",
+    "content": " \n\n\n \n\n\n \n\n\n█■■■　　　　　く　　　　　　　　　く　　　　　■■■█",
     "date": 1335548214,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "yellow", "big"]
+    "mail": [
+      "ue",
+      "yellow",
+      "big"
+    ]
   },
   {
     "id": 30966,
     "vpos": 6682,
-    "content": " \n\n\n \n\n\n \n\n\n█■■■　　　　　　そ　　　　　　　そ　　　　　　■■■█",
+    "content": " \n\n\n \n\n\n \n\n\n█■■■　　　　　　そ　　　　　　　そ　　　　　　■■■█",
     "date": 1335548270,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "yellow", "big"]
+    "mail": [
+      "ue",
+      "yellow",
+      "big"
+    ]
   },
   {
     "id": 30967,
     "vpos": 6722,
-    "content": " \n\n\n \n\n\n \n\n\n█■■■　　　　　　　の　　　　　の　　　　　　　■■■█",
+    "content": " \n\n\n \n\n\n \n\n\n█■■■　　　　　　　の　　　　　の　　　　　　　■■■█",
     "date": 1335548287,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "yellow", "big"]
+    "mail": [
+      "ue",
+      "yellow",
+      "big"
+    ]
   },
   {
     "id": 30968,
     "vpos": 6750,
-    "content": " \n\n\n \n\n\n \n\n\n█■■■　　　　　　　　彼　　　彼　　　　　　　　■■■█",
+    "content": " \n\n\n \n\n\n \n\n\n█■■■　　　　　　　　彼　　　彼　　　　　　　　■■■█",
     "date": 1335548306,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "yellow", "big"]
+    "mail": [
+      "ue",
+      "yellow",
+      "big"
+    ]
   },
   {
     "id": 30724,
@@ -642,11 +1481,15 @@
   {
     "id": 30969,
     "vpos": 6820,
-    "content": " \n\n\n \n\n\n \n\n\n█■■■　　　　　　　　　方　方　　　　　　　　　■■■█",
+    "content": " \n\n\n \n\n\n \n\n\n█■■■　　　　　　　　　方　方　　　　　　　　　■■■█",
     "date": 1335548323,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "yellow", "big"]
+    "mail": [
+      "ue",
+      "yellow",
+      "big"
+    ]
   },
   {
     "id": 30557,
@@ -660,137 +1503,184 @@
   {
     "id": 30970,
     "vpos": 6876,
-    "content": " \n\n\n \n\n\n \n\n\n█■■■　　　　　　　　　　へ　　　　　　　　　　■■■█",
+    "content": " \n\n\n \n\n\n \n\n\n█■■■　　　　　　　　　　へ　　　　　　　　　　■■■█",
     "date": 1335548338,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "yellow", "big"]
+    "mail": [
+      "ue",
+      "yellow",
+      "big"
+    ]
   },
   {
     "id": 30971,
     "vpos": 6937,
-    "content": " \n\n\n \n\n\n \n\n█■■■　　　　　　　　　　閉　　　　　　　　　　■■■█\n ",
+    "content": " \n\n\n \n\n\n \n\n█■■■　　　　　　　　　　閉　　　　　　　　　　■■■█\n ",
     "date": 1335548360,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "blue", "big"]
+    "mail": [
+      "ue",
+      "blue",
+      "big"
+    ]
   },
   {
     "id": 30972,
     "vpos": 6937,
-    "content": "  \n\n\n \n\n\n \n\n█■■■　　　　　　　　　　閉　　　　　　　　　　■■■█\n ",
+    "content": "  \n\n\n \n\n\n \n\n█■■■　　　　　　　　　　閉　　　　　　　　　　■■■█\n ",
     "date": 1335548389,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "cyan", "big"]
+    "mail": [
+      "ue",
+      "cyan",
+      "big"
+    ]
   },
   {
     "id": 30974,
     "vpos": 6965,
-    "content": " \n\n\n \n\n\n \n\n█■■■　　　　　　　　　ざ　ざ　　　　　　　　　■■■█\n ",
+    "content": " \n\n\n \n\n\n \n\n█■■■　　　　　　　　　ざ　ざ　　　　　　　　　■■■█\n ",
     "date": 1335548416,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "cyan", "big"]
+    "mail": [
+      "ue",
+      "cyan",
+      "big"
+    ]
   },
   {
     "id": 30976,
     "vpos": 7020,
-    "content": " \n\n\n \n\n\n \n\n█■■■　　　　　　　　さ　　　さ　　　　　　　　■■■█\n ",
+    "content": " \n\n\n \n\n\n \n\n█■■■　　　　　　　　さ　　　さ　　　　　　　　■■■█\n ",
     "date": 1335548444,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "cyan", "big"]
+    "mail": [
+      "ue",
+      "cyan",
+      "big"
+    ]
   },
   {
     "id": 30977,
     "vpos": 7058,
-    "content": " \n\n\n \n\n\n \n\n█■■■　　　　　　　れ　　　　　れ　　　　　　　■■■█\n ",
+    "content": " \n\n\n \n\n\n \n\n█■■■　　　　　　　れ　　　　　れ　　　　　　　■■■█\n ",
     "date": 1335548463,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "cyan", "big"]
-  },
-  {
-    "id": 31057,
-    "vpos": 7112,
-    "content": "職人すげえｗｗｗ",
-    "date": 1335558401,
-    "owner": false,
-    "premium": false,
-    "mail": []
+    "mail": [
+      "ue",
+      "cyan",
+      "big"
+    ]
   },
   {
     "id": 30978,
     "vpos": 7115,
-    "content": " \n\n\n \n\n\n \n\n█■■■　　　　　　て　　　　　　　て　　　　　　■■■█\n ",
+    "content": " \n\n\n \n\n\n \n\n█■■■　　　　　　て　　　　　　　て　　　　　　■■■█\n ",
     "date": 1335548478,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "cyan", "big"]
+    "mail": [
+      "ue",
+      "cyan",
+      "big"
+    ]
   },
   {
     "id": 30979,
     "vpos": 7128,
-    "content": " \n\n\n \n\n\n \n\n█■■■　　　　　く　　　　　　　　　く　　　　　■■■█\n ",
+    "content": " \n\n\n \n\n\n \n\n█■■■　　　　　く　　　　　　　　　く　　　　　■■■█\n ",
     "date": 1335548499,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "cyan", "big"]
+    "mail": [
+      "ue",
+      "cyan",
+      "big"
+    ]
   },
   {
     "id": 30980,
     "vpos": 7187,
-    "content": " \n\n\n \n\n\n \n█■■■　　　　瞳　　　　　　　　　　　瞳　　　　■■■█\n\n ",
+    "content": " \n\n\n \n\n\n \n█■■■　　　　瞳　　　　　　　　　　　瞳　　　　■■■█\n\n ",
     "date": 1335548514,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "cyan", "big"]
+    "mail": [
+      "ue",
+      "cyan",
+      "big"
+    ]
   },
   {
     "id": 30982,
     "vpos": 7326,
-    "content": " \n\n\n \n\n\n█■■■　　　で　　　　　　　　　　　　　で　　　■■■█\n\n\n ",
+    "content": " \n\n\n \n\n\n█■■■　　　で　　　　　　　　　　　　　で　　　■■■█\n\n\n ",
     "date": 1335548544,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "cyan", "big"]
+    "mail": [
+      "ue",
+      "cyan",
+      "big"
+    ]
   },
   {
     "id": 30983,
     "vpos": 7405,
-    "content": " \n\n\n \n\n█■■■　　ま　　　　　　　　　　　　　　　ま　　■■■█\n \n\n\n ",
+    "content": " \n\n\n \n\n█■■■　　ま　　　　　　　　　　　　　　　ま　　■■■█\n \n\n\n ",
     "date": 1335548563,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "cyan", "big"]
+    "mail": [
+      "ue",
+      "cyan",
+      "big"
+    ]
   },
   {
     "id": 30984,
     "vpos": 7464,
-    "content": " \n\n\n \n█■■■　　だ　　　　　　　　　　　　　　　だ　　■■■█\n\n \n\n\n ",
+    "content": " \n\n\n \n█■■■　　だ　　　　　　　　　　　　　　　だ　　■■■█\n\n \n\n\n ",
     "date": 1335548595,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "cyan", "big"]
+    "mail": [
+      "ue",
+      "cyan",
+      "big"
+    ]
   },
   {
     "id": 30985,
     "vpos": 7504,
-    "content": " \n\n\n█■■■　　　遠　　　　　　　　　　　　　遠　　　■■■█\n\n\n \n\n\n ",
+    "content": " \n\n\n█■■■　　　遠　　　　　　　　　　　　　遠　　　■■■█\n\n\n \n\n\n ",
     "date": 1335548632,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "cyan", "big"]
+    "mail": [
+      "ue",
+      "cyan",
+      "big"
+    ]
   },
   {
     "id": 30986,
     "vpos": 7614,
-    "content": " \n\n█■■■　　　　く　　　　　　　　　　　く　　　　■■■█\n \n\n\n \n\n\n ",
+    "content": " \n\n█■■■　　　　く　　　　　　　　　　　く　　　　■■■█\n \n\n\n \n\n\n ",
     "date": 1335548650,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "cyan", "big"]
+    "mail": [
+      "ue",
+      "cyan",
+      "big"
+    ]
   },
   {
     "id": 30781,
@@ -804,74 +1694,106 @@
   {
     "id": 30990,
     "vpos": 7634,
-    "content": " \n█■■■　　　　　へ　　　　　　　　　へ　　　　　■■■█\n\n \n\n\n \n\n\n ",
+    "content": " \n█■■■　　　　　へ　　　　　　　　　へ　　　　　■■■█\n\n \n\n\n \n\n\n ",
     "date": 1335548767,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "cyan", "big"]
+    "mail": [
+      "ue",
+      "cyan",
+      "big"
+    ]
   },
   {
     "id": 30991,
     "vpos": 7722,
-    "content": "█■■■　　　　　　手　　　　　　　手　　　　　　■■■█\n\n\n \n\n\n \n\n\n ",
+    "content": "█■■■　　　　　　手　　　　　　　手　　　　　　■■■█\n\n\n \n\n\n \n\n\n ",
     "date": 1335548779,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "cyan", "big"]
+    "mail": [
+      "ue",
+      "cyan",
+      "big"
+    ]
   },
   {
     "id": 30992,
     "vpos": 7773,
-    "content": "█■■■　　　　　　　を　　　　　を　　　　　　　■■■█\n\n\n \n\n\n \n\n\n ",
+    "content": "█■■■　　　　　　　を　　　　　を　　　　　　　■■■█\n\n\n \n\n\n \n\n\n ",
     "date": 1335548795,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "cyan", "big"]
+    "mail": [
+      "ue",
+      "cyan",
+      "big"
+    ]
   },
   {
     "id": 30993,
     "vpos": 7810,
-    "content": "█■■■　　　　　　　　伸　　　伸　　　　　　　　■■■█\n\n\n \n\n\n \n\n\n ",
+    "content": "█■■■　　　　　　　　伸　　　伸　　　　　　　　■■■█\n\n\n \n\n\n \n\n\n ",
     "date": 1335548835,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "cyan", "big"]
+    "mail": [
+      "ue",
+      "cyan",
+      "big"
+    ]
   },
   {
     "id": 30994,
     "vpos": 7873,
-    "content": "█■■■　　　　　　　　　ば　ば　　　　　　　　　■■■█\n\n\n \n\n\n \n\n\n ",
+    "content": "█■■■　　　　　　　　　ば　ば　　　　　　　　　■■■█\n\n\n \n\n\n \n\n\n ",
     "date": 1335548846,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "cyan", "big"]
+    "mail": [
+      "ue",
+      "cyan",
+      "big"
+    ]
   },
   {
     "id": 30995,
     "vpos": 7891,
-    "content": "█■■■　　　　　　　　　　す　　　　　　　　　　■■■█\n\n\n \n\n\n \n\n\n ",
+    "content": "█■■■　　　　　　　　　　す　　　　　　　　　　■■■█\n\n\n \n\n\n \n\n\n ",
     "date": 1335548866,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "cyan", "big"]
+    "mail": [
+      "ue",
+      "cyan",
+      "big"
+    ]
   },
   {
     "id": 30997,
     "vpos": 7953,
-    "content": " \n\n\n \n\n█■■■ 君の嘆きを　　　　　　　　　　　　　 　　■■■█\n \n\n\n ",
+    "content": " \n\n\n \n\n█■■■ 君の嘆きを　　　　　　　　　　　　　 　　■■■█\n \n\n\n ",
     "date": 1335548894,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "white", "big"]
+    "mail": [
+      "ue",
+      "white",
+      "big"
+    ]
   },
   {
     "id": 31000,
     "vpos": 8266,
-    "content": " \n\n\n \n\n█■■■　　　　　　　　　　　　　　　信じて　 　 ■■■█\n \n\n\n ",
+    "content": " \n\n\n \n\n█■■■　　　　　　　　　　　　　　　信じて　 　 ■■■█\n \n\n\n ",
     "date": 1335548931,
     "owner": false,
     "premium": false,
-    "mail": ["ue", "white", "big"]
+    "mail": [
+      "ue",
+      "white",
+      "big"
+    ]
   },
   {
     "id": 30558,
@@ -887,6 +1809,7752 @@
     "vpos": 8880,
     "content": "職人おつ！",
     "date": 1335475707,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30649,
+    "vpos": 9064,
+    "content": "GJ",
+    "date": 1335533307,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30355,
+    "vpos": 9135,
+    "content": "職人GJ",
+    "date": 1335517422,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30722,
+    "vpos": 9900,
+    "content": "瀬戸内海の水質が",
+    "date": 1335536730,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "softbank"
+    ]
+  },
+  {
+    "id": 30013,
+    "vpos": 10054,
+    "content": "ホロウからの引用",
+    "date": 1335452416,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30162,
+    "vpos": 10554,
+    "content": "   █　　　　　　　　　　　　　　　　　　信　　て　　　　　█ ",
+    "date": 1335486847,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30485,
+    "vpos": 10582,
+    "content": "お",
+    "date": 1335526694,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "iPhone"
+    ]
+  },
+  {
+    "id": 30729,
+    "vpos": 10976,
+    "content": "足止め",
+    "date": 1335536985,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "softbank"
+    ]
+  },
+  {
+    "id": 30047,
+    "vpos": 10977,
+    "content": "コンボイさんはダメだwwwwwwwww",
+    "date": 1335456217,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30070,
+    "vpos": 11220,
+    "content": "コンボイさんやめたれｗｗ",
+    "date": 1335462433,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30563,
+    "vpos": 11528,
+    "content": "なぜ切ったｗ",
+    "date": 1335531055,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30442,
+    "vpos": 12926,
+    "content": "おっと呼ばれる気がした",
+    "date": 1335521425,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30731,
+    "vpos": 13100,
+    "content": "わくわくざぶーん",
+    "date": 1335537019,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "softbank"
+    ]
+  },
+  {
+    "id": 30715,
+    "vpos": 13782,
+    "content": "やっぱりコンボイだった！",
+    "date": 1335536384,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30030,
+    "vpos": 13940,
+    "content": "なあランサー、別にこの港の魚を釣りつくしても構わんのだろう？",
+    "date": 1335454784,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30752,
+    "vpos": 14000,
+    "content": "漢はやっぱ２ｍは欲しいな",
+    "date": 1335537694,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "softbank"
+    ]
+  },
+  {
+    "id": 30859,
+    "vpos": 14019,
+    "content": "セイバー154cm ランサー184cm　ライダー212cm",
+    "date": 1335542115,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30163,
+    "vpos": 14124,
+    "content": "えええw",
+    "date": 1335486966,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30268,
+    "vpos": 14126,
+    "content": "ｗｗｗｗｗｗ",
+    "date": 1335509877,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30860,
+    "vpos": 14165,
+    "content": "ちなみにウェイバーたん157cm☆",
+    "date": 1335542157,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30743,
+    "vpos": 14307,
+    "content": "えー",
+    "date": 1335537526,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30443,
+    "vpos": 14563,
+    "content": "おいおい今いいとこなのに呼ぶなよー・・王の命令なら仕方ないけど",
+    "date": 1335521444,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30785,
+    "vpos": 14636,
+    "content": "えー",
+    "date": 1335538895,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30795,
+    "vpos": 14948,
+    "content": "良い考えドコ？",
+    "date": 1335539431,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30744,
+    "vpos": 15174,
+    "content": "なんとかしろ",
+    "date": 1335537536,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30474,
+    "vpos": 15356,
+    "content": "出番か。。。。いってくるか",
+    "date": 1335526127,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30754,
+    "vpos": 15600,
+    "content": "おや、こんな時間に誰か…",
+    "date": 1335537749,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "softbank"
+    ]
+  },
+  {
+    "id": 30338,
+    "vpos": 16091,
+    "content": "武器は持ったかてめえら",
+    "date": 1335515700,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30452,
+    "vpos": 16146,
+    "content": "ていうか軍勢でもどうにかできたらセイバー一人で片付けられる",
+    "date": 1335522736,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30746,
+    "vpos": 16289,
+    "content": "さてそろそろ準備を…",
+    "date": 1335537546,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30479,
+    "vpos": 16423,
+    "content": "にゃーん",
+    "date": 1335526511,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "red",
+      "iPhone"
+    ]
+  },
+  {
+    "id": 30399,
+    "vpos": 16442,
+    "content": "ﾆｬｰ･･･",
+    "date": 1335520075,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "shita",
+      "yellow",
+      "small"
+    ]
+  },
+  {
+    "id": 30543,
+    "vpos": 16492,
+    "content": "正にねことたちの関係である",
+    "date": 1335530678,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30758,
+    "vpos": 16625,
+    "content": "かわいいｗ",
+    "date": 1335537796,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "softbank"
+    ]
+  },
+  {
+    "id": 30127,
+    "vpos": 16706,
+    "content": "ミトリネス回",
+    "date": 1335479752,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30719,
+    "vpos": 16758,
+    "content": "マシンガン1000発分は爆弾より多くの敵を倒せるが、プールの水を全て吹き飛ばすことはできない",
+    "date": 1335536537,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30674,
+    "vpos": 16820,
+    "content": "にゃーん",
+    "date": 1335534272,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30760,
+    "vpos": 17051,
+    "content": "ねこウェイバー",
+    "date": 1335537848,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "softbank"
+    ]
+  },
+  {
+    "id": 30856,
+    "vpos": 17155,
+    "content": "ここでウェイバー殺したら、って意見あるけど、マスター消えたらライダーも消滅するので、今のところは消されない、て計算もあるんじゃね？",
+    "date": 1335541894,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30786,
+    "vpos": 17264,
+    "content": "ねこｗｗ",
+    "date": 1335538926,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30164,
+    "vpos": 17411,
+    "content": "猫w",
+    "date": 1335486999,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30303,
+    "vpos": 17478,
+    "content": "猫wwwww",
+    "date": 1335511987,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30016,
+    "vpos": 17490,
+    "content": "ぺろぺろ",
+    "date": 1335453438,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30403,
+    "vpos": 17620,
+    "content": "ニャーン",
+    "date": 1335520105,
+    "date_usec": 333000,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "shita",
+      "yellow",
+      "small"
+    ]
+  },
+  {
+    "id": 30339,
+    "vpos": 17631,
+    "content": "俺はいけるぜ。。。",
+    "date": 1335515716,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30728,
+    "vpos": 17745,
+    "content": "どれだけの兵がこれ見てんだよww",
+    "date": 1335536913,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30796,
+    "vpos": 17760,
+    "content": "然り！",
+    "date": 1335539459,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30840,
+    "vpos": 18023,
+    "content": "うん！",
+    "date": 1335541080,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30841,
+    "vpos": 18243,
+    "content": "おうよ、準備は万全だ！",
+    "date": 1335541087,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30436,
+    "vpos": 18518,
+    "content": "にゃーんｗｗｗ",
+    "date": 1335521053,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30721,
+    "vpos": 18704,
+    "content": "切嗣の見える範囲にいたら結構ウェイバー危ない所だったんだよな",
+    "date": 1335536618,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30762,
+    "vpos": 18851,
+    "content": "厚い信頼関係",
+    "date": 1335537896,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "softbank"
+    ]
+  },
+  {
+    "id": 30366,
+    "vpos": 19111,
+    "content": "固有結界の外ってどうなってんだろ",
+    "date": 1335519105,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30269,
+    "vpos": 19762,
+    "content": "アホ毛は？",
+    "date": 1335509933,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30146,
+    "vpos": 19971,
+    "content": "ランサーは狙撃警備っていう仕事があるよ！！",
+    "date": 1335481698,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30321,
+    "vpos": 20744,
+    "content": "仰木さんは過度のGでミンチになりました…",
+    "date": 1335513446,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30454,
+    "vpos": 20987,
+    "content": "仰木一尉・・・・",
+    "date": 1335522800,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30782,
+    "vpos": 21025,
+    "content": "仰木ペチャンコやで",
+    "date": 1335538807,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "docomo"
+    ]
+  },
+  {
+    "id": 30087,
+    "vpos": 21308,
+    "content": "ペッピー「ローリングで弾をはじくんだ」",
+    "date": 1335466435,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30709,
+    "vpos": 21791,
+    "content": "今の動きなんだよｗｗｗｗ",
+    "date": 1335536195,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30099,
+    "vpos": 21963,
+    "content": "動きおかしいって宝具だもんwそんなこと言ったらこの巨大クラゲだっておかしいってことになるだろw",
+    "date": 1335472327,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30763,
+    "vpos": 22176,
+    "content": "ギル様の悪い癖だｗ",
+    "date": 1335538007,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "softbank"
+    ]
+  },
+  {
+    "id": 30165,
+    "vpos": 22367,
+    "content": "わんわんお",
+    "date": 1335487051,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30750,
+    "vpos": 22423,
+    "content": "スタンとディムロスｗｗｗｗｗｗｗｗｗ",
+    "date": 1335537607,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30155,
+    "vpos": 22481,
+    "content": "騎兵のクラスより速いバサカさん",
+    "date": 1335484242,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30367,
+    "vpos": 22607,
+    "content": "あ",
+    "date": 1335519140,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30648,
+    "vpos": 22798,
+    "content": "野次馬が増えてきたｗｗ",
+    "date": 1335533280,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30764,
+    "vpos": 22925,
+    "content": "フラグ立てんあｗ",
+    "date": 1335538058,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "softbank"
+    ]
+  },
+  {
+    "id": 30130,
+    "vpos": 23222,
+    "content": "BDではこの霧が消えます",
+    "date": 1335479828,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30767,
+    "vpos": 23451,
+    "content": "危機意識が麻痺してるな",
+    "date": 1335538189,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "softbank"
+    ]
+  },
+  {
+    "id": 30800,
+    "vpos": 23643,
+    "content": "ざわ・・・",
+    "date": 1335539519,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30166,
+    "vpos": 23726,
+    "content": "あぶねええ",
+    "date": 1335487065,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30270,
+    "vpos": 23747,
+    "content": "ざわ…",
+    "date": 1335509973,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30863,
+    "vpos": 23874,
+    "content": "←龍之介は十四話でな・・・。",
+    "date": 1335542385,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30493,
+    "vpos": 23937,
+    "content": "san値がガンガン減っていく",
+    "date": 1335526985,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30246,
+    "vpos": 24008,
+    "content": "俺が居るｗ",
+    "date": 1335507035,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30221,
+    "vpos": 24018,
+    "content": "イカか",
+    "date": 1335502431,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30368,
+    "vpos": 24244,
+    "content": "※神秘の秘匿は大原則",
+    "date": 1335519174,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30769,
+    "vpos": 24325,
+    "content": "逃げて～",
+    "date": 1335538244,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "softbank"
+    ]
+  },
+  {
+    "id": 30231,
+    "vpos": 24515,
+    "content": "いあ！いあ！くとぅるふ！",
+    "date": 1335503817,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30520,
+    "vpos": 24822,
+    "content": "螺湮城本伝だろ",
+    "date": 1335528330,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30645,
+    "vpos": 24951,
+    "content": "←螺湮城本伝もルルイエ異本が原典だよ。",
+    "date": 1335533207,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30438,
+    "vpos": 25093,
+    "content": "ニャル子ｗｗｗ",
+    "date": 1335521118,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30873,
+    "vpos": 25164,
+    "content": "クトゥルーは邪神に仕える司祭",
+    "date": 1335543724,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30224,
+    "vpos": 25256,
+    "content": "ニャル子さんちゃっかり紹介すんなｗ",
+    "date": 1335502794,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30167,
+    "vpos": 25482,
+    "content": "シューティングww",
+    "date": 1335487107,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30213,
+    "vpos": 25489,
+    "content": "↓関口将太さん乙ｗ",
+    "date": 1335498787,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30783,
+    "vpos": 25551,
+    "content": "にゃるこでゲソ",
+    "date": 1335538876,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "docomo"
+    ]
+  },
+  {
+    "id": 30751,
+    "vpos": 25635,
+    "content": "いくぞ１１１１１１１１１１１",
+    "date": 1335537642,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30236,
+    "vpos": 25676,
+    "content": "↓ｍｊｋ・・・絶対に大根でなければ駄目なのか？",
+    "date": 1335505861,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30364,
+    "vpos": 25868,
+    "content": "よばれたから行ってくるわ",
+    "date": 1335518810,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30156,
+    "vpos": 25910,
+    "content": "ニャル子の上には完璧親父しかいない",
+    "date": 1335484330,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30063,
+    "vpos": 26001,
+    "content": "↓大根やってみっかぁ",
+    "date": 1335460019,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30803,
+    "vpos": 26001,
+    "content": "う～にゃ～",
+    "date": 1335539542,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30844,
+    "vpos": 26222,
+    "content": "行くぞお前らあああ",
+    "date": 1335541166,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30369,
+    "vpos": 26314,
+    "content": "↓ｗｗｗｗｗｗｗｗｗ",
+    "date": 1335519269,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30540,
+    "vpos": 26448,
+    "content": "ちょっと戦場行ってくる（´・ω・`）ﾉｼ",
+    "date": 1335530490,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30776,
+    "vpos": 26468,
+    "content": "さて、行くか…",
+    "date": 1335538560,
+    "date_usec": 333000,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30732,
+    "vpos": 26587,
+    "content": "今俺メシ喰ってるんだけど・・・行くか",
+    "date": 1335537031,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30304,
+    "vpos": 26650,
+    "content": "さーて行くか",
+    "date": 1335512049,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30247,
+    "vpos": 26849,
+    "content": "おし、いくか！",
+    "date": 1335507063,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30950,
+    "vpos": 26867,
+    "content": "おい待てパンツくらい穿かせろ",
+    "date": 1335547984,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30770,
+    "vpos": 27025,
+    "content": "さて、行くか…",
+    "date": 1335538261,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30878,
+    "vpos": 27086,
+    "content": "槍もってくるっす・・・",
+    "date": 1335544106,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30478,
+    "vpos": 27146,
+    "content": "準備はできてる",
+    "date": 1335526366,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "docomo"
+    ]
+  },
+  {
+    "id": 30805,
+    "vpos": 27185,
+    "content": "行くか・・・",
+    "date": 1335539556,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30823,
+    "vpos": 27324,
+    "content": "www",
+    "date": 1335539983,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30259,
+    "vpos": 27892,
+    "content": "???｛俺の名を言ってみろ！」",
+    "date": 1335509233,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "shita"
+    ]
+  },
+  {
+    "id": 30370,
+    "vpos": 28073,
+    "content": "重力ｗｗｗｗｗｗｗ",
+    "date": 1335519285,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30636,
+    "vpos": 28191,
+    "content": "ｗｗｗｗｗｗｗｗｗｗｗ",
+    "date": 1335532914,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30961,
+    "vpos": 29693,
+    "content": "スタイリッシュ雑種",
+    "date": 1335548189,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30652,
+    "vpos": 30301,
+    "content": "ガルドさんも真っ青な飛び方してんなｗｗ",
+    "date": 1335533439,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30307,
+    "vpos": 30350,
+    "content": "コレなんてマクロス？",
+    "date": 1335512137,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30627,
+    "vpos": 30670,
+    "content": "ｳｫｰ　ｱｰｻｰ　ｱｰｻｰｧｧｧｧｧｯｧ",
+    "date": 1335532512,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30666,
+    "vpos": 31112,
+    "content": "日本の夏　金鳥の夏",
+    "date": 1335533874,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "shita",
+      "big"
+    ]
+  },
+  {
+    "id": 30888,
+    "vpos": 31380,
+    "content": "Intensive Einascherung",
+    "date": 1335544835,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "shita",
+      "#ff6600",
+      "small"
+    ]
+  },
+  {
+    "id": 30753,
+    "vpos": 31620,
+    "content": "下ｗｗｗｗｗｗｗｗｗｗｗｗ",
+    "date": 1335537702,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30734,
+    "vpos": 31668,
+    "content": "↓ww",
+    "date": 1335537152,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30129,
+    "vpos": 31771,
+    "content": "相性が悪いわ",
+    "date": 1335479772,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30371,
+    "vpos": 31849,
+    "content": "後ろから回り込めば",
+    "date": 1335519362,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30996,
+    "vpos": 31903,
+    "content": "火耐性の虫とかいねえのかよ！",
+    "date": 1335548874,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30497,
+    "vpos": 31912,
+    "content": "つーか海魔による街の被害<私怨wwwバカwww",
+    "date": 1335527097,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30541,
+    "vpos": 31913,
+    "content": "蟲コナーずｗｗｗｗｗ",
+    "date": 1335530539,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30959,
+    "vpos": 31955,
+    "content": "HP消費技をガードで無効化され続けてるかんじか",
+    "date": 1335548182,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30901,
+    "vpos": 32070,
+    "content": "↓ｗｗｗｗｗｗｗｗｗｗｗ",
+    "date": 1335545472,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30398,
+    "vpos": 32224,
+    "content": "ｗｗｗｗｗｗｗ",
+    "date": 1335520072,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 29989,
+    "vpos": 32274,
+    "content": "バルサン",
+    "date": 1335450620,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30168,
+    "vpos": 32464,
+    "content": "おじさん・・・",
+    "date": 1335487203,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30827,
+    "vpos": 32729,
+    "content": "雁夜・・・//",
+    "date": 1335540088,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30889,
+    "vpos": 33168,
+    "content": "(我が敵の火葬は苛烈なるべし）",
+    "date": 1335544942,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "shita",
+      "#ff6600",
+      "small"
+    ]
+  },
+  {
+    "id": 30668,
+    "vpos": 33307,
+    "content": "メラゾーマ",
+    "date": 1335533969,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30281,
+    "vpos": 33476,
+    "content": "かっこいい詠唱だなwwww",
+    "date": 1335510560,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30372,
+    "vpos": 33594,
+    "content": "おおおおお",
+    "date": 1335519396,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30499,
+    "vpos": 33616,
+    "content": "やべえ耳が優雅www",
+    "date": 1335527133,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30237,
+    "vpos": 33773,
+    "content": "優雅なメラｗｗｗｗｗｗｗ",
+    "date": 1335505958,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30639,
+    "vpos": 33793,
+    "content": "ときおみ の やきつくす！",
+    "date": 1335533018,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30684,
+    "vpos": 33859,
+    "content": "優雅だなー",
+    "date": 1335534731,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30710,
+    "vpos": 33870,
+    "content": "優雅だ",
+    "date": 1335536212,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30640,
+    "vpos": 33929,
+    "content": "こうかはばつぐんだ！",
+    "date": 1335533033,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30725,
+    "vpos": 33943,
+    "content": "遠坂家の詠唱は独逸語だっけ",
+    "date": 1335536819,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30768,
+    "vpos": 33989,
+    "content": "優雅な攻撃",
+    "date": 1335538240,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30828,
+    "vpos": 34005,
+    "content": "燃え要員",
+    "date": 1335540122,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 29997,
+    "vpos": 34065,
+    "content": "meke-mo-",
+    "date": 1335451255,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30501,
+    "vpos": 34241,
+    "content": "オブリビオンにこんなのいたなー",
+    "date": 1335527154,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30829,
+    "vpos": 34548,
+    "content": "まじ樽ちゃんSUGEEE",
+    "date": 1335540317,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30305,
+    "vpos": 34561,
+    "content": "ああああああああ",
+    "date": 1335512098,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30330,
+    "vpos": 34627,
+    "content": "めけーも！！",
+    "date": 1335514972,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30871,
+    "vpos": 34656,
+    "content": "こうかは ばつぐんだ！",
+    "date": 1335543525,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "docomo"
+    ]
+  },
+  {
+    "id": 30905,
+    "vpos": 34667,
+    "content": "優雅なメラワラタｗｗ",
+    "date": 1335546492,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30525,
+    "vpos": 34710,
+    "content": "速水さんかっけえ",
+    "date": 1335529170,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30373,
+    "vpos": 34880,
+    "content": "キャンプファイヤー来た!!!!!!!!!!!",
+    "date": 1335519413,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30568,
+    "vpos": 34925,
+    "content": "ダースベイダーｗｗ",
+    "date": 1335531308,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 29998,
+    "vpos": 34933,
+    "content": "めけーもー",
+    "date": 1335451263,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30616,
+    "vpos": 34952,
+    "content": "おじさあああああああああああああああああああん",
+    "date": 1335532153,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 31011,
+    "vpos": 35085,
+    "content": "マモーかと",
+    "date": 1335551083,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30756,
+    "vpos": 35227,
+    "content": "めけーも　か　イワーク　か",
+    "date": 1335537759,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30854,
+    "vpos": 35530,
+    "content": "おじさん、メラでやられるの……（泣",
+    "date": 1335541815,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30812,
+    "vpos": 35559,
+    "content": "魔法中年め・・・",
+    "date": 1335539677,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30569,
+    "vpos": 35698,
+    "content": "哲夫おおおおお",
+    "date": 1335531318,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30521,
+    "vpos": 35724,
+    "content": "まっしろな灰になっちまう",
+    "date": 1335528621,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30147,
+    "vpos": 35736,
+    "content": "虫草タイプか・・・",
+    "date": 1335481859,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30322,
+    "vpos": 35813,
+    "content": "ぞうけん",
+    "date": 1335513728,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30448,
+    "vpos": 35853,
+    "content": "キャンプファイヤー",
+    "date": 1335522094,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30720,
+    "vpos": 36149,
+    "content": "マモーをリスペクトとか新しい！",
+    "date": 1335536565,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30014,
+    "vpos": 36213,
+    "content": "不燃ごみ捨てんな",
+    "date": 1335453236,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30272,
+    "vpos": 36217,
+    "content": "おいたあああああああああああああああん！！！！！！！！！！！！１",
+    "date": 1335510098,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30542,
+    "vpos": 36238,
+    "content": "おじさああああああああああああああん",
+    "date": 1335530635,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30502,
+    "vpos": 36296,
+    "content": "そしてこの目である",
+    "date": 1335527192,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30669,
+    "vpos": 36431,
+    "content": "ウホッ♂　愉悦♂",
+    "date": 1335534026,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "shita"
+    ]
+  },
+  {
+    "id": 30169,
+    "vpos": 36744,
+    "content": "下がw",
+    "date": 1335487256,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30374,
+    "vpos": 36751,
+    "content": "フラグｗｗｗｗｗｗｗ",
+    "date": 1335519427,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30067,
+    "vpos": 36788,
+    "content": "うっかり時臣ｗｗｗｗ",
+    "date": 1335461947,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30306,
+    "vpos": 36808,
+    "content": "うっかりwww",
+    "date": 1335512120,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 29992,
+    "vpos": 36921,
+    "content": "あの有様では生きてなどおるまい",
+    "date": 1335450967,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30973,
+    "vpos": 37066,
+    "content": "ザーボンやめろｗｗｗｗ",
+    "date": 1335548411,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30492,
+    "vpos": 37117,
+    "content": "うっかり",
+    "date": 1335526957,
+    "date_usec": 333000,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30641,
+    "vpos": 37213,
+    "content": "うっかりｗ",
+    "date": 1335533033,
+    "date_usec": 333000,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30975,
+    "vpos": 37536,
+    "content": "あのざまで火達磨になってビルから落下じゃなあ",
+    "date": 1335548440,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30375,
+    "vpos": 37935,
+    "content": "遠坂うっかりエフェクト",
+    "date": 1335519439,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30080,
+    "vpos": 38143,
+    "content": "解説すんのはいいけど184外してくれないかな、一々入れるの面倒なんだよね",
+    "date": 1335463891,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30154,
+    "vpos": 38239,
+    "content": "←アニメ公式動画だと184は外せないんだよ。自分でやってみろよ",
+    "date": 1335483728,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30061,
+    "vpos": 38277,
+    "content": "アイリさんのまとめ動画を早くっ・・・！",
+    "date": 1335459446,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30578,
+    "vpos": 38451,
+    "content": "お",
+    "date": 1335531592,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "softbank"
+    ]
+  },
+  {
+    "id": 30670,
+    "vpos": 38624,
+    "content": "↑90年代の携帯",
+    "date": 1335534068,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "shita"
+    ]
+  },
+  {
+    "id": 30331,
+    "vpos": 38725,
+    "content": "かわいい",
+    "date": 1335515021,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30480,
+    "vpos": 38737,
+    "content": "かわいい",
+    "date": 1335526517,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "docomo"
+    ]
+  },
+  {
+    "id": 30582,
+    "vpos": 38900,
+    "content": "かわええ",
+    "date": 1335531618,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "softbank"
+    ]
+  },
+  {
+    "id": 30107,
+    "vpos": 38923,
+    "content": "かわいいなｗ",
+    "date": 1335476222,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30481,
+    "vpos": 38950,
+    "content": "黒タイツ脚ぺろぺろちゅっちゅ",
+    "date": 1335526536,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "docomo"
+    ]
+  },
+  {
+    "id": 30275,
+    "vpos": 38990,
+    "content": "かわいいｗｗｗ",
+    "date": 1335510331,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30254,
+    "vpos": 38994,
+    "content": "なんだこの人妻は！",
+    "date": 1335508972,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30561,
+    "vpos": 39056,
+    "content": "なにこの人妻超かわいいwwwww",
+    "date": 1335531018,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30337,
+    "vpos": 39084,
+    "content": "ふぅ･･･",
+    "date": 1335515639,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30086,
+    "vpos": 39085,
+    "content": "かわいいｗｗｗ",
+    "date": 1335466392,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 29994,
+    "vpos": 39202,
+    "content": "なんだこの人妻（驚愕）",
+    "date": 1335451127,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30238,
+    "vpos": 39222,
+    "content": "アイリ可愛いなｗｗｗｗｗｗ",
+    "date": 1335506026,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30170,
+    "vpos": 39331,
+    "content": "かわいいww",
+    "date": 1335487291,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 29995,
+    "vpos": 39340,
+    "content": "ああ、昔のってこういうのだったよなｗ",
+    "date": 1335451177,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30529,
+    "vpos": 39346,
+    "content": "かわえええええええええ",
+    "date": 1335529252,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30526,
+    "vpos": 39370,
+    "content": "かわええ",
+    "date": 1335529211,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30037,
+    "vpos": 39556,
+    "content": "なんだこの人妻かわいすぎるｗ",
+    "date": 1335455447,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30727,
+    "vpos": 39574,
+    "content": "この時代に、魔術師なのに携帯の使い方知ってるウェイバーはある意味すごい",
+    "date": 1335536912,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30148,
+    "vpos": 39582,
+    "content": "集団討論ｗ",
+    "date": 1335481897,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30202,
+    "vpos": 39684,
+    "content": "そういや騎乗スキルって、切符買うとかパスモとかの知識は持てるの？ｗ",
+    "date": 1335494290,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30088,
+    "vpos": 39729,
+    "content": "かわいいｗ",
+    "date": 1335466499,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30273,
+    "vpos": 39737,
+    "content": "かわいいいいいいいいいい",
+    "date": 1335510133,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30301,
+    "vpos": 40223,
+    "content": "きりつぐ「令呪を以て命ずる。ライダーのマスターを始末せよ」",
+    "date": 1335511684,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30672,
+    "vpos": 40343,
+    "content": "切嗣「『令呪を持って命ずる。自害せよ、ライダー』　と言え」",
+    "date": 1335534216,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30038,
+    "vpos": 40807,
+    "content": "そんなことはいいｗｗｗｗ",
+    "date": 1335455459,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30963,
+    "vpos": 40817,
+    "content": "遮られ系ヒロイン",
+    "date": 1335548203,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30233,
+    "vpos": 40893,
+    "content": "おれは～ジャック～バウア～♪",
+    "date": 1335504288,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30376,
+    "vpos": 40969,
+    "content": "ｗｗｗｗｗｗｗｗｗｗ",
+    "date": 1335519486,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30586,
+    "vpos": 41100,
+    "content": "まぁいいや",
+    "date": 1335531659,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "softbank"
+    ]
+  },
+  {
+    "id": 30446,
+    "vpos": 41137,
+    "content": "人のはなしを聞か～ない～♪",
+    "date": 1335521644,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30815,
+    "vpos": 41309,
+    "content": "いいのかｗｗｗ",
+    "date": 1335539742,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30777,
+    "vpos": 41475,
+    "content": "クロエ俺だ！",
+    "date": 1335538573,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30964,
+    "vpos": 41512,
+    "content": "一応か",
+    "date": 1335548210,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30530,
+    "vpos": 41733,
+    "content": "じゃっくばうあークソワロタ",
+    "date": 1335529276,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 31006,
+    "vpos": 42454,
+    "content": "この２ショットいい",
+    "date": 1335549592,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30214,
+    "vpos": 42604,
+    "content": "一度見ただけでヘタイロイの特性を掴んだんだよな、ウェイバー",
+    "date": 1335499039,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30488,
+    "vpos": 43023,
+    "content": "子供シロウ連れてきて固有結界発動しましょー",
+    "date": 1335526821,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "red",
+      "iPhone"
+    ]
+  },
+  {
+    "id": 30845,
+    "vpos": 43502,
+    "content": "魔術理論の基礎くらいは覚えとるわな",
+    "date": 1335541351,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30000,
+    "vpos": 43715,
+    "content": "ウェイバーは理論の方はかなりハイレベル",
+    "date": 1335451280,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30128,
+    "vpos": 43728,
+    "content": "←いや、ウェイバーは魔術師としては家柄が浅すぎるせいで、時臣やケイネスのように意図的に科学技術を軽蔑する先入観がないから扱いに多少なれてるだけ",
+    "date": 1335479766,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30204,
+    "vpos": 43960,
+    "content": "ハイレベルでなくとも再出現の主導権とかこっちで当たり前って気がするが、そんな難しい推測？",
+    "date": 1335494725,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30024,
+    "vpos": 44019,
+    "content": "ぺろぺろぺろ",
+    "date": 1335454339,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30377,
+    "vpos": 44046,
+    "content": "ワイプワロタｗｗｗｗｗｗｗｗｗｗｗｗｗｗｗ",
+    "date": 1335519519,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30002,
+    "vpos": 44078,
+    "content": "展開した周囲だけに決まってんだろｗ",
+    "date": 1335451314,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30092,
+    "vpos": 44116,
+    "content": "上から命令はジャックの基本",
+    "date": 1335467905,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30207,
+    "vpos": 44128,
+    "content": "いや、魔術師としては学生が習う程度の知識でしかないよ＞ウェイバーの理論",
+    "date": 1335495271,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30879,
+    "vpos": 44487,
+    "content": "このシーンを使って、２４のＭＡＤを作ってくれるやついないかなｗｗｗｗｗｗｗ",
+    "date": 1335544130,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30594,
+    "vpos": 44776,
+    "content": "ウェイバーちゃん立派になって…",
+    "date": 1335531806,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "softbank"
+    ]
+  },
+  {
+    "id": 30149,
+    "vpos": 45008,
+    "content": "多分！",
+    "date": 1335481952,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30595,
+    "vpos": 45300,
+    "content": "まさに切嗣ｗ",
+    "date": 1335531832,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "softbank"
+    ]
+  },
+  {
+    "id": 30489,
+    "vpos": 45305,
+    "content": "せっこいなぁwww",
+    "date": 1335526876,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "red",
+      "iPhone"
+    ]
+  },
+  {
+    "id": 30133,
+    "vpos": 45384,
+    "content": "ランサーが退場する宝具",
+    "date": 1335480088,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30907,
+    "vpos": 45389,
+    "content": "こいつｗｗｗｗｗｗ",
+    "date": 1335546600,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30600,
+    "vpos": 45651,
+    "content": "老獪だなｗ",
+    "date": 1335531962,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "softbank"
+    ]
+  },
+  {
+    "id": 30664,
+    "vpos": 45775,
+    "content": "退場法具：栄村隆康",
+    "date": 1335533765,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30468,
+    "vpos": 46101,
+    "content": "退場しちゃう宝具",
+    "date": 1335525231,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30847,
+    "vpos": 46241,
+    "content": "俺たちの活躍はBDあたりに期待だ・・・ねーな",
+    "date": 1335541379,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30604,
+    "vpos": 46451,
+    "content": "対城",
+    "date": 1335532013,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "softbank"
+    ]
+  },
+  {
+    "id": 30610,
+    "vpos": 46900,
+    "content": "意図に感付いた",
+    "date": 1335532082,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "softbank"
+    ]
+  },
+  {
+    "id": 30491,
+    "vpos": 46920,
+    "content": "※対界宝具持ってるやつが上空を飛んでます",
+    "date": 1335526957,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "red",
+      "iPhone"
+    ]
+  },
+  {
+    "id": 30614,
+    "vpos": 47251,
+    "content": "上手いねぇ",
+    "date": 1335532117,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "softbank"
+    ]
+  },
+  {
+    "id": 30340,
+    "vpos": 47344,
+    "content": "対界宝具は？ｗｗ",
+    "date": 1335515788,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30381,
+    "vpos": 47542,
+    "content": "事情知らないウェイバーにはKYな自慢にしか聞こえないだろうなｗ",
+    "date": 1335519650,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30277,
+    "vpos": 47680,
+    "content": "ﾁﾗｯﾁﾗｯ",
+    "date": 1335510507,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30545,
+    "vpos": 47763,
+    "content": "ﾁﾗｯ",
+    "date": 1335530706,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30619,
+    "vpos": 47851,
+    "content": "鬼畜な脚本だなｗ",
+    "date": 1335532197,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "softbank"
+    ]
+  },
+  {
+    "id": 30008,
+    "vpos": 48270,
+    "content": "せこいな",
+    "date": 1335451995,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30132,
+    "vpos": 48270,
+    "content": "エクスカリバーが対城宝具なら、エアはいったい・・・",
+    "date": 1335480056,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30329,
+    "vpos": 48377,
+    "content": "エアは対界宝具。文字通り規格外なシロモノ",
+    "date": 1335514510,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30571,
+    "vpos": 48386,
+    "content": "この状況で隠すとか、セイバー汚いｗｗ",
+    "date": 1335531443,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30533,
+    "vpos": 48451,
+    "content": "かわえええええ",
+    "date": 1335529753,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "softbank"
+    ]
+  },
+  {
+    "id": 30462,
+    "vpos": 48558,
+    "content": "いやいや？折ってくれなんて言いませんよ？ただ、ランサーさんのカッコイイ騎士道が見たいなーなんて(ﾁﾗｯ",
+    "date": 1335523714,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30623,
+    "vpos": 48576,
+    "content": "気遣いも計算の内",
+    "date": 1335532281,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "softbank"
+    ]
+  },
+  {
+    "id": 30755,
+    "vpos": 48618,
+    "content": "セイバー「わが剣の重さは埃の重さだ」",
+    "date": 1335537756,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "shita",
+      "yellow"
+    ]
+  },
+  {
+    "id": 30103,
+    "vpos": 48641,
+    "content": "左手さえ使えればなー(ﾁﾗｯﾁﾗｯ",
+    "date": 1335474948,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30069,
+    "vpos": 48848,
+    "content": "ランサーに対してのセイバー可愛すぎるｗｗｗ",
+    "date": 1335462307,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30205,
+    "vpos": 48863,
+    "content": "ここで堂々と笑顔なのがいいなぁ",
+    "date": 1335494804,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30546,
+    "vpos": 48950,
+    "content": "誇り（）",
+    "date": 1335530719,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30496,
+    "vpos": 48993,
+    "content": "かっこいい",
+    "date": 1335527082,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30020,
+    "vpos": 49179,
+    "content": "もうつきあえよ",
+    "date": 1335454137,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30624,
+    "vpos": 49451,
+    "content": "あぁ…かわいいは正義だな",
+    "date": 1335532328,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "softbank"
+    ]
+  },
+  {
+    "id": 30909,
+    "vpos": 49580,
+    "content": "あーあー気にしないでいいからね？（ﾁﾗｯ",
+    "date": 1335546641,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30039,
+    "vpos": 49588,
+    "content": "かわいいなあ",
+    "date": 1335455476,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30378,
+    "vpos": 49829,
+    "content": "かわいいじゃねーかおい",
+    "date": 1335519577,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30216,
+    "vpos": 49876,
+    "content": "こいつ仕事する気ねえなｗｗｗｗｗ",
+    "date": 1335499858,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30625,
+    "vpos": 50051,
+    "content": "ここまで切嗣の狙い通り",
+    "date": 1335532376,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "softbank"
+    ]
+  },
+  {
+    "id": 30791,
+    "vpos": 50139,
+    "content": "埃か軽いなｗ",
+    "date": 1335539345,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30572,
+    "vpos": 50150,
+    "content": "士郎涙目ｗｗｗｗ",
+    "date": 1335531465,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30053,
+    "vpos": 50160,
+    "content": "人命より誇り！",
+    "date": 1335458574,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30203,
+    "vpos": 50167,
+    "content": "人命とか言って宝具壊したらランサーこの先勝てずに負けて死ぬじゃん",
+    "date": 1335494468,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30632,
+    "vpos": 50251,
+    "content": "上手い脚本だなぁ",
+    "date": 1335532787,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "softbank"
+    ]
+  },
+  {
+    "id": 29999,
+    "vpos": 50272,
+    "content": "この期に及んで何を言ってるんだこいつはｗｗｗ",
+    "date": 1335451265,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30988,
+    "vpos": 50274,
+    "content": "他の手を考えようって話なのに何で市民がどうでもいいって話になるんだ",
+    "date": 1335548708,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30733,
+    "vpos": 50467,
+    "content": "セイバーはあくまでもキャスター引きずり出してジャルグ当てる方法を考える方針なんだろう",
+    "date": 1335537129,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30234,
+    "vpos": 50505,
+    "content": "誇り高き‥ｗｗｗ",
+    "date": 1335504411,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30741,
+    "vpos": 50555,
+    "content": "セイバーは赤槍で魔導書を傷つければ怪魔を倒せるって実際に見て知ってるからか",
+    "date": 1335537412,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30633,
+    "vpos": 50951,
+    "content": "イケメン",
+    "date": 1335532829,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "softbank"
+    ]
+  },
+  {
+    "id": 30054,
+    "vpos": 51086,
+    "content": "でた騎士道",
+    "date": 1335458583,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30124,
+    "vpos": 51285,
+    "content": "ﾁﾗｯﾁﾗｯ",
+    "date": 1335478938,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30040,
+    "vpos": 51595,
+    "content": "このBGM、徐々に盛り上がるのがいい",
+    "date": 1335455496,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30531,
+    "vpos": 51884,
+    "content": "いけめそ",
+    "date": 1335529380,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30379,
+    "vpos": 51913,
+    "content": "あああああ",
+    "date": 1335519598,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30635,
+    "vpos": 52100,
+    "content": "切嗣：（計算通り）",
+    "date": 1335532900,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "softbank"
+    ]
+  },
+  {
+    "id": 30050,
+    "vpos": 52101,
+    "content": "これくらい潔癖じゃないと、愛される英雄にはなれないよ",
+    "date": 1335457980,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30498,
+    "vpos": 52148,
+    "content": "ランサーイケメンすぎる",
+    "date": 1335527114,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30009,
+    "vpos": 52591,
+    "content": "えええええええええ",
+    "date": 1335452038,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30637,
+    "vpos": 52651,
+    "content": "イケメ工エエェェェェエエ工ン",
+    "date": 1335532948,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "softbank"
+    ]
+  },
+  {
+    "id": 30093,
+    "vpos": 52776,
+    "content": "ゲイ☆BAR",
+    "date": 1335468078,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "shita",
+      "red"
+    ]
+  },
+  {
+    "id": 30451,
+    "vpos": 53222,
+    "content": "なんというイケメン",
+    "date": 1335522633,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30580,
+    "vpos": 53381,
+    "content": "この槍でタコ攻撃すれば再生しないんじゃね",
+    "date": 1335531602,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30484,
+    "vpos": 53487,
+    "content": "イケメンやな",
+    "date": 1335526687,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "docomo"
+    ]
+  },
+  {
+    "id": 30573,
+    "vpos": 53501,
+    "content": "イケメン",
+    "date": 1335531494,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30654,
+    "vpos": 53543,
+    "content": "前髪ジャマ",
+    "date": 1335533447,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30532,
+    "vpos": 53561,
+    "content": "いけめん",
+    "date": 1335529394,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30730,
+    "vpos": 53686,
+    "content": "ほくろかっけえええええええええええええええええええええええええええええ",
+    "date": 1335537015,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30527,
+    "vpos": 53711,
+    "content": "イケメンすなあ",
+    "date": 1335529220,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30206,
+    "vpos": 53780,
+    "content": "立場が逆だったらやっぱり言わないだろうし言われればこうするだろうな",
+    "date": 1335494972,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30276,
+    "vpos": 53793,
+    "content": "ゲイボウ｢アーッ！｣",
+    "date": 1335510482,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "shita",
+      "red",
+      "big"
+    ]
+  },
+  {
+    "id": 30222,
+    "vpos": 53847,
+    "content": "kyousukeええ",
+    "date": 1335502653,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30819,
+    "vpos": 53849,
+    "content": "ぽきっとな",
+    "date": 1335539899,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30772,
+    "vpos": 53928,
+    "content": "かっこいいなぁ",
+    "date": 1335538376,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30642,
+    "vpos": 53947,
+    "content": "割り箸みたいなww",
+    "date": 1335533091,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30874,
+    "vpos": 53962,
+    "content": "つくづくイケメン",
+    "date": 1335543732,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "docomo"
+    ]
+  },
+  {
+    "id": 30646,
+    "vpos": 53975,
+    "content": "イケメンや",
+    "date": 1335533209,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30638,
+    "vpos": 54051,
+    "content": "かっけえええええええええええ",
+    "date": 1335532984,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "softbank"
+    ]
+  },
+  {
+    "id": 30111,
+    "vpos": 54055,
+    "content": "ポッキーみたいに折れるのな",
+    "date": 1335477663,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30344,
+    "vpos": 54100,
+    "content": "かっけえええええええ",
+    "date": 1335516340,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30100,
+    "vpos": 54134,
+    "content": "ケイネス「」",
+    "date": 1335472928,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30332,
+    "vpos": 54139,
+    "content": "案外簡単におれたなｗｗｗ",
+    "date": 1335515277,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30793,
+    "vpos": 54174,
+    "content": "キリツグ頭よすぎ",
+    "date": 1335539385,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30196,
+    "vpos": 54175,
+    "content": "軽いwwww",
+    "date": 1335492837,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30766,
+    "vpos": 54322,
+    "content": "イケメンだなぁ",
+    "date": 1335538173,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30274,
+    "vpos": 54349,
+    "content": "イケメンすぎるでしょう・・",
+    "date": 1335510155,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30057,
+    "vpos": 54376,
+    "content": "先生泣いていいんだぜ",
+    "date": 1335458959,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30223,
+    "vpos": 54430,
+    "content": "たおォメシ",
+    "date": 1335502663,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30171,
+    "vpos": 54561,
+    "content": "チューペットw",
+    "date": 1335488002,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30380,
+    "vpos": 54608,
+    "content": "簡単にｗｗｗｗｗｗ",
+    "date": 1335519626,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30780,
+    "vpos": 54690,
+    "content": "やっぱイケメンだな、潔すぎる・・・ｗｗｗ",
+    "date": 1335538768,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30656,
+    "vpos": 54818,
+    "content": "チューペットｗｗｗ",
+    "date": 1335533483,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 29988,
+    "vpos": 54976,
+    "content": "チューペットみたいに折れたなｗｗｗ",
+    "date": 1335450581,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30463,
+    "vpos": 55265,
+    "content": "ケイネス先生憤死しちゃう！",
+    "date": 1335523881,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30794,
+    "vpos": 55272,
+    "content": "ポッキル",
+    "date": 1335539396,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30574,
+    "vpos": 55530,
+    "content": "チューペットｗｗ",
+    "date": 1335531514,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30418,
+    "vpos": 55965,
+    "content": "イケメンすぎる",
+    "date": 1335520399,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30084,
+    "vpos": 56097,
+    "content": "先生がいたら卒倒物だなｗ",
+    "date": 1335465882,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30059,
+    "vpos": 56357,
+    "content": "ランサーっぽくしたとしてもその顔文字は流行らないし流行らせない",
+    "date": 1335459026,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30471,
+    "vpos": 56374,
+    "content": "イケメンすぎてつらい",
+    "date": 1335525786,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30643,
+    "vpos": 56573,
+    "content": "次回見るのが辛くなるな",
+    "date": 1335533146,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30048,
+    "vpos": 56598,
+    "content": "ランサーはぶっちゃけ聖杯には興味ないからな",
+    "date": 1335457125,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30098,
+    "vpos": 56618,
+    "content": "泣いた",
+    "date": 1335468881,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30150,
+    "vpos": 56641,
+    "content": "ギルの破棄した宝槍拾って来いよ",
+    "date": 1335482102,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30382,
+    "vpos": 57444,
+    "content": "おお",
+    "date": 1335519682,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 31005,
+    "vpos": 57601,
+    "content": "真面目なやつは好きなんだがなあ・・・",
+    "date": 1335549550,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30041,
+    "vpos": 57607,
+    "content": "うおおおおおおおおおお",
+    "date": 1335455556,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30788,
+    "vpos": 57628,
+    "content": "さすがゲイ",
+    "date": 1335539059,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "docomo"
+    ]
+  },
+  {
+    "id": 30089,
+    "vpos": 57683,
+    "content": "おおおおおおおおお",
+    "date": 1335466604,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30575,
+    "vpos": 57691,
+    "content": "でたー",
+    "date": 1335531537,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30910,
+    "vpos": 57692,
+    "content": "きたあああああああああああああああああああああああああああああ",
+    "date": 1335546723,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30850,
+    "vpos": 57706,
+    "content": "黄金の剣ｷﾀｰ",
+    "date": 1335541494,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30821,
+    "vpos": 57745,
+    "content": "見えた",
+    "date": 1335539944,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30172,
+    "vpos": 57859,
+    "content": "おおおお",
+    "date": 1335488035,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30345,
+    "vpos": 57871,
+    "content": "きたああああああああああああああああ",
+    "date": 1335516378,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30278,
+    "vpos": 57955,
+    "content": "うおおおおおおおおおおおおおおおおおおおおおおおおおおおおおおお",
+    "date": 1335510526,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30390,
+    "vpos": 58017,
+    "content": "ウホォ・・",
+    "date": 1335519886,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "shita",
+      "purple",
+      "big"
+    ]
+  },
+  {
+    "id": 30576,
+    "vpos": 58339,
+    "content": "うほぉｗｗ",
+    "date": 1335531543,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30279,
+    "vpos": 58497,
+    "content": "きたあああああああああああああああああああああああああああああああああああああああああああああああ",
+    "date": 1335510532,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30011,
+    "vpos": 58634,
+    "content": "ランサーの潔さほれるわ…",
+    "date": 1335452107,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30911,
+    "vpos": 58684,
+    "content": "ふつくしい・・・",
+    "date": 1335546732,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30682,
+    "vpos": 58783,
+    "content": "ということはスサノオノミコトとかアマテラス大神は召喚できないってことかな",
+    "date": 1335534681,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30333,
+    "vpos": 58858,
+    "content": "エ～クスカリバ～♪",
+    "date": 1335515377,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30519,
+    "vpos": 59033,
+    "content": "ｴｰｸｽｶｰﾘﾊﾞｰ",
+    "date": 1335528312,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30667,
+    "vpos": 59067,
+    "content": "私の伝説は12世紀から始まった・・・",
+    "date": 1335533966,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30126,
+    "vpos": 59072,
+    "content": "バーサーカーとセイバーには生前の因縁がある。",
+    "date": 1335479459,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30989,
+    "vpos": 59189,
+    "content": "ｳﾞｧｶﾒ！",
+    "date": 1335548759,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30323,
+    "vpos": 59516,
+    "content": "アレンジ版こい！",
+    "date": 1335513897,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30383,
+    "vpos": 59647,
+    "content": "ソウルイーターはｗｗｗｗｗｗ",
+    "date": 1335519717,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30851,
+    "vpos": 60182,
+    "content": "何スロットなんだ・・・",
+    "date": 1335541521,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30902,
+    "vpos": 60672,
+    "content": "蛾みたいだな",
+    "date": 1335545757,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30280,
+    "vpos": 60874,
+    "content": "ふつくしい…",
+    "date": 1335510557,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30789,
+    "vpos": 61021,
+    "content": "ウェイバーちゃん可愛いよ！",
+    "date": 1335539093,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "docomo"
+    ]
+  },
+  {
+    "id": 30042,
+    "vpos": 61629,
+    "content": "曳光弾は何発かに一発の割合だから、全部は見えないんだよ",
+    "date": 1335455596,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30718,
+    "vpos": 62329,
+    "content": "ギル様の言い分は用は、構ってくれないとさみしい",
+    "date": 1335536431,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30825,
+    "vpos": 62331,
+    "content": "婦警なうｗｗｗ",
+    "date": 1335540027,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30265,
+    "vpos": 62420,
+    "content": "相手してくれないんでスネたw",
+    "date": 1335509754,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30799,
+    "vpos": 62531,
+    "content": "不敬な！",
+    "date": 1335539518,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30802,
+    "vpos": 62531,
+    "content": "なにぃぃぃぃぃ！？",
+    "date": 1335539532,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30384,
+    "vpos": 62544,
+    "content": "ｗｗｗｗｗｗｗｗ",
+    "date": 1335519746,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30647,
+    "vpos": 62584,
+    "content": "脱屁",
+    "date": 1335533229,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "yellow"
+    ]
+  },
+  {
+    "id": 30137,
+    "vpos": 62849,
+    "content": "フレアか",
+    "date": 1335480405,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30335,
+    "vpos": 62866,
+    "content": "フレアか！？",
+    "date": 1335515463,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30544,
+    "vpos": 62883,
+    "content": "慢心してなきゃ思考と同等の速度で回避できたのに・・・",
+    "date": 1335530685,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30056,
+    "vpos": 62923,
+    "content": "ざまあｗ",
+    "date": 1335458883,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30567,
+    "vpos": 62962,
+    "content": "慢心出たｗｗｗｗｗ",
+    "date": 1335531306,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30487,
+    "vpos": 63022,
+    "content": "慢心なう",
+    "date": 1335526804,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "docomo"
+    ]
+  },
+  {
+    "id": 30287,
+    "vpos": 63031,
+    "content": "慢心王ｗｗ",
+    "date": 1335510786,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30999,
+    "vpos": 63043,
+    "content": "うっかりの系譜",
+    "date": 1335548912,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30175,
+    "vpos": 63105,
+    "content": "あ",
+    "date": 1335489240,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30833,
+    "vpos": 63116,
+    "content": "チャフとかｗｗｗｗｗもはや武装じゃないｗｗｗｗｗ",
+    "date": 1335540531,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30904,
+    "vpos": 63161,
+    "content": "ざまぁｗｗｗｗｗｗｗｗｗｗｗｗｗｗ",
+    "date": 1335546367,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30470,
+    "vpos": 63182,
+    "content": "バックファイア、もとい屁",
+    "date": 1335525657,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30310,
+    "vpos": 63343,
+    "content": "慢心王wwwww",
+    "date": 1335512359,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30579,
+    "vpos": 63349,
+    "content": "着るｗｗｗ",
+    "date": 1335531593,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 31010,
+    "vpos": 63372,
+    "content": "あーああｗｗ",
+    "date": 1335550850,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30282,
+    "vpos": 63381,
+    "content": "うわｗｗｗｗｗｗ",
+    "date": 1335510581,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30804,
+    "vpos": 63439,
+    "content": "どっか～ん",
+    "date": 1335539543,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30737,
+    "vpos": 63476,
+    "content": "宝具化したチャフの威力、らしい",
+    "date": 1335537310,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30912,
+    "vpos": 63514,
+    "content": "慢心王ｗｗｗ",
+    "date": 1335546781,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30739,
+    "vpos": 63600,
+    "content": "２大ヒロイン",
+    "date": 1335537350,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30849,
+    "vpos": 63779,
+    "content": "ざまぁｗｗ",
+    "date": 1335541406,
+    "date_usec": 333000,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30714,
+    "vpos": 63809,
+    "content": "←エクスデスは無に還れwwwwwwww",
+    "date": 1335536379,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30547,
+    "vpos": 63911,
+    "content": "これでヴィマーナは次回の聖杯戦争で使えなくなったな",
+    "date": 1335530720,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30324,
+    "vpos": 64639,
+    "content": "慢心せずして何が王か",
+    "date": 1335513962,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30385,
+    "vpos": 64651,
+    "content": "きた",
+    "date": 1335519768,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30581,
+    "vpos": 64743,
+    "content": "慢心王ｗｗｗ",
+    "date": 1335531607,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30685,
+    "vpos": 64790,
+    "content": "ウホッ♂",
+    "date": 1335534770,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30225,
+    "vpos": 64924,
+    "content": "やくにたたねえなｗｗ",
+    "date": 1335502811,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30311,
+    "vpos": 65075,
+    "content": "おじさあああああん",
+    "date": 1335512376,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30838,
+    "vpos": 65111,
+    "content": "おじさあああああああああああああああああああああああああああああああんｎ",
+    "date": 1335541014,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30444,
+    "vpos": 65545,
+    "content": "おいたん・・・",
+    "date": 1335521523,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30735,
+    "vpos": 65643,
+    "content": "おじさあああああああああああああああああん",
+    "date": 1335537210,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30176,
+    "vpos": 65778,
+    "content": "おじさん",
+    "date": 1335489266,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30505,
+    "vpos": 65841,
+    "content": "おじさん・・・",
+    "date": 1335527298,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30583,
+    "vpos": 65973,
+    "content": "おじちゃーん",
+    "date": 1335531619,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30500,
+    "vpos": 66017,
+    "content": "飯馬",
+    "date": 1335527134,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30034,
+    "vpos": 66254,
+    "content": "良い顔してるなあ",
+    "date": 1335454930,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30135,
+    "vpos": 66334,
+    "content": "かわいそうだから助けてあげよう（提案）",
+    "date": 1335480354,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30240,
+    "vpos": 66343,
+    "content": "服が燃えていないのは何故なんだぜ",
+    "date": 1335506508,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30036,
+    "vpos": 66460,
+    "content": "ああ、性的だな",
+    "date": 1335455413,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30336,
+    "vpos": 66524,
+    "content": "消し炭でもおかしくない火の勢いだったのにｗｗｗ",
+    "date": 1335515566,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30577,
+    "vpos": 66680,
+    "content": "ガチホモタイムｗｗｗ",
+    "date": 1335531553,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30740,
+    "vpos": 66941,
+    "content": "間桐の魔術は水属性だから何らかの守りが働いたのかもね",
+    "date": 1335537369,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30450,
+    "vpos": 67052,
+    "content": "撃墜王(される方)",
+    "date": 1335522215,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "shita",
+      "black",
+      "big"
+    ]
+  },
+  {
+    "id": 30253,
+    "vpos": 67147,
+    "content": "服は燃えてないのか",
+    "date": 1335508957,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30807,
+    "vpos": 67151,
+    "content": "服燃えないのか",
+    "date": 1335539581,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30779,
+    "vpos": 67238,
+    "content": "愉悦タイム",
+    "date": 1335538732,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30027,
+    "vpos": 67288,
+    "content": "愉悦ｗｗｗｗ",
+    "date": 1335454450,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30386,
+    "vpos": 67514,
+    "content": "ゴミ袋の上に落ちたとばかりｗｗｗｗｗ",
+    "date": 1335519796,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30506,
+    "vpos": 67522,
+    "content": "こんがり",
+    "date": 1335527317,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30585,
+    "vpos": 67552,
+    "content": "ｗｗ",
+    "date": 1335531635,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30808,
+    "vpos": 67564,
+    "content": "された方",
+    "date": 1335539584,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30831,
+    "vpos": 67585,
+    "content": "アー",
+    "date": 1335540448,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30886,
+    "vpos": 67977,
+    "content": "愉悦♂",
+    "date": 1335544632,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30283,
+    "vpos": 67980,
+    "content": "ヤられる…",
+    "date": 1335510628,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30387,
+    "vpos": 68517,
+    "content": "服が燃えないのは基本",
+    "date": 1335519806,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30876,
+    "vpos": 68987,
+    "content": "愉悦タイムはいりまーす",
+    "date": 1335543912,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "docomo"
+    ]
+  },
+  {
+    "id": 30031,
+    "vpos": 69433,
+    "content": "あああああああああああああああああああ",
+    "date": 1335454792,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30114,
+    "vpos": 69655,
+    "content": "間違いなくここでしんでた方が幸せ。桜のためにも",
+    "date": 1335478104,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "iPhone"
+    ]
+  },
+  {
+    "id": 30315,
+    "vpos": 69782,
+    "content": "破壊神のゆえつ",
+    "date": 1335512781,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30043,
+    "vpos": 69858,
+    "content": "期待したのにｗｗｗ",
+    "date": 1335455613,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30913,
+    "vpos": 69965,
+    "content": "スーパー愉悦タイム",
+    "date": 1335546845,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30472,
+    "vpos": 70393,
+    "content": "！？",
+    "date": 1335525906,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30692,
+    "vpos": 70434,
+    "content": "ホモイミwwwwwwww",
+    "date": 1335535290,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30177,
+    "vpos": 70493,
+    "content": "ごほお",
+    "date": 1335489313,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30312,
+    "vpos": 70512,
+    "content": "ホモイミwww",
+    "date": 1335512430,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30689,
+    "vpos": 70590,
+    "content": "アッー♂",
+    "date": 1335534987,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30673,
+    "vpos": 70600,
+    "content": "解説ありがとう",
+    "date": 1335534243,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30035,
+    "vpos": 70623,
+    "content": "めしうま",
+    "date": 1335455248,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30687,
+    "vpos": 70626,
+    "content": "雁夜『アッー♂』",
+    "date": 1335534894,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30651,
+    "vpos": 70680,
+    "content": "いやしのはどう",
+    "date": 1335533338,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30051,
+    "vpos": 70681,
+    "content": "物理ホイミｗｗｗ",
+    "date": 1335458047,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30877,
+    "vpos": 70725,
+    "content": "アッー！",
+    "date": 1335543930,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "docomo"
+    ]
+  },
+  {
+    "id": 30033,
+    "vpos": 70737,
+    "content": "いいぞ、もっとやれ",
+    "date": 1335454835,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30464,
+    "vpos": 70759,
+    "content": "虫がw増えた",
+    "date": 1335524247,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "iPhone"
+    ]
+  },
+  {
+    "id": 30914,
+    "vpos": 70784,
+    "content": "そんなところを．．．アッー♂",
+    "date": 1335546852,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30108,
+    "vpos": 70870,
+    "content": "アッー！",
+    "date": 1335476880,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30726,
+    "vpos": 70921,
+    "content": "アッー",
+    "date": 1335536838,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30046,
+    "vpos": 71011,
+    "content": "そんなに楽しいか私も楽しいｗｗ",
+    "date": 1335455835,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30017,
+    "vpos": 71045,
+    "content": "オンナノコの気持ち♪",
+    "date": 1335453595,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30018,
+    "vpos": 71067,
+    "content": "雁夜の不幸でメシウマな綺礼さん",
+    "date": 1335454007,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30191,
+    "vpos": 71126,
+    "content": "愉悦ナウ：RT＠kotomine",
+    "date": 1335490196,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "shita",
+      "cyan",
+      "small"
+    ]
+  },
+  {
+    "id": 30068,
+    "vpos": 71153,
+    "content": "こんなにひどいホイミは初めて見たｗｗｗ",
+    "date": 1335462281,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30736,
+    "vpos": 71166,
+    "content": "うわああああああああああああああああああああああああ",
+    "date": 1335537302,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30389,
+    "vpos": 71294,
+    "content": "顔ｗｗｗｗｗ",
+    "date": 1335519850,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30507,
+    "vpos": 71302,
+    "content": "イタそう",
+    "date": 1335527363,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30197,
+    "vpos": 71369,
+    "content": "物理ｗｗｗ",
+    "date": 1335493324,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30738,
+    "vpos": 71397,
+    "content": "この時点でまだ自覚ないんだよな…？",
+    "date": 1335537332,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30588,
+    "vpos": 71404,
+    "content": "ｱｯｰ",
+    "date": 1335531673,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30810,
+    "vpos": 71421,
+    "content": "イく・・・",
+    "date": 1335539628,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30801,
+    "vpos": 71425,
+    "content": "アッー！",
+    "date": 1335539525,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30981,
+    "vpos": 71430,
+    "content": "ﾆﾔ",
+    "date": 1335548526,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30219,
+    "vpos": 71485,
+    "content": "他人の不幸で麻婆が美味い！",
+    "date": 1335501562,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30217,
+    "vpos": 71718,
+    "content": "破瓜",
+    "date": 1335500127,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30097,
+    "vpos": 71773,
+    "content": "愉悦w",
+    "date": 1335468742,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30792,
+    "vpos": 72000,
+    "content": "不幸でメシウマか",
+    "date": 1335539375,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "docomo"
+    ]
+  },
+  {
+    "id": 30285,
+    "vpos": 72155,
+    "content": "アーッ！",
+    "date": 1335510668,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30771,
+    "vpos": 72806,
+    "content": "もっと弱らせないと",
+    "date": 1335538263,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30695,
+    "vpos": 73140,
+    "content": "このアニメ解説なかったら原作読んでる奴を除いて、ただの糞アニメだろ",
+    "date": 1335535460,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30021,
+    "vpos": 73256,
+    "content": "ランサーに目線送るアイリが可愛い",
+    "date": 1335454272,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30696,
+    "vpos": 73295,
+    "content": "このアニメ解説なかったら原作読んでる奴を除いて、ただのクソアニメだろ",
+    "date": 1335535493,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30554,
+    "vpos": 73344,
+    "content": "w",
+    "date": 1335530854,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30631,
+    "vpos": 73650,
+    "content": "う「（・・・解説はいいから働け・・・）」",
+    "date": 1335532684,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "shita",
+      "red",
+      "big"
+    ]
+  },
+  {
+    "id": 31008,
+    "vpos": 73814,
+    "content": "NG共有で解説が消えることを書く奴はいい加減察しろようぜぇｗ",
+    "date": 1335550089,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30697,
+    "vpos": 74045,
+    "content": "解説無くてクソと化したアニメのひとつとしてとある魔術があるな、はしょりすぎてゴミみたいなアニメに",
+    "date": 1335535536,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30178,
+    "vpos": 74719,
+    "content": "お",
+    "date": 1335489361,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30589,
+    "vpos": 74774,
+    "content": "ライダーの戦闘見せろよｗｗｗ",
+    "date": 1335531707,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30391,
+    "vpos": 74786,
+    "content": "おお",
+    "date": 1335519894,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30552,
+    "vpos": 74823,
+    "content": "イケメンｗｗｗｗｗ",
+    "date": 1335530845,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30490,
+    "vpos": 74837,
+    "content": "これ俺じゃん",
+    "date": 1335526929,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "docomo"
+    ]
+  },
+  {
+    "id": 30653,
+    "vpos": 74892,
+    "content": "お",
+    "date": 1335533443,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30806,
+    "vpos": 74946,
+    "content": "お",
+    "date": 1335539560,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30083,
+    "vpos": 74958,
+    "content": "やっべ、カメラ回ってるとか聞いてなかったしｗｗ",
+    "date": 1335465586,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "docomo"
+    ]
+  },
+  {
+    "id": 30445,
+    "vpos": 75041,
+    "content": "俺か？",
+    "date": 1335521621,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30852,
+    "vpos": 75075,
+    "content": "ミトリネスじゃねーか、おひさー",
+    "date": 1335541668,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30535,
+    "vpos": 75248,
+    "content": "ミトリネス、そんなに偉かったのかｗｗｗ",
+    "date": 1335530055,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30407,
+    "vpos": 75309,
+    "content": "ディル「寝取りネスって聞こえた」",
+    "date": 1335520166,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30192,
+    "vpos": 75431,
+    "content": "↓まじかｗｗｗ",
+    "date": 1335490292,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30052,
+    "vpos": 75797,
+    "content": "※伝令も、王が同格の者に出す場合は高級将校や文官が選ばれるよ",
+    "date": 1335458402,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "green"
+    ]
+  },
+  {
+    "id": 30784,
+    "vpos": 75934,
+    "content": "まあでも一応主に伝令を出すわけだから一兵卒差し遣わすわけにもいかんだろう",
+    "date": 1335538877,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30757,
+    "vpos": 76115,
+    "content": "相手はランサーのマスターだからな、俺らのような下っ端が伝令に行くのは逆に失礼だろ",
+    "date": 1335537794,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30759,
+    "vpos": 76115,
+    "content": "ランサーじゃなくてライダーだ",
+    "date": 1335537808,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30346,
+    "vpos": 76155,
+    "content": "お前か御苦労",
+    "date": 1335516561,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30019,
+    "vpos": 76356,
+    "content": "磨神のアンソロでアリストテレスとプラトンとソクラテスの説得によって聖杯戦争が終わってしまった話があったなw",
+    "date": 1335454089,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30883,
+    "vpos": 76394,
+    "content": "すげえｗ勉強になったわｗｗｗｗｗｗってか、イスカンダルすげえ(笑)",
+    "date": 1335544484,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30987,
+    "vpos": 76621,
+    "content": "固有結界の中の人専門だと思ってたんだけど出られるんだな",
+    "date": 1335548702,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30007,
+    "vpos": 77891,
+    "content": "ランサー働けｗｗｗ",
+    "date": 1335451835,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30081,
+    "vpos": 78126,
+    "content": "俺も死んだな",
+    "date": 1335464258,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30255,
+    "vpos": 78204,
+    "content": "モブにはもったいないイケメン",
+    "date": 1335509073,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30243,
+    "vpos": 78513,
+    "content": "↓分かり易い。ありが㌧",
+    "date": 1335506764,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30393,
+    "vpos": 78540,
+    "content": "ワイプマジ欲しい",
+    "date": 1335519964,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30025,
+    "vpos": 78713,
+    "content": "アイリ「顎打った」",
+    "date": 1335454341,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30109,
+    "vpos": 78860,
+    "content": "↓解説おつ",
+    "date": 1335477124,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30591,
+    "vpos": 78943,
+    "content": "イケメンかっけー",
+    "date": 1335531749,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30822,
+    "vpos": 79075,
+    "content": "ワイｗｗｗｗ",
+    "date": 1335539957,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30245,
+    "vpos": 79119,
+    "content": "↓敵が汚物な為使いたくないｗｗｗｗｗｗ",
+    "date": 1335506945,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30116,
+    "vpos": 79134,
+    "content": "ランサーってやっぱしょぼいんだな(´･ω･`)",
+    "date": 1335478481,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30226,
+    "vpos": 79322,
+    "content": "　万新王",
+    "date": 1335502977,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30138,
+    "vpos": 79497,
+    "content": "あぁん？",
+    "date": 1335480598,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30679,
+    "vpos": 79522,
+    "content": "矯正歯ww",
+    "date": 1335534482,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30826,
+    "vpos": 79533,
+    "content": "この戦闘機の上にテレポートはなんてチート？",
+    "date": 1335540038,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30798,
+    "vpos": 80251,
+    "content": "赤い槍バサカと相性いいな",
+    "date": 1335539486,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "docomo"
+    ]
+  },
+  {
+    "id": 30117,
+    "vpos": 80289,
+    "content": "ここも解説いれてほしかったな。ランサーのゲイジャルグでバサカの支配から戦闘機を解き放った",
+    "date": 1335478526,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30509,
+    "vpos": 80409,
+    "content": "かっこいい",
+    "date": 1335527520,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30347,
+    "vpos": 80488,
+    "content": "解説はんぱねえ",
+    "date": 1335516604,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30559,
+    "vpos": 80813,
+    "content": "やだ・・・カッコいい・・・",
+    "date": 1335530951,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30248,
+    "vpos": 80863,
+    "content": "仰木君は何時の時点で死んでしまっていたのだ",
+    "date": 1335507090,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30528,
+    "vpos": 80865,
+    "content": "解説すげえ",
+    "date": 1335529242,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30286,
+    "vpos": 81021,
+    "content": "おおおおおおおおお",
+    "date": 1335510757,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30749,
+    "vpos": 81115,
+    "content": "バルカンは固有名詞なんだっけ。ガンダムのせいで勘違いされがちだけど",
+    "date": 1335537600,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30678,
+    "vpos": 81172,
+    "content": "※決してサンダーボルトⅡの機銃（アヴェンジャー）と混同してはならない",
+    "date": 1335534343,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30180,
+    "vpos": 82006,
+    "content": "おお",
+    "date": 1335489440,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30538,
+    "vpos": 82120,
+    "content": "タイミング曲とあってるｗｗｗｗｗｗ",
+    "date": 1335530401,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30395,
+    "vpos": 82236,
+    "content": "ええ",
+    "date": 1335520015,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30106,
+    "vpos": 82237,
+    "content": "おお～",
+    "date": 1335476058,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30392,
+    "vpos": 82288,
+    "content": "ムワー",
+    "date": 1335519898,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30095,
+    "vpos": 82585,
+    "content": "燃える燃えるー！",
+    "date": 1335468441,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30742,
+    "vpos": 82732,
+    "content": "金ぴかwwwwwwwwww",
+    "date": 1335537507,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30693,
+    "vpos": 82778,
+    "content": "ツンデレ王ktkr",
+    "date": 1335535350,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30523,
+    "vpos": 82841,
+    "content": "あーちゃん！",
+    "date": 1335528691,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30413,
+    "vpos": 82850,
+    "content": "ビックブリッヂとアーチャー",
+    "date": 1335520301,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30592,
+    "vpos": 83040,
+    "content": "うはｗ",
+    "date": 1335531790,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30694,
+    "vpos": 83042,
+    "content": "ツンデレ",
+    "date": 1335535363,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30787,
+    "vpos": 83269,
+    "content": "あーちゃんやめろwwww",
+    "date": 1335538926,
+    "date_usec": 333000,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30560,
+    "vpos": 83411,
+    "content": "GJ",
+    "date": 1335530979,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30121,
+    "vpos": 83492,
+    "content": "あーちゃんがデレた！",
+    "date": 1335478684,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30005,
+    "vpos": 83515,
+    "content": "デレじゃなくさっきのお返しだよ",
+    "date": 1335451576,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30593,
+    "vpos": 83588,
+    "content": "ベジータｗｗｗ",
+    "date": 1335531795,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30396,
+    "vpos": 83677,
+    "content": "ｗｗｗｗｗｗｗ",
+    "date": 1335520029,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30915,
+    "vpos": 83809,
+    "content": "完全にベジータｗｗｗ",
+    "date": 1335546984,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30090,
+    "vpos": 84439,
+    "content": "ツンデレｗ",
+    "date": 1335467009,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30397,
+    "vpos": 84444,
+    "content": "ばきゅーん",
+    "date": 1335520051,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30998,
+    "vpos": 85050,
+    "content": "「なにあれー？（ぽけー）」",
+    "date": 1335548896,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30495,
+    "vpos": 86083,
+    "content": "上から来るぞ、気を付けろ！",
+    "date": 1335527061,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "docomo"
+    ]
+  },
+  {
+    "id": 30122,
+    "vpos": 86116,
+    "content": "ラピュタｷﾀ━━━ヽ(∀ﾟ )人(ﾟ∀ﾟ)人( ﾟ∀)ノ━━━!!",
+    "date": 1335478725,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30401,
+    "vpos": 86454,
+    "content": "空から汚物ｗｗｗｗｗｗｗｗｗｗｗ",
+    "date": 1335520100,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30400,
+    "vpos": 86525,
+    "content": "おおおお",
+    "date": 1335520079,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30848,
+    "vpos": 86595,
+    "content": "デス様ネタはやめろwww",
+    "date": 1335541406,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30181,
+    "vpos": 86617,
+    "content": "あぶねえw",
+    "date": 1335489495,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30071,
+    "vpos": 86766,
+    "content": "切継さんｗｗｗｗｗ",
+    "date": 1335462515,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30713,
+    "vpos": 86836,
+    "content": "サンタクロース",
+    "date": 1335536323,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30402,
+    "vpos": 86951,
+    "content": "ケリィいいいい",
+    "date": 1335520105,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30139,
+    "vpos": 87024,
+    "content": "空から形容し難きものがｗ",
+    "date": 1335480700,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30628,
+    "vpos": 87667,
+    "content": "しかし、梶浦Verかっこよすぎるだろ！！！",
+    "date": 1335532536,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "shita",
+      "small"
+    ]
+  },
+  {
+    "id": 30629,
+    "vpos": 87667,
+    "content": "別名「処刑用ＢＧＭ］これが流れると基本相手は死ぬ。",
+    "date": 1335532547,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "shita",
+      "small"
+    ]
+  },
+  {
+    "id": 30630,
+    "vpos": 87667,
+    "content": "ＢＧＭ：約束された勝利の剣（梶浦Ver）",
+    "date": 1335532554,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "shita"
+    ]
+  },
+  {
+    "id": 30113,
+    "vpos": 87694,
+    "content": "きたああああああああああああああああああああああ",
+    "date": 1335477910,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30748,
+    "vpos": 87694,
+    "content": "きたあああああああああああああああああああああああああああああああああああああああああ",
+    "date": 1335537591,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 31014,
+    "vpos": 87700,
+    "content": "うおおおおおおおおおおおおお",
+    "date": 1335551351,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "softbank"
+    ]
+  },
+  {
+    "id": 30853,
+    "vpos": 87766,
+    "content": "ｷﾀ━━━━(ﾟ∀ﾟ)━━━━!!",
+    "date": 1335541795,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30404,
+    "vpos": 87862,
+    "content": "おおおお",
+    "date": 1335520114,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30916,
+    "vpos": 87902,
+    "content": "ｷﾀ━━━━━━(ﾟ∀ﾟ)━━━━━━!!!!!",
+    "date": 1335547025,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30066,
+    "vpos": 87920,
+    "content": "このセイバーがしぶすぎる",
+    "date": 1335461703,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30599,
+    "vpos": 88025,
+    "content": "きたあああああああああああああ",
+    "date": 1335531952,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30182,
+    "vpos": 88129,
+    "content": "お",
+    "date": 1335489510,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30049,
+    "vpos": 88147,
+    "content": "きたあああああああああああああああ",
+    "date": 1335457486,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30349,
+    "vpos": 88355,
+    "content": "きたあああああああああああああああああ",
+    "date": 1335516685,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30325,
+    "vpos": 88380,
+    "content": "北アあああああああああああああああああ",
+    "date": 1335514287,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30291,
+    "vpos": 88424,
+    "content": "ＢＧＭキター！",
+    "date": 1335511086,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30341,
+    "vpos": 88653,
+    "content": "スーパーカズヤのテーマｗｗｗ",
+    "date": 1335515961,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30458,
+    "vpos": 88776,
+    "content": "スーパーカズヤのテーマw",
+    "date": 1335523221,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30227,
+    "vpos": 88801,
+    "content": "救済♀開始",
+    "date": 1335503103,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30006,
+    "vpos": 88961,
+    "content": "スーパーカズヤのテーマｗ",
+    "date": 1335451651,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30228,
+    "vpos": 89435,
+    "content": "カズヤのてーま",
+    "date": 1335503109,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30405,
+    "vpos": 89936,
+    "content": "ﾄﾞﾔｧ……",
+    "date": 1335520135,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30208,
+    "vpos": 90021,
+    "content": "涼やかでいい表情",
+    "date": 1335495999,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30661,
+    "vpos": 90446,
+    "content": "清掃用BGM",
+    "date": 1335533672,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30634,
+    "vpos": 90637,
+    "content": "カ～ズ～ヤ～♪",
+    "date": 1335532897,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "shita",
+      "red",
+      "big"
+    ]
+  },
+  {
+    "id": 30409,
+    "vpos": 90912,
+    "content": "おお",
+    "date": 1335520229,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30918,
+    "vpos": 90965,
+    "content": "作画が神っとる",
+    "date": 1335547055,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30065,
+    "vpos": 90987,
+    "content": "あなたの汚いもの、私が処理して差し上げましょうってかｗ",
+    "date": 1335460345,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30657,
+    "vpos": 91107,
+    "content": "ホタルの光",
+    "date": 1335533569,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30935,
+    "vpos": 91142,
+    "content": "オラに力をわけてくれ",
+    "date": 1335547647,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30597,
+    "vpos": 91151,
+    "content": "元気だまｗｗｗｗｗ",
+    "date": 1335531919,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30326,
+    "vpos": 91470,
+    "content": "約束された勝利の曲",
+    "date": 1335514319,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30839,
+    "vpos": 91771,
+    "content": "これはぐう聖剣ですわ",
+    "date": 1335541039,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30834,
+    "vpos": 92037,
+    "content": "広がっていく",
+    "date": 1335540559,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30235,
+    "vpos": 92432,
+    "content": "!?",
+    "date": 1335504952,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30919,
+    "vpos": 92484,
+    "content": "元気玉",
+    "date": 1335547074,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30570,
+    "vpos": 92606,
+    "content": "グリッターティガ来る？",
+    "date": 1335531404,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30790,
+    "vpos": 92614,
+    "content": "！？",
+    "date": 1335539202,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30429,
+    "vpos": 92702,
+    "content": "処刑用BGM",
+    "date": 1335520676,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30032,
+    "vpos": 92806,
+    "content": "スタッフの魂ｗｗｗｗ",
+    "date": 1335454822,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30699,
+    "vpos": 92906,
+    "content": "「魔術の秘匿・・・・・・」",
+    "date": 1335535731,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30811,
+    "vpos": 92951,
+    "content": "スタッフ",
+    "date": 1335539632,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "docomo"
+    ]
+  },
+  {
+    "id": 30411,
+    "vpos": 92959,
+    "content": "スタッフｗｗｗｗｗ",
+    "date": 1335520244,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30174,
+    "vpos": 93094,
+    "content": "ポエマー",
+    "date": 1335489180,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30229,
+    "vpos": 93169,
+    "content": "かっこいいポーズ",
+    "date": 1335503147,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30455,
+    "vpos": 93175,
+    "content": "人妻ポエムwww",
+    "date": 1335522900,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "softbank",
+      "blue"
+    ]
+  },
+  {
+    "id": 30880,
+    "vpos": 93293,
+    "content": "ポエム",
+    "date": 1335544156,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "docomo"
+    ]
+  },
+  {
+    "id": 30598,
+    "vpos": 93469,
+    "content": "ポエマーｗｗ",
+    "date": 1335531942,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30516,
+    "vpos": 93777,
+    "content": "ｽﾀｯﾌｳｳｳｳｳｳｳｳｳｳｳｳｳｳｳｳｳｳｳ",
+    "date": 1335528024,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30658,
+    "vpos": 93778,
+    "content": "ここシュールwww",
+    "date": 1335533595,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30328,
+    "vpos": 93780,
+    "content": "解説ｗ",
+    "date": 1335514375,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30012,
+    "vpos": 93886,
+    "content": "太鼓ｗｗｗ",
+    "date": 1335452187,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30316,
+    "vpos": 93966,
+    "content": "白雪のポエム",
+    "date": 1335512782,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30250,
+    "vpos": 94092,
+    "content": "↓ポエム解説増えててﾜﾛﾀｗｗｗｗでも助かったよありが㌧",
+    "date": 1335507907,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30456,
+    "vpos": 94210,
+    "content": "急に謳うよ～",
+    "date": 1335523016,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30183,
+    "vpos": 94224,
+    "content": "www",
+    "date": 1335489837,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30055,
+    "vpos": 94233,
+    "content": "「恥ずかしいセリフ禁止！！」",
+    "date": 1335458862,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30761,
+    "vpos": 94332,
+    "content": "謎ポエムｗ",
+    "date": 1335537876,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30412,
+    "vpos": 94652,
+    "content": "いい最終回だ",
+    "date": 1335520265,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30308,
+    "vpos": 94817,
+    "content": "これが雪歩のポエムか・・・",
+    "date": 1335512275,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 31007,
+    "vpos": 95026,
+    "content": "単に文献かなんかにのってたんだろｗ",
+    "date": 1335550066,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30242,
+    "vpos": 95571,
+    "content": "急に歌った？",
+    "date": 1335506695,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30613,
+    "vpos": 95583,
+    "content": "姫姉さま",
+    "date": 1335532116,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30601,
+    "vpos": 95951,
+    "content": "黒歴史ｗｗｗｗｗ",
+    "date": 1335531967,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30659,
+    "vpos": 95981,
+    "content": "エクス…",
+    "date": 1335533617,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30830,
+    "vpos": 96073,
+    "content": "エクス・・・ガァリバァアアアァァァアア～",
+    "date": 1335540443,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30441,
+    "vpos": 96113,
+    "content": "セクス・サカリバーーー！！",
+    "date": 1335521347,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30460,
+    "vpos": 96133,
+    "content": "ヽ(*ﾟдﾟ)ノ　＜　ｶｲﾊﾞｰ",
+    "date": 1335523356,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30459,
+    "vpos": 96159,
+    "content": "ヽ(*ﾟдﾟ)ノ",
+    "date": 1335523316,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30920,
+    "vpos": 96159,
+    "content": "カリバアアアアアアアアアアアアアアアアアアアアアアアアアアアアアアアアアア",
+    "date": 1335547108,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30660,
+    "vpos": 96164,
+    "content": "カリバアアアアアアアアアアアアアアアアアアアアア",
+    "date": 1335533630,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30288,
+    "vpos": 96185,
+    "content": "エクス…カリバァァァァァァァァァァァァァァァァァァァァァァァァァァァァァァァァァァァァァァァァァァァァァァァァ！！！！！！！！！！",
+    "date": 1335510909,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "red",
+      "big"
+    ]
+  },
+  {
+    "id": 30022,
+    "vpos": 96251,
+    "content": "エクスカリバーーーーーーー！！",
+    "date": 1335454297,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "softbank"
+    ]
+  },
+  {
+    "id": 30465,
+    "vpos": 96254,
+    "content": "えくす↑カリばぁー↓",
+    "date": 1335524287,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30029,
+    "vpos": 96272,
+    "content": "ネオアームストロングサイクロンジェットアームストロング砲じゃねーか、完成度高けーなオイ",
+    "date": 1335454687,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "big"
+    ]
+  },
+  {
+    "id": 30309,
+    "vpos": 96324,
+    "content": "ようするにブチゲンのポエムか",
+    "date": 1335512292,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30342,
+    "vpos": 96400,
+    "content": "エ～クスカリバ～♪",
+    "date": 1335516080,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30350,
+    "vpos": 96421,
+    "content": "あああああああああああああああああああああああああああ",
+    "date": 1335516763,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30292,
+    "vpos": 96573,
+    "content": "ヽ(*ﾟдﾟ)ノｶｲﾊﾞｰ",
+    "date": 1335511155,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30602,
+    "vpos": 96871,
+    "content": "何この水玉？",
+    "date": 1335531977,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30603,
+    "vpos": 96893,
+    "content": "ｳﾞｧｱｱｱｱｱ",
+    "date": 1335532012,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30184,
+    "vpos": 97413,
+    "content": "うわうわ",
+    "date": 1335489869,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30023,
+    "vpos": 97676,
+    "content": "おおおおおおおおおおおおおお",
+    "date": 1335454336,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "softbank"
+    ]
+  },
+  {
+    "id": 30524,
+    "vpos": 97714,
+    "content": "時臣「サンダァァァァァァフラァァァァァッシュ!!!!」",
+    "date": 1335529145,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "yellow"
+    ]
+  },
+  {
+    "id": 30414,
+    "vpos": 97943,
+    "content": "おおおおおおお",
+    "date": 1335520328,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30605,
+    "vpos": 97983,
+    "content": "あｗ",
+    "date": 1335532026,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30745,
+    "vpos": 97985,
+    "content": "←時臣の中のエクスカイザーがｗ",
+    "date": 1335537537,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30606,
+    "vpos": 98462,
+    "content": "きめえｗｗ",
+    "date": 1335532027,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30842,
+    "vpos": 98830,
+    "content": "エクスカリバー（ビーム）",
+    "date": 1335541102,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30096,
+    "vpos": 99269,
+    "content": "ひきこもりからの脱出おめでとう！",
+    "date": 1335468527,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "shita",
+      "red"
+    ]
+  },
+  {
+    "id": 30185,
+    "vpos": 99382,
+    "content": "oh",
+    "date": 1335489889,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30865,
+    "vpos": 99511,
+    "content": "つえっ",
+    "date": 1335542428,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "docomo"
+    ]
+  },
+  {
+    "id": 30857,
+    "vpos": 99907,
+    "content": "旦那・・・これが救いの光だぜ",
+    "date": 1335541921,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30415,
+    "vpos": 100033,
+    "content": "うおおおおおおおおおおおおおおおおおおおおおおおおおおおお",
+    "date": 1335520349,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30258,
+    "vpos": 100034,
+    "content": "キャスター出番少なかったな",
+    "date": 1335509232,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30091,
+    "vpos": 100039,
+    "content": "鳩山よりエジルだろ",
+    "date": 1335467272,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30140,
+    "vpos": 100056,
+    "content": "アポカリプスのルーラーさんアニメ化おめ",
+    "date": 1335480773,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30110,
+    "vpos": 100113,
+    "content": "旦那ああああああああああああああああああああああああああああああああああ",
+    "date": 1335477535,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30198,
+    "vpos": 100151,
+    "content": "うわあああああ",
+    "date": 1335493640,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30522,
+    "vpos": 100306,
+    "content": "こいつは報われてるうちの一人だよなぁ",
+    "date": 1335528655,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30351,
+    "vpos": 100374,
+    "content": "だんなああああああああああああああああああああああああああああ",
+    "date": 1335516803,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30313,
+    "vpos": 100434,
+    "content": "だんなあああああああああああああ",
+    "date": 1335512662,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 29993,
+    "vpos": 100543,
+    "content": "みつあみ",
+    "date": 1335451109,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30562,
+    "vpos": 100678,
+    "content": "旦那・・・",
+    "date": 1335531052,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30289,
+    "vpos": 100710,
+    "content": "だんなあああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ",
+    "date": 1335510954,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30467,
+    "vpos": 100762,
+    "content": "しんだあああああああ",
+    "date": 1335524560,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "iPhone"
+    ]
+  },
+  {
+    "id": 30607,
+    "vpos": 100830,
+    "content": "やっぱり主役は旦那！",
+    "date": 1335532051,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30511,
+    "vpos": 100865,
+    "content": "だんなあああああ",
+    "date": 1335527764,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30136,
+    "vpos": 100878,
+    "content": "あってるっつてるだろｗ",
+    "date": 1335480402,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30698,
+    "vpos": 100904,
+    "content": "ジャンヌ美人だな",
+    "date": 1335535593,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30230,
+    "vpos": 100930,
+    "content": "tige-yow",
+    "date": 1335503276,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30832,
+    "vpos": 100931,
+    "content": "似てねぇしｗｗ",
+    "date": 1335540489,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30062,
+    "vpos": 100997,
+    "content": "※違いますが今回ぐらいはそっとしてやって下さい",
+    "date": 1335459702,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30102,
+    "vpos": 101014,
+    "content": "ジャンヌううううううううううううううううううううう",
+    "date": 1335473726,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30622,
+    "vpos": 101067,
+    "content": "ジャンヌううううううううううううううううううううううううううううう",
+    "date": 1335532258,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 29996,
+    "vpos": 101089,
+    "content": "神風怪盗",
+    "date": 1335451185,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30858,
+    "vpos": 101100,
+    "content": "ジャンヌウウウウウウウウウウウウウウウウウウ",
+    "date": 1335541928,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30220,
+    "vpos": 101125,
+    "content": "ふつくしい…",
+    "date": 1335502195,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30608,
+    "vpos": 101173,
+    "content": "あｗ",
+    "date": 1335532054,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 29987,
+    "vpos": 101202,
+    "content": "ちげえｗｗｗｗｗ",
+    "date": 1335450548,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30855,
+    "vpos": 101214,
+    "content": "ジル可愛い",
+    "date": 1335541834,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30503,
+    "vpos": 101288,
+    "content": "ジャンヌきゃわわ",
+    "date": 1335527219,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "docomo"
+    ]
+  },
+  {
+    "id": 30260,
+    "vpos": 101298,
+    "content": "えじるｗｗｗｗ",
+    "date": 1335509480,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30681,
+    "vpos": 101377,
+    "content": "鳩山みゆき",
+    "date": 1335534579,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 29990,
+    "vpos": 101398,
+    "content": "火あぶりの後火を消して、群衆に向けてその裸体、性器を晒し・・・Wikiより",
+    "date": 1335450644,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "shita"
+    ]
+  },
+  {
+    "id": 30358,
+    "vpos": 101573,
+    "content": "ジルはジャンヌが火刑にされたので錬金術だの子供をさらうような人間になってしまった",
+    "date": 1335518438,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30298,
+    "vpos": 101628,
+    "content": "ふつくしい・・・",
+    "date": 1335511422,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30701,
+    "vpos": 101658,
+    "content": "ドラマCDでのこのシーン、号泣したわ",
+    "date": 1335535760,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30417,
+    "vpos": 101697,
+    "content": "じゃんぬううううううううううううう",
+    "date": 1335520370,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30186,
+    "vpos": 101802,
+    "content": "かわいい",
+    "date": 1335489913,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30420,
+    "vpos": 101802,
+    "content": "目が引っ込んでる",
+    "date": 1335520453,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30359,
+    "vpos": 101983,
+    "content": "一応旦那は救国の英雄だからな",
+    "date": 1335518549,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30241,
+    "vpos": 102027,
+    "content": "「私は・・・変態・・・」",
+    "date": 1335506661,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "shita",
+      "purple",
+      "big"
+    ]
+  },
+  {
+    "id": 30534,
+    "vpos": 102089,
+    "content": "泣ける",
+    "date": 1335529977,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30609,
+    "vpos": 102195,
+    "content": "ちょｗｗｗｗｗこれは惚れるｗｗｗｗｗ",
+    "date": 1335532065,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30700,
+    "vpos": 102282,
+    "content": "↓wwwwwwww",
+    "date": 1335535742,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30408,
+    "vpos": 102316,
+    "content": "旦那の目が戻ってるのか",
+    "date": 1335520210,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30060,
+    "vpos": 102319,
+    "content": "ジルドレ・・・",
+    "date": 1335459418,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30662,
+    "vpos": 102795,
+    "content": "だんなああああああああああああああああああああああああああああああああああああああああああああああああああああああ",
+    "date": 1335533732,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30895,
+    "vpos": 102936,
+    "content": "HAPPY　END",
+    "date": 1335545123,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30094,
+    "vpos": 103137,
+    "content": "正気に戻ったんだろうな",
+    "date": 1335468156,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30564,
+    "vpos": 103436,
+    "content": "だんなあああああああああああああああああああ",
+    "date": 1335531076,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30158,
+    "vpos": 103629,
+    "content": "キャスター組はいい死にかたした",
+    "date": 1335485039,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30663,
+    "vpos": 103834,
+    "content": "うわあああああああああああああああああああああ",
+    "date": 1335533746,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30209,
+    "vpos": 104133,
+    "content": "その手を取れる人間ではないと気付いてしまったって口調かなぁ>私は一体",
+    "date": 1335496402,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30513,
+    "vpos": 104147,
+    "content": "キャスタｰ陣営幸せだｔたね",
+    "date": 1335527846,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30817,
+    "vpos": 104325,
+    "content": "キャスター組は見たいもん見れたしな",
+    "date": 1335539778,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "docomo"
+    ]
+  },
+  {
+    "id": 30611,
+    "vpos": 104327,
+    "content": "ジャンヌかあええ",
+    "date": 1335532086,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30565,
+    "vpos": 104577,
+    "content": "キャスターは報われたんだな・・・",
+    "date": 1335531091,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30290,
+    "vpos": 105475,
+    "content": "旦那ァ",
+    "date": 1335511002,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30003,
+    "vpos": 105612,
+    "content": "ジルさんは救われたな、それに引き換えランサーは・・・",
+    "date": 1335451389,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30421,
+    "vpos": 106560,
+    "content": "ドヤ顔ｗｗｗｗｗｗｗ",
+    "date": 1335520501,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30187,
+    "vpos": 106568,
+    "content": "嫁自慢w",
+    "date": 1335489978,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30612,
+    "vpos": 106685,
+    "content": "嫁ｗｗｗｗ",
+    "date": 1335532110,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30665,
+    "vpos": 106766,
+    "content": "嫁自慢ｗｗｗ",
+    "date": 1335533780,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30352,
+    "vpos": 107052,
+    "content": "嫁自慢",
+    "date": 1335516869,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 31002,
+    "vpos": 107180,
+    "content": "光の速さで汚物処理したらどうなるの？",
+    "date": 1335549121,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30881,
+    "vpos": 107425,
+    "content": "板板しいｗ",
+    "date": 1335544316,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "docomo"
+    ]
+  },
+  {
+    "id": 30615,
+    "vpos": 107662,
+    "content": "ちっぱい",
+    "date": 1335532119,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30671,
+    "vpos": 107761,
+    "content": "（自称）俺の嫁自慢",
+    "date": 1335534155,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30210,
+    "vpos": 107945,
+    "content": "自分で望んで剣抜いた訳じゃないの？",
+    "date": 1335496523,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30422,
+    "vpos": 107967,
+    "content": "嫁自慢とかｗｗｗ",
+    "date": 1335520519,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30296,
+    "vpos": 108336,
+    "content": "←全ての乳を愛しなさい",
+    "date": 1335511349,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30897,
+    "vpos": 108339,
+    "content": "板板しいｗｗ",
+    "date": 1335545233,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30077,
+    "vpos": 108342,
+    "content": "←おまえらセイバーに斬られてこいｗｗ",
+    "date": 1335463241,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30882,
+    "vpos": 109150,
+    "content": "板増しいｗ",
+    "date": 1335544342,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "docomo"
+    ]
+  },
+  {
+    "id": 30211,
+    "vpos": 109385,
+    "content": "それってたんに魅力を感じなかったからとかでなく？>敵国の王妃やらに手出しなし",
+    "date": 1335496603,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30510,
+    "vpos": 109646,
+    "content": "←敵国の男では",
+    "date": 1335527653,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30179,
+    "vpos": 110169,
+    "content": "いすかんだるマジお父さん",
+    "date": 1335489368,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30423,
+    "vpos": 110409,
+    "content": "うぃー",
+    "date": 1335520539,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30514,
+    "vpos": 110435,
+    "content": "ライダーはお父さんみたいだな",
+    "date": 1335527912,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30702,
+    "vpos": 110916,
+    "content": "ペロリスト",
+    "date": 1335535836,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30898,
+    "vpos": 110959,
+    "content": "ぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろ",
+    "date": 1335545272,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30890,
+    "vpos": 111022,
+    "content": "ぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろ",
+    "date": 1335544957,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30891,
+    "vpos": 111022,
+    "content": "ぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺ",
+    "date": 1335544957,
+    "date_usec": 333000,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30892,
+    "vpos": 111022,
+    "content": "ぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろ",
+    "date": 1335544958,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30893,
+    "vpos": 111022,
+    "content": "ぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺ",
+    "date": 1335544959,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30894,
+    "vpos": 111022,
+    "content": "ぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろぺろ",
+    "date": 1335544960,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30360,
+    "vpos": 111024,
+    "content": "訳：ライダー＝お父さん　ギルガメッシュ＝ドS",
+    "date": 1335518571,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "red"
+    ]
+  },
+  {
+    "id": 30142,
+    "vpos": 111118,
+    "content": "ぺろぺろぺろぺろ",
+    "date": 1335481108,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30394,
+    "vpos": 111165,
+    "content": "ぺろぺろ野郎",
+    "date": 1335520007,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30004,
+    "vpos": 111228,
+    "content": "変態だ",
+    "date": 1335451452,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30343,
+    "vpos": 111249,
+    "content": "英雄王はペロリストだったのかｗ",
+    "date": 1335516306,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30001,
+    "vpos": 111291,
+    "content": "イスカンダル「こんな変態についていけん・・・」",
+    "date": 1335451294,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "shita"
+    ]
+  },
+  {
+    "id": 30835,
+    "vpos": 111304,
+    "content": "ドSｗｗｗ",
+    "date": 1335540824,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30515,
+    "vpos": 111310,
+    "content": "変態だ",
+    "date": 1335527930,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30617,
+    "vpos": 111312,
+    "content": "ペロリストｗｗｗ",
+    "date": 1335532156,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30566,
+    "vpos": 111337,
+    "content": "ペロリストｗｗｗｗｗｗｗｗｗ",
+    "date": 1335531119,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30252,
+    "vpos": 111373,
+    "content": "へ、変態ー！ｗｗｗ",
+    "date": 1335508275,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30112,
+    "vpos": 111376,
+    "content": "世界最古のペロリストｗｗｗｗｗ",
+    "date": 1335477796,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30773,
+    "vpos": 111379,
+    "content": "（＾ω＾）ﾍﾟﾛﾍﾟﾛ",
+    "date": 1335538454,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30188,
+    "vpos": 111449,
+    "content": "ぺろぺろ",
+    "date": 1335490027,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30314,
+    "vpos": 111548,
+    "content": "変態だああああ",
+    "date": 1335512769,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30686,
+    "vpos": 111561,
+    "content": "バビロニアの変態王",
+    "date": 1335534841,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "shita"
+    ]
+  },
+  {
+    "id": 30300,
+    "vpos": 111607,
+    "content": "世界最古のペロリストｗｗｗ",
+    "date": 1335511560,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30797,
+    "vpos": 111616,
+    "content": "ペロリストｗｗｗｗｗｗｗｗｗｗｗ",
+    "date": 1335539465,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30618,
+    "vpos": 111695,
+    "content": "何だお前らか",
+    "date": 1335532160,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30424,
+    "vpos": 111777,
+    "content": "ｗｗｗｗｗｗｗｗｗｗｗ",
+    "date": 1335520555,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30899,
+    "vpos": 112177,
+    "content": "最古のペロリストｗｗ",
+    "date": 1335545284,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30189,
+    "vpos": 112202,
+    "content": "(・┰・)",
+    "date": 1335490034,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30361,
+    "vpos": 112209,
+    "content": "へんたいだー",
+    "date": 1335518582,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30824,
+    "vpos": 112417,
+    "content": "ペロリストｗｗ",
+    "date": 1335540015,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30425,
+    "vpos": 112435,
+    "content": "ペロリストｗｗｗｗｗ",
+    "date": 1335520560,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30194,
+    "vpos": 112699,
+    "content": "この男、変態につきｗｗｗ",
+    "date": 1335490579,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30818,
+    "vpos": 112751,
+    "content": "人類最古の",
+    "date": 1335539876,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "docomo"
+    ]
+  },
+  {
+    "id": 30809,
+    "vpos": 112787,
+    "content": "ぺろりすと",
+    "date": 1335539610,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "docomo"
+    ]
+  },
+  {
+    "id": 30118,
+    "vpos": 112839,
+    "content": "セイバーは自分の意思がないからね。望まれてたから王やっただけ。",
+    "date": 1335478545,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "iPhone"
+    ]
+  },
+  {
+    "id": 30120,
+    "vpos": 113052,
+    "content": "そんなセイバーにかかわり自分の意思を持たせるのは士郎が出て来るまで先なんだよね",
+    "date": 1335478594,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "iPhone"
+    ]
+  },
+  {
+    "id": 30141,
+    "vpos": 113435,
+    "content": "←セイバーは望まれて抜いてないだろｗ原作やれ、エクカリを構成する民や騎士からの羨望の光はカリバーンで武勲を立ててからだから唯与えられた力じゃない",
+    "date": 1335480890,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30426,
+    "vpos": 113874,
+    "content": "ぅぃゃっ",
+    "date": 1335520574,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30362,
+    "vpos": 115608,
+    "content": "変態王",
+    "date": 1335518616,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30837,
+    "vpos": 115940,
+    "content": "はっはーんｗ",
+    "date": 1335540945,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30199,
+    "vpos": 116124,
+    "content": "ｗｗｗｗｗｗｗ",
+    "date": 1335493825,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30820,
+    "vpos": 116200,
+    "content": "図星w",
+    "date": 1335539931,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "docomo"
+    ]
+  },
+  {
+    "id": 30026,
+    "vpos": 116362,
+    "content": "ライダーさんヤンキー座り",
+    "date": 1335454385,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30416,
+    "vpos": 116424,
+    "content": "なかよしｗ",
+    "date": 1335520350,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30363,
+    "vpos": 116659,
+    "content": "2828",
+    "date": 1335518627,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30125,
+    "vpos": 116759,
+    "content": "あーちゃん図星かｗ",
+    "date": 1335479090,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30927,
+    "vpos": 116769,
+    "content": "煽り耐性/Zeroｗｗｗｗｗｗｗｗｗｗｗｗｗｗ",
+    "date": 1335547494,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30200,
+    "vpos": 116924,
+    "content": "煽り耐性低いwwww",
+    "date": 1335493833,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30620,
+    "vpos": 116988,
+    "content": "煽り耐性ゼロｗｗ",
+    "date": 1335532215,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30900,
+    "vpos": 117315,
+    "content": "煽り耐性ｗｗｗ",
+    "date": 1335545336,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30688,
+    "vpos": 117938,
+    "content": "↑てら　　　　　　　　　　.　　　　　　.",
+    "date": 1335534959,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "shita"
+    ]
+  },
+  {
+    "id": 30131,
+    "vpos": 118369,
+    "content": "至宝＝乖離剣エア？",
+    "date": 1335479886,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30765,
+    "vpos": 118721,
+    "content": "至宝＝聖杯　既に自分のものだと決めてかかってる",
+    "date": 1335538087,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30428,
+    "vpos": 118767,
+    "content": "↓ｗｗｗｗｗ",
+    "date": 1335520625,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30843,
+    "vpos": 119093,
+    "content": "現時点でライダーは既に至宝を賜わす相手なわけね",
+    "date": 1335541113,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30115,
+    "vpos": 120550,
+    "content": "女の子っぽい外見だけど男",
+    "date": 1335478394,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30621,
+    "vpos": 121405,
+    "content": "はぁはぁ",
+    "date": 1335532257,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30072,
+    "vpos": 121670,
+    "content": "セクハラｗｗｗｗｗｗ",
+    "date": 1335462884,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30775,
+    "vpos": 121951,
+    "content": "？",
+    "date": 1335538560,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30193,
+    "vpos": 121960,
+    "content": "エルキドゥ回想ないんか",
+    "date": 1335490336,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30449,
+    "vpos": 122193,
+    "content": "ほしいじゃなくて元から我のもの",
+    "date": 1335522127,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "docomo"
+    ]
+  },
+  {
+    "id": 30813,
+    "vpos": 122453,
+    "content": "変態oh",
+    "date": 1335539706,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "docomo"
+    ]
+  },
+  {
+    "id": 30212,
+    "vpos": 122565,
+    "content": "口調からはなんとも言えんが、惚れさせる、つまり｢人｣としての喜びに目覚めさせるって意味で言ってんならちょっとｶｺｲｲ",
+    "date": 1335497452,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30596,
+    "vpos": 123330,
+    "content": "何でだろう…マーボが見える…",
+    "date": 1335531867,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 29991,
+    "vpos": 123457,
+    "content": "あれ?言峰は?",
+    "date": 1335450782,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30410,
+    "vpos": 124141,
+    "content": "神曲キタ――――――――",
+    "date": 1335520231,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 31004,
+    "vpos": 124426,
+    "content": "くそッケイネス先生がちらつく！",
+    "date": 1335549293,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30119,
+    "vpos": 124758,
+    "content": "←ウェイバーの中の人と言えばヘタリアだろ",
+    "date": 1335478570,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30249,
+    "vpos": 124825,
+    "content": "このEDはパロが多すぎてｗｗｗ",
+    "date": 1335507595,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30101,
+    "vpos": 125055,
+    "content": "MADの事はここでは忘れてろｗ",
+    "date": 1335473178,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30814,
+    "vpos": 125128,
+    "content": "きゃっ",
+    "date": 1335539733,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "docomo"
+    ]
+  },
+  {
+    "id": 30353,
+    "vpos": 125266,
+    "content": "リア充ED",
+    "date": 1335517052,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30430,
+    "vpos": 125371,
+    "content": "昼ドラ",
+    "date": 1335520729,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30683,
+    "vpos": 125953,
+    "content": "この時点の切嗣ってウェイバーとほとんど年変わらないんだよな",
+    "date": 1335534718,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30357,
+    "vpos": 125957,
+    "content": "ここでなんとなくｓｎのイリヤとバーサーカーが思い出される",
+    "date": 1335517815,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30293,
+    "vpos": 125962,
+    "content": "いい胸してんじゃねえか",
+    "date": 1335511206,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30075,
+    "vpos": 126307,
+    "content": "くそｗｗｗランサーMADがｗｗｗ",
+    "date": 1335463044,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30816,
+    "vpos": 126500,
+    "content": "いらない",
+    "date": 1335539747,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "docomo"
+    ]
+  },
+  {
+    "id": 30884,
+    "vpos": 126975,
+    "content": "事後",
+    "date": 1335544524,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "docomo"
+    ]
+  },
+  {
+    "id": 30085,
+    "vpos": 127044,
+    "content": "先生とランサーがウェイバーを抱いてる…",
+    "date": 1335465930,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "iPhone"
+    ]
+  },
+  {
+    "id": 30299,
+    "vpos": 127107,
+    "content": "ランサーwwwwwwwwwwwwwwww",
+    "date": 1335511507,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30134,
+    "vpos": 127128,
+    "content": "MADを思い出して吹くwww",
+    "date": 1335480253,
+    "owner": false,
+    "premium": false,
+    "mail": [
+      "docomo"
+    ]
+  },
+  {
+    "id": 30044,
+    "vpos": 127144,
+    "content": "黄槍はおっちゃたからな",
+    "date": 1335455671,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30151,
+    "vpos": 127620,
+    "content": "来週からEDの陣営が変わるよ！",
+    "date": 1335482877,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30294,
+    "vpos": 127801,
+    "content": "MAD言うなｗｗｗｗ",
+    "date": 1335511225,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30431,
+    "vpos": 128026,
+    "content": "ランサーやめろｗｗｗｗｗｗｗ",
+    "date": 1335520754,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30318,
+    "vpos": 128181,
+    "content": "うああああ",
+    "date": 1335512947,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30045,
+    "vpos": 129081,
+    "content": "剣がライト・セイバーになっている",
+    "date": 1335455760,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30691,
+    "vpos": 130248,
+    "content": "オレンジあざす",
+    "date": 1335535162,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30073,
+    "vpos": 131024,
+    "content": "ソラウが見える・・・",
+    "date": 1335462969,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30677,
+    "vpos": 131381,
+    "content": "THE☆初見殺し",
+    "date": 1335534324,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30190,
+    "vpos": 131592,
+    "content": "下ww",
+    "date": 1335490171,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30512,
+    "vpos": 131753,
+    "content": "フｗｗラｗｗグｗｗ",
+    "date": 1335527796,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30548,
+    "vpos": 131757,
+    "content": "うわあああああ",
+    "date": 1335530763,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30010,
+    "vpos": 131916,
+    "content": "ランサーは幸せなファイトをして終了",
+    "date": 1335452058,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30406,
+    "vpos": 131965,
+    "content": "ケイネスの令呪にゲイジャルグが刺さってるぞwww",
+    "date": 1335520141,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30861,
+    "vpos": 132251,
+    "content": "ひどい予告詐欺じゃねーかww",
+    "date": 1335542239,
+    "owner": false,
+    "premium": true,
+    "mail": []
+  },
+  {
+    "id": 30885,
+    "vpos": 132281,
+    "content": "次回はアツそうだｗ",
+    "date": 1335544601,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "docomo"
+    ]
+  },
+  {
+    "id": 30079,
+    "vpos": 132593,
+    "content": "キリツグ「はいはい騎士道精神騎士道精神」",
+    "date": 1335463723,
+    "owner": false,
+    "premium": true,
+    "mail": [
+      "docomo"
+    ]
+  },
+  {
+    "id": 30295,
+    "vpos": 132696,
+    "content": "御",
+    "date": 1335511339,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30074,
+    "vpos": 132716,
+    "content": "予告詐欺すぎるｗｗｗｗｗ",
+    "date": 1335462999,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30433,
+    "vpos": 132916,
+    "content": "詐欺ｗｗｗｗｗｗｗｗｗ",
+    "date": 1335520804,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30644,
+    "vpos": 133256,
+    "content": "旦那・・・",
+    "date": 1335533157,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30297,
+    "vpos": 133416,
+    "content": "旦那ｗｗｗ",
+    "date": 1335511363,
+    "owner": false,
+    "premium": false,
+    "mail": []
+  },
+  {
+    "id": 30774,
+    "vpos": 133596,
+    "content": "予告詐欺すぎるw",
+    "date": 1335538468,
     "owner": false,
     "premium": false,
     "mail": []

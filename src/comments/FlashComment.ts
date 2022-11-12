@@ -9,11 +9,13 @@ class FlashComment implements IComment {
   public readonly comment: formattedCommentWithSize;
   private readonly _globalScale: number;
   private scale: number;
+  private scaleX: number;
   public posY: number;
   public image?: HTMLCanvasElement | null;
   constructor(comment: formattedComment, context: CanvasRenderingContext2D) {
     this.context = context;
     this.scale = 1;
+    this.scaleX = 1;
     this._globalScale = getConfig(config.commentScale, true);
     this.posY = 0;
     comment.content = comment.content.replace(/\t/g, "\u2003\u2003");
@@ -448,28 +450,19 @@ class FlashComment implements IComment {
    */
   measureText(comment: measureTextInput): measureTextResult {
     const configLineHeight = getConfig(config.lineHeight, true),
-      configFontSize = getConfig(config.fontSize, true),
-      configDoubleResizeMaxWidth = getConfig(config.doubleResizeMaxWidth, true);
+      configFontSize = getConfig(config.fontSize, true);
     const width_arr = [],
       lineCount = comment.lineCount;
     if (!comment.lineHeight)
       comment.lineHeight = configLineHeight[comment.size].default;
     if (!comment.resized && !comment.ender) {
-      if (comment.size === "big" && lineCount > 2) {
-        comment.fontSize = configFontSize.big.resized;
-        comment.lineHeight = configLineHeight.big.resized;
-        comment.resized = true;
-        comment.resizedY = true;
-        this.context.font = parseFont(comment.font, comment.fontSize);
-      } else if (comment.size === "medium" && lineCount > 4) {
-        comment.fontSize = configFontSize.medium.resized;
-        comment.lineHeight = configLineHeight.medium.resized;
-        comment.resized = true;
-        comment.resizedY = true;
-        this.context.font = parseFont(comment.font, comment.fontSize);
-      } else if (comment.size === "small" && lineCount > 6) {
-        comment.fontSize = configFontSize.small.resized;
-        comment.lineHeight = configLineHeight.small.resized;
+      if (
+        (comment.size === "big" && lineCount > 2) ||
+        (comment.size === "medium" && lineCount > 4) ||
+        (comment.size === "small" && lineCount > 6)
+      ) {
+        comment.fontSize = configFontSize[comment.size].resized;
+        comment.lineHeight = configLineHeight[comment.size].resized;
         comment.resized = true;
         comment.resizedY = true;
         this.context.font = parseFont(comment.font, comment.fontSize);
@@ -499,51 +492,21 @@ class FlashComment implements IComment {
       item.width = widths;
     }
     const width = Math.max(...width_arr);
-    let width_max = width * this.scale;
+    const width_max = width * this.scale * this.scaleX;
     const height =
       (comment.fontSize * comment.lineHeight * lineCount +
         config.commentYPaddingTop[comment.resizedY ? "resized" : "default"]) *
       this.scale;
-    const widthLimit = getConfig(config.commentStageSize, true)[
-      comment.full ? "fullWidth" : "width"
-    ];
-    if (comment.loc !== "naka" && !comment.resizedY) {
-      if (width_max > widthLimit) {
-        this.scale = Math.floor((widthLimit / width_max) * 200) / 200;
-        comment.resized = true;
+    if (comment.loc !== "naka") {
+      const widthLimit = getConfig(config.commentStageSize, true)[
+        comment.full ? "fullWidth" : "width"
+      ];
+      if (width_max > widthLimit && !comment.resizedX) {
+        comment.fontSize = configFontSize[comment.size].default;
+        comment.lineHeight = configLineHeight[comment.size].default;
+        this.scale = widthLimit / width_max;
         comment.resizedX = true;
-        this.context.font = parseFont(comment.font, comment.fontSize);
-        return this.measureText(comment);
-      }
-    } else if (
-      comment.loc !== "naka" &&
-      comment.resizedY &&
-      width_max > widthLimit &&
-      !comment.resizedX
-    ) {
-      comment.fontSize = configFontSize[comment.size].default * 1.1;
-      comment.lineHeight = configLineHeight[comment.size].default;
-      comment.resized = true;
-      comment.resizedX = true;
-      this.context.font = parseFont(comment.font, comment.fontSize);
-      return this.measureText(comment);
-    } else if (comment.loc !== "naka" && comment.resizedY && comment.resizedX) {
-      if (comment.full && width_max > configDoubleResizeMaxWidth.full) {
-        while (width_max > configDoubleResizeMaxWidth.full) {
-          width_max /= 1.1;
-          comment.fontSize -= 0.1;
-        }
-        this.context.font = parseFont(comment.font, comment.fontSize);
-        return this.measureText(comment);
-      } else if (
-        !comment.full &&
-        width_max > configDoubleResizeMaxWidth.normal
-      ) {
-        while (width_max > configDoubleResizeMaxWidth.normal) {
-          width_max /= 1.1;
-          comment.fontSize -= 0.1;
-        }
-        this.context.font = parseFont(comment.font, comment.fontSize);
+        comment.resized = true;
         return this.measureText(comment);
       }
     }
@@ -663,14 +626,9 @@ class FlashComment implements IComment {
           ((i + 1) * (this.comment.fontSize * this.comment.lineHeight) +
             config.commentYPaddingTop[
               this.comment.resizedY ? "resized" : "default"
-            ] +
-            this.comment.fontSize *
-              this.comment.lineHeight *
-              config.commentYOffset[this.comment.size][
-                this.comment.resizedY ? "resized" : "default"
-              ]) *
+            ]) *
           this.scale;
-        this.context.strokeStyle = `rgba(255,255,0,0.5)`;
+        this.context.strokeStyle = `rgba(255,255,0,0.25)`;
         this.context.strokeRect(
           posX,
           posY + linePosY * this._globalScale,
@@ -738,7 +696,8 @@ class FlashComment implements IComment {
     context.scale(
       this._globalScale *
         this.scale *
-        (this.comment.layer === -1 ? options.scale : 1),
+        (this.comment.layer === -1 ? options.scale : 1) *
+        this.scaleX,
       this._globalScale *
         this.scale *
         (this.comment.layer === -1 ? options.scale : 1)

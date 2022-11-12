@@ -55,6 +55,7 @@ type Config = {
   sameCAGap: number;
   sameCAMinScore: number;
   sameCARange: number;
+  letterSpacing: number;
 };
 
 type ConfigNullable = Partial<Config>;

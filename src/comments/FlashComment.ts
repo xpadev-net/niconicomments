@@ -451,8 +451,7 @@ class FlashComment implements IComment {
   measureText(comment: measureTextInput): measureTextResult {
     const configLineHeight = getConfig(config.lineHeight, true),
       configFontSize = getConfig(config.fontSize, true);
-    const width_arr = [],
-      lineCount = comment.lineCount;
+    const lineCount = comment.lineCount;
     if (!comment.lineHeight)
       comment.lineHeight = configLineHeight[comment.size].default;
     if (!comment.resized && !comment.ender) {
@@ -468,7 +467,10 @@ class FlashComment implements IComment {
         this.context.font = parseFont(comment.font, comment.fontSize);
       }
     }
-    let currentWidth = 0;
+    const width_arr = [],
+      spacedWidth_arr = [];
+    let currentWidth = 0,
+      spacedWidth = 0;
     for (let i = 0; i < comment.content.length; i++) {
       const item = comment.content[i];
       if (item === undefined) continue;
@@ -480,19 +482,43 @@ class FlashComment implements IComment {
         comment.fontSize
       );
       for (let i = 0; i < lines.length; i++) {
-        const measure = this.context.measureText(lines[i] as string);
+        const value = lines[i];
+        if (value === undefined) continue;
+        const measure = this.context.measureText(value);
         currentWidth += measure.width;
+        spacedWidth +=
+          measure.width +
+          (i < lines.length - 1
+            ? Math.max(value.length - 1, 0)
+            : value.length) *
+            config.letterSpacing;
         widths.push(measure.width);
         if (i < lines.length - 1) {
           width_arr.push(currentWidth);
+          spacedWidth_arr.push(spacedWidth);
+          spacedWidth = 0;
           currentWidth = 0;
         }
       }
       width_arr.push(currentWidth);
+      spacedWidth_arr.push(spacedWidth);
       item.width = widths;
     }
-    const width = Math.max(...width_arr);
-    const width_max = width * this.scale * this.scaleX;
+    const leadLine = (function () {
+      let max = 0,
+        index = -1;
+      for (let i = 0, l = spacedWidth_arr.length; i < l; i++) {
+        const val = spacedWidth_arr[i];
+        if (val && max < val) {
+          max = val;
+          index = i;
+        }
+      }
+      return { max, index };
+    })();
+    const width = leadLine.max;
+    this.scaleX = leadLine.max / (width_arr[leadLine.index] || 1);
+    const width_max = width * this.scale;
     const height =
       (comment.fontSize * comment.lineHeight * lineCount +
         config.commentYPaddingTop[comment.resizedY ? "resized" : "default"]) *
@@ -510,6 +536,7 @@ class FlashComment implements IComment {
         return this.measureText(comment);
       }
     }
+    console.log(comment, this);
     return {
       width: width_max,
       charSize: 0,

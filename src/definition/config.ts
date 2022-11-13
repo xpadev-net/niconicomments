@@ -265,7 +265,7 @@ const initConfig = () => {
         resized: -0.2,
       },
     },
-    letterSpacing: 1.5,
+    letterSpacing: 1,
   };
 };
 

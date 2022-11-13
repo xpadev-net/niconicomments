@@ -428,10 +428,10 @@ class FlashComment implements IComment {
     const lineOffset =
       (comment.content.match(new RegExp(config.flashScriptChar.super, "g"))
         ?.length || 0) *
-        -0.135 +
+        -0.115 +
       (comment.content.match(new RegExp(config.flashScriptChar.sub, "g"))
         ?.length || 0) *
-        0.135;
+        0.115;
     return {
       ...comment,
       content,
@@ -487,11 +487,7 @@ class FlashComment implements IComment {
         const measure = this.context.measureText(value);
         currentWidth += measure.width;
         spacedWidth +=
-          measure.width +
-          (i < lines.length - 1
-            ? Math.max(value.length - 1, 0)
-            : value.length) *
-            config.letterSpacing;
+          measure.width + Math.max(value.length - 1, 0) * config.letterSpacing;
         widths.push(measure.width);
         if (i < lines.length - 1) {
           width_arr.push(currentWidth);
@@ -536,7 +532,6 @@ class FlashComment implements IComment {
         return this.measureText(comment);
       }
     }
-    console.log(comment, this);
     return {
       width: width_max,
       charSize: 0,

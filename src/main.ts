@@ -66,7 +66,6 @@ class NiconiComments {
     const context = canvas.getContext("2d");
     if (!context) throw new Error("Fail to get CanvasRenderingContext2D");
     this.context = context;
-    this.context.imageSmoothingEnabled = false;
     this.context.strokeStyle = `rgba(${hex2rgb(config.contextStrokeColor).join(
       ","
     )},${config.contextStrokeOpacity})`;

@@ -34,7 +34,7 @@
     "dist/bundle.js",
     "dist/bundle.d.ts"
   ],
-  "homepage": "https://xpadev.net/niconicomments/docs/",
+  "homepage": "https://xpadev-net.github.io/niconicomments/",
   "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.19.6",

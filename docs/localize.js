@@ -253,6 +253,5 @@ i18next.use(i18nextBrowserLanguageDetector).init({
 });
 const i18nList = document.querySelectorAll("[data-i18n]");
 i18nList.forEach(function (v) {
-  console.log(v);
   v.innerHTML = i18next.t(v.dataset.i18n);
 });

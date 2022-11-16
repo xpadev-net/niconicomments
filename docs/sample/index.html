@@ -18,19 +18,19 @@
     </div>
     <div id="control" style="display: none">
       <label>
-        動画
+        <span data-i18n="movie"></span>
         <select name="video" id="control-video" autocomplete="off"></select>
       </label>
       <label>
-        モード
+        <span data-i18n="mode"></span>
         <select name="mode" id="mode">
-          <option value="default">自動</option>
+          <option value="default" data-i18n="auto"></option>
           <option value="flash">Flash</option>
           <option value="html5">HTML5</option>
         </select>
       </label>
       <label>
-        スケール
+        <span data-i18n="scale"></span>
         <input
           type="number"
           name="scale"
@@ -46,7 +46,7 @@
           id="show-fps"
           autocomplete="off"
         />
-        FPS表示
+        <span data-i18n="showFPS"></span>
       </label>
       <label>
         <input
@@ -55,7 +55,7 @@
           id="show-collision"
           autocomplete="off"
         />
-        当たり判定表示
+        <span data-i18n="showCollision"></span>
       </label>
       <label>
         <input
@@ -64,15 +64,15 @@
           id="show-comment-count"
           autocomplete="off"
         />
-        コメント数表示
+        <span data-i18n="showCommentCount"></span>
       </label>
       <label>
         <input type="checkbox" name="keep-ca" id="keep-ca" autocomplete="off" />
-        CA衝突回避
+        <span data-i18n="keepCA"></span>
       </label>
       <label>
         <input type="checkbox" name="debug" id="debug" autocomplete="off" />
-        デバッグ
+        <span data-i18n="debug"></span>
       </label>
       <div id="toggle"><p>&lt;</p></div>
     </div>
@@ -202,11 +202,14 @@
   type="text/javascript"
   src="https://www.youtube.com/iframe_api"
 ></script>
+<script src="https://cdn.jsdelivr.net/npm/i18next@22.0.5/dist/umd/i18next.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/i18next-browser-languagedetector@7.0.1/dist/umd/i18nextBrowserLanguageDetector.min.js"></script>
 <script type="text/javascript" src="../../dist/bundle.js"></script>
+<script src="./localize.js"></script>
 <script type="text/javascript">
   const videos = [
     {
-      title: "一般",
+      title: i18next.t("general"),
       items: [
         {
           id: 0,
@@ -219,8 +222,7 @@
           id: 1,
           nc: "sm9",
           yt: "PumFnlu9EIY",
-          title:
-            "新・豪血寺一族 -煩悩解放 - レッツゴー！陰陽師(コメント増量版)",
+          title: i18next.t("sm9_2"),
           scale: 75,
         },
         {
@@ -234,13 +236,13 @@
           id: 3,
           nc: "sm2959233",
           yt: "pv2IzP2CyRs",
-          title: "ニコニコ動画流星群(50229コメ)",
+          title: i18next.t("sm2959233_2"),
           scale: 75,
         },
       ],
     },
     {
-      title: "CA",
+      title: "Comment Art",
       items: [
         {
           id: 4,
@@ -353,7 +355,7 @@
           id: 19,
           nc: "sm500873",
           yt: "RsO2eD3V_wY",
-          title: "組曲『ニコニコ動画』 (15周年CA抽出版)",
+          title: i18next.t("sm500873"),
           scale: 75,
         },
         {
@@ -366,18 +368,18 @@
           id: 22,
           nc: "sm20778311",
           yt: "3UdXw4PIHeg",
-          title: "【MAD】文学少女　ヨワイボクラハウタウ@2013/07/11"
-        }
+          title: "【MAD】文学少女　ヨワイボクラハウタウ@2013/07/11",
+        },
       ],
     },
     {
-      title: "デバッグ",
+      title: i18next.t("debug"),
       items: [
         {
           id: -1,
-          nc: "動作確認用",
+          nc: i18next.t("operation_check"),
           yt: "m2M2piEMWAE",
-          title: "各固定テンプレ",
+          title: i18next.t("debug_ca"),
         },
       ],
     },

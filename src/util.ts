@@ -214,11 +214,11 @@ const parseCommandAndNicoScript = (comment: formattedComment) => {
   const data = parseCommand(comment),
     string = comment.content,
     nicoscript = string.match(
-      /^(?:@|＠)(\u30c7\u30d5\u30a9\u30eb\u30c8|\u7f6e\u63db|\u9006|\u30b3\u30e1\u30f3\u30c8\u7981\u6b62|\u30b7\u30fc\u30af\u7981\u6b62|\u30b8\u30e3\u30f3\u30d7)/
+      /^(?:@|\uff20)(\u30c7\u30d5\u30a9\u30eb\u30c8|\u7f6e\u63db|\u9006|\u30b3\u30e1\u30f3\u30c8\u7981\u6b62|\u30b7\u30fc\u30af\u7981\u6b62|\u30b8\u30e3\u30f3\u30d7)/
     );
   if (nicoscript && comment.owner) {
     const reverse = comment.content.match(
-      /^@\u9006 ?(\u5168|\u30b3\u30e1|\u6295\u30b3\u30e1)?/
+      /^(?:@|\uff20)\u9006 ?(\u5168|\u30b3\u30e1|\u6295\u30b3\u30e1)?/
     );
     const content = comment.content.split(""),
       result = [];
@@ -264,13 +264,13 @@ const parseCommandAndNicoScript = (comment: formattedComment) => {
         break;
       case "\u7f6e\u63db":
         for (const i of content.slice(4)) {
-          if (i.match(/["'「]/) && quote === "") {
+          if (i.match(/["'\u300c]/) && quote === "") {
             quote = i;
           } else if (i.match(/["']/) && quote === i && last_i !== "\\") {
             result.push(replaceAll(string, "\\n", "\n"));
             quote = "";
             string = "";
-          } else if (i.match(/」/) && quote === "「") {
+          } else if (i.match(/\u300d/) && quote === "\u300c") {
             result.push(string);
             quote = "";
             string = "";
@@ -435,7 +435,7 @@ const parseCommand = (comment: formattedComment): parsedCommand => {
   };
   for (let command of metadata) {
     command = command.toLowerCase();
-    const match = command.match(/^@([0-9.]+)/);
+    const match = command.match(/^(?:@|\uff20)([0-9.]+)/);
     if (match && match[1]) {
       result.long = Number(match[1]);
     } else if (result.loc === undefined && typeGuard.comment.loc(command)) {

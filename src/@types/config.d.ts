@@ -27,8 +27,8 @@ type Config = {
   canvasWidth: number;
   collisionRange: { [key in "left" | "right"]: number };
   colors: { [key: string]: string };
-  commentDrawPadding: configItem<number>;
-  commentDrawRange: configItem<number>;
+  commentDrawPadding: number;
+  commentDrawRange: number;
   commentScale: configItem<number>;
   commentStageSize: configItem<commentStageSize>;
   commentYMarginBottom: configSizeItem<number>;
@@ -55,6 +55,8 @@ type Config = {
   sameCAGap: number;
   sameCAMinScore: number;
   sameCARange: number;
+  letterSpacing: number;
+  scriptCharOffset: number;
 };
 
 type ConfigNullable = Partial<Config>;

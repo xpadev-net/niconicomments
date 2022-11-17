@@ -1,4 +1,6 @@
 import { config, options } from "@/definition/config";
+import { nicoScripts } from "@/contexts/nicoscript";
+import typeGuard from "@/typeGuard";
 /**
  * 当たり判定からコメントを配置できる場所を探す
  * @param {number} currentPos
@@ -52,22 +54,11 @@ const getPosY = (
  * @param {number} width
  * @param {number} vpos
  * @param {number} long
- * @param {boolean} isFlash
  */
-const getPosX = (
-  width: number,
-  vpos: number,
-  long: number,
-  isFlash: boolean
-): number => {
+const getPosX = (width: number, vpos: number, long: number): number => {
+  const speed = (config.commentDrawRange + width) / (long + 100);
   return (
-    getConfig(config.commentDrawRange, isFlash) -
-    ((((width + getConfig(config.commentDrawRange, isFlash)) *
-      ((vpos + 100) / 100)) /
-      4) *
-      300) /
-      long +
-    getConfig(config.commentDrawPadding, isFlash)
+    config.commentDrawPadding + config.commentDrawRange - (vpos + 100) * speed
   );
 };
 /**
@@ -218,6 +209,264 @@ const isFlashComment = (comment: formattedComment): boolean =>
     (comment.date < config.flashThreshold ||
       comment.mail.includes("nico:flash")));
 
+const parseCommandAndNicoScript = (comment: formattedComment) => {
+  const isFlash = isFlashComment(comment);
+  const data = parseCommand(comment),
+    string = comment.content,
+    nicoscript = string.match(
+      /^(?:@|\uff20)(\u30c7\u30d5\u30a9\u30eb\u30c8|\u7f6e\u63db|\u9006|\u30b3\u30e1\u30f3\u30c8\u7981\u6b62|\u30b7\u30fc\u30af\u7981\u6b62|\u30b8\u30e3\u30f3\u30d7)/
+    );
+  if (nicoscript && comment.owner) {
+    const reverse = comment.content.match(
+      /^(?:@|\uff20)\u9006 ?(\u5168|\u30b3\u30e1|\u6295\u30b3\u30e1)?/
+    );
+    const content = comment.content.split(""),
+      result = [];
+    let quote = "",
+      last_i = "",
+      string = "";
+    switch (nicoscript[1]) {
+      case "\u30c7\u30d5\u30a9\u30eb\u30c8":
+        nicoScripts.default.unshift({
+          start: comment.vpos,
+          long:
+            data.long === undefined ? undefined : Math.floor(data.long * 100),
+          color: data.color,
+          size: data.size,
+          font: data.font,
+          loc: data.loc,
+        });
+        break;
+      case "\u9006":
+        if (
+          !reverse ||
+          !reverse[1] ||
+          !typeGuard.nicoScript.range.target(reverse[1])
+        )
+          break;
+        if (data.long === undefined) {
+          data.long = 30;
+        }
+        nicoScripts.reverse.unshift({
+          start: comment.vpos,
+          end: comment.vpos + data.long * 100,
+          target: reverse[1],
+        });
+        break;
+      case "\u30b3\u30e1\u30f3\u30c8\u7981\u6b62":
+        if (data.long === undefined) {
+          data.long = 30;
+        }
+        nicoScripts.ban.unshift({
+          start: comment.vpos,
+          end: comment.vpos + data.long * 100,
+        });
+        break;
+      case "\u7f6e\u63db":
+        for (const i of content.slice(4)) {
+          if (i.match(/["'\u300c]/) && quote === "") {
+            quote = i;
+          } else if (i.match(/["']/) && quote === i && last_i !== "\\") {
+            result.push(replaceAll(string, "\\n", "\n"));
+            quote = "";
+            string = "";
+          } else if (i.match(/\u300d/) && quote === "\u300c") {
+            result.push(string);
+            quote = "";
+            string = "";
+          } else if (quote === "" && i.match(/\s+/)) {
+            if (string) {
+              result.push(string);
+              string = "";
+            }
+          } else {
+            string += i;
+          }
+
+          last_i = i;
+        }
+        result.push(string);
+        if (
+          result[0] === undefined ||
+          (result[2] !== undefined &&
+            !typeGuard.nicoScript.replace.range(result[2])) ||
+          (result[3] !== undefined &&
+            !typeGuard.nicoScript.replace.target(result[3])) ||
+          (result[4] !== undefined &&
+            !typeGuard.nicoScript.replace.condition(result[4]))
+        )
+          break;
+        nicoScripts.replace.unshift({
+          start: comment.vpos,
+          long:
+            data.long === undefined ? undefined : Math.floor(data.long * 100),
+          keyword: result[0],
+          replace: result[1] || "",
+          range: result[2] || "\u5358",
+          target: result[3] || "\u30b3\u30e1",
+          condition: result[4] || "\u90e8\u5206\u4e00\u81f4",
+          color: data.color,
+          size: data.size,
+          font: data.font,
+          loc: data.loc,
+          no: comment.id,
+        });
+        nicoScripts.replace.sort((a, b) => {
+          if (a.start < b.start) return -1;
+          if (a.start > b.start) return 1;
+          if (a.no < b.no) return -1;
+          if (a.no > b.no) return 1;
+          return 0;
+        });
+        break;
+    }
+    data.invisible = true;
+  }
+  let color = undefined,
+    size = undefined,
+    font = undefined,
+    loc = undefined;
+  for (let i = 0; i < nicoScripts.default.length; i++) {
+    const item = nicoScripts.default[i];
+    if (!item) continue;
+    if (item.long !== undefined && item.start + item.long < comment.vpos) {
+      nicoScripts.default = nicoScripts.default.splice(Number(i), 1);
+      continue;
+    }
+    if (item.loc) {
+      loc = item.loc;
+    }
+    if (item.color) {
+      color = item.color;
+    }
+    if (item.size) {
+      size = item.size;
+    }
+    if (item.font) {
+      font = item.font;
+    }
+    if (loc && color && size && font) break;
+  }
+  for (let i = 0; i < nicoScripts.replace.length; i++) {
+    const item = nicoScripts.replace[i];
+    if (!item) continue;
+    if (item.long !== undefined && item.start + item.long < comment.vpos) {
+      nicoScripts.default = nicoScripts.default.splice(Number(i), 1);
+      continue;
+    }
+    if (
+      (item.target === "\u30b3\u30e1" && comment.owner) ||
+      (item.target === "\u6295\u30b3\u30e1" && !comment.owner) ||
+      (item.target === "\u542b\u307e\u306a\u3044" && comment.owner)
+    )
+      continue;
+    if (
+      (item.condition === "\u5b8c\u5168\u4e00\u81f4" &&
+        comment.content === item.keyword) ||
+      (item.condition === "\u90e8\u5206\u4e00\u81f4" &&
+        comment.content.indexOf(item.keyword) !== -1)
+    ) {
+      if (item.range === "\u5358") {
+        comment.content = replaceAll(
+          comment.content,
+          item.keyword,
+          item.replace
+        );
+      } else {
+        comment.content = item.replace;
+      }
+      if (item.loc) {
+        data.loc = item.loc;
+      }
+      if (item.color) {
+        data.color = item.color;
+      }
+      if (item.size) {
+        data.size = item.size;
+        data.fontSize = getConfig(config.fontSize, isFlash)[data.size].default;
+      }
+      if (item.font) {
+        data.font = item.font;
+      }
+    }
+  }
+  if (!data.loc) {
+    data.loc = loc || "naka";
+  }
+  if (!data.color) {
+    data.color = color || "#FFFFFF";
+  }
+  if (!data.size) {
+    data.size = size || "medium";
+    data.fontSize = getConfig(config.fontSize, isFlash)[data.size].default;
+  }
+  if (!data.font) {
+    data.font = font || "defont";
+  }
+  if (!data.long) {
+    data.long = 300;
+  } else {
+    data.long = Math.floor(Number(data.long) * 100);
+  }
+  return {
+    ...comment,
+    content: [],
+    lineCount: 0,
+    lineOffset: 0,
+    ...data,
+    flash: isFlash,
+  } as formattedCommentWithFont;
+};
+
+const parseCommand = (comment: formattedComment): parsedCommand => {
+  const metadata = comment.mail,
+    isFlash = isFlashComment(comment);
+  const result: parsedCommand = {
+    loc: undefined,
+    size: undefined,
+    fontSize: undefined,
+    color: undefined,
+    font: undefined,
+    full: false,
+    ender: false,
+    _live: false,
+    invisible: false,
+    long: undefined,
+  };
+  for (let command of metadata) {
+    command = command.toLowerCase();
+    const match = command.match(/^(?:@|\uff20)([0-9.]+)/);
+    if (match && match[1]) {
+      result.long = Number(match[1]);
+    } else if (result.loc === undefined && typeGuard.comment.loc(command)) {
+      result.loc = command;
+    } else if (result.size === undefined && typeGuard.comment.size(command)) {
+      result.size = command;
+      result.fontSize = getConfig(config.fontSize, isFlash)[command].default;
+    } else {
+      if (result.color === undefined) {
+        const color = config.colors[command];
+        if (color) {
+          result.color = color;
+          continue;
+        } else {
+          const match = command.match(/#[0-9a-z]{3,6}/);
+          if (match && match[0] && comment.premium) {
+            result.color = match[0].toUpperCase();
+            continue;
+          }
+        }
+      }
+      if (result.font === undefined && typeGuard.comment.font(command)) {
+        result.font = command;
+      } else if (typeGuard.comment.command.key(command)) {
+        result[command] = true;
+      }
+    }
+  }
+  return result;
+};
+
 export {
   getPosY,
   getPosX,
@@ -228,4 +477,5 @@ export {
   changeCALayer,
   getConfig,
   isFlashComment,
+  parseCommandAndNicoScript,
 };

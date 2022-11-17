@@ -161,12 +161,7 @@ class NiconiComments {
             count++;
             for (let j = beforeVpos; j < comment.long + 125; j++) {
               const vpos = comment.vpos + j;
-              const left_pos = getPosX(
-                comment.width,
-                j,
-                comment.long,
-                comment.flash
-              );
+              const left_pos = getPosX(comment.width, j, comment.long);
               if (
                 left_pos + comment.width >= config.collisionRange.right &&
                 left_pos <= config.collisionRange.right
@@ -205,12 +200,7 @@ class NiconiComments {
         }
         for (let j = beforeVpos; j < comment.long + 125; j++) {
           const vpos = comment.vpos + j;
-          const left_pos = getPosX(
-            comment.width,
-            j,
-            comment.long,
-            comment.flash
-          );
+          const left_pos = getPosX(comment.width, j, comment.long);
           arrayPush(this.timeline, vpos, index);
           if (
             left_pos + comment.width >= config.collisionRange.right &&

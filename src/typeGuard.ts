@@ -154,7 +154,7 @@ const typeGuard = {
     },
   },
   v1: {
-    comment: (i: unknown): i is apiThread =>
+    comment: (i: unknown): i is v1Comment =>
       objectVerify(i, [
         "id",
         "no",

@@ -56,8 +56,8 @@ const initConfig = () => {
         height: 384,
       },
       flash: {
-        width: 506,
-        fullWidth: 630,
+        width: 512, //512?
+        fullWidth: 640, //640?
         height: 385,
       },
     },
@@ -76,8 +76,8 @@ const initConfig = () => {
           resized: 14,
         },
         big: {
-          default: 31.4,
-          resized: 20,
+          default: 39,
+          resized: 19.5,
         },
       },
       flash: {
@@ -155,12 +155,12 @@ const initConfig = () => {
     /**
      * コメントの処理範囲
      */
-    commentDrawRange: 1450,
+    commentDrawRange: 1530,
     /**
      * コメントの処理範囲外(片側)の幅
      * (config.canvasWidth - config.commentDrawRange) / 2,
      */
-    commentDrawPadding: 235,
+    commentDrawPadding: 195,
     /**
      * 当たり判定の左右幅
      * left: collisionWidth,
@@ -246,7 +246,7 @@ const initConfig = () => {
     },
     doubleResizeMaxWidth: {
       full: 1200,
-      normal: 990,
+      normal: 960,
     },
     commentYPaddingTop: {
       default: 5,
@@ -265,6 +265,8 @@ const initConfig = () => {
         resized: -0.2,
       },
     },
+    letterSpacing: 1,
+    scriptCharOffset: 0.12,
   };
 };
 

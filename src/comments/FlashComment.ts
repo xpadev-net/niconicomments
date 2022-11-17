@@ -1,4 +1,10 @@
-import { getConfig, getPosX, hex2rgb, parseFont, replaceAll } from "@/util";
+import {
+  getConfig,
+  getPosX,
+  hex2rgb,
+  parseCommandAndNicoScript,
+  parseFont,
+} from "@/util";
 import typeGuard from "@/typeGuard";
 import { config, options } from "@/definition/config";
 import { nicoScripts } from "@/contexts/nicoscript";
@@ -9,11 +15,13 @@ class FlashComment implements IComment {
   public readonly comment: formattedCommentWithSize;
   private readonly _globalScale: number;
   private scale: number;
+  private scaleX: number;
   public posY: number;
   public image?: HTMLCanvasElement | null;
   constructor(comment: formattedComment, context: CanvasRenderingContext2D) {
     this.context = context;
     this.scale = 1;
+    this.scaleX = 1;
     this._globalScale = getConfig(config.commentScale, true);
     this.posY = 0;
     comment.content = comment.content.replace(/\t/g, "\u2003\u2003");
@@ -114,200 +122,7 @@ class FlashComment implements IComment {
   parseCommandAndNicoscript(
     comment: formattedComment
   ): formattedCommentWithFont {
-    const data = this.parseCommand(comment),
-      string = comment.content,
-      nicoscript = string.match(
-        /^(?:@|＠)(デフォルト|置換|逆|コメント禁止|シーク禁止|ジャンプ)/
-      );
-    if (nicoscript && comment.owner) {
-      const reverse = comment.content.match(/^@逆 ?(全|コメ|投コメ)?/);
-      const content = comment.content.split(""),
-        result = [];
-      let quote = "",
-        last_i = "",
-        string = "";
-      switch (nicoscript[1]) {
-        case "デフォルト":
-          nicoScripts.default.unshift({
-            start: comment.vpos,
-            long:
-              data.long === undefined ? undefined : Math.floor(data.long * 100),
-            color: data.color,
-            size: data.size,
-            font: data.font,
-            loc: data.loc,
-          });
-          break;
-        case "逆":
-          if (
-            !reverse ||
-            !reverse[1] ||
-            !typeGuard.nicoScript.range.target(reverse[1])
-          )
-            break;
-          if (data.long === undefined) {
-            data.long = 30;
-          }
-          nicoScripts.reverse.unshift({
-            start: comment.vpos,
-            end: comment.vpos + data.long * 100,
-            target: reverse[1],
-          });
-          break;
-        case "コメント禁止":
-          if (data.long === undefined) {
-            data.long = 30;
-          }
-          nicoScripts.ban.unshift({
-            start: comment.vpos,
-            end: comment.vpos + data.long * 100,
-          });
-          break;
-        case "置換":
-          for (const i of content.slice(4)) {
-            if (i.match(/["'「]/) && quote === "") {
-              quote = i;
-            } else if (i.match(/["']/) && quote === i && last_i !== "\\") {
-              result.push(replaceAll(string, "\\n", "\n"));
-              quote = "";
-              string = "";
-            } else if (i.match(/」/) && quote === "「") {
-              result.push(string);
-              quote = "";
-              string = "";
-            } else if (quote === "" && i.match(/\s+/)) {
-              if (string) {
-                result.push(string);
-                string = "";
-              }
-            } else {
-              string += i;
-            }
-
-            last_i = i;
-          }
-          result.push(string);
-          if (
-            result[0] === undefined ||
-            result[1] === undefined ||
-            (result[2] !== undefined &&
-              !typeGuard.nicoScript.replace.range(result[2])) ||
-            (result[3] !== undefined &&
-              !typeGuard.nicoScript.replace.target(result[3])) ||
-            (result[4] !== undefined &&
-              !typeGuard.nicoScript.replace.condition(result[4]))
-          )
-            break;
-          nicoScripts.replace.unshift({
-            start: comment.vpos,
-            long:
-              data.long === undefined ? undefined : Math.floor(data.long * 100),
-            keyword: result[0],
-            replace: result[1] || "",
-            range: result[2] || "単",
-            target: result[3] || "コメ",
-            condition: result[4] || "部分一致",
-            color: data.color,
-            size: data.size,
-            font: data.font,
-            loc: data.loc,
-            no: comment.id,
-          });
-          nicoScripts.replace.sort((a, b) => {
-            if (a.start < b.start) return -1;
-            if (a.start > b.start) return 1;
-            if (a.no < b.no) return -1;
-            if (a.no > b.no) return 1;
-            return 0;
-          });
-          break;
-      }
-      data.invisible = true;
-    }
-    let color = undefined,
-      size = undefined,
-      font = undefined,
-      loc = undefined;
-    for (let i = 0; i < nicoScripts.default.length; i++) {
-      const item = nicoScripts.default[i];
-      if (!item) continue;
-      if (item.long !== undefined && item.start + item.long < comment.vpos) {
-        nicoScripts.default = nicoScripts.default.splice(Number(i), 1);
-        continue;
-      }
-      if (item.loc) {
-        loc = item.loc;
-      }
-      if (item.color) {
-        color = item.color;
-      }
-      if (item.size) {
-        size = item.size;
-      }
-      if (item.font) {
-        font = item.font;
-      }
-      if (loc && color && size && font) break;
-    }
-    for (let i = 0; i < nicoScripts.replace.length; i++) {
-      const item = nicoScripts.replace[i];
-      if (!item) continue;
-      if (item.long !== undefined && item.start + item.long < comment.vpos) {
-        nicoScripts.default = nicoScripts.default.splice(Number(i), 1);
-        continue;
-      }
-      if (
-        (item.target === "コメ" && comment.owner) ||
-        (item.target === "投コメ" && !comment.owner) ||
-        (item.target === "含まない" && comment.owner)
-      )
-        continue;
-      if (
-        (item.condition === "完全一致" && comment.content === item.keyword) ||
-        (item.condition === "部分一致" &&
-          comment.content.indexOf(item.keyword) !== -1)
-      ) {
-        if (item.range === "単") {
-          comment.content = replaceAll(
-            comment.content,
-            item.keyword,
-            item.replace
-          );
-        } else {
-          comment.content = item.replace;
-        }
-        if (item.loc) {
-          data.loc = item.loc;
-        }
-        if (item.color) {
-          data.color = item.color;
-        }
-        if (item.size) {
-          data.size = item.size;
-        }
-        if (item.font) {
-          data.font = item.font;
-        }
-      }
-    }
-    if (!data.loc) {
-      data.loc = loc || "naka";
-    }
-    if (!data.color) {
-      data.color = color || "#FFFFFF";
-    }
-    if (!data.size) {
-      data.size = size || "medium";
-      data.fontSize = getConfig(config.fontSize, true)[data.size].default;
-    }
-    if (!data.font) {
-      data.font = font || "defont";
-    }
-    if (!data.long) {
-      data.long = 300;
-    } else {
-      data.long = Math.floor(Number(data.long) * 100);
-    }
+    const data = parseCommandAndNicoScript(comment);
     const content: commentContentItem[] = [];
     const parts = (comment.content.match(/\n|[^\n]+/g) || []).map((val) =>
       Array.from(val.match(/[ -~｡-ﾟ]+|[^ -~｡-ﾟ]+/g) || [])
@@ -426,17 +241,16 @@ class FlashComment implements IComment {
     const lineOffset =
       (comment.content.match(new RegExp(config.flashScriptChar.super, "g"))
         ?.length || 0) *
-        -0.135 +
+        -1 *
+        config.scriptCharOffset +
       (comment.content.match(new RegExp(config.flashScriptChar.sub, "g"))
         ?.length || 0) *
-        0.135;
+        config.scriptCharOffset;
     return {
-      ...comment,
+      ...data,
       content,
       lineCount,
       lineOffset,
-      ...data,
-      flash: false,
     } as formattedCommentWithFont;
   }
 
@@ -448,34 +262,27 @@ class FlashComment implements IComment {
    */
   measureText(comment: measureTextInput): measureTextResult {
     const configLineHeight = getConfig(config.lineHeight, true),
-      configFontSize = getConfig(config.fontSize, true),
-      configDoubleResizeMaxWidth = getConfig(config.doubleResizeMaxWidth, true);
-    const width_arr = [],
-      lineCount = comment.lineCount;
+      configFontSize = getConfig(config.fontSize, true);
+    const lineCount = comment.lineCount;
     if (!comment.lineHeight)
       comment.lineHeight = configLineHeight[comment.size].default;
     if (!comment.resized && !comment.ender) {
-      if (comment.size === "big" && lineCount > 2) {
-        comment.fontSize = configFontSize.big.resized;
-        comment.lineHeight = configLineHeight.big.resized;
-        comment.resized = true;
-        comment.resizedY = true;
-        this.context.font = parseFont(comment.font, comment.fontSize);
-      } else if (comment.size === "medium" && lineCount > 4) {
-        comment.fontSize = configFontSize.medium.resized;
-        comment.lineHeight = configLineHeight.medium.resized;
-        comment.resized = true;
-        comment.resizedY = true;
-        this.context.font = parseFont(comment.font, comment.fontSize);
-      } else if (comment.size === "small" && lineCount > 6) {
-        comment.fontSize = configFontSize.small.resized;
-        comment.lineHeight = configLineHeight.small.resized;
+      if (
+        (comment.size === "big" && lineCount > 2) ||
+        (comment.size === "medium" && lineCount > 4) ||
+        (comment.size === "small" && lineCount > 6)
+      ) {
+        comment.fontSize = configFontSize[comment.size].resized;
+        comment.lineHeight = configLineHeight[comment.size].resized;
         comment.resized = true;
         comment.resizedY = true;
         this.context.font = parseFont(comment.font, comment.fontSize);
       }
     }
-    let currentWidth = 0;
+    const width_arr = [],
+      spacedWidth_arr = [];
+    let currentWidth = 0,
+      spacedWidth = 0;
     for (let i = 0; i < comment.content.length; i++) {
       const item = comment.content[i];
       if (item === undefined) continue;
@@ -487,64 +294,54 @@ class FlashComment implements IComment {
         comment.fontSize
       );
       for (let i = 0; i < lines.length; i++) {
-        const measure = this.context.measureText(lines[i] as string);
+        const value = lines[i];
+        if (value === undefined) continue;
+        const measure = this.context.measureText(value);
         currentWidth += measure.width;
+        spacedWidth +=
+          measure.width + Math.max(value.length - 1, 0) * config.letterSpacing;
         widths.push(measure.width);
         if (i < lines.length - 1) {
           width_arr.push(currentWidth);
+          spacedWidth_arr.push(spacedWidth);
+          spacedWidth = 0;
           currentWidth = 0;
         }
       }
       width_arr.push(currentWidth);
+      spacedWidth_arr.push(spacedWidth);
       item.width = widths;
     }
-    const width = Math.max(...width_arr);
-    let width_max = width * this.scale;
+    const leadLine = (function () {
+      let max = 0,
+        index = -1;
+      for (let i = 0, l = spacedWidth_arr.length; i < l; i++) {
+        const val = spacedWidth_arr[i];
+        if (val && max < val) {
+          max = val;
+          index = i;
+        }
+      }
+      return { max, index };
+    })();
+    const width = leadLine.max;
+    this.scaleX = leadLine.max / (width_arr[leadLine.index] || 1);
+    const width_max = width * this.scale;
     const height =
       (comment.fontSize * comment.lineHeight * lineCount +
         config.commentYPaddingTop[comment.resizedY ? "resized" : "default"]) *
       this.scale;
-    const widthLimit = getConfig(config.commentStageSize, true)[
-      comment.full ? "fullWidth" : "width"
-    ];
-    if (comment.loc !== "naka" && !comment.resizedY) {
-      if (width_max > widthLimit) {
-        this.scale = Math.floor((widthLimit / width_max) * 200) / 200;
-        comment.resized = true;
+    if (Number.isNaN(height)) console.log(comment, lineCount, this.scale);
+    if (comment.loc !== "naka") {
+      const widthLimit = getConfig(config.commentStageSize, true)[
+        comment.full ? "fullWidth" : "width"
+      ];
+      if (width_max > widthLimit && !comment.resizedX) {
+        comment.fontSize = configFontSize[comment.size].default;
+        comment.lineHeight = configLineHeight[comment.size].default;
+        this.scale = widthLimit / width_max;
         comment.resizedX = true;
-        this.context.font = parseFont(comment.font, comment.fontSize);
-        return this.measureText(comment);
-      }
-    } else if (
-      comment.loc !== "naka" &&
-      comment.resizedY &&
-      width_max > widthLimit &&
-      !comment.resizedX
-    ) {
-      comment.fontSize = configFontSize[comment.size].default * 1.1;
-      comment.lineHeight = configLineHeight[comment.size].default;
-      comment.resized = true;
-      comment.resizedX = true;
-      this.context.font = parseFont(comment.font, comment.fontSize);
-      return this.measureText(comment);
-    } else if (comment.loc !== "naka" && comment.resizedY && comment.resizedX) {
-      const normalDRHeightLimit = -0.024986988777 * width_max + 69.2;
-      if (comment.full && width_max > configDoubleResizeMaxWidth.full) {
-        while (width_max > configDoubleResizeMaxWidth.full) {
-          width_max /= 1.1;
-          comment.fontSize -= 0.1;
-        }
-        this.context.font = parseFont(comment.font, comment.fontSize);
-        return this.measureText(comment);
-      } else if (
-        !comment.full &&
-        comment.fontSize * comment.lineHeight > normalDRHeightLimit
-      ) {
-        console.log(width_max);
-        while (comment.fontSize * comment.lineHeight > normalDRHeightLimit) {
-          comment.fontSize -= 0.1;
-        }
-        this.context.font = parseFont(comment.font, comment.fontSize);
+        comment.resized = true;
         return this.measureText(comment);
       }
     }
@@ -623,15 +420,13 @@ class FlashComment implements IComment {
           getPosX(
             this.comment.width,
             vpos - this.comment.vpos,
-            this.comment.long,
-            true
+            this.comment.long
           );
       } else {
         posX = getPosX(
           this.comment.width,
           vpos - this.comment.vpos,
-          this.comment.long,
-          true
+          this.comment.long
         );
       }
       if (posX > config.canvasWidth || posX + this.comment.width < 0) {
@@ -649,10 +444,14 @@ class FlashComment implements IComment {
       } else {
         this.context.globalAlpha = 1;
       }
-      this.context.drawImage(this.image, posX, posY);
+      try {
+        this.context.drawImage(this.image, posX, posY);
+      } catch (e) {
+        console.log(this.comment, e);
+      }
     }
     if (showCollision) {
-      this.context.strokeStyle = "rgba(0,0,255,1)";
+      this.context.strokeStyle = "rgba(255,0,255,1)";
       this.context.strokeRect(
         posX,
         posY,
@@ -734,7 +533,8 @@ class FlashComment implements IComment {
     context.scale(
       this._globalScale *
         this.scale *
-        (this.comment.layer === -1 ? options.scale : 1),
+        (this.comment.layer === -1 ? options.scale : 1) *
+        this.scaleX,
       this._globalScale *
         this.scale *
         (this.comment.layer === -1 ? options.scale : 1)

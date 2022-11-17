@@ -2,11 +2,9 @@ import {
   getConfig,
   getPosX,
   hex2rgb,
-  isFlashComment,
+  parseCommandAndNicoScript,
   parseFont,
-  replaceAll,
 } from "@/util";
-import typeGuard from "@/typeGuard";
 import { config, options } from "@/definition/config";
 import { nicoScripts } from "@/contexts/nicoscript";
 import {
@@ -64,260 +62,13 @@ class HTML5Comment implements IComment {
   }
 
   /**
-   * コメントに含まれるコマンドを解釈する
-   * @param comment- 独自フォーマットのコメントデータ
-   * @returns {{loc: string|undefined, size: string|undefined, color: string|undefined, fontSize: number|undefined, ender: boolean, font: string|undefined, full: boolean, _live: boolean, invisible: boolean, long:number|undefined}}
-   */
-  parseCommand(comment: formattedComment): parsedCommand {
-    const metadata = comment.mail,
-      isFlash = isFlashComment(comment);
-    const result: parsedCommand = {
-      loc: undefined,
-      size: undefined,
-      fontSize: undefined,
-      color: undefined,
-      font: undefined,
-      full: false,
-      ender: false,
-      _live: false,
-      invisible: false,
-      long: undefined,
-    };
-    for (let command of metadata) {
-      command = command.toLowerCase();
-      const match = command.match(/^@([0-9.]+)/);
-      if (match && match[1]) {
-        result.long = Number(match[1]);
-      } else if (result.loc === undefined && typeGuard.comment.loc(command)) {
-        result.loc = command;
-      } else if (result.size === undefined && typeGuard.comment.size(command)) {
-        result.size = command;
-        result.fontSize = getConfig(config.fontSize, isFlash)[command].default;
-      } else {
-        if (result.color === undefined) {
-          const color = config.colors[command];
-          if (color) {
-            result.color = color;
-            continue;
-          } else {
-            const match = command.match(/#[0-9a-z]{3,6}/);
-            if (match && match[0] && comment.premium) {
-              result.color = match[0].toUpperCase();
-              continue;
-            }
-          }
-        }
-        if (result.font === undefined && typeGuard.comment.font(command)) {
-          result.font = command;
-        } else if (typeGuard.comment.command.key(command)) {
-          result[command] = true;
-        }
-      }
-    }
-    return result;
-  }
-
-  /**
    * コメントに含まれるニコスクリプトを処理する
    * @param comment
    */
   parseCommandAndNicoscript(
     comment: formattedComment
   ): formattedCommentWithFont {
-    const data = this.parseCommand(comment),
-      string = comment.content,
-      nicoscript = string.match(
-        /^(?:@|＠)(デフォルト|置換|逆|コメント禁止|シーク禁止|ジャンプ)/
-      );
-    if (nicoscript && comment.owner) {
-      const reverse = comment.content.match(/^@逆 ?(全|コメ|投コメ)?/);
-      const content = comment.content.split(""),
-        result = [];
-      let quote = "",
-        last_i = "",
-        string = "";
-      switch (nicoscript[1]) {
-        case "デフォルト":
-          nicoScripts.default.unshift({
-            start: comment.vpos,
-            long:
-              data.long === undefined ? undefined : Math.floor(data.long * 100),
-            color: data.color,
-            size: data.size,
-            font: data.font,
-            loc: data.loc,
-          });
-          break;
-        case "逆":
-          if (
-            !reverse ||
-            !reverse[1] ||
-            !typeGuard.nicoScript.range.target(reverse[1])
-          )
-            break;
-          if (data.long === undefined) {
-            data.long = 30;
-          }
-          nicoScripts.reverse.unshift({
-            start: comment.vpos,
-            end: comment.vpos + data.long * 100,
-            target: reverse[1],
-          });
-          break;
-        case "コメント禁止":
-          if (data.long === undefined) {
-            data.long = 30;
-          }
-          nicoScripts.ban.unshift({
-            start: comment.vpos,
-            end: comment.vpos + data.long * 100,
-          });
-          break;
-        case "置換":
-          for (const i of content.slice(4)) {
-            if (i.match(/["'「]/) && quote === "") {
-              quote = i;
-            } else if (i.match(/["']/) && quote === i && last_i !== "\\") {
-              result.push(replaceAll(string, "\\n", "\n"));
-              quote = "";
-              string = "";
-            } else if (i.match(/」/) && quote === "「") {
-              result.push(string);
-              quote = "";
-              string = "";
-            } else if (quote === "" && i.match(/\s+/)) {
-              if (string) {
-                result.push(string);
-                string = "";
-              }
-            } else {
-              string += i;
-            }
-
-            last_i = i;
-          }
-          result.push(string);
-          if (
-            result[0] === undefined ||
-            result[1] === undefined ||
-            (result[2] !== undefined &&
-              !typeGuard.nicoScript.replace.range(result[2])) ||
-            (result[3] !== undefined &&
-              !typeGuard.nicoScript.replace.target(result[3])) ||
-            (result[4] !== undefined &&
-              !typeGuard.nicoScript.replace.condition(result[4]))
-          )
-            break;
-          nicoScripts.replace.unshift({
-            start: comment.vpos,
-            long:
-              data.long === undefined ? undefined : Math.floor(data.long * 100),
-            keyword: result[0],
-            replace: result[1] || "",
-            range: result[2] || "単",
-            target: result[3] || "コメ",
-            condition: result[4] || "部分一致",
-            color: data.color,
-            size: data.size,
-            font: data.font,
-            loc: data.loc,
-            no: comment.id,
-          });
-          nicoScripts.replace.sort((a, b) => {
-            if (a.start < b.start) return -1;
-            if (a.start > b.start) return 1;
-            if (a.no < b.no) return -1;
-            if (a.no > b.no) return 1;
-            return 0;
-          });
-          break;
-      }
-      data.invisible = true;
-    }
-    let color = undefined,
-      size = undefined,
-      font = undefined,
-      loc = undefined;
-    for (let i = 0; i < nicoScripts.default.length; i++) {
-      const item = nicoScripts.default[i];
-      if (!item) continue;
-      if (item.long !== undefined && item.start + item.long < comment.vpos) {
-        nicoScripts.default = nicoScripts.default.splice(Number(i), 1);
-        continue;
-      }
-      if (item.loc) {
-        loc = item.loc;
-      }
-      if (item.color) {
-        color = item.color;
-      }
-      if (item.size) {
-        size = item.size;
-      }
-      if (item.font) {
-        font = item.font;
-      }
-      if (loc && color && size && font) break;
-    }
-    for (let i = 0; i < nicoScripts.replace.length; i++) {
-      const item = nicoScripts.replace[i];
-      if (!item) continue;
-      if (item.long !== undefined && item.start + item.long < comment.vpos) {
-        nicoScripts.default = nicoScripts.default.splice(Number(i), 1);
-        continue;
-      }
-      if (
-        (item.target === "コメ" && comment.owner) ||
-        (item.target === "投コメ" && !comment.owner) ||
-        (item.target === "含まない" && comment.owner)
-      )
-        continue;
-      if (
-        (item.condition === "完全一致" && comment.content === item.keyword) ||
-        (item.condition === "部分一致" &&
-          comment.content.indexOf(item.keyword) !== -1)
-      ) {
-        if (item.range === "単") {
-          comment.content = replaceAll(
-            comment.content,
-            item.keyword,
-            item.replace
-          );
-        } else {
-          comment.content = item.replace;
-        }
-        if (item.loc) {
-          data.loc = item.loc;
-        }
-        if (item.color) {
-          data.color = item.color;
-        }
-        if (item.size) {
-          data.size = item.size;
-        }
-        if (item.font) {
-          data.font = item.font;
-        }
-      }
-    }
-    if (!data.loc) {
-      data.loc = loc || "naka";
-    }
-    if (!data.color) {
-      data.color = color || "#FFFFFF";
-    }
-    if (!data.size) {
-      data.size = size || "medium";
-      data.fontSize = getConfig(config.fontSize, false)[data.size].default;
-    }
-    if (!data.font) {
-      data.font = font || "defont";
-    }
-    if (!data.long) {
-      data.long = 300;
-    } else {
-      data.long = Math.floor(Number(data.long) * 100);
-    }
+    const data = parseCommandAndNicoScript(comment);
     const content: commentContentItem[] = [];
     content.push({ content: comment.content });
     const lineCount = content.reduce((pv, val) => {
@@ -325,12 +76,10 @@ class HTML5Comment implements IComment {
     }, 1);
     const lineOffset = 0;
     return {
-      ...comment,
+      ...data,
       content,
       lineCount,
       lineOffset,
-      ...data,
-      flash: false,
     } as formattedCommentWithFont;
   }
 
@@ -502,15 +251,13 @@ class HTML5Comment implements IComment {
           getPosX(
             this.comment.width,
             vpos - this.comment.vpos,
-            this.comment.long,
-            this.comment.flash
+            this.comment.long
           );
       } else {
         posX = getPosX(
           this.comment.width,
           vpos - this.comment.vpos,
-          this.comment.long,
-          this.comment.flash
+          this.comment.long
         );
       }
       if (posX > config.canvasWidth || posX + this.comment.width < 0) {

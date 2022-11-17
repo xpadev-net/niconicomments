@@ -428,10 +428,11 @@ class FlashComment implements IComment {
     const lineOffset =
       (comment.content.match(new RegExp(config.flashScriptChar.super, "g"))
         ?.length || 0) *
-        -0.115 +
+        -1 *
+        config.scriptCharOffset +
       (comment.content.match(new RegExp(config.flashScriptChar.sub, "g"))
         ?.length || 0) *
-        0.115;
+        config.scriptCharOffset;
     return {
       ...comment,
       content,

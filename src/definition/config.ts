@@ -266,6 +266,7 @@ const initConfig = () => {
       },
     },
     letterSpacing: 1,
+    scriptCharOffset: 0.12,
   };
 };
 

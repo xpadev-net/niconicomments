@@ -199,7 +199,6 @@ class HTML5Comment implements IComment {
           result.push(string);
           if (
             result[0] === undefined ||
-            result[1] === undefined ||
             (result[2] !== undefined &&
               !typeGuard.nicoScript.replace.range(result[2])) ||
             (result[3] !== undefined &&
@@ -294,6 +293,7 @@ class HTML5Comment implements IComment {
         }
         if (item.size) {
           data.size = item.size;
+          data.fontSize = getConfig(config.fontSize, true)[data.size].default;
         }
         if (item.font) {
           data.font = item.font;

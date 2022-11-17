@@ -191,7 +191,6 @@ class FlashComment implements IComment {
           result.push(string);
           if (
             result[0] === undefined ||
-            result[1] === undefined ||
             (result[2] !== undefined &&
               !typeGuard.nicoScript.replace.range(result[2])) ||
             (result[3] !== undefined &&
@@ -286,6 +285,7 @@ class FlashComment implements IComment {
         }
         if (item.size) {
           data.size = item.size;
+          data.fontSize = getConfig(config.fontSize, true)[data.size].default;
         }
         if (item.font) {
           data.font = item.font;
@@ -520,6 +520,7 @@ class FlashComment implements IComment {
       (comment.fontSize * comment.lineHeight * lineCount +
         config.commentYPaddingTop[comment.resizedY ? "resized" : "default"]) *
       this.scale;
+    if (Number.isNaN(height)) console.log(comment, lineCount, this.scale);
     if (comment.loc !== "naka") {
       const widthLimit = getConfig(config.commentStageSize, true)[
         comment.full ? "fullWidth" : "width"
@@ -632,7 +633,11 @@ class FlashComment implements IComment {
       } else {
         this.context.globalAlpha = 1;
       }
-      this.context.drawImage(this.image, posX, posY);
+      try {
+        this.context.drawImage(this.image, posX, posY);
+      } catch (e) {
+        console.log(this.comment, e);
+      }
     }
     if (showCollision) {
       this.context.strokeStyle = "rgba(255,0,255,1)";

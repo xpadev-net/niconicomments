@@ -502,15 +502,13 @@ class HTML5Comment implements IComment {
           getPosX(
             this.comment.width,
             vpos - this.comment.vpos,
-            this.comment.long,
-            this.comment.flash
+            this.comment.long
           );
       } else {
         posX = getPosX(
           this.comment.width,
           vpos - this.comment.vpos,
-          this.comment.long,
-          this.comment.flash
+          this.comment.long
         );
       }
       if (posX > config.canvasWidth || posX + this.comment.width < 0) {

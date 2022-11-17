@@ -52,22 +52,11 @@ const getPosY = (
  * @param {number} width
  * @param {number} vpos
  * @param {number} long
- * @param {boolean} isFlash
  */
-const getPosX = (
-  width: number,
-  vpos: number,
-  long: number,
-  isFlash: boolean
-): number => {
+const getPosX = (width: number, vpos: number, long: number): number => {
+  const speed = (config.commentDrawRange + width) / (long + 100);
   return (
-    getConfig(config.commentDrawRange, isFlash) -
-    ((((width + getConfig(config.commentDrawRange, isFlash)) *
-      ((vpos + 100) / 100)) /
-      4) *
-      300) /
-      long +
-    getConfig(config.commentDrawPadding, isFlash)
+    config.commentDrawPadding + config.commentDrawRange - (vpos + 100) * speed
   );
 };
 /**

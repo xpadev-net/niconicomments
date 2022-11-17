@@ -155,12 +155,12 @@ const initConfig = () => {
     /**
      * コメントの処理範囲
      */
-    commentDrawRange: 1450,
+    commentDrawRange: 1530,
     /**
      * コメントの処理範囲外(片側)の幅
      * (config.canvasWidth - config.commentDrawRange) / 2,
      */
-    commentDrawPadding: 235,
+    commentDrawPadding: 195,
     /**
      * 当たり判定の左右幅
      * left: collisionWidth,

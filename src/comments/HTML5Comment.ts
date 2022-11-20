@@ -116,12 +116,12 @@ class HTML5Comment implements IComment {
       comment.lineHeight = lineHeight;
       comment.resized = true;
       comment.resizedY = true;
-      const measureResult = measure(comment as measureInput);
+      const measureResult = measure(comment as measureInput, this.context);
       height = measureResult.height;
       width = measureResult.width;
       itemWidth = measureResult.itemWidth;
     } else {
-      const measureResult = measure(comment as measureInput);
+      const measureResult = measure(comment as measureInput, this.context);
       height = measureResult.height;
       width = measureResult.width;
       itemWidth = measureResult.itemWidth;
@@ -133,14 +133,14 @@ class HTML5Comment implements IComment {
       _comment.charSize = (_comment.charSize || 0) * scale;
       _comment.lineHeight = (_comment.lineHeight || 0) * scale;
       _comment.fontSize = _comment.charSize * 0.8;
-      let result = measure(_comment as measureInput);
+      let result = measure(_comment as measureInput, this.context);
       if (result.width > widthLimit) {
         while (result.width >= widthLimit) {
           const originalCharSize = _comment.charSize;
           _comment.charSize -= 1;
           _comment.lineHeight *= _comment.charSize / originalCharSize;
           _comment.fontSize = _comment.charSize * 0.8;
-          result = measure(_comment as measureInput);
+          result = measure(_comment as measureInput, this.context);
         }
       } else {
         let lastComment = { ..._comment };
@@ -150,7 +150,7 @@ class HTML5Comment implements IComment {
           _comment.charSize += 1;
           _comment.lineHeight *= _comment.charSize / originalCharSize;
           _comment.fontSize = _comment.charSize * 0.8;
-          result = measure(_comment as measureInput);
+          result = measure(_comment as measureInput, this.context);
         }
         _comment = lastComment;
       }
@@ -163,7 +163,7 @@ class HTML5Comment implements IComment {
         comment.lineHeight = _comment.lineHeight;
       }
       comment.fontSize = (comment.charSize || 0) * 0.8;
-      result = measure(comment as measureInput);
+      result = measure(comment as measureInput, this.context);
       width = result.width;
       height = result.height;
       itemWidth = result.itemWidth;

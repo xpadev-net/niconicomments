@@ -1,6 +1,5 @@
 import { getConfig, parseFont } from "@/util";
 import { config } from "@/definition/config";
-import { context } from "@/contexts/canvas";
 
 /**
  * 各サイズの行高を返す
@@ -33,15 +32,18 @@ const getCharSize = (fontSize: commentSize, isFlash: boolean): number => {
   return commentStageSize.height / lineCounts.doubleResized[fontSize];
 };
 
-const measure = (comment: measureInput) => {
-  const width = measureWidth(comment);
+const measure = (comment: measureInput, context: CanvasRenderingContext2D) => {
+  const width = measureWidth(comment, context);
   return {
     ...width,
     height: comment.lineHeight * (comment.lineCount - 1) + comment.charSize,
   };
 };
 
-const measureWidth = (comment: measureInput) => {
+const measureWidth = (
+  comment: measureInput,
+  context: CanvasRenderingContext2D
+) => {
   const { fontSize, scale } = getFontSizeAndScale(comment.charSize),
     lineWidth = [],
     itemWidth = [];

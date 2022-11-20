@@ -22,7 +22,6 @@ import { HTML5Comment } from "@/comments/HTML5Comment";
 import { FlashComment } from "@/comments/FlashComment";
 import { resetImageCache } from "@/contexts/cache";
 import { resetNicoScripts } from "@/contexts/nicoscript";
-import { initCanvas } from "@/contexts/canvas";
 
 let isDebug = false;
 
@@ -52,7 +51,6 @@ class NiconiComments {
   ) {
     const constructorStart = performance.now();
     initConfig();
-    initCanvas();
     if (!typeGuard.config.initOptions(initOptions))
       throw new Error(
         "Please see document: https://xpadev-net.github.io/niconicomments/#p_options"

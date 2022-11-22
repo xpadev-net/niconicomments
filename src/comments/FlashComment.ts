@@ -331,7 +331,6 @@ class FlashComment implements IComment {
       (comment.fontSize * comment.lineHeight * lineCount +
         config.commentYPaddingTop[comment.resizedY ? "resized" : "default"]) *
       this.scale;
-    if (Number.isNaN(height)) console.log(comment, lineCount, this.scale);
     if (comment.loc !== "naka") {
       const widthLimit = getConfig(config.commentStageSize, true)[
         comment.full ? "fullWidth" : "width"
@@ -444,11 +443,7 @@ class FlashComment implements IComment {
       } else {
         this.context.globalAlpha = 1;
       }
-      try {
-        this.context.drawImage(this.image, posX, posY);
-      } catch (e) {
-        console.log(this.comment, e);
-      }
+      this.context.drawImage(this.image, posX, posY);
     }
     if (showCollision) {
       this.context.strokeStyle = "rgba(255,0,255,1)";
@@ -505,14 +500,13 @@ class FlashComment implements IComment {
         [...this.comment.mail].sort().join(","),
       cache = imageCache[cacheKey];
     if (cache) {
+      this.image = cache.image;
+      window.setTimeout(() => {
+        delete this.image;
+      }, this.comment.long * 10 + config.cacheAge);
       clearTimeout(cache.timeout);
       cache.timeout = window.setTimeout(() => {
-        if (this.image) {
-          delete this.image;
-        }
-        if (cache) {
-          delete imageCache[cacheKey];
-        }
+        delete imageCache[cacheKey];
       }, this.comment.long * 10 + config.cacheAge);
       return cache.image;
     }
@@ -576,6 +570,18 @@ class FlashComment implements IComment {
         }
       }
     }
+
+    this.image = image;
+    window.setTimeout(() => {
+      delete this.image;
+    }, this.comment.long * 10 + config.cacheAge);
+    imageCache[cacheKey] = {
+      timeout: window.setTimeout(() => {
+        delete imageCache[cacheKey];
+      }, this.comment.long * 10 + config.cacheAge),
+      image,
+    };
+
     return image;
   }
 }

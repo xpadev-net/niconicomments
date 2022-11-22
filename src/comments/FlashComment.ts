@@ -500,11 +500,14 @@ class FlashComment implements IComment {
         [...this.comment.mail].sort().join(","),
       cache = imageCache[cacheKey];
     if (cache) {
-      clearTimeout(cache.timeout);
-      cache.timeout = window.setTimeout(() => {
+      this.image = cache.image;
+      window.setTimeout(() => {
         if (this.image) {
           delete this.image;
         }
+      }, this.comment.long * 10 + config.cacheAge);
+      clearTimeout(cache.timeout);
+      cache.timeout = window.setTimeout(() => {
         if (cache) {
           delete imageCache[cacheKey];
         }
@@ -571,6 +574,22 @@ class FlashComment implements IComment {
         }
       }
     }
+
+    this.image = image;
+    window.setTimeout(() => {
+      if (this.image) {
+        delete this.image;
+      }
+    }, this.comment.long * 10 + config.cacheAge);
+    imageCache[cacheKey] = {
+      timeout: window.setTimeout(() => {
+        if (cache) {
+          delete imageCache[cacheKey];
+        }
+      }, this.comment.long * 10 + config.cacheAge),
+      image,
+    };
+
     return image;
   }
 }

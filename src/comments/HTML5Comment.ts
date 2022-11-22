@@ -328,11 +328,14 @@ class HTML5Comment implements IComment {
         [...this.comment.mail].sort().join(","),
       cache = imageCache[cacheKey];
     if (cache) {
-      clearTimeout(cache.timeout);
-      cache.timeout = window.setTimeout(() => {
+      this.image = cache.image;
+      window.setTimeout(() => {
         if (this.image) {
           delete this.image;
         }
+      }, this.comment.long * 10 + config.cacheAge);
+      clearTimeout(cache.timeout);
+      cache.timeout = window.setTimeout(() => {
         if (cache) {
           delete imageCache[cacheKey];
         }
@@ -391,13 +394,15 @@ class HTML5Comment implements IComment {
       }
     }
     this.image = image;
+    window.setTimeout(() => {
+      if (this.image) {
+        delete this.image;
+      }
+    }, this.comment.long * 10 + config.cacheAge);
     imageCache[cacheKey] = {
       timeout: window.setTimeout(() => {
         if (cache) {
           delete imageCache[cacheKey];
-        }
-        if (this.image) {
-          delete this.image;
         }
       }, this.comment.long * 10 + config.cacheAge),
       image,

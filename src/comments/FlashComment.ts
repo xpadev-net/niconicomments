@@ -502,15 +502,11 @@ class FlashComment implements IComment {
     if (cache) {
       this.image = cache.image;
       window.setTimeout(() => {
-        if (this.image) {
-          delete this.image;
-        }
+        delete this.image;
       }, this.comment.long * 10 + config.cacheAge);
       clearTimeout(cache.timeout);
       cache.timeout = window.setTimeout(() => {
-        if (cache) {
-          delete imageCache[cacheKey];
-        }
+        delete imageCache[cacheKey];
       }, this.comment.long * 10 + config.cacheAge);
       return cache.image;
     }
@@ -577,15 +573,11 @@ class FlashComment implements IComment {
 
     this.image = image;
     window.setTimeout(() => {
-      if (this.image) {
-        delete this.image;
-      }
+      delete this.image;
     }, this.comment.long * 10 + config.cacheAge);
     imageCache[cacheKey] = {
       timeout: window.setTimeout(() => {
-        if (cache) {
-          delete imageCache[cacheKey];
-        }
+        delete imageCache[cacheKey];
       }, this.comment.long * 10 + config.cacheAge),
       image,
     };

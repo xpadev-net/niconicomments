@@ -117,7 +117,6 @@ const typeGuard = {
               "date",
               "date_usec",
               "anonymity",
-              "user_id",
               "mail",
               "leaf",
               "premium",

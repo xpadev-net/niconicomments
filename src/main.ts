@@ -117,7 +117,7 @@ class NiconiComments {
    * @param {any[]} rawData
    * ※読み込み時めちゃくちゃ重くなるので途中で絶対にカクついてほしくないという場合以外は非推奨
    */
-  preRendering(rawData: formattedComment[]) {
+  private preRendering(rawData: formattedComment[]) {
     const preRenderingStart = performance.now();
     if (options.keepCA) {
       rawData = changeCALayer(rawData);
@@ -139,7 +139,7 @@ class NiconiComments {
   /**
    * 計算された描画サイズをもとに各コメントの配置位置を決定する
    */
-  getCommentPos(data: IComment[]): IComment[] {
+  private getCommentPos(data: IComment[]): IComment[] {
     const getCommentPosStart = performance.now();
     data.forEach((comment, index) => {
       if (comment.invisible) return;
@@ -261,7 +261,7 @@ class NiconiComments {
   /**
    * 投稿者コメントを前に移動
    */
-  sortComment(parsedData: IComment[]) {
+  private sortComment(parsedData: IComment[]) {
     const sortCommentStart = performance.now();
     for (const vpos of Object.keys(this.timeline)) {
       const item = this.timeline[Number(vpos)];
@@ -286,7 +286,7 @@ class NiconiComments {
    * @param vpos - 動画の現在位置の100倍 ニコニコから吐き出されるコメントの位置情報は主にこれ
    * @param forceRendering
    */
-  drawCanvas(vpos: number, forceRendering = false) {
+  public drawCanvas(vpos: number, forceRendering = false) {
     const drawCanvasStart = performance.now();
     if (this.lastVpos === vpos && !forceRendering) return;
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);

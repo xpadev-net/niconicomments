@@ -6,20 +6,16 @@ import typeGuard from "@/typeGuard";
  * @param {number} currentPos
  * @param {parsedComment} targetComment
  * @param {number[]|undefined} collision
- * @param {parsedComment[]} data
  */
 const getPosY = (
   currentPos: number,
   targetComment: IComment,
-  collision: number[] | undefined,
-  data: IComment[]
+  collision: IComment[] | undefined
 ): { currentPos: number; isChanged: boolean; isBreak: boolean } => {
   let isChanged = false,
     isBreak = false;
   if (!collision) return { currentPos, isChanged, isBreak };
-  for (const index of collision) {
-    const collisionItem = data[index];
-    if (!collisionItem) continue;
+  for (const collisionItem of collision) {
     if (
       currentPos < collisionItem.posY + collisionItem.height &&
       currentPos + targetComment.height > collisionItem.posY &&
@@ -86,9 +82,9 @@ const parseFont = (font: commentFont, size: string | number): string => {
  * @param push
  */
 const arrayPush = (
-  array: { [key: number]: number[] },
+  array: { [key: number]: IComment[] },
   key: string | number,
-  push: number
+  push: IComment
 ) => {
   if (!array) {
     array = {};
@@ -152,7 +148,8 @@ const changeCALayer = (rawData: formattedComment[]): formattedComment[] => {
       userList[value.user_id] +=
         (value.content.match(/\r\n|\n|\r/g) || []).length / 2;
     }
-    const key = `${value.content}@@${Array.from(new Set([...value.mail].sort()))
+    const key = `${value.content}@@${[...value.mail]
+        .sort()
         .filter((e) => !e.match(/@[\d.]+|184|device:.+|patissier|ca/))
         .join("")}`,
       lastComment = index[key];

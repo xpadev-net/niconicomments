@@ -11,7 +11,9 @@ const convert2formattedComment = (
   type: inputFormatType
 ): formattedComment[] => {
   let result: formattedComment[] = [];
-  if (type === "niconicome" && typeGuard.niconicome.xmlDocument(data)) {
+  if (type === "empty" && data === undefined) {
+    return [];
+  } else if (type === "niconicome" && typeGuard.niconicome.xmlDocument(data)) {
     result = fromNiconicome(data);
   } else if (type === "formatted" && typeGuard.formatted.legacyComments(data)) {
     result = fromFormatted(data);

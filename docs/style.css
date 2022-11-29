@@ -45,11 +45,13 @@ main {
 
 aside {
   width: 30%;
+  max-width: 300px;
   min-height: 100vh;
 }
 
 main {
   width: 70%;
+  min-width: calc(100% - 300px);
 }
 
 section {

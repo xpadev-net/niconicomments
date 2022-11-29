@@ -24,7 +24,12 @@
     "url": "git+https://github.com/xpadev-net/niconicomments.git"
   },
   "keywords": [
-    "niconico"
+    "canvas",
+    "comment",
+    "danmaku",
+    "html5",
+    "niconico",
+    "nicovide"
   ],
   "author": "xpadev(xpadev.net)",
   "bugs": {

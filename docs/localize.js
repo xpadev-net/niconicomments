@@ -33,9 +33,9 @@ const localize = {
 <p>サイズ設定をミスるとコメントが正常に描画されません</p>`,
   ],
   p_data: [
-    `<p>Please pass comment data.</p>
+    `<p>Please pass comment data or undefined.</p>
 <p>Please check the <a href="#p_format">format</a> for supported formats.</p>`,
-    `<p>コメントデータを渡してください</p>
+    `<p>コメントデータまたはundefinedを渡してください</p>
 <p>対応フォーマットは<a href="#p_format">format</a>を確認してください</p>`,
   ],
   p_config: [
@@ -69,6 +69,11 @@ const localize = {
 <p>Supported formats are as follows</p>
 <table><thead><tr><th>Name</th><th>Type</th><th>Note</th></tr></thead>
   <tbody>
+    <tr>
+      <td>empty</td>
+      <td class="type">undefined</td>
+      <td>For dynamic additional comments</td>
+    </tr>
     <tr>
       <td>niconicome</td>
       <td class="type">XMLDocument</td>
@@ -106,6 +111,11 @@ const localize = {
 <table>
   <thead><tr><th>名前</th><th>dataのtype</th><th>備考</th></tr></thead>
   <tbody>
+    <tr>
+      <td>empty</td>
+      <td class="type">undefined</td>
+      <td>動的追加コメント用</td>
+    </tr>
     <tr>
       <td>niconicome</td>
       <td class="type">XMLDocument</td>
@@ -232,6 +242,14 @@ const localize = {
 <p>デフォルト(<span class="yellow">null</span>)の場合は描画を行いません</p>
 <p>指定されている場合は、背景に指定された動画を描画し、その上にコメントを描画します</p>
 <p>この機能を応用すると、Picture in Pictureにもコメントを表示できるようになります</p>`,
+  ],
+  m_addComments: [
+      `<p>This is a feature to dynamically add comments, mainly for live broadcasts.</p>
+<p>Comments added by this feature are placed based on a hit decision, but do not affect the position of subsequent comments that have already been placed.</p>
+<p>Comments may overlap with each other when placed between already generated comments.</p>`,
+    `<p>主に生配信向けの、コメントを動的に追加する機能です</p>
+<p>この機能によって追加されたコメントは当たり判定を考慮して配置されますが、すでに配置されているその後のコメントの位置には影響を及ぼしません</p>
+<p>生成済みのコメントの間に配置した場合、コメント同士が重複する場合があります</p>`
   ],
   m_drawCanvas: [
     `<p>Draws a comment on the canvas based on vpos(currentTime*100 of the video)</p>

@@ -31,7 +31,6 @@ class NiconiComments {
   public showFPS: boolean;
   public showCommentCount: boolean;
   public video: HTMLVideoElement | undefined;
-  //private data: IComment[];
   private lastVpos: number;
   private readonly canvas: HTMLCanvasElement;
   private readonly collision: collision;
@@ -105,7 +104,6 @@ class NiconiComments {
       pv[value] = [] as collisionItem;
       return pv;
     }, {} as collision);
-    //this.data = [];
     this.lastVpos = -1;
     this.preRendering(parsedData);
 
@@ -115,7 +113,6 @@ class NiconiComments {
   /**
    * 事前に当たり判定を考慮してコメントの描画場所を決定する
    * @param {any[]} rawData
-   * ※読み込み時めちゃくちゃ重くなるので途中で絶対にカクついてほしくないという場合以外は非推奨
    */
   private preRendering(rawData: formattedComment[]) {
     const preRenderingStart = performance.now();

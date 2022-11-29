@@ -5,6 +5,7 @@ type inputFormatType =
   | "legacyOwner"
   | "owner"
   | "v1"
+  | "empty"
   | "default";
 type inputFormat =
   | XMLDocument
@@ -13,7 +14,8 @@ type inputFormat =
   | rawApiResponse[]
   | ownerComment[]
   | v1Thread[]
-  | string;
+  | string
+  | undefined;
 type modeType = "default" | "html5" | "flash";
 type Options = {
   config: ConfigNullable;

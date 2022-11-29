@@ -148,7 +148,8 @@ const changeCALayer = (rawData: formattedComment[]): formattedComment[] => {
       userList[value.user_id] +=
         (value.content.match(/\r\n|\n|\r/g) || []).length / 2;
     }
-    const key = `${value.content}@@${Array.from(new Set([...value.mail].sort()))
+    const key = `${value.content}@@${[...value.mail]
+        .sort()
         .filter((e) => !e.match(/@[\d.]+|184|device:.+|patissier|ca/))
         .join("")}`,
       lastComment = index[key];

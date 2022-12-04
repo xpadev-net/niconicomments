@@ -175,6 +175,8 @@ class HTML5Comment implements IComment {
       item.width = itemWidth[i];
     }
     comment.fontSize = (comment.charSize || 0) * 0.8;
+    const charScale = getFontSizeAndScale(comment.charSize || 0);
+    if (charScale.scale < 1) height *= 1.01;
     return {
       width: width * scale,
       height: height * scale,
@@ -289,6 +291,7 @@ class HTML5Comment implements IComment {
       for (let i = 0; i < this.comment.lineCount; i++) {
         const linePosY =
           (this.comment.lineHeight * (i + 1) +
+            (this.comment.charSize - this.comment.lineHeight) / 2 +
             this.comment.lineHeight * -0.16 +
             (config.fonts[this.comment.font as unknown as HTML5Fonts]?.offset ||
               0)) *
@@ -375,6 +378,7 @@ class HTML5Comment implements IComment {
         if (line === undefined) continue;
         const posY =
           (this.comment.lineHeight * (lineCount + 1 + paddingTop) +
+            (this.comment.charSize - this.comment.lineHeight) / 2 +
             this.comment.lineHeight * -0.16 +
             (config.fonts[this.comment.font as unknown as HTML5Fonts]?.offset ||
               0)) /

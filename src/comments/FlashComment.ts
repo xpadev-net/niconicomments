@@ -1,7 +1,7 @@
 import {
   getConfig,
   getPosX,
-  hex2rgb,
+  getStrokeColor,
   parseCommandAndNicoScript,
   parseFont,
 } from "@/util";
@@ -517,11 +517,7 @@ class FlashComment implements IComment {
     image.height = this.comment.height;
     const context = image.getContext("2d");
     if (!context) throw new Error("Fail to get CanvasRenderingContext2D");
-    context.strokeStyle = `rgba(${hex2rgb(
-      this.comment.color === "#000000"
-        ? config.contextStrokeInversionColor
-        : config.contextStrokeColor
-    ).join(",")},${config.contextStrokeOpacity})`;
+    context.strokeStyle = getStrokeColor(this.comment);
     context.textAlign = "start";
     context.textBaseline = "alphabetic";
     context.lineWidth = 4;

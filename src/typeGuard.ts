@@ -1,3 +1,5 @@
+import { colors } from "@/definition/colors";
+
 const isBoolean = (i: unknown): i is boolean => typeof i === "boolean";
 const isNumber = (i: unknown): i is number => typeof i === "number";
 const isObject = (i: unknown): i is object => typeof i === "object";
@@ -212,6 +214,11 @@ const typeGuard = {
       key: (i: unknown): i is "full" | "ender" | "_live" | "invisible" =>
         typeof i === "string" && !!i.match(/^(?:full|ender|_live|invisible)$/),
     },
+    color: (i: unknown): i is keyof typeof colors =>
+      typeof i === "string" && Object.keys(colors).includes(i),
+    colorCode: (i: unknown): i is string =>
+      typeof i === "string" &&
+      !!i.match(/^#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/),
   },
 
   config: {

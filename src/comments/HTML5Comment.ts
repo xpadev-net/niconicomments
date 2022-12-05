@@ -1,7 +1,7 @@
 import {
   getConfig,
   getPosX,
-  hex2rgb,
+  getStrokeColor,
   parseCommandAndNicoScript,
   parseFont,
 } from "@/util";
@@ -350,11 +350,7 @@ class HTML5Comment implements IComment {
       this.comment.height - (this.comment.charSize - this.comment.lineHeight);
     const context = image.getContext("2d");
     if (!context) throw new Error("Fail to get CanvasRenderingContext2D");
-    context.strokeStyle = `rgba(${hex2rgb(
-      this.comment.color === "#000000"
-        ? config.contextStrokeInversionColor
-        : config.contextStrokeColor
-    ).join(",")},${config.contextStrokeOpacity})`;
+    context.strokeStyle = getStrokeColor(this.comment);
     context.textAlign = "start";
     context.textBaseline = "alphabetic";
     context.lineWidth = config.contextLineWidth;

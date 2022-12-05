@@ -74,6 +74,13 @@
               </li>
             </ul>
           </li>
+          <li>
+            <a href="#commands">Custom Commands</a>
+            <ul>
+              <li><a href="#c_flash">Flash</a></li>
+              <li><a href="#c_stroke">Stroke Color</a></li>
+            </ul>
+          </li>
         </ul>
       </div>
     </aside>
@@ -365,6 +372,37 @@
             <h4 id="m_clear">clear()<span class="type">:void</span></h4>
             <div class="item" data-i18n="m_clear">
             </div>
+          </div>
+        </div>
+      </section>
+      <section id="commands">
+        <h2>Custom Commands</h2>
+        <div class="item">
+          <p>niconicomments独自のコマンド</p>
+        </div>
+        <h3 id="c_flash">Flash</h3>
+        <div class="item">
+          <h4>format</h4>
+          <div class="item"><pre><code>nico:flash</code></pre></div>
+          <div class="item" data-i18n="c_flash">
+            <p>自動モード時にFlash版コメントとしての処理を強制します</p>
+            <p>※HTML5モード時は無視されます</p>
+            <p>※自動モード時にHTML5版コメントとしての処理を強制させたい場合はdefont、mincho、gothicのいずれかを使用してください</p>
+          </div>
+        </div>
+        <h3 id="c_stroke">Stroke Color</h3>
+        <div class="item">
+          <h4>format</h4>
+          <div class="item"><pre><code>nico:stroke:(color|color code)</code></pre></div>
+          <h4>example</h4>
+          <div class="item">
+          <pre><code>nico:stroke:red
+nico:stroke:#f0f
+nico:stroke:#fff5</code></pre></div>
+          <div class="item" data-i18n="c_stroke">
+            <p>コメントの縁取りの色を変更することができます</p>
+            <p>色の指定は色コマンドまたはカラーコードで行ってください</p>
+            <p>カラーコードは透明度も指定可能です</p>
           </div>
         </div>
       </section>

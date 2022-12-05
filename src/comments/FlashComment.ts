@@ -491,7 +491,9 @@ class FlashComment implements IComment {
   getTextImage(): HTMLCanvasElement | null {
     if (
       this.comment.invisible ||
-      (this.comment.lineCount === 1 && this.comment.width === 0)
+      (this.comment.lineCount === 1 && this.comment.width === 0) ||
+      this.comment.height - (this.comment.charSize - this.comment.lineHeight) <=
+        0
     )
       return null;
     const cacheKey =

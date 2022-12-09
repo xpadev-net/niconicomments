@@ -1,7 +1,7 @@
 import {
   getConfig,
   getPosX,
-  hex2rgb,
+  getStrokeColor,
   parseCommandAndNicoScript,
   parseFont,
 } from "@/util";
@@ -14,6 +14,17 @@ import {
   measure,
 } from "@/nico";
 import { imageCache } from "@/contexts/cache";
+import type { IComment } from "@/@types/IComment";
+import type {
+  commentContentItem,
+  commentMeasuredContentItem,
+  formattedCommentWithFont,
+  formattedCommentWithSize,
+  measureInput,
+  measureTextInput,
+  measureTextResult,
+} from "@/@types/types";
+import type { formattedComment } from "@/@types/format.formatted";
 
 class HTML5Comment implements IComment {
   private readonly context: CanvasRenderingContext2D;
@@ -322,7 +333,9 @@ class HTML5Comment implements IComment {
   getTextImage(): HTMLCanvasElement | null {
     if (
       this.comment.invisible ||
-      (this.comment.lineCount === 1 && this.comment.width === 0)
+      (this.comment.lineCount === 1 && this.comment.width === 0) ||
+      this.comment.height - (this.comment.charSize - this.comment.lineHeight) <=
+        0
     )
       return null;
     const cacheKey =
@@ -348,11 +361,7 @@ class HTML5Comment implements IComment {
       this.comment.height - (this.comment.charSize - this.comment.lineHeight);
     const context = image.getContext("2d");
     if (!context) throw new Error("Fail to get CanvasRenderingContext2D");
-    context.strokeStyle = `rgba(${hex2rgb(
-      this.comment.color === "#000000"
-        ? config.contextStrokeInversionColor
-        : config.contextStrokeColor
-    ).join(",")},${config.contextStrokeOpacity})`;
+    context.strokeStyle = getStrokeColor(this.comment);
     context.textAlign = "start";
     context.textBaseline = "alphabetic";
     context.lineWidth = config.contextLineWidth;

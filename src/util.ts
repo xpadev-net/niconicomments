@@ -1,6 +1,16 @@
 import { config, options } from "@/definition/config";
 import { nicoScripts } from "@/contexts/nicoscript";
 import typeGuard from "@/typeGuard";
+import { colors } from "@/definition/colors";
+import type { configItem } from "@/@types/config";
+import type { IComment } from "@/@types/IComment";
+import type {
+  commentFont,
+  formattedCommentWithFont,
+  formattedCommentWithSize,
+  parsedCommand,
+} from "@/@types/types";
+import type { formattedComment } from "@/@types/format.formatted";
 /**
  * 当たり判定からコメントを配置できる場所を探す
  * @param {number} currentPos
@@ -117,6 +127,34 @@ const hex2rgb = (hex: string) => {
   });
 };
 /**
+ * Hexからrgbaに変換する(_live用)
+ * @param {string} hex
+ * @return {array} RGB
+ */
+const hex2rgba = (hex: string) => {
+  if (hex.slice(0, 1) === "#") hex = hex.slice(1);
+  if (hex.length === 4)
+    hex =
+      hex.slice(0, 1) +
+      hex.slice(0, 1) +
+      hex.slice(1, 2) +
+      hex.slice(1, 2) +
+      hex.slice(2, 3) +
+      hex.slice(2, 3) +
+      hex.slice(3, 4) +
+      hex.slice(3, 4);
+
+  return [
+    hex.slice(0, 2),
+    hex.slice(2, 4),
+    hex.slice(4, 6),
+    hex.slice(4, 6),
+  ].map((str, index) => {
+    if (index === 3) return parseInt(str, 16) / 256;
+    return parseInt(str, 16);
+  });
+};
+/**
  * replaceAll
  */
 const replaceAll = (string: string, target: string, replace: string) => {
@@ -206,7 +244,9 @@ const isFlashComment = (comment: formattedComment): boolean =>
     (comment.date < config.flashThreshold ||
       comment.mail.includes("nico:flash")));
 
-const parseCommandAndNicoScript = (comment: formattedComment) => {
+const parseCommandAndNicoScript = (
+  comment: formattedComment
+): formattedCommentWithFont => {
   const isFlash = isFlashComment(comment);
   const data = parseCommand(comment),
     string = comment.content,
@@ -423,6 +463,7 @@ const parseCommand = (comment: formattedComment): parsedCommand => {
     size: undefined,
     fontSize: undefined,
     color: undefined,
+    strokeColor: undefined,
     font: undefined,
     full: false,
     ender: false,
@@ -432,9 +473,18 @@ const parseCommand = (comment: formattedComment): parsedCommand => {
   };
   for (let command of metadata) {
     command = command.toLowerCase();
-    const match = command.match(/^(?:@|\uff20)([0-9.]+)/);
-    if (match && match[1]) {
+    let match;
+    if ((match = command.match(/^(?:@|\uff20)([0-9.]+)/)) && match[1]) {
       result.long = Number(match[1]);
+    } else if (
+      result.strokeColor === undefined &&
+      (match = command.match(/^nico:stroke:(.+)$/))
+    ) {
+      if (typeGuard.comment.color(match[1])) {
+        result.strokeColor = colors[match[1]];
+      } else if (typeGuard.comment.colorCode(match[1])) {
+        result.strokeColor = match[1].slice(1);
+      }
     } else if (result.loc === undefined && typeGuard.comment.loc(command)) {
       result.loc = command;
     } else if (result.size === undefined && typeGuard.comment.size(command)) {
@@ -464,12 +514,32 @@ const parseCommand = (comment: formattedComment): parsedCommand => {
   return result;
 };
 
+const getStrokeColor = (comment: formattedCommentWithSize) => {
+  if (comment.strokeColor) {
+    const length = comment.strokeColor.length;
+    if (length === 3 || length === 6) {
+      return `rgba(${hex2rgb(comment.strokeColor).join(",")},${
+        config.contextStrokeOpacity
+      })`;
+    } else if (length === 4 || length === 8) {
+      return `rgba(${hex2rgba(comment.strokeColor).join(",")})`;
+    }
+  }
+  return `rgba(${hex2rgb(
+    comment.color === "#000000"
+      ? config.contextStrokeInversionColor
+      : config.contextStrokeColor
+  ).join(",")},${config.contextStrokeOpacity})`;
+};
+
 export {
   getPosY,
   getPosX,
   parseFont,
   arrayPush,
   hex2rgb,
+  hex2rgba,
+  getStrokeColor,
   replaceAll,
   changeCALayer,
   getConfig,

@@ -1,3 +1,30 @@
+import { colors } from "@/definition/colors";
+
+import type {
+  formattedComment,
+  formattedLegacyComment,
+} from "@/@types/format.formatted";
+import type {
+  apiChat,
+  apiGlobalNumRes,
+  apiLeaf,
+  apiPing,
+  apiThread,
+  rawApiResponse,
+} from "@/@types/format.legacy";
+import type { ownerComment } from "@/@types/format.owner";
+import type { v1Comment, v1Thread } from "@/@types/format.v1";
+import type {
+  commentFont,
+  commentLoc,
+  commentSize,
+  nicoScriptReplaceCondition,
+  nicoScriptReplaceRange,
+  nicoScriptReplaceTarget,
+  nicoScriptReverseTarget,
+} from "@/@types/types";
+import type { Options } from "@/@types/options";
+
 const isBoolean = (i: unknown): i is boolean => typeof i === "boolean";
 const isNumber = (i: unknown): i is number => typeof i === "number";
 const isObject = (i: unknown): i is object => typeof i === "object";
@@ -80,54 +107,34 @@ const typeGuard = {
         "ticket",
       ]),
   },
-  niconicome: {
-    xmlDocument: (i: unknown): i is XMLDocument => {
+  xmlDocument: (i: unknown): i is XMLDocument => {
+    if (
+      !(i as XMLDocument).documentElement ||
+      (i as XMLDocument).documentElement.nodeName !== "packet"
+    )
+      return false;
+    if (!(i as XMLDocument).documentElement.children) return false;
+    for (
+      let index = 0;
+      index < (i as XMLDocument).documentElement.children.length;
+      index++
+    ) {
+      const value = (i as XMLDocument).documentElement.children[index];
+      if (!value) continue;
       if (
-        !(i as XMLDocument).documentElement ||
-        (i as XMLDocument).documentElement.nodeName !== "packet"
+        value.nodeName === "chat" &&
+        !typeAttributeVerify(value, [
+          "no",
+          "vpos",
+          "date",
+          "date_usec",
+          "mail",
+          "premium",
+        ])
       )
         return false;
-      if (!(i as XMLDocument).documentElement.children) return false;
-      for (
-        let index = 0;
-        index < (i as XMLDocument).documentElement.children.length;
-        index++
-      ) {
-        const value = (i as XMLDocument).documentElement.children[index];
-        if (!value) continue;
-        if (index === 0) {
-          if (
-            value.nodeName !== "thread" ||
-            !typeAttributeVerify(value, [
-              "resultcode",
-              "thread",
-              "server_time",
-              "last_res",
-              "revision",
-            ])
-          )
-            return false;
-        } else {
-          if (
-            value.nodeName !== "chat" ||
-            !typeAttributeVerify(value, [
-              "thread",
-              "no",
-              "vpos",
-              "date",
-              "date_usec",
-              "anonymity",
-              "mail",
-              "leaf",
-              "premium",
-              "score",
-            ])
-          )
-            return false;
-        }
-      }
-      return true;
-    },
+    }
+    return true;
   },
   legacyOwner: {
     comments: (i: unknown): i is string => {
@@ -189,16 +196,19 @@ const typeGuard = {
   nicoScript: {
     range: {
       target: (i: unknown): i is nicoScriptReverseTarget =>
-        typeof i === "string" && !!i.match(/^(?:コメ|投コメ|全)$/),
+        typeof i === "string" && !!i.match(/^(?:\u6295?\u30b3\u30e1|\u5168)$/),
     },
     replace: {
       range: (i: unknown): i is nicoScriptReplaceRange =>
-        typeof i === "string" && !!i.match(/^(?:単|全)$/),
+        typeof i === "string" && !!i.match(/^(?:\u5358|\u5168)$/),
       target: (i: unknown): i is nicoScriptReplaceTarget =>
         typeof i === "string" &&
-        !!i.match(/^(?:コメ|投コメ|全|含む|含まない)$/),
+        !!i.match(
+          /^(?:\u30b3\u30e1|\u6295\u30b3\u30e1|\u5168|\u542b\u3080|\u542b\u307e\u306a\u3044)$/
+        ),
       condition: (i: unknown): i is nicoScriptReplaceCondition =>
-        typeof i === "string" && !!i.match(/^(?:部分一致|完全一致)$/),
+        typeof i === "string" &&
+        !!i.match(/^(?:\u90e8\u5206\u4e00\u81f4|\u5b8c\u5168\u4e00\u81f4)$/),
     },
   },
   comment: {
@@ -212,10 +222,15 @@ const typeGuard = {
       key: (i: unknown): i is "full" | "ender" | "_live" | "invisible" =>
         typeof i === "string" && !!i.match(/^(?:full|ender|_live|invisible)$/),
     },
+    color: (i: unknown): i is keyof typeof colors =>
+      typeof i === "string" && Object.keys(colors).includes(i),
+    colorCode: (i: unknown): i is string =>
+      typeof i === "string" &&
+      !!i.match(/^#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/),
   },
 
   config: {
-    initOptions: (item: unknown): item is InitOptions => {
+    initOptions: (item: unknown): item is Options => {
       if (typeof item !== "object" || !item) return false;
       const keys: { [key: string]: (i: unknown) => boolean } = {
         useLegacy: isBoolean,

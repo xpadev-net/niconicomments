@@ -1,3 +1,5 @@
+import { IComment } from "@/@types/IComment";
+
 type formattedCommentWithFont = {
   id: number;
   vpos: number;
@@ -13,6 +15,7 @@ type formattedCommentWithFont = {
   fontSize: number;
   font: commentFont;
   color: string;
+  strokeColor?: string;
   full: boolean;
   ender: boolean;
   _live: boolean;
@@ -113,6 +116,7 @@ type parsedCommand = {
   size: commentSize | undefined;
   fontSize: number | undefined;
   color: string | undefined;
+  strokeColor?: string;
   font: commentFont | undefined;
   full: boolean;
   ender: boolean;

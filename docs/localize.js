@@ -75,7 +75,7 @@ const localize = {
       <td>For dynamic additional comments</td>
     </tr>
     <tr>
-      <td>niconicome</td>
+      <td>XMLDocument</td>
       <td class="type">XMLDocument</td>
       <td>Pass XML parseFromString with DOMParser</td>
     </tr>
@@ -117,9 +117,9 @@ const localize = {
       <td>動的追加コメント用</td>
     </tr>
     <tr>
-      <td>niconicome</td>
+      <td>XMLDocument</td>
       <td class="type">XMLDocument</td>
-      <td>XMLをDOMParserでparseFromStringしたものを渡してください</td>
+      <td>saccubusやniconicome等が生成したXMLをDOMParserでparseFromStringしたものを渡してください<br>後方互換のためフォーマット名「niconicome」もサポートしていますが、今後予告なく実装から削除される場合があります</td>
     </tr>
     <tr>
       <td>formatted</td>
@@ -258,6 +258,18 @@ const localize = {
 <p>vposは<span class="yellow">整数(int)</span>である必要があります</p>`,
   ],
   m_clear: [`<p>Erase Canvas</p>`, `<p>キャンバスを消去します</p>`],
+  c_flash: [`<p>Enforces processing as a Flash version comment when in auto mode</p>
+<p>※This command is ignored except in auto mode</p>
+<p>※If you want to force processing as HTML5 version comments in auto mode, use one of the following commands: defont, mincho, or gothic</p>`,
+    `<p>自動モード時にFlash版コメントとしての処理を強制します</p>
+<p>※HTML5モード時は無視されます</p>
+<p>※自動モード時にHTML5版コメントとしての処理を強制させたい場合はdefont、mincho、gothicのいずれかを使用してください</p>`],
+  c_stroke: [`<p>This command allows you to change the color of the comment borders</p>
+<p>Colors can be specified with the color command or color code</p>
+<p>Color code can also specify transparency</p>`,
+    `<p>コメントの縁取りの色を変更することができます</p>
+<p>色の指定は色コマンドまたはカラーコードで行ってください</p>
+<p>カラーコードは透明度も指定可能です</p>`]
 };
 const resources = { en: { translation: {} }, ja: { translation: {} } };
 for (const key in localize) {

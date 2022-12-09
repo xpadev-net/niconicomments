@@ -30,7 +30,9 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
       # Runs a single command using the runners shell
       - name: init
-        run: npm i
+        run: |
+          npm i -g yarn
+          yarn install
 
       # Runs a set of commands using the runners shell
       - name: clear output dir
@@ -40,7 +42,7 @@ jobs:
       - name: update sample.html
         run: sed --in-place --expression='s/..\/..\/dist\/bundle.js/https:\/\/cdn.jsdelivr.net\/npm\/@xpadev-net\/niconicomments@latest\/dist\/bundle.min.js/' docs/sample/index.html
       - name: generate typedoc
-        run: npm run typedoc
+        run: yarn typedoc
 
       - name: Create new Branch
         env:

@@ -107,54 +107,34 @@ const typeGuard = {
         "ticket",
       ]),
   },
-  niconicome: {
-    xmlDocument: (i: unknown): i is XMLDocument => {
+  xmlDocument: (i: unknown): i is XMLDocument => {
+    if (
+      !(i as XMLDocument).documentElement ||
+      (i as XMLDocument).documentElement.nodeName !== "packet"
+    )
+      return false;
+    if (!(i as XMLDocument).documentElement.children) return false;
+    for (
+      let index = 0;
+      index < (i as XMLDocument).documentElement.children.length;
+      index++
+    ) {
+      const value = (i as XMLDocument).documentElement.children[index];
+      if (!value) continue;
       if (
-        !(i as XMLDocument).documentElement ||
-        (i as XMLDocument).documentElement.nodeName !== "packet"
+        value.nodeName === "chat" &&
+        !typeAttributeVerify(value, [
+          "no",
+          "vpos",
+          "date",
+          "date_usec",
+          "mail",
+          "premium",
+        ])
       )
         return false;
-      if (!(i as XMLDocument).documentElement.children) return false;
-      for (
-        let index = 0;
-        index < (i as XMLDocument).documentElement.children.length;
-        index++
-      ) {
-        const value = (i as XMLDocument).documentElement.children[index];
-        if (!value) continue;
-        if (index === 0) {
-          if (
-            value.nodeName !== "thread" ||
-            !typeAttributeVerify(value, [
-              "resultcode",
-              "thread",
-              "server_time",
-              "last_res",
-              "revision",
-            ])
-          )
-            return false;
-        } else {
-          if (
-            value.nodeName !== "chat" ||
-            !typeAttributeVerify(value, [
-              "thread",
-              "no",
-              "vpos",
-              "date",
-              "date_usec",
-              "anonymity",
-              "mail",
-              "leaf",
-              "premium",
-              "score",
-            ])
-          )
-            return false;
-        }
-      }
-      return true;
-    },
+    }
+    return true;
   },
   legacyOwner: {
     comments: (i: unknown): i is string => {

@@ -21,8 +21,11 @@ const convert2formattedComment = (
   let result: formattedComment[] = [];
   if (type === "empty" && data === undefined) {
     return [];
-  } else if (type === "niconicome" && typeGuard.niconicome.xmlDocument(data)) {
-    result = fromNiconicome(data);
+  } else if (
+    (type === "XMLDocument" || type === "niconicome") &&
+    typeGuard.xmlDocument(data)
+  ) {
+    result = fromXMLDocument(data);
   } else if (type === "formatted" && typeGuard.formatted.legacyComments(data)) {
     result = fromFormatted(data);
   } else if (type === "legacy" && typeGuard.legacy.rawApiResponses(data)) {
@@ -40,11 +43,11 @@ const convert2formattedComment = (
 };
 
 /**
- * niconicomeが吐き出すコメントデータを処理する
+ * niconicome等が吐き出すxml形式のコメントデータを処理する
  * @param data {XMLDocument} 吐き出されたxmlをDOMParserでparseFromStringしたもの
  * @return {formattedComment[]}
  */
-const fromNiconicome = (data: XMLDocument): formattedComment[] => {
+const fromXMLDocument = (data: XMLDocument): formattedComment[] => {
   const data_: formattedComment[] = [],
     userList: string[] = [];
   for (const item of Array.from(data.documentElement.children)) {

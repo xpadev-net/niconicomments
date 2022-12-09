@@ -8,6 +8,7 @@ import { v1Thread } from "@/@types/format.v1";
 import { Config } from "@/@types/config";
 
 export type inputFormatType =
+  | "XMLDocument"
   | "niconicome"
   | "formatted"
   | "legacy"

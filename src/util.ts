@@ -7,6 +7,7 @@ import type { IComment } from "@/@types/IComment";
 import type {
   commentFont,
   formattedCommentWithFont,
+  formattedCommentWithSize,
   parsedCommand,
 } from "@/@types/types";
 import type { formattedComment } from "@/@types/format.formatted";

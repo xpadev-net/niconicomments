@@ -14,6 +14,17 @@ import {
   measure,
 } from "@/nico";
 import { imageCache } from "@/contexts/cache";
+import type { IComment } from "@/@types/IComment";
+import type {
+  commentContentItem,
+  commentMeasuredContentItem,
+  formattedCommentWithFont,
+  formattedCommentWithSize,
+  measureInput,
+  measureTextInput,
+  measureTextResult,
+} from "@/@types/types";
+import type { formattedComment } from "@/@types/format.formatted";
 
 class HTML5Comment implements IComment {
   private readonly context: CanvasRenderingContext2D;

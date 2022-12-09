@@ -1,4 +1,4 @@
-type rawApiResponse = {
+export type rawApiResponse = {
   [key: string]: apiPing | apiThread | apiLeaf | apiGlobalNumRes | apiChat;
 };
 type apiPing = {

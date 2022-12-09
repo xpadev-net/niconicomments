@@ -1,3 +1,5 @@
+import { IComment } from "@/@types/IComment";
+
 type formattedCommentWithFont = {
   id: number;
   vpos: number;

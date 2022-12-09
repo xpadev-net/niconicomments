@@ -21,7 +21,7 @@ type typeDoubleResizeMaxWidth = {
   [key in "full" | "normal"]: number;
 };
 
-type Config = {
+type BaseConfig = {
   cacheAge: number;
   canvasHeight: number;
   canvasWidth: number;
@@ -59,4 +59,4 @@ type Config = {
   scriptCharOffset: number;
 };
 
-type ConfigNullable = Partial<Config>;
+export type Config = Partial<BaseConfig>;

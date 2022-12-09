@@ -1,4 +1,4 @@
-type formattedComment = {
+export type formattedComment = {
   id: number;
   vpos: number;
   content: string;
@@ -10,7 +10,7 @@ type formattedComment = {
   user_id: number;
   layer: number;
 };
-type formattedLegacyComment = {
+export type formattedLegacyComment = {
   id: number;
   vpos: number;
   content: string;

@@ -1,5 +1,30 @@
 import { colors } from "@/definition/colors";
 
+import type {
+  formattedComment,
+  formattedLegacyComment,
+} from "@/@types/format.formatted";
+import type {
+  apiChat,
+  apiGlobalNumRes,
+  apiLeaf,
+  apiPing,
+  apiThread,
+  rawApiResponse,
+} from "@/@types/format.legacy";
+import type { ownerComment } from "@/@types/format.owner";
+import type { v1Comment, v1Thread } from "@/@types/format.v1";
+import type {
+  commentFont,
+  commentLoc,
+  commentSize,
+  nicoScriptReplaceCondition,
+  nicoScriptReplaceRange,
+  nicoScriptReplaceTarget,
+  nicoScriptReverseTarget,
+} from "@/@types/types";
+import type { Options } from "@/@types/options";
+
 const isBoolean = (i: unknown): i is boolean => typeof i === "boolean";
 const isNumber = (i: unknown): i is number => typeof i === "number";
 const isObject = (i: unknown): i is object => typeof i === "object";
@@ -222,7 +247,7 @@ const typeGuard = {
   },
 
   config: {
-    initOptions: (item: unknown): item is InitOptions => {
+    initOptions: (item: unknown): item is Options => {
       if (typeof item !== "object" || !item) return false;
       const keys: { [key: string]: (i: unknown) => boolean } = {
         useLegacy: isBoolean,

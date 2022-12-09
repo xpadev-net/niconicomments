@@ -9,6 +9,19 @@ import typeGuard from "@/typeGuard";
 import { config, options } from "@/definition/config";
 import { nicoScripts } from "@/contexts/nicoscript";
 import { imageCache } from "@/contexts/cache";
+import type { IComment } from "@/@types/IComment";
+import type {
+  commentContentIndex,
+  commentContentItem,
+  commentFlashFont,
+  commentMeasuredContentItem,
+  formattedCommentWithFont,
+  formattedCommentWithSize,
+  measureTextInput,
+  measureTextResult,
+  parsedCommand,
+} from "@/@types/types";
+import type { formattedComment } from "@/@types/format.formatted";
 
 class FlashComment implements IComment {
   private readonly context: CanvasRenderingContext2D;

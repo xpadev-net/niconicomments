@@ -22,6 +22,10 @@ import { HTML5Comment } from "@/comments/HTML5Comment";
 import { FlashComment } from "@/comments/FlashComment";
 import { resetImageCache } from "@/contexts/cache";
 import { resetNicoScripts } from "@/contexts/nicoscript";
+import type { IComment } from "@/@types/IComment";
+import type { inputFormat, Options } from "@/@types/options";
+import type { collision, collisionItem, collisionPos } from "@/@types/types";
+import type { formattedComment } from "@/@types/format.formatted";
 
 let isDebug = false;
 
@@ -36,6 +40,7 @@ class NiconiComments {
   private readonly collision: collision;
   private readonly context: CanvasRenderingContext2D;
   private readonly timeline: { [key: number]: IComment[] };
+  static typeGuard = typeGuard;
 
   /**
    * NiconiComments Constructor
@@ -46,7 +51,7 @@ class NiconiComments {
   constructor(
     canvas: HTMLCanvasElement,
     data: inputFormat,
-    initOptions: InitOptions = {}
+    initOptions: Options = {}
   ) {
     const constructorStart = performance.now();
     initConfig();
@@ -495,5 +500,4 @@ class NiconiComments {
 const logger = (msg: string) => {
   if (isDebug) console.debug(msg);
 };
-
 export default NiconiComments;

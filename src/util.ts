@@ -2,6 +2,14 @@ import { config, options } from "@/definition/config";
 import { nicoScripts } from "@/contexts/nicoscript";
 import typeGuard from "@/typeGuard";
 import { colors } from "@/definition/colors";
+import type { configItem } from "@/@types/config";
+import type { IComment } from "@/@types/IComment";
+import type {
+  commentFont,
+  formattedCommentWithFont,
+  parsedCommand,
+} from "@/@types/types";
+import type { formattedComment } from "@/@types/format.formatted";
 /**
  * 当たり判定からコメントを配置できる場所を探す
  * @param {number} currentPos

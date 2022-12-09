@@ -1,4 +1,12 @@
 import typeGuard from "./typeGuard";
+import type { inputFormatType } from "@/@types/options";
+import type {
+  formattedComment,
+  formattedLegacyComment,
+} from "@/@types/format.formatted";
+import type { rawApiResponse } from "@/@types/format.legacy";
+import type { ownerComment } from "@/@types/format.owner";
+import type { v1Thread } from "@/@types/format.v1";
 
 /**
  * 入力されたデータを内部用のデータに変換

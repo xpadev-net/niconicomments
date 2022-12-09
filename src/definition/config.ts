@@ -1,6 +1,8 @@
 import { fonts } from "@/definition/fonts";
 import { colors } from "@/definition/colors";
-let defaultConfig: Config;
+import type { BaseConfig } from "@/@types/config";
+import type { BaseOptions } from "@/@types/options";
+let defaultConfig: BaseConfig;
 const initConfig = () => {
   const platform: platform = (function (ua) {
     if (ua.match(/windows nt 6\.[12]/i)) return "win7";
@@ -273,7 +275,7 @@ const initConfig = () => {
 /**
  * 既定の設定
  */
-const defaultOptions: Options = {
+const defaultOptions: BaseOptions = {
   config: {},
   debug: false,
   enableLegacyPiP: false,
@@ -289,10 +291,10 @@ const defaultOptions: Options = {
   video: undefined,
 };
 
-let config: Config;
-let options: Options;
-const setConfig = (value: Config) => (config = value);
-const setOptions = (value: Options) => (options = value);
+let config: BaseConfig;
+let options: BaseOptions;
+const setConfig = (value: BaseConfig) => (config = value);
+const setOptions = (value: BaseOptions) => (options = value);
 export {
   defaultConfig,
   defaultOptions,

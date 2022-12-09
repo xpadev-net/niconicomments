@@ -1,4 +1,4 @@
-type v1Thread = {
+export type v1Thread = {
   id: string;
   fork: string;
   commentCount: number;

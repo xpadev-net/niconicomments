@@ -1,4 +1,13 @@
-type inputFormatType =
+import {
+  formattedComment,
+  formattedLegacyComment,
+} from "@/@types/format.formatted";
+import { rawApiResponse } from "@/@types/format.legacy";
+import { ownerComment } from "@/@types/format.owner";
+import { v1Thread } from "@/@types/format.v1";
+import { Config } from "@/@types/config";
+
+export type inputFormatType =
   | "niconicome"
   | "formatted"
   | "legacy"
@@ -7,7 +16,7 @@ type inputFormatType =
   | "v1"
   | "empty"
   | "default";
-type inputFormat =
+export type inputFormat =
   | XMLDocument
   | formattedComment[]
   | formattedLegacyComment[]
@@ -17,8 +26,8 @@ type inputFormat =
   | string
   | undefined;
 type modeType = "default" | "html5" | "flash";
-type Options = {
-  config: ConfigNullable;
+type BaseOptions = {
+  config: Config;
   debug: boolean;
   enableLegacyPiP: boolean;
   format: inputFormatType;
@@ -32,4 +41,4 @@ type Options = {
   useLegacy: boolean;
   video: HTMLVideoElement | undefined;
 };
-type InitOptions = Partial<Options>;
+export type Options = Partial<BaseOptions>;

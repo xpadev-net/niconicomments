@@ -216,16 +216,19 @@ const typeGuard = {
   nicoScript: {
     range: {
       target: (i: unknown): i is nicoScriptReverseTarget =>
-        typeof i === "string" && !!i.match(/^(?:コメ|投コメ|全)$/),
+        typeof i === "string" && !!i.match(/^(?:\u6295?\u30b3\u30e1|\u5168)$/),
     },
     replace: {
       range: (i: unknown): i is nicoScriptReplaceRange =>
-        typeof i === "string" && !!i.match(/^(?:単|全)$/),
+        typeof i === "string" && !!i.match(/^(?:\u5358|\u5168)$/),
       target: (i: unknown): i is nicoScriptReplaceTarget =>
         typeof i === "string" &&
-        !!i.match(/^(?:コメ|投コメ|全|含む|含まない)$/),
+        !!i.match(
+          /^(?:\u30b3\u30e1|\u6295\u30b3\u30e1|\u5168|\u542b\u3080|\u542b\u307e\u306a\u3044)$/
+        ),
       condition: (i: unknown): i is nicoScriptReplaceCondition =>
-        typeof i === "string" && !!i.match(/^(?:部分一致|完全一致)$/),
+        typeof i === "string" &&
+        !!i.match(/^(?:\u90e8\u5206\u4e00\u81f4|\u5b8c\u5168\u4e00\u81f4)$/),
     },
   },
   comment: {

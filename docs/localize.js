@@ -75,7 +75,7 @@ const localize = {
       <td>For dynamic additional comments</td>
     </tr>
     <tr>
-      <td>niconicome</td>
+      <td>XMLDocument</td>
       <td class="type">XMLDocument</td>
       <td>Pass XML parseFromString with DOMParser</td>
     </tr>
@@ -117,9 +117,9 @@ const localize = {
       <td>動的追加コメント用</td>
     </tr>
     <tr>
-      <td>niconicome</td>
+      <td>XMLDocument</td>
       <td class="type">XMLDocument</td>
-      <td>XMLをDOMParserでparseFromStringしたものを渡してください</td>
+      <td>saccubusやniconicome等が生成したXMLをDOMParserでparseFromStringしたものを渡してください<br>後方互換のためフォーマット名「niconicome」もサポートしていますが、今後予告なく実装から削除される場合があります</td>
     </tr>
     <tr>
       <td>formatted</td>

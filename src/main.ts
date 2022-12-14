@@ -500,4 +500,12 @@ class NiconiComments {
 const logger = (msg: string) => {
   if (isDebug) console.debug(msg);
 };
-export default NiconiComments;
+
+const exporter = () =>
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  typeof exports === "object" && typeof module !== "undefined"
+    ? { default: NiconiComments }
+    : NiconiComments;
+
+export default exporter();

@@ -41,6 +41,7 @@ class NiconiComments {
   private readonly context: CanvasRenderingContext2D;
   private readonly timeline: { [key: number]: IComment[] };
   static typeGuard = typeGuard;
+  static default = NiconiComments;
 
   /**
    * NiconiComments Constructor
@@ -501,11 +502,4 @@ const logger = (msg: string) => {
   if (isDebug) console.debug(msg);
 };
 
-const exporter = () =>
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  typeof exports === "object" && typeof module !== "undefined"
-    ? { default: NiconiComments }
-    : NiconiComments;
-
-export default exporter();
+export default NiconiComments;

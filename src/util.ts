@@ -532,6 +532,14 @@ const getStrokeColor = (comment: formattedCommentWithSize) => {
   ).join(",")},${config.contextStrokeOpacity})`;
 };
 
+const ArrayEqual = (a: unknown[], b: unknown[]) => {
+  if (a.length !== b.length) return false;
+  for (let i = 0, n = a.length; i < n; ++i) {
+    if (a[i] !== b[i]) return false;
+  }
+  return true;
+};
+
 export {
   getPosY,
   getPosX,
@@ -545,4 +553,5 @@ export {
   getConfig,
   isFlashComment,
   parseCommandAndNicoScript,
+  ArrayEqual,
 };

@@ -123,14 +123,7 @@ const typeGuard = {
       if (!value) continue;
       if (
         value.nodeName === "chat" &&
-        !typeAttributeVerify(value, [
-          "no",
-          "vpos",
-          "date",
-          "date_usec",
-          "mail",
-          "premium",
-        ])
+        !typeAttributeVerify(value, ["no", "vpos", "date", "date_usec", "mail"])
       )
         return false;
     }

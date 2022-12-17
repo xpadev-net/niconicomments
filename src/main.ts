@@ -10,6 +10,7 @@ import {
   initConfig,
 } from "@/definition/config";
 import {
+  ArrayEqual,
   arrayPush,
   changeCALayer,
   getPosX,
@@ -402,10 +403,24 @@ class NiconiComments {
    * キャンバスを描画する
    * @param vpos - 動画の現在位置の100倍 ニコニコから吐き出されるコメントの位置情報は主にこれ
    * @param forceRendering
+   * @return isChanged - 再描画されたか
    */
-  public drawCanvas(vpos: number, forceRendering = false) {
+  public drawCanvas(vpos: number, forceRendering = false): boolean {
     const drawCanvasStart = performance.now();
-    if (this.lastVpos === vpos && !forceRendering) return;
+    if (this.lastVpos === vpos && !forceRendering) return false;
+    const timelineRange = this.timeline[vpos];
+    if (
+      !forceRendering &&
+      timelineRange?.filter((item) => item.loc === "naka").length === 0 &&
+      this.timeline[this.lastVpos]?.filter((item) => item.loc === "naka")
+        ?.length === 0
+    ) {
+      const current = timelineRange.filter((item) => item.loc !== "naka"),
+        last =
+          this.timeline[this.lastVpos]?.filter((item) => item.loc !== "naka") ||
+          [];
+      if (ArrayEqual(current, last)) return false;
+    }
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.lastVpos = vpos;
     if (this.video) {
@@ -427,7 +442,6 @@ class NiconiComments {
         this.video.videoHeight * scale
       );
     }
-    const timelineRange = this.timeline[vpos];
     if (this.showCollision) {
       const leftCollision = this.collision.left[vpos],
         rightCollision = this.collision.right[vpos];
@@ -488,6 +502,7 @@ class NiconiComments {
       }
     }
     logger(`drawCanvas complete: ${performance.now() - drawCanvasStart}ms`);
+    return true;
   }
 
   /**

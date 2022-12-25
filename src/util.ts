@@ -255,75 +255,75 @@ const parseCommandAndNicoScript = (
     );
   if (nicoscript && comment.owner) {
     const reverse = comment.content.match(
-      /^(?:@|\uff20)\u9006 ?(\u5168|\u30b3\u30e1|\u6295\u30b3\u30e1)?/
+      /^(?:@|\uff20)\u9006(?:\s+)?(\u5168|\u30b3\u30e1|\u6295\u30b3\u30e1)?/
     );
     const content = comment.content.split(""),
       result = [];
     let quote = "",
       last_i = "",
       string = "";
-    switch (nicoscript[1]) {
-      case "\u30c7\u30d5\u30a9\u30eb\u30c8":
-        nicoScripts.default.unshift({
-          start: comment.vpos,
-          long:
-            data.long === undefined ? undefined : Math.floor(data.long * 100),
-          color: data.color,
-          size: data.size,
-          font: data.font,
-          loc: data.loc,
-        });
-        break;
-      case "\u9006":
-        if (
-          !reverse ||
-          !reverse[1] ||
-          !typeGuard.nicoScript.range.target(reverse[1])
-        )
-          break;
-        if (data.long === undefined) {
-          data.long = 30;
-        }
-        nicoScripts.reverse.unshift({
-          start: comment.vpos,
-          end: comment.vpos + data.long * 100,
-          target: reverse[1],
-        });
-        break;
-      case "\u30b3\u30e1\u30f3\u30c8\u7981\u6b62":
-        if (data.long === undefined) {
-          data.long = 30;
-        }
-        nicoScripts.ban.unshift({
-          start: comment.vpos,
-          end: comment.vpos + data.long * 100,
-        });
-        break;
-      case "\u7f6e\u63db":
-        for (const i of content.slice(4)) {
-          if (i.match(/["'\u300c]/) && quote === "") {
-            quote = i;
-          } else if (i.match(/["']/) && quote === i && last_i !== "\\") {
-            result.push(replaceAll(string, "\\n", "\n"));
-            quote = "";
-            string = "";
-          } else if (i.match(/\u300d/) && quote === "\u300c") {
-            result.push(string);
-            quote = "";
-            string = "";
-          } else if (quote === "" && i.match(/\s+/)) {
-            if (string) {
-              result.push(string);
-              string = "";
-            }
-          } else {
-            string += i;
-          }
+    if (nicoscript[1] === "\u30c7\u30d5\u30a9\u30eb\u30c8") {
+      //＠デフォルト
+      nicoScripts.default.unshift({
+        start: comment.vpos,
+        long: data.long === undefined ? undefined : Math.floor(data.long * 100),
+        color: data.color,
+        size: data.size,
+        font: data.font,
+        loc: data.loc,
+      });
+    } else if (
+      nicoscript[1] === "\u9006" &&
+      reverse &&
+      reverse[1] &&
+      typeGuard.nicoScript.range.target(reverse[1])
+    ) {
+      //＠逆
+      if (data.long === undefined) {
+        data.long = 30;
+      }
+      nicoScripts.reverse.unshift({
+        start: comment.vpos,
+        end: comment.vpos + data.long * 100,
+        target: reverse[1],
+      });
+    } else if (nicoscript[1] === "\u30b3\u30e1\u30f3\u30c8\u7981\u6b62") {
+      //@コメント禁止
 
-          last_i = i;
+      if (data.long === undefined) {
+        data.long = 30;
+      }
+      nicoScripts.ban.unshift({
+        start: comment.vpos,
+        end: comment.vpos + data.long * 100,
+      });
+    } else if (nicoscript[1] === "\u7f6e\u63db") {
+      //@置換
+      for (const i of content.slice(4)) {
+        if (i.match(/["'\u300c]/) && quote === "") {
+          quote = i;
+        } else if (i.match(/["']/) && quote === i && last_i !== "\\") {
+          result.push(replaceAll(string, "\\n", "\n"));
+          quote = "";
+          string = "";
+        } else if (i.match(/\u300d/) && quote === "\u300c") {
+          result.push(string);
+          quote = "";
+          string = "";
+        } else if (quote === "" && i.match(/\s+/)) {
+          if (string) {
+            result.push(string);
+            string = "";
+          }
+        } else {
+          string += i;
         }
-        result.push(string);
-        if (
+
+        last_i = i;
+      }
+      result.push(string);
+      if (
+        !(
           result[0] === undefined ||
           (result[2] !== undefined &&
             !typeGuard.nicoScript.replace.range(result[2])) ||
@@ -332,7 +332,7 @@ const parseCommandAndNicoScript = (
           (result[4] !== undefined &&
             !typeGuard.nicoScript.replace.condition(result[4]))
         )
-          break;
+      ) {
         nicoScripts.replace.unshift({
           start: comment.vpos,
           long:
@@ -355,7 +355,7 @@ const parseCommandAndNicoScript = (
           if (a.no > b.no) return 1;
           return 0;
         });
-        break;
+      }
     }
     data.invisible = true;
   }

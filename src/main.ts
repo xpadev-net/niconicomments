@@ -27,6 +27,7 @@ import type { IComment } from "@/@types/IComment";
 import type { inputFormat, Options } from "@/@types/options";
 import type { collision, collisionItem, collisionPos } from "@/@types/types";
 import type { formattedComment } from "@/@types/format.formatted";
+import { plugins, setPlugins } from "@/contexts/plugins";
 
 let isDebug = false;
 
@@ -98,6 +99,7 @@ class NiconiComments {
     }
 
     const parsedData = convert2formattedComment(data, formatType);
+    setPlugins(config.plugins.map((val) => new val(canvas, parsedData)));
     this.video = options.video || undefined;
     this.showCollision = options.showCollision;
     this.showFPS = options.showFPS;
@@ -281,6 +283,7 @@ class NiconiComments {
    * 動的にコメント追加
    */
   public addComments(...rawComments: formattedComment[]) {
+    plugins.forEach((val) => val.addComments(rawComments));
     const comments = rawComments.reduce((pv, val) => {
       if (isFlashComment(val)) {
         pv.push(new FlashComment(val, this.context));
@@ -476,6 +479,7 @@ class NiconiComments {
         comment.draw(vpos, this.showCollision, isDebug);
       }
     }
+    plugins.forEach((val) => val.draw(vpos));
     if (this.showFPS) {
       this.context.font = parseFont("defont", 60);
       this.context.fillStyle = "#00FF00";

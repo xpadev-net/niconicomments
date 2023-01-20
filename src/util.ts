@@ -511,6 +511,9 @@ const parseCommand = (comment: formattedComment): parsedCommand => {
       }
     }
   }
+  if (comment.content.startsWith("/")) {
+    result.invisible = true;
+  }
   return result;
 };
 

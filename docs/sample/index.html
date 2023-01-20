@@ -205,6 +205,7 @@
 <script src="https://cdn.jsdelivr.net/npm/i18next@22.0.5/dist/umd/i18next.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/i18next-browser-languagedetector@7.0.1/dist/umd/i18nextBrowserLanguageDetector.min.js"></script>
 <script type="text/javascript" src="../../dist/bundle.js"></script>
+<script type="text/javascript" src="../../../niwango/dist/bundle.js"></script>
 <script src="./localize.js"></script>
 <script type="text/javascript">
   const videos = [
@@ -370,6 +371,18 @@
           yt: "3UdXw4PIHeg",
           title: "【MAD】文学少女　ヨワイボクラハウタウ@2013/07/11",
         },
+        {
+          id: 23,
+          nc: "nm14999484",
+          yt: "cq_iM5gDzpQ ",
+          title: "【読込激重】魔法少女まどか☆マギカ完結版OPをコメントでry【元動画１】",
+        },
+        {
+          id: 24,
+          nc: "nm14999567",
+          yt: "cq_iM5gDzpQ ",
+          title: "【読込激重】魔法少女まどか☆マギカ完結版OPをコメントでry【元動画２】",
+        },
       ],
     },
     {
@@ -517,6 +530,9 @@
       format: "formatted",
       debug: debug,
       scale: Number(scale),
+      config:{
+        plugins:Niwango?[Niwango]:[]
+      }
     });
     const background = getById(videos, video).bg;
     if (background) {

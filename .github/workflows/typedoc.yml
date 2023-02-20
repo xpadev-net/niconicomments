@@ -40,7 +40,9 @@ jobs:
       - name: update .gitignore
         run: sed -i -e '/\/docs\/type/d' .gitignore
       - name: update sample.html
-        run: sed --in-place --expression='s/..\/..\/dist\/bundle.js/https:\/\/cdn.jsdelivr.net\/npm\/@xpadev-net\/niconicomments@latest\/dist\/bundle.min.js/' docs/sample/index.html
+        run: | 
+          sed --in-place --expression='s/..\/..\/dist\/bundle.js/https:\/\/cdn.jsdelivr.net\/npm\/@xpadev-net\/niconicomments@latest\/dist\/bundle.min.js/' docs/sample/index.html
+          sed --in-place --expression='s/..\/..\/..\/niwango\/dist\/bundle.js/https:\/\/raw.githubusercontent.com\/xpadev-net\/niwango.js\/dev-build\/dist\/bundle.js/' docs/sample/index.html
       - name: generate typedoc
         run: yarn typedoc
 

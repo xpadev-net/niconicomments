@@ -10,6 +10,7 @@ import {
   initConfig,
 } from "@/definition/config";
 import {
+  ArrayEqual,
   arrayPush,
   changeCALayer,
   getPosX,
@@ -26,6 +27,7 @@ import type { IComment } from "@/@types/IComment";
 import type { inputFormat, Options } from "@/@types/options";
 import type { collision, collisionItem, collisionPos } from "@/@types/types";
 import type { formattedComment } from "@/@types/format.formatted";
+import { plugins, setPlugins } from "@/contexts/plugins";
 
 let isDebug = false;
 
@@ -97,6 +99,7 @@ class NiconiComments {
     }
 
     const parsedData = convert2formattedComment(data, formatType);
+    setPlugins(config.plugins.map((val) => new val(canvas, parsedData)));
     this.video = options.video || undefined;
     this.showCollision = options.showCollision;
     this.showFPS = options.showFPS;
@@ -280,6 +283,7 @@ class NiconiComments {
    * 動的にコメント追加
    */
   public addComments(...rawComments: formattedComment[]) {
+    plugins.forEach((val) => val.addComments(rawComments));
     const comments = rawComments.reduce((pv, val) => {
       if (isFlashComment(val)) {
         pv.push(new FlashComment(val, this.context));
@@ -402,10 +406,24 @@ class NiconiComments {
    * キャンバスを描画する
    * @param vpos - 動画の現在位置の100倍 ニコニコから吐き出されるコメントの位置情報は主にこれ
    * @param forceRendering
+   * @return isChanged - 再描画されたか
    */
-  public drawCanvas(vpos: number, forceRendering = false) {
+  public drawCanvas(vpos: number, forceRendering = false): boolean {
     const drawCanvasStart = performance.now();
-    if (this.lastVpos === vpos && !forceRendering) return;
+    if (this.lastVpos === vpos && !forceRendering) return false;
+    const timelineRange = this.timeline[vpos];
+    if (
+      !forceRendering &&
+      timelineRange?.filter((item) => item.loc === "naka").length === 0 &&
+      this.timeline[this.lastVpos]?.filter((item) => item.loc === "naka")
+        ?.length === 0
+    ) {
+      const current = timelineRange.filter((item) => item.loc !== "naka"),
+        last =
+          this.timeline[this.lastVpos]?.filter((item) => item.loc !== "naka") ||
+          [];
+      if (ArrayEqual(current, last)) return false;
+    }
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.lastVpos = vpos;
     if (this.video) {
@@ -427,7 +445,6 @@ class NiconiComments {
         this.video.videoHeight * scale
       );
     }
-    const timelineRange = this.timeline[vpos];
     if (this.showCollision) {
       const leftCollision = this.collision.left[vpos],
         rightCollision = this.collision.right[vpos];
@@ -462,6 +479,7 @@ class NiconiComments {
         comment.draw(vpos, this.showCollision, isDebug);
       }
     }
+    plugins.forEach((val) => val.draw(vpos));
     if (this.showFPS) {
       this.context.font = parseFont("defont", 60);
       this.context.fillStyle = "#00FF00";
@@ -488,6 +506,7 @@ class NiconiComments {
       }
     }
     logger(`drawCanvas complete: ${performance.now() - drawCanvasStart}ms`);
+    return true;
   }
 
   /**

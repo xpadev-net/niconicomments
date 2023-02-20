@@ -184,6 +184,7 @@ const initConfig = () => {
      * レイヤーを分離する基準値
      */
     sameCAMinScore: 10,
+    plugins: [],
     /**
      * コメントをFlash版として処理する上限値
      * 初期値はHTML5版のリリース日

@@ -1,3 +1,5 @@
+import { IPluginConstructor } from "@/@types/IPlugins";
+
 type configItem<T> = T | { html5: T; flash: T };
 type configSizeItem<T> = { big: T; medium: T; small: T };
 type configResizedItem<T> = { default: T; resized: T };
@@ -57,6 +59,7 @@ type BaseConfig = {
   sameCARange: number;
   letterSpacing: number;
   scriptCharOffset: number;
+  plugins: IPluginConstructor[];
 };
 
 export type Config = Partial<BaseConfig>;

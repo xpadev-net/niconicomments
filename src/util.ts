@@ -155,15 +155,6 @@ const hex2rgba = (hex: string) => {
   });
 };
 /**
- * replaceAll
- */
-const replaceAll = (string: string, target: string, replace: string) => {
-  while (string.indexOf(target) !== -1) {
-    string = string.replace(target, replace);
-  }
-  return string;
-};
-/**
  * CAと思われるコメントのレイヤーを分離する
  * @param {formattedComment[]} rawData
  */
@@ -303,7 +294,7 @@ const parseCommandAndNicoScript = (
         if (i.match(/["'\u300c]/) && quote === "") {
           quote = i;
         } else if (i.match(/["']/) && quote === i && last_i !== "\\") {
-          result.push(replaceAll(string, "\\n", "\n"));
+          result.push(string.replaceAll("\\n", "\n"));
           quote = "";
           string = "";
         } else if (i.match(/\u300d/) && quote === "\u300c") {
@@ -404,8 +395,7 @@ const parseCommandAndNicoScript = (
         comment.content.indexOf(item.keyword) !== -1)
     ) {
       if (item.range === "\u5358") {
-        comment.content = replaceAll(
-          comment.content,
+        comment.content = comment.content.replaceAll(
           item.keyword,
           item.replace
         );
@@ -551,7 +541,6 @@ export {
   hex2rgb,
   hex2rgba,
   getStrokeColor,
-  replaceAll,
   changeCALayer,
   getConfig,
   isFlashComment,

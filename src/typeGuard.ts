@@ -120,11 +120,8 @@ const typeGuard = {
       index++
     ) {
       const value = (i as XMLDocument).documentElement.children[index];
-      if (!value) continue;
-      if (
-        value.nodeName === "chat" &&
-        !typeAttributeVerify(value, ["no", "vpos", "date", "date_usec", "mail"])
-      )
+      if (!value || value.nodeName !== "chat") continue;
+      if (!typeAttributeVerify(value, ["no", "vpos", "date", "date_usec"]))
         return false;
     }
     return true;

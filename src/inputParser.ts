@@ -50,14 +50,15 @@ const convert2formattedComment = (
 const fromXMLDocument = (data: XMLDocument): formattedComment[] => {
   const data_: formattedComment[] = [],
     userList: string[] = [];
+  let index = Array.from(data.documentElement.children).length;
   for (const item of Array.from(data.documentElement.children)) {
     if (item.nodeName !== "chat") continue;
     const tmpParam: formattedComment = {
-      id: Number(item.getAttribute("no")),
+      id: Number(item.getAttribute("no")) || index++,
       vpos: Number(item.getAttribute("vpos")),
       content: item.innerHTML,
-      date: Number(item.getAttribute("date")),
-      date_usec: Number(item.getAttribute("date_usec")),
+      date: Number(item.getAttribute("date")) || 0,
+      date_usec: Number(item.getAttribute("date_usec")) || 0,
       owner: !item.getAttribute("user_id"),
       premium: item.getAttribute("premium") === "1",
       mail: [],

@@ -454,6 +454,7 @@ const parseCommand = (comment: formattedComment): parsedCommand => {
     fontSize: undefined,
     color: undefined,
     strokeColor: undefined,
+    wakuColor: undefined,
     font: undefined,
     full: false,
     ender: false,
@@ -474,6 +475,15 @@ const parseCommand = (comment: formattedComment): parsedCommand => {
         result.strokeColor = colors[match[1]];
       } else if (typeGuard.comment.colorCode(match[1])) {
         result.strokeColor = match[1].slice(1);
+      }
+    } else if (
+      result.wakuColor === undefined &&
+      (match = command.match(/^nico:waku:(.+)$/))
+    ){
+      if (typeGuard.comment.color(match[1])) {
+        result.wakuColor = colors[match[1]];
+      } else if (typeGuard.comment.colorCode(match[1])) {
+        result.wakuColor = match[1].slice(1);
       }
     } else if (result.loc === undefined && typeGuard.comment.loc(command)) {
       result.loc = command;

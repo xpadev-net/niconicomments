@@ -458,8 +458,7 @@ class FlashComment implements IComment {
       }
       this.context.drawImage(this.image, posX, posY);
     }
-    if (this.comment.wakuColor){
-      const scale = getConfig(config.commentScale, false);
+    if (this.comment.wakuColor) {
       this.context.strokeStyle = this.comment.wakuColor;
       this.context.strokeRect(
         posX,

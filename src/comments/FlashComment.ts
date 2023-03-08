@@ -1,7 +1,10 @@
 import {
   getConfig,
+  getFlashFontIndex,
+  getFlashFontName,
   getPosX,
   getStrokeColor,
+  nativeSort,
   parseCommandAndNicoScript,
   parseFont,
 } from "@/util";
@@ -10,9 +13,7 @@ import { nicoScripts } from "@/contexts/nicoscript";
 import { imageCache } from "@/contexts/cache";
 import type { IComment } from "@/@types/IComment";
 import type {
-  commentContentIndex,
   commentContentItem,
-  commentFlashFont,
   commentMeasuredContentItem,
   formattedCommentWithFont,
   formattedCommentWithSize,
@@ -85,17 +86,6 @@ class FlashComment implements IComment {
     const parts = (comment.content.match(/\n|[^\n]+/g) || []).map((val) =>
       Array.from(val.match(/[ -~｡-ﾟ]+|[^ -~｡-ﾟ]+/g) || [])
     );
-    const regex = {
-      simsunStrong: new RegExp(config.flashChar.simsunStrong),
-      simsunWeak: new RegExp(config.flashChar.simsunWeak),
-      gulim: new RegExp(config.flashChar.gulim),
-      gothic: new RegExp(config.flashChar.gothic),
-    };
-    const getFontName = (font: string): commentFlashFont => {
-      if (font.match("^simsun.+")) return "simsun";
-      if (font === "gothic") return "defont";
-      return font as commentFlashFont;
-    };
     for (const line of parts) {
       const lineContent: commentContentItem[] = [];
       for (const part of line) {
@@ -103,34 +93,16 @@ class FlashComment implements IComment {
           lineContent.push({ content: part });
           continue;
         }
-        const index: commentContentIndex[] = [];
-        let match;
-        if ((match = regex.simsunStrong.exec(part)) !== null) {
-          index.push({ font: "simsunStrong", index: match.index });
-        }
-        if ((match = regex.simsunWeak.exec(part)) !== null) {
-          index.push({ font: "simsunWeak", index: match.index });
-        }
-        if ((match = regex.gulim.exec(part)) !== null) {
-          index.push({ font: "gulim", index: match.index });
-        }
-        if ((match = regex.gothic.exec(part)) !== null) {
-          index.push({ font: "gothic", index: match.index });
-        }
+        const index = getFlashFontIndex(part);
         if (index.length === 0) {
           lineContent.push({ content: part });
         } else if (index.length === 1 && index[0]) {
-          lineContent.push({ content: part, font: getFontName(index[0].font) });
-        } else {
-          index.sort((a, b) => {
-            if (a.index > b.index) {
-              return 1;
-            } else if (a.index < b.index) {
-              return -1;
-            } else {
-              return 0;
-            }
+          lineContent.push({
+            content: part,
+            font: getFlashFontName(index[0].font),
           });
+        } else {
+          index.sort(nativeSort((val) => val.index));
           if (config.flashMode === "xp") {
             let offset = 0;
             for (let i = 1; i < index.length; i++) {
@@ -139,7 +111,7 @@ class FlashComment implements IComment {
               if (currentVal === undefined || lastVal === undefined) continue;
               lineContent.push({
                 content: part.slice(offset, currentVal.index),
-                font: getFontName(lastVal.font),
+                font: getFlashFontName(lastVal.font),
               });
               offset = currentVal.index;
             }
@@ -147,7 +119,7 @@ class FlashComment implements IComment {
             if (val)
               lineContent.push({
                 content: part.slice(offset),
-                font: getFontName(val.font),
+                font: getFlashFontName(val.font),
               });
           } else {
             const firstVal = index[0],
@@ -159,16 +131,16 @@ class FlashComment implements IComment {
             if (firstVal.font !== "gothic") {
               lineContent.push({
                 content: part,
-                font: getFontName(firstVal.font),
+                font: getFlashFontName(firstVal.font),
               });
             } else {
               lineContent.push({
                 content: part.slice(0, secondVal.index),
-                font: getFontName(firstVal.font),
+                font: getFlashFontName(firstVal.font),
               });
               lineContent.push({
                 content: part.slice(secondVal.index),
-                font: getFontName(secondVal.font),
+                font: getFlashFontName(secondVal.font),
               });
             }
           }

@@ -5,12 +5,14 @@ import { colors } from "@/definition/colors";
 import type { configItem } from "@/@types/config";
 import type { IComment } from "@/@types/IComment";
 import type {
+  commentContentIndex,
   commentFont,
   formattedCommentWithFont,
   formattedCommentWithSize,
   parsedCommand,
 } from "@/@types/types";
 import type { formattedComment } from "@/@types/format.formatted";
+import { commentFlashFont } from "@/@types/types";
 /**
  * 当たり判定からコメントを配置できる場所を探す
  * @param {number} currentPos
@@ -543,6 +545,52 @@ const ArrayEqual = (a: unknown[], b: unknown[]) => {
   return true;
 };
 
+const getFlashFontIndex = (part: string): commentContentIndex[] => {
+  const regex = {
+    simsunStrong: new RegExp(config.flashChar.simsunStrong),
+    simsunWeak: new RegExp(config.flashChar.simsunWeak),
+    gulim: new RegExp(config.flashChar.gulim),
+    gothic: new RegExp(config.flashChar.gothic),
+  };
+  const index: commentContentIndex[] = [];
+  let match;
+  if ((match = regex.simsunStrong.exec(part)) !== null) {
+    index.push({ font: "simsunStrong", index: match.index });
+  }
+  if ((match = regex.simsunWeak.exec(part)) !== null) {
+    index.push({ font: "simsunWeak", index: match.index });
+  }
+  if ((match = regex.gulim.exec(part)) !== null) {
+    index.push({ font: "gulim", index: match.index });
+  }
+  if ((match = regex.gothic.exec(part)) !== null) {
+    index.push({ font: "gothic", index: match.index });
+  }
+  return index;
+};
+
+const getFlashFontName = (font: string): commentFlashFont => {
+  if (font.match("^simsun.+")) return "simsun";
+  if (font === "gothic") return "defont";
+  return font as commentFlashFont;
+};
+
+const getValue = <T>(value: T | undefined | null, alternative: T): T => {
+  return value ?? alternative;
+};
+
+const nativeSort = <T>(getter: (input: T) => number) => {
+  return (a: T, b: T) => {
+    if (getter(a) > getter(b)) {
+      return 1;
+    } else if (getter(a) < getter(b)) {
+      return -1;
+    } else {
+      return 0;
+    }
+  };
+};
+
 export {
   getPosY,
   getPosX,
@@ -556,4 +604,8 @@ export {
   isFlashComment,
   parseCommandAndNicoScript,
   ArrayEqual,
+  getFlashFontIndex,
+  getFlashFontName,
+  getValue,
+  nativeSort,
 };

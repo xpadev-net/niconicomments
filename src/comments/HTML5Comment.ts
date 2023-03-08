@@ -387,9 +387,7 @@ class HTML5Comment implements IComment {
     const paddingTop =
       (10 - scale * 10) *
       (this.comment.lineCount / config.hiResCommentCorrection);
-    for (let i = 0; i < this.comment.content.length; i++) {
-      const item = this.comment.content[i];
-      if (!item) continue;
+    for (const item of this.comment.content) {
       const lines = item.content.split("\n");
       for (let j = 0; j < lines.length; j++) {
         const line = lines[j];

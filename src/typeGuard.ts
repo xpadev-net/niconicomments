@@ -114,14 +114,11 @@ const typeGuard = {
     )
       return false;
     if (!(i as XMLDocument).documentElement.children) return false;
-    for (
-      let index = 0;
-      index < (i as XMLDocument).documentElement.children.length;
-      index++
-    ) {
-      const value = (i as XMLDocument).documentElement.children[index];
-      if (!value || value.nodeName !== "chat") continue;
-      if (!typeAttributeVerify(value, ["vpos", "date"])) return false;
+    for (const element of Array.from(
+      (i as XMLDocument).documentElement.children
+    )) {
+      if (!element || element.nodeName !== "chat") continue;
+      if (!typeAttributeVerify(element, ["vpos", "date"])) return false;
     }
     return true;
   },

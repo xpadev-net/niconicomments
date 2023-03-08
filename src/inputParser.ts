@@ -112,9 +112,8 @@ const fromFormatted = (
 const fromLegacy = (data: rawApiResponse[]): formattedComment[] => {
   const data_: formattedComment[] = [],
     userList: string[] = [];
-  for (let i = 0; i < data.length; i++) {
-    const val = data[i];
-    if (!val || !typeGuard.legacy.apiChat(val?.chat)) continue;
+  for (const val of data) {
+    if (!typeGuard.legacy.apiChat(val.chat)) continue;
     const value = val.chat;
     if (value.deleted !== 1) {
       const tmpParam: formattedComment = {

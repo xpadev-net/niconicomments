@@ -479,7 +479,7 @@ const parseCommand = (comment: formattedComment): parsedCommand => {
     } else if (
       result.wakuColor === undefined &&
       (match = command.match(/^nico:waku:(.+)$/))
-    ){
+    ) {
       if (typeGuard.comment.color(match[1])) {
         result.wakuColor = colors[match[1]];
       } else if (typeGuard.comment.colorCode(match[1])) {

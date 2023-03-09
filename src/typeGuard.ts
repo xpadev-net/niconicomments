@@ -233,7 +233,7 @@ const typeGuard = {
         format: (i: unknown) =>
           typeof i === "string" &&
           !!i.match(
-            /^(niconicome|formatted|legacy|legacyOwner|owner|v1|default|empty)$/
+            /^(XMLDocument|niconicome|formatted|legacy|legacyOwner|owner|v1|default|empty)$/
           ),
         video: (i: unknown) =>
           typeof i === "object" && (i as HTMLVideoElement).nodeName === "VIDEO",

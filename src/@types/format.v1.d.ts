@@ -2,7 +2,7 @@ export type v1Thread = {
   id: string;
   fork: string;
   commentCount: number;
-  comments: { [key: string]: v1Comment };
+  comments: v1Comment[];
 };
 type v1Comment = {
   id: string;

@@ -232,9 +232,7 @@ const fromV1 = (data: v1Thread[]): formattedComment[] => {
   for (const item of data) {
     const val = item.comments,
       forkName = item.fork;
-    for (const key of Object.keys(val)) {
-      const value = val[key];
-      if (!value) continue;
+    for (const value of val) {
       const tmpParam: formattedComment = {
         id: value.no,
         vpos: Math.floor(value.vposMs / 10),

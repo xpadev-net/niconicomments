@@ -165,8 +165,8 @@ const typeGuard = {
     thread: (i: unknown): i is v1Thread => {
       if (!objectVerify(i, ["id", "fork", "commentCount", "comments"]))
         return false;
-      for (const item of Object.keys((i as v1Thread).comments)) {
-        if (!typeGuard.v1.comment((i as v1Thread).comments[item])) return false;
+      for (const value of (i as v1Thread).comments) {
+        if (!typeGuard.v1.comment(value)) return false;
       }
       return true;
     },

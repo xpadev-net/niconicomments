@@ -290,6 +290,15 @@ class HTML5Comment implements IComment {
       }
       this.context.drawImage(this.image, posX, posY);
     }
+    if (this.comment.wakuColor) {
+      this.context.strokeStyle = this.comment.wakuColor;
+      this.context.strokeRect(
+        posX,
+        posY,
+        this.comment.width,
+        this.comment.height
+      );
+    }
     if (showCollision) {
       const scale = getConfig(config.commentScale, false);
       this.context.strokeStyle = "rgba(0,255,255,1)";
@@ -378,9 +387,7 @@ class HTML5Comment implements IComment {
     const paddingTop =
       (10 - scale * 10) *
       (this.comment.lineCount / config.hiResCommentCorrection);
-    for (let i = 0; i < this.comment.content.length; i++) {
-      const item = this.comment.content[i];
-      if (!item) continue;
+    for (const item of this.comment.content) {
       const lines = item.content.split("\n");
       for (let j = 0; j < lines.length; j++) {
         const line = lines[j];

@@ -114,14 +114,11 @@ const typeGuard = {
     )
       return false;
     if (!(i as XMLDocument).documentElement.children) return false;
-    for (
-      let index = 0;
-      index < (i as XMLDocument).documentElement.children.length;
-      index++
-    ) {
-      const value = (i as XMLDocument).documentElement.children[index];
-      if (!value || value.nodeName !== "chat") continue;
-      if (!typeAttributeVerify(value, ["vpos", "date"])) return false;
+    for (const element of Array.from(
+      (i as XMLDocument).documentElement.children
+    )) {
+      if (!element || element.nodeName !== "chat") continue;
+      if (!typeAttributeVerify(element, ["vpos", "date"])) return false;
     }
     return true;
   },
@@ -168,8 +165,8 @@ const typeGuard = {
     thread: (i: unknown): i is v1Thread => {
       if (!objectVerify(i, ["id", "fork", "commentCount", "comments"]))
         return false;
-      for (const item of Object.keys((i as v1Thread).comments)) {
-        if (!typeGuard.v1.comment((i as v1Thread).comments[item])) return false;
+      for (const value of (i as v1Thread).comments) {
+        if (!typeGuard.v1.comment(value)) return false;
       }
       return true;
     },

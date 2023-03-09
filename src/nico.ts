@@ -50,9 +50,7 @@ const measureWidth = (
     itemWidth = [];
   context.font = parseFont(comment.font, fontSize);
   let currentWidth = 0;
-  for (let i = 0; i < comment.content.length; i++) {
-    const item = comment.content[i];
-    if (item === undefined) continue;
+  for (const item of comment.content) {
     const lines = item.content.split("\n");
     context.font = parseFont(item.font || comment.font, fontSize);
     const width = [];

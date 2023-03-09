@@ -1,25 +1,24 @@
 import {
   getConfig,
+  getFlashFontIndex,
+  getFlashFontName,
   getPosX,
   getStrokeColor,
+  nativeSort,
   parseCommandAndNicoScript,
   parseFont,
 } from "@/util";
-import typeGuard from "@/typeGuard";
 import { config, options } from "@/definition/config";
 import { nicoScripts } from "@/contexts/nicoscript";
 import { imageCache } from "@/contexts/cache";
 import type { IComment } from "@/@types/IComment";
 import type {
-  commentContentIndex,
   commentContentItem,
-  commentFlashFont,
   commentMeasuredContentItem,
   formattedCommentWithFont,
   formattedCommentWithSize,
   measureTextInput,
   measureTextResult,
-  parsedCommand,
 } from "@/@types/types";
 import type { formattedComment } from "@/@types/format.formatted";
 
@@ -76,59 +75,6 @@ class FlashComment implements IComment {
   }
 
   /**
-   * コメントに含まれるコマンドを解釈する
-   * @param comment- 独自フォーマットのコメントデータ
-   * @returns {{loc: string|undefined, size: string|undefined, color: string|undefined, fontSize: number|undefined, ender: boolean, font: string|undefined, full: boolean, _live: boolean, invisible: boolean, long:number|undefined}}
-   */
-  parseCommand(comment: formattedComment): parsedCommand {
-    const metadata = comment.mail;
-    const result: parsedCommand = {
-      loc: undefined,
-      size: undefined,
-      fontSize: undefined,
-      color: undefined,
-      font: undefined,
-      full: false,
-      ender: false,
-      _live: false,
-      invisible: false,
-      long: undefined,
-    };
-    for (let command of metadata) {
-      command = command.toLowerCase();
-      const match = command.match(/^@([0-9.]+)/);
-      if (match && match[1]) {
-        result.long = Number(match[1]);
-      } else if (result.loc === undefined && typeGuard.comment.loc(command)) {
-        result.loc = command;
-      } else if (result.size === undefined && typeGuard.comment.size(command)) {
-        result.size = command;
-        result.fontSize = getConfig(config.fontSize, true)[command].default;
-      } else {
-        if (result.color === undefined) {
-          const color = config.colors[command];
-          if (color) {
-            result.color = color;
-            continue;
-          } else {
-            const match = command.match(/#[0-9a-z]{3,6}/);
-            if (match && match[0] && comment.premium) {
-              result.color = match[0].toUpperCase();
-              continue;
-            }
-          }
-        }
-        if (result.font === undefined && typeGuard.comment.font(command)) {
-          result.font = command;
-        } else if (typeGuard.comment.command.key(command)) {
-          result[command] = true;
-        }
-      }
-    }
-    return result;
-  }
-
-  /**
    * コメントに含まれるニコスクリプトを処理する
    * @param comment
    */
@@ -140,18 +86,6 @@ class FlashComment implements IComment {
     const parts = (comment.content.match(/\n|[^\n]+/g) || []).map((val) =>
       Array.from(val.match(/[ -~｡-ﾟ]+|[^ -~｡-ﾟ]+/g) || [])
     );
-    const regex = {
-      simsunStrong: new RegExp(config.flashChar.simsunStrong),
-      simsunWeak: new RegExp(config.flashChar.simsunWeak),
-      gulim: new RegExp(config.flashChar.gulim),
-      gothic: new RegExp(config.flashChar.gothic),
-    };
-    const getFontName = (font: string) =>
-      font.match("^simsun.+")
-        ? "simsun"
-        : font === "gothic"
-        ? "defont"
-        : (font as commentFlashFont);
     for (const line of parts) {
       const lineContent: commentContentItem[] = [];
       for (const part of line) {
@@ -159,34 +93,16 @@ class FlashComment implements IComment {
           lineContent.push({ content: part });
           continue;
         }
-        const index: commentContentIndex[] = [];
-        let match;
-        if ((match = regex.simsunStrong.exec(part)) !== null) {
-          index.push({ font: "simsunStrong", index: match.index });
-        }
-        if ((match = regex.simsunWeak.exec(part)) !== null) {
-          index.push({ font: "simsunWeak", index: match.index });
-        }
-        if ((match = regex.gulim.exec(part)) !== null) {
-          index.push({ font: "gulim", index: match.index });
-        }
-        if ((match = regex.gothic.exec(part)) !== null) {
-          index.push({ font: "gothic", index: match.index });
-        }
+        const index = getFlashFontIndex(part);
         if (index.length === 0) {
           lineContent.push({ content: part });
         } else if (index.length === 1 && index[0]) {
-          lineContent.push({ content: part, font: getFontName(index[0].font) });
-        } else {
-          index.sort((a, b) => {
-            if (a.index > b.index) {
-              return 1;
-            } else if (a.index < b.index) {
-              return -1;
-            } else {
-              return 0;
-            }
+          lineContent.push({
+            content: part,
+            font: getFlashFontName(index[0].font),
           });
+        } else {
+          index.sort(nativeSort((val) => val.index));
           if (config.flashMode === "xp") {
             let offset = 0;
             for (let i = 1; i < index.length; i++) {
@@ -195,7 +111,7 @@ class FlashComment implements IComment {
               if (currentVal === undefined || lastVal === undefined) continue;
               lineContent.push({
                 content: part.slice(offset, currentVal.index),
-                font: getFontName(lastVal.font),
+                font: getFlashFontName(lastVal.font),
               });
               offset = currentVal.index;
             }
@@ -203,7 +119,7 @@ class FlashComment implements IComment {
             if (val)
               lineContent.push({
                 content: part.slice(offset),
-                font: getFontName(val.font),
+                font: getFlashFontName(val.font),
               });
           } else {
             const firstVal = index[0],
@@ -215,16 +131,16 @@ class FlashComment implements IComment {
             if (firstVal.font !== "gothic") {
               lineContent.push({
                 content: part,
-                font: getFontName(firstVal.font),
+                font: getFlashFontName(firstVal.font),
               });
             } else {
               lineContent.push({
                 content: part.slice(0, secondVal.index),
-                font: getFontName(firstVal.font),
+                font: getFlashFontName(firstVal.font),
               });
               lineContent.push({
                 content: part.slice(secondVal.index),
-                font: getFontName(secondVal.font),
+                font: getFlashFontName(secondVal.font),
               });
             }
           }
@@ -296,9 +212,7 @@ class FlashComment implements IComment {
       spacedWidth_arr = [];
     let currentWidth = 0,
       spacedWidth = 0;
-    for (let i = 0; i < comment.content.length; i++) {
-      const item = comment.content[i];
-      if (item === undefined) continue;
+    for (const item of comment.content) {
       const lines = item.content.split("\n");
       const widths = [];
 
@@ -458,6 +372,15 @@ class FlashComment implements IComment {
       }
       this.context.drawImage(this.image, posX, posY);
     }
+    if (this.comment.wakuColor) {
+      this.context.strokeStyle = this.comment.wakuColor;
+      this.context.strokeRect(
+        posX,
+        posY,
+        this.comment.width,
+        this.comment.height
+      );
+    }
     if (showCollision) {
       this.context.strokeStyle = "rgba(255,0,255,1)";
       this.context.strokeRect(
@@ -549,9 +472,7 @@ class FlashComment implements IComment {
     let lastFont = this.comment.font,
       leftOffset = 0,
       lineCount = 0;
-    for (let i = 0; i < this.comment.content.length; i++) {
-      const item = this.comment.content[i];
-      if (!item) continue;
+    for (const item of this.comment.content) {
       if (lastFont !== (item.font || this.comment.font)) {
         lastFont = item.font || this.comment.font;
         context.font = parseFont(lastFont, this.comment.fontSize);

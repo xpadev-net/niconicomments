@@ -16,6 +16,7 @@ type formattedCommentWithFont = {
   font: commentFont;
   color: string;
   strokeColor?: string;
+  wakuColor?: string;
   full: boolean;
   ender: boolean;
   _live: boolean;
@@ -117,6 +118,7 @@ type parsedCommand = {
   fontSize: number | undefined;
   color: string | undefined;
   strokeColor?: string;
+  wakuColor?: string;
   font: commentFont | undefined;
   full: boolean;
   ender: boolean;

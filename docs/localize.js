@@ -251,6 +251,17 @@ const localize = {
 <p>この機能によって追加されたコメントは当たり判定を考慮して配置されますが、すでに配置されているその後のコメントの位置には影響を及ぼしません</p>
 <p>生成済みのコメントの間に配置した場合、コメント同士が重複する場合があります</p>`
   ],
+  m_addEventListener: [
+      `<p>Add an event handler</p>
+<p>Check the type definition for event details</p>`,
+      `<p>イベントハンドラを追加します</p>
+<p>イベントの詳細は型定義を確認してください</p>`
+  ],
+  m_removeEventListener: [
+    `<p>Remove an event handler</p>
+<p>Check the type definition for event details</p>`,
+    `<p>addEventListenerで追加されたイベントハンドラを削除します</p>`
+  ],
   m_drawCanvas: [
     `<p>Draws a comment on the canvas based on vpos(currentTime*100 of the video)</p>
 <p>vpos must be an integer (<span class="yellow">int</span>)</p>`,

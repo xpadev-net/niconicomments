@@ -65,6 +65,18 @@ type nicoScript = {
   ban: nicoScriptBan[];
   default: nicoScriptDefault[];
   replace: nicoScriptReplace[];
+  seekDisable: nicoScriptSeekDisable[];
+  jump: nicoScriptJump[];
+};
+type nicoScriptSeekDisable = {
+  start: number;
+  end: number;
+};
+type nicoScriptJump = {
+  start: number;
+  end?: number;
+  to: string;
+  message?: string;
 };
 type nicoScriptReverse = {
   target: nicoScriptReverseTarget;
@@ -151,3 +163,5 @@ type measureInput = {
   charSize: number;
   lineCount: number;
 };
+
+type valueOf<T> = T[keyof T];

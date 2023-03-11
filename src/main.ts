@@ -27,7 +27,9 @@ import type { IComment } from "@/@types/IComment";
 import type { inputFormat, Options } from "@/@types/options";
 import type { collision, collisionItem, collisionPos } from "@/@types/types";
 import type { formattedComment } from "@/@types/format.formatted";
+import type { CommentEventHandlerMap } from "@/@types/event";
 import { plugins, setPlugins } from "@/contexts/plugins";
+import { registerHandler, removeHandler, triggerHandler } from "@/eventHandler";
 
 let isDebug = false;
 
@@ -411,6 +413,7 @@ class NiconiComments {
   public drawCanvas(vpos: number, forceRendering = false): boolean {
     const drawCanvasStart = performance.now();
     if (this.lastVpos === vpos && !forceRendering) return false;
+    triggerHandler(vpos, this.lastVpos);
     const timelineRange = this.timeline[vpos];
     if (
       !forceRendering &&
@@ -507,6 +510,20 @@ class NiconiComments {
     }
     logger(`drawCanvas complete: ${performance.now() - drawCanvasStart}ms`);
     return true;
+  }
+
+  public addEventListener<K extends keyof CommentEventHandlerMap>(
+    eventName: K,
+    handler: CommentEventHandlerMap[K]
+  ) {
+    registerHandler(eventName, handler);
+  }
+
+  public removeEventListener<K extends keyof CommentEventHandlerMap>(
+    eventName: K,
+    handler: CommentEventHandlerMap[K]
+  ) {
+    removeHandler(eventName, handler);
   }
 
   /**

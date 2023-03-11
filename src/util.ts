@@ -241,117 +241,8 @@ const parseCommandAndNicoScript = (
   comment: formattedComment
 ): formattedCommentWithFont => {
   const isFlash = isFlashComment(comment);
-  const data = parseCommand(comment),
-    string = comment.content,
-    nicoscript = string.match(
-      /^(?:@|\uff20)(\u30c7\u30d5\u30a9\u30eb\u30c8|\u7f6e\u63db|\u9006|\u30b3\u30e1\u30f3\u30c8\u7981\u6b62|\u30b7\u30fc\u30af\u7981\u6b62|\u30b8\u30e3\u30f3\u30d7)/
-    );
-  if (nicoscript && comment.owner) {
-    const reverse = comment.content.match(
-      /^(?:@|\uff20)\u9006(?:\s+)?(\u5168|\u30b3\u30e1|\u6295\u30b3\u30e1)?/
-    );
-    const content = comment.content.split(""),
-      result = [];
-    let quote = "",
-      last_i = "",
-      string = "";
-    if (nicoscript[1] === "\u30c7\u30d5\u30a9\u30eb\u30c8") {
-      //＠デフォルト
-      nicoScripts.default.unshift({
-        start: comment.vpos,
-        long: data.long === undefined ? undefined : Math.floor(data.long * 100),
-        color: data.color,
-        size: data.size,
-        font: data.font,
-        loc: data.loc,
-      });
-    } else if (
-      nicoscript[1] === "\u9006" &&
-      reverse &&
-      reverse[1] &&
-      typeGuard.nicoScript.range.target(reverse[1])
-    ) {
-      //＠逆
-      if (data.long === undefined) {
-        data.long = 30;
-      }
-      nicoScripts.reverse.unshift({
-        start: comment.vpos,
-        end: comment.vpos + data.long * 100,
-        target: reverse[1],
-      });
-    } else if (nicoscript[1] === "\u30b3\u30e1\u30f3\u30c8\u7981\u6b62") {
-      //@コメント禁止
-
-      if (data.long === undefined) {
-        data.long = 30;
-      }
-      nicoScripts.ban.unshift({
-        start: comment.vpos,
-        end: comment.vpos + data.long * 100,
-      });
-    } else if (nicoscript[1] === "\u7f6e\u63db") {
-      //@置換
-      for (const i of content.slice(4)) {
-        if (i.match(/["'\u300c]/) && quote === "") {
-          quote = i;
-        } else if (i.match(/["']/) && quote === i && last_i !== "\\") {
-          result.push(string.replaceAll("\\n", "\n"));
-          quote = "";
-          string = "";
-        } else if (i.match(/\u300d/) && quote === "\u300c") {
-          result.push(string);
-          quote = "";
-          string = "";
-        } else if (quote === "" && i.match(/\s+/)) {
-          if (string) {
-            result.push(string);
-            string = "";
-          }
-        } else {
-          string += i;
-        }
-
-        last_i = i;
-      }
-      result.push(string);
-      if (
-        !(
-          result[0] === undefined ||
-          (result[2] !== undefined &&
-            !typeGuard.nicoScript.replace.range(result[2])) ||
-          (result[3] !== undefined &&
-            !typeGuard.nicoScript.replace.target(result[3])) ||
-          (result[4] !== undefined &&
-            !typeGuard.nicoScript.replace.condition(result[4]))
-        )
-      ) {
-        nicoScripts.replace.unshift({
-          start: comment.vpos,
-          long:
-            data.long === undefined ? undefined : Math.floor(data.long * 100),
-          keyword: result[0],
-          replace: result[1] || "",
-          range: result[2] || "\u5358",
-          target: result[3] || "\u30b3\u30e1",
-          condition: result[4] || "\u90e8\u5206\u4e00\u81f4",
-          color: data.color,
-          size: data.size,
-          font: data.font,
-          loc: data.loc,
-          no: comment.id,
-        });
-        nicoScripts.replace.sort((a, b) => {
-          if (a.start < b.start) return -1;
-          if (a.start > b.start) return 1;
-          if (a.no < b.no) return -1;
-          if (a.no > b.no) return 1;
-          return 0;
-        });
-      }
-    }
-    data.invisible = true;
-  }
+  const commands = parseCommand(comment);
+  processNicoscript(comment, commands);
   let color = undefined,
     size = undefined,
     font = undefined,
@@ -405,46 +296,203 @@ const parseCommandAndNicoScript = (
         comment.content = item.replace;
       }
       if (item.loc) {
-        data.loc = item.loc;
+        commands.loc = item.loc;
       }
       if (item.color) {
-        data.color = item.color;
+        commands.color = item.color;
       }
       if (item.size) {
-        data.size = item.size;
-        data.fontSize = getConfig(config.fontSize, isFlash)[data.size].default;
+        commands.size = item.size;
+        commands.fontSize = getConfig(config.fontSize, isFlash)[
+          commands.size
+        ].default;
       }
       if (item.font) {
-        data.font = item.font;
+        commands.font = item.font;
       }
     }
   }
-  if (!data.loc) {
-    data.loc = loc || "naka";
+  if (!commands.loc) {
+    commands.loc = loc || "naka";
   }
-  if (!data.color) {
-    data.color = color || "#FFFFFF";
+  if (!commands.color) {
+    commands.color = color || "#FFFFFF";
   }
-  if (!data.size) {
-    data.size = size || "medium";
-    data.fontSize = getConfig(config.fontSize, isFlash)[data.size].default;
+  if (!commands.size) {
+    commands.size = size || "medium";
+    commands.fontSize = getConfig(config.fontSize, isFlash)[
+      commands.size
+    ].default;
   }
-  if (!data.font) {
-    data.font = font || "defont";
+  if (!commands.font) {
+    commands.font = font || "defont";
   }
-  if (!data.long) {
-    data.long = 300;
+  if (!commands.long) {
+    commands.long = 300;
   } else {
-    data.long = Math.floor(Number(data.long) * 100);
+    commands.long = Math.floor(Number(commands.long) * 100);
   }
   return {
     ...comment,
     content: [],
     lineCount: 0,
     lineOffset: 0,
-    ...data,
+    ...commands,
     flash: isFlash,
   } as formattedCommentWithFont;
+};
+
+const processNicoscript = (
+  comment: formattedComment,
+  commands: parsedCommand
+) => {
+  const nicoscript = comment.content.match(
+    /^(?:@|\uff20)(\u30c7\u30d5\u30a9\u30eb\u30c8|\u7f6e\u63db|\u9006|\u30b3\u30e1\u30f3\u30c8\u7981\u6b62|\u30b7\u30fc\u30af\u7981\u6b62|\u30b8\u30e3\u30f3\u30d7)(.*)/
+    //^(?:@|＠)(デフォルト|置換|逆|コメント禁止|シーク禁止|ジャンプ)(.*)
+  );
+  if (!nicoscript || !comment.owner) return;
+  commands.invisible = true;
+  if (nicoscript[1] === "\u30c7\u30d5\u30a9\u30eb\u30c8") {
+    //＠デフォルト
+    nicoScripts.default.unshift({
+      start: comment.vpos,
+      long:
+        commands.long === undefined
+          ? undefined
+          : Math.floor(commands.long * 100),
+      color: commands.color,
+      size: commands.size,
+      font: commands.font,
+      loc: commands.loc,
+    });
+    return;
+  }
+  if (nicoscript[1] === "\u9006") {
+    //＠逆
+    const reverse = comment.content.match(
+      /^(?:@|\uff20)\u9006(?:\s+)?(\u5168|\u30b3\u30e1|\u6295\u30b3\u30e1)?/
+      //^(?:@|＠)逆(?:\s+)?(全|コメ|投コメ)?
+    );
+    if (
+      !reverse ||
+      !reverse[1] ||
+      !typeGuard.nicoScript.range.target(reverse[1])
+    )
+      return;
+    if (commands.long === undefined) {
+      commands.long = 30;
+    }
+    nicoScripts.reverse.unshift({
+      start: comment.vpos,
+      end: comment.vpos + commands.long * 100,
+      target: reverse[1],
+    });
+    return;
+  }
+  if (nicoscript[1] === "\u30b3\u30e1\u30f3\u30c8\u7981\u6b62") {
+    //@コメント禁止
+    if (commands.long === undefined) {
+      commands.long = 30;
+    }
+    nicoScripts.ban.unshift({
+      start: comment.vpos,
+      end: comment.vpos + commands.long * 100,
+    });
+    return;
+  }
+  if (nicoscript[1] === "\u30b7\u30fc\u30af\u7981\u6b62") {
+    //@シーク禁止
+    if (commands.long === undefined) {
+      commands.long = 30;
+    }
+    nicoScripts.seekDisable.unshift({
+      start: comment.vpos,
+      end: comment.vpos + commands.long * 100,
+    });
+    return;
+  }
+  if (nicoscript[1] === "\u30b8\u30e3\u30f3\u30d7" && nicoscript[2]) {
+    //@ジャンプ
+    const to = nicoscript[2].match(
+      /\s*((?:sm|so|nm|\uff53\uff4d|\uff53\uff4f|\uff4e\uff4d)?[1-9\uff11-\uff19][0-9\uff11-\uff19]*|#[0-9]+:[0-9]+(?:\.[0-9]+)?)\s+(.*)/
+      //\s*((?:sm|so|nm|ｓｍ|ｓｏ|ｎｍ)?[1-9１-９][0-9１-９]*|#[0-9]+:[0-9]+(?:\.[0-9]+)?)\s+(.*)
+    );
+    if (!to || !to[1]) return;
+    nicoScripts.jump.unshift({
+      start: comment.vpos,
+      end: commands.long === undefined ? undefined : commands.long * 100,
+      to: to[1],
+      message: to[2],
+    });
+    return;
+  }
+  if (nicoscript[1] === "\u7f6e\u63db") {
+    //@置換
+    const content = comment.content.split(""),
+      result = [];
+    let quote = "",
+      last_i = "",
+      string = "";
+    for (const i of content.slice(4)) {
+      if (i.match(/["'\u300c]/) && quote === "") {
+        //["'「]
+        quote = i;
+      } else if (i.match(/["']/) && quote === i && last_i !== "\\") {
+        result.push(string.replaceAll("\\n", "\n"));
+        quote = "";
+        string = "";
+      } else if (i.match(/\u300d/) && quote === "\u300c") {
+        //」
+        result.push(string);
+        quote = "";
+        string = "";
+      } else if (quote === "" && i.match(/\s+/)) {
+        if (string) {
+          result.push(string);
+          string = "";
+        }
+      } else {
+        string += i;
+      }
+
+      last_i = i;
+    }
+    result.push(string);
+    if (
+      result[0] === undefined ||
+      (result[2] !== undefined &&
+        !typeGuard.nicoScript.replace.range(result[2])) ||
+      (result[3] !== undefined &&
+        !typeGuard.nicoScript.replace.target(result[3])) ||
+      (result[4] !== undefined &&
+        !typeGuard.nicoScript.replace.condition(result[4]))
+    )
+      return;
+    nicoScripts.replace.unshift({
+      start: comment.vpos,
+      long:
+        commands.long === undefined
+          ? undefined
+          : Math.floor(commands.long * 100),
+      keyword: result[0],
+      replace: result[1] || "",
+      range: result[2] || "\u5358", //単
+      target: result[3] || "\u30b3\u30e1", //コメ
+      condition: result[4] || "\u90e8\u5206\u4e00\u81f4", //部分一致
+      color: commands.color,
+      size: commands.size,
+      font: commands.font,
+      loc: commands.loc,
+      no: comment.id,
+    });
+    nicoScripts.replace.sort((a, b) => {
+      if (a.start < b.start) return -1;
+      if (a.start > b.start) return 1;
+      if (a.no < b.no) return -1;
+      if (a.no > b.no) return 1;
+      return 0;
+    });
+  }
 };
 
 const parseCommand = (comment: formattedComment): parsedCommand => {

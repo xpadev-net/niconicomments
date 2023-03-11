@@ -549,6 +549,14 @@
         nico.drawCanvas(Math.floor(player.getCurrentTime() * 100));
       }, 10);
     }
+    const handler = (e)=>{
+        console.log(e)
+    };
+    nico.addEventListener("commentDisable",handler);
+    nico.addEventListener("commentEnable",handler);
+    nico.addEventListener("seekDisable",handler);
+    nico.addEventListener("seekEnable",handler);
+    nico.addEventListener("jump",handler);
   }
 
   const getById = (array, id) => {

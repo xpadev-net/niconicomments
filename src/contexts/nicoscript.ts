@@ -5,6 +5,8 @@ let nicoScripts: nicoScript = {
   default: [],
   replace: [],
   ban: [],
+  seekDisable: [],
+  jump: [],
 };
 const resetNicoScripts = () => {
   nicoScripts = {
@@ -12,6 +14,8 @@ const resetNicoScripts = () => {
     default: [],
     replace: [],
     ban: [],
+    seekDisable: [],
+    jump: [],
   };
 };
 export { nicoScripts, resetNicoScripts };

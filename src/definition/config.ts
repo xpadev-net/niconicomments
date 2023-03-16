@@ -184,6 +184,9 @@ const initConfig = () => {
      * レイヤーを分離する基準値
      */
     sameCAMinScore: 10,
+    /**
+     * プラグインを保持するようの変数
+     */
     plugins: [],
     /**
      * コメントをFlash版として処理する上限値
@@ -233,6 +236,9 @@ const initConfig = () => {
       simsun:
         'normal 400 [size]px simsun, "游明朝体", "游明朝", "Yu Mincho", YuMincho, yumincho, YuMin-Medium',
     },
+    /**
+     * Flash版コメントの高さを計算するための定数
+     */
     lineHeight: {
       small: {
         default: 18 / 15,
@@ -247,30 +253,54 @@ const initConfig = () => {
         resized: 24 / 19.5,
       },
     },
+    /**
+     * Flash版コメントのDR基準用定数
+     */
     doubleResizeMaxWidth: {
       full: 1200,
       normal: 960,
     },
+    /**
+     * Flash版コメントの上空白
+     */
     commentYPaddingTop: {
       default: 5,
       resized: 3,
     },
+    /**
+     * Flash版コメントの下空白
+     */
     commentYMarginBottom: {
       small: 0.24,
       medium: 0.28,
       big: 0.24,
     },
+    /**
+     * Flash版コメントの上下補正値
+     */
     commentYOffset: {
       small: { default: -0.2, resized: -0.2 },
       medium: { default: -0.2, resized: -0.2 },
-      big: {
-        default: -0.2,
-        resized: -0.2,
-      },
+      big: { default: -0.2, resized: -0.2 },
     },
+    /**
+     * 文字間の空白
+     */
     letterSpacing: 1,
+    /**
+     * コメントの上下補正値
+     */
     scriptCharOffset: 0.12,
+    /**
+     * コメント描画数の上限
+     * undefinedの場合は無制限
+     */
     commentLimit: undefined,
+    /**
+     * コメント描画上限に達した際に消す順番
+     * asc: 新しい方から上限まで(ニコニコ公式同様)
+     * desc: 古い方から上限まで
+     */
     hideCommentOrder: "asc",
   };
 };

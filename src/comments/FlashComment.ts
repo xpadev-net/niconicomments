@@ -6,7 +6,6 @@ import {
   getPosX,
   getStrokeColor,
   nativeSort,
-  parseCommandAndNicoScript,
   parseFont,
 } from "@/util";
 import { config, options } from "@/definition/config";
@@ -22,6 +21,7 @@ import type {
   measureTextResult,
 } from "@/@types/types";
 import type { formattedComment } from "@/@types/format.formatted";
+import { isLineBreakResize, parseCommandAndNicoScript } from "@/utils/comment";
 
 class FlashComment implements IComment {
   private readonly context: CanvasRenderingContext2D;
@@ -193,18 +193,12 @@ class FlashComment implements IComment {
     const lineCount = comment.lineCount;
     if (!comment.lineHeight)
       comment.lineHeight = configLineHeight[comment.size].default;
-    if (!comment.resized && !comment.ender) {
-      if (
-        (comment.size === "big" && lineCount > 2) ||
-        (comment.size === "medium" && lineCount > 4) ||
-        (comment.size === "small" && lineCount > 6)
-      ) {
-        comment.fontSize = configFontSize[comment.size].resized;
-        comment.lineHeight = configLineHeight[comment.size].resized;
-        comment.resized = true;
-        comment.resizedY = true;
-        this.context.font = parseFont(comment.font, comment.fontSize);
-      }
+    if (isLineBreakResize(comment)) {
+      comment.fontSize = configFontSize[comment.size].resized;
+      comment.lineHeight = configLineHeight[comment.size].resized;
+      comment.resized = true;
+      comment.resizedY = true;
+      this.context.font = parseFont(comment.font, comment.fontSize);
     }
     const width_arr = [],
       spacedWidth_arr = [];

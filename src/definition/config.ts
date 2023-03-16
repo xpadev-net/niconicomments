@@ -302,6 +302,14 @@ const initConfig = () => {
      * desc: 古い方から上限まで
      */
     hideCommentOrder: "asc",
+    /**
+     * 改行リサイズの行数
+     */
+    lineBreakCount: {
+      big: 3,
+      medium: 5,
+      small: 7,
+    },
   };
 };
 

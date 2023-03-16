@@ -1,4 +1,5 @@
 import { IPluginConstructor } from "@/@types/IPlugins";
+import { commentSize } from "@/@types/types";
 
 type configItem<T> = T | { html5: T; flash: T };
 type configSizeItem<T> = { big: T; medium: T; small: T };
@@ -62,6 +63,7 @@ type BaseConfig = {
   plugins: IPluginConstructor[];
   commentLimit: number | undefined;
   hideCommentOrder: "asc" | "desc";
+  lineBreakCount: { [key in commentSize]: number };
 };
 
 export type Config = Partial<BaseConfig>;

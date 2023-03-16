@@ -3,7 +3,6 @@ import {
   getConfig,
   getPosX,
   getStrokeColor,
-  parseCommandAndNicoScript,
   parseFont,
 } from "@/util";
 import { config, options } from "@/definition/config";
@@ -26,6 +25,7 @@ import type {
   measureTextResult,
 } from "@/@types/types";
 import type { formattedComment } from "@/@types/format.formatted";
+import { isLineBreakResize, parseCommandAndNicoScript } from "@/utils/comment";
 
 class HTML5Comment implements IComment {
   private readonly context: CanvasRenderingContext2D;
@@ -106,35 +106,23 @@ class HTML5Comment implements IComment {
     const configFontSize = getConfig(config.fontSize, false),
       lineHeight = getLineHeight(comment.size, false),
       charSize = getCharSize(comment.size, false);
-    const lineCount = comment.lineCount;
     if (!comment.lineHeight) comment.lineHeight = lineHeight;
     if (!comment.charSize) comment.charSize = charSize;
     comment.fontSize = comment.charSize * 0.8;
     let width, height, itemWidth;
     this.context.font = parseFont(comment.font, comment.fontSize);
-    if (
-      !comment.resized &&
-      !comment.ender &&
-      ((comment.size === "big" && lineCount > 2) ||
-        (comment.size === "medium" && lineCount > 4) ||
-        (comment.size === "small" && lineCount > 6))
-    ) {
+    if (isLineBreakResize(comment)) {
       comment.fontSize = configFontSize[comment.size].resized;
       const lineHeight = getLineHeight(comment.size, false, true);
       comment.charSize = comment.charSize * (lineHeight / comment.lineHeight);
       comment.lineHeight = lineHeight;
       comment.resized = true;
       comment.resizedY = true;
-      const measureResult = measure(comment as measureInput, this.context);
-      height = measureResult.height;
-      width = measureResult.width;
-      itemWidth = measureResult.itemWidth;
-    } else {
-      const measureResult = measure(comment as measureInput, this.context);
-      height = measureResult.height;
-      width = measureResult.width;
-      itemWidth = measureResult.itemWidth;
     }
+    const measureResult = measure(comment as measureInput, this.context);
+    height = measureResult.height;
+    width = measureResult.width;
+    itemWidth = measureResult.itemWidth;
     if (comment.loc !== "naka" && width > widthLimit) {
       const scale = widthLimit / width;
       comment.resizedX = true;

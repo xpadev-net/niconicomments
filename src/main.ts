@@ -17,7 +17,6 @@ import {
   getPosX,
   getPosY,
   hex2rgb,
-  isFlashComment,
   parseFont,
   processFixedComment,
   processMovableComment,
@@ -38,6 +37,7 @@ import type { formattedComment } from "@/@types/format.formatted";
 import type { CommentEventHandlerMap } from "@/@types/event";
 import { plugins, setPlugins } from "@/contexts/plugins";
 import { registerHandler, removeHandler, triggerHandler } from "@/eventHandler";
+import { isFlashComment } from "@/utils/comment";
 
 let isDebug = false;
 

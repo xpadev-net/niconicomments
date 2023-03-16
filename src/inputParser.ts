@@ -1,4 +1,4 @@
-import typeGuard from "./typeGuard";
+import typeGuard from "@/typeGuard";
 import type { inputFormatType } from "@/@types/options";
 import type {
   formattedComment,

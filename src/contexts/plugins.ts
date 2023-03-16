@@ -1,4 +1,4 @@
-import { IPlugin } from "@/@types/IPlugins";
+import type { IPlugin } from "@/@types/IPlugins";
 
 let plugins: IPlugin[] = [];
 const setPlugins = (input: IPlugin[]) => {

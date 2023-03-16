@@ -1,4 +1,4 @@
-import convert2formattedComment from "./inputParser";
+import convert2formattedComment from "@/inputParser";
 import typeGuard from "@/typeGuard";
 import {
   defaultConfig,

@@ -9,7 +9,7 @@ import type {
   Timeline,
 } from "@/@types/types";
 import type { formattedComment } from "@/@types/format.formatted";
-import { collisionItem, commentFlashFont } from "@/@types/types";
+import type { collisionItem, commentFlashFont } from "@/@types/types";
 /**
  * 当たり判定からコメントを配置できる場所を探す
  * @param {number} currentPos

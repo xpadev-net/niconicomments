@@ -1,7 +1,7 @@
 import type { measureTextInput } from "@/@types/types";
 import { config, options } from "@/definition/config";
-import { formattedComment } from "@/@types/format.formatted";
-import { formattedCommentWithFont, parsedCommand } from "@/@types/types";
+import type { formattedComment } from "@/@types/format.formatted";
+import type { formattedCommentWithFont, parsedCommand } from "@/@types/types";
 import { nicoScripts } from "@/contexts/nicoscript";
 import { getConfig } from "@/util";
 import typeGuard from "@/typeGuard";

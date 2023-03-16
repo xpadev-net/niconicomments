@@ -187,8 +187,6 @@ class HTML5Comment implements IComment {
       item.width = itemWidth[i];
     }
     comment.fontSize = (comment.charSize || 0) * 0.8;
-    const charScale = getFontSizeAndScale(comment.charSize || 0);
-    if (charScale.scale < 1) height *= 1.01;
     return {
       width: width * scale,
       height: height * scale,
@@ -387,7 +385,7 @@ class HTML5Comment implements IComment {
       lineCount = 0;
     const paddingTop =
       (10 - scale * 10) *
-      (this.comment.lineCount / config.hiResCommentCorrection);
+      ((this.comment.lineCount + 1) / config.hiResCommentCorrection);
     for (const item of this.comment.content) {
       const lines = item.content.split("\n");
       for (let j = 0; j < lines.length; j++) {

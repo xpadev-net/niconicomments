@@ -5,14 +5,16 @@ import { colors } from "@/definition/colors";
 import type { configItem } from "@/@types/config";
 import type { IComment } from "@/@types/IComment";
 import type {
+  collision,
   commentContentIndex,
   commentFont,
   formattedCommentWithFont,
   formattedCommentWithSize,
   parsedCommand,
+  Timeline,
 } from "@/@types/types";
 import type { formattedComment } from "@/@types/format.formatted";
-import { commentFlashFont } from "@/@types/types";
+import { collisionItem, commentFlashFont } from "@/@types/types";
 /**
  * 当たり判定からコメントを配置できる場所を探す
  * @param {number} currentPos
@@ -512,53 +514,53 @@ const parseCommand = (comment: formattedComment): parsedCommand => {
     invisible: false,
     long: undefined,
   };
-  for (let command of metadata) {
-    command = command.toLowerCase();
-    let match;
-    if ((match = command.match(/^(?:@|\uff20)([0-9.]+)/)) && match[1]) {
+  for (const _command of metadata) {
+    const command = _command.toLowerCase();
+    let match = command.match(/^(?:@|\uff20)([0-9.]+)/);
+    if (match && match[1]) {
       result.long = Number(match[1]);
-    } else if (
-      result.strokeColor === undefined &&
-      (match = command.match(/^nico:stroke:(.+)$/))
-    ) {
+      continue;
+    }
+    match = command.match(/^nico:stroke:(.+)$/);
+    if (result.strokeColor === undefined && match) {
       if (typeGuard.comment.color(match[1])) {
         result.strokeColor = colors[match[1]];
       } else if (typeGuard.comment.colorCode(match[1])) {
         result.strokeColor = match[1].slice(1);
       }
-    } else if (
-      result.wakuColor === undefined &&
-      (match = command.match(/^nico:waku:(.+)$/))
-    ) {
+      continue;
+    }
+    match = command.match(/^nico:waku:(.+)$/);
+    if (result.wakuColor === undefined && match) {
       if (typeGuard.comment.color(match[1])) {
         result.wakuColor = colors[match[1]];
       } else if (typeGuard.comment.colorCode(match[1])) {
         result.wakuColor = match[1].slice(1);
       }
-    } else if (result.loc === undefined && typeGuard.comment.loc(command)) {
+      continue;
+    }
+    if (result.loc === undefined && typeGuard.comment.loc(command)) {
       result.loc = command;
-    } else if (result.size === undefined && typeGuard.comment.size(command)) {
+      continue;
+    }
+    if (result.size === undefined && typeGuard.comment.size(command)) {
       result.size = command;
       result.fontSize = getConfig(config.fontSize, isFlash)[command].default;
-    } else {
-      if (result.color === undefined) {
-        const color = config.colors[command];
-        if (color) {
-          result.color = color;
-          continue;
-        } else {
-          const match = command.match(/#[0-9a-z]{3,6}/);
-          if (match && match[0] && comment.premium) {
-            result.color = match[0].toUpperCase();
-            continue;
-          }
-        }
-      }
-      if (result.font === undefined && typeGuard.comment.font(command)) {
-        result.font = command;
-      } else if (typeGuard.comment.command.key(command)) {
-        result[command] = true;
-      }
+      continue;
+    }
+    if (result.color === undefined && config.colors[command]) {
+      result.color = config.colors[command];
+      continue;
+    }
+    match = command.match(/#(?:[0-9a-z]{3}|[0-9a-z]{6})/);
+    if (result.color === undefined && match && match[0] && comment.premium) {
+      result.color = match[0].toUpperCase();
+      continue;
+    }
+    if (result.font === undefined && typeGuard.comment.font(command)) {
+      result.font = command;
+    } else if (typeGuard.comment.command.key(command)) {
+      result[command] = true;
     }
   }
   if (comment.content.startsWith("/")) {
@@ -623,10 +625,6 @@ const getFlashFontName = (font: string): commentFlashFont => {
   return font as commentFlashFont;
 };
 
-const getValue = <T>(value: T | undefined | null, alternative: T): T => {
-  return value ?? alternative;
-};
-
 const nativeSort = <T>(getter: (input: T) => number) => {
   return (a: T, b: T) => {
     if (getter(a) > getter(b)) {
@@ -637,6 +635,97 @@ const nativeSort = <T>(getter: (input: T) => number) => {
       return 0;
     }
   };
+};
+
+const processFixedComment = (
+  comment: IComment,
+  collision: collisionItem,
+  timeline: Timeline
+) => {
+  let posY = 0,
+    isChanged = true,
+    count = 0;
+  while (isChanged && count < 10) {
+    isChanged = false;
+    count++;
+    for (let j = 0; j < comment.long; j++) {
+      const result = getPosY(posY, comment, collision[comment.vpos + j]);
+      posY = result.currentPos;
+      isChanged = result.isChanged;
+      if (result.isBreak) break;
+    }
+  }
+  for (let j = 0; j < comment.long; j++) {
+    const vpos = comment.vpos + j;
+    arrayPush(timeline, vpos, comment);
+    if (j > comment.long - 20) continue;
+    arrayPush(collision, vpos, comment);
+  }
+  comment.posY = posY;
+};
+
+const processMovableComment = (
+  comment: IComment,
+  collision: collision,
+  timeline: Timeline
+) => {
+  const beforeVpos =
+    Math.round(-288 / ((1632 + comment.width) / (comment.long + 125))) - 100;
+  const posY = (() => {
+    if (config.canvasHeight < comment.height) {
+      return (comment.height - config.canvasHeight) / -2;
+    }
+    let posY = 0;
+    let isChanged = true,
+      count = 0;
+    while (isChanged && count < 10) {
+      isChanged = false;
+      count++;
+      for (let j = beforeVpos; j < comment.long + 125; j++) {
+        const vpos = comment.vpos + j;
+        const left_pos = getPosX(comment.width, j, comment.long);
+        let isBreak = false;
+        if (
+          left_pos + comment.width >= config.collisionRange.right &&
+          left_pos <= config.collisionRange.right
+        ) {
+          const result = getPosY(posY, comment, collision.right[vpos]);
+          posY = result.currentPos;
+          isChanged = result.isChanged;
+          isBreak = result.isBreak;
+        }
+        if (
+          left_pos + comment.width >= config.collisionRange.left &&
+          left_pos <= config.collisionRange.left
+        ) {
+          const result = getPosY(posY, comment, collision.left[vpos]);
+          posY = result.currentPos;
+          isChanged = result.isChanged;
+          isBreak = result.isBreak;
+        }
+        if (isBreak) return posY;
+      }
+    }
+    return posY;
+  })();
+  for (let j = beforeVpos; j < comment.long + 125; j++) {
+    const vpos = comment.vpos + j;
+    const left_pos = getPosX(comment.width, j, comment.long);
+    arrayPush(timeline, vpos, comment);
+    if (
+      left_pos + comment.width >= config.collisionRange.right &&
+      left_pos <= config.collisionRange.right
+    ) {
+      arrayPush(collision.right, vpos, comment);
+    }
+    if (
+      left_pos + comment.width >= config.collisionRange.left &&
+      left_pos <= config.collisionRange.left
+    ) {
+      arrayPush(collision.left, vpos, comment);
+    }
+  }
+  comment.posY = posY;
 };
 
 const createError = (message: string) => {
@@ -661,7 +750,8 @@ export {
   ArrayEqual,
   getFlashFontIndex,
   getFlashFontName,
-  getValue,
   nativeSort,
+  processFixedComment,
+  processMovableComment,
   createError,
 };

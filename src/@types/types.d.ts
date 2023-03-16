@@ -58,6 +58,7 @@ type commentFlashFont = "defont" | "gulim" | "simsun";
 type commentSize = "big" | "medium" | "small";
 type commentLoc = "ue" | "naka" | "shita";
 type collision = { [key in collisionPos]: collisionItem };
+type Timeline = { [key: number]: IComment[] };
 type collisionPos = "ue" | "shita" | "right" | "left";
 type collisionItem = { [p: number]: IComment[] };
 type nicoScript = {

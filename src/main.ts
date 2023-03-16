@@ -19,6 +19,8 @@ import {
   hex2rgb,
   isFlashComment,
   parseFont,
+  processFixedComment,
+  processMovableComment,
 } from "@/util";
 import { HTML5Comment } from "@/comments/HTML5Comment";
 import { FlashComment } from "@/comments/FlashComment";
@@ -26,7 +28,12 @@ import { resetImageCache } from "@/contexts/cache";
 import { resetNicoScripts } from "@/contexts/nicoscript";
 import type { IComment } from "@/@types/IComment";
 import type { inputFormat, Options } from "@/@types/options";
-import type { collision, collisionItem, collisionPos } from "@/@types/types";
+import type {
+  collision,
+  collisionItem,
+  collisionPos,
+  Timeline,
+} from "@/@types/types";
 import type { formattedComment } from "@/@types/format.formatted";
 import type { CommentEventHandlerMap } from "@/@types/event";
 import { plugins, setPlugins } from "@/contexts/plugins";
@@ -44,7 +51,7 @@ class NiconiComments {
   private readonly canvas: HTMLCanvasElement;
   private readonly collision: collision;
   private readonly context: CanvasRenderingContext2D;
-  private readonly timeline: { [key: number]: IComment[] };
+  private readonly timeline: Timeline;
   static typeGuard = typeGuard;
   static default = NiconiComments;
 
@@ -153,105 +160,13 @@ class NiconiComments {
     data.forEach((comment) => {
       if (comment.invisible) return;
       if (comment.loc === "naka") {
-        let posY = 0;
-        const beforeVpos =
-          Math.round(-288 / ((1632 + comment.width) / (comment.long + 125))) -
-          100;
-        if (config.canvasHeight < comment.height) {
-          posY = (comment.height - config.canvasHeight) / -2;
-        } else {
-          let isBreak = false,
-            isChanged = true,
-            count = 0;
-          while (isChanged && count < 10) {
-            isChanged = false;
-            count++;
-            for (let j = beforeVpos; j < comment.long + 125; j++) {
-              const vpos = comment.vpos + j;
-              const left_pos = getPosX(comment.width, j, comment.long);
-              if (
-                left_pos + comment.width >= config.collisionRange.right &&
-                left_pos <= config.collisionRange.right
-              ) {
-                const result = getPosY(
-                  posY,
-                  comment,
-                  this.collision.right[vpos]
-                );
-                posY = result.currentPos;
-                isChanged = result.isChanged;
-                isBreak = result.isBreak;
-                if (isBreak) break;
-              }
-              if (
-                left_pos + comment.width >= config.collisionRange.left &&
-                left_pos <= config.collisionRange.left
-              ) {
-                const result = getPosY(
-                  posY,
-                  comment,
-                  this.collision.left[vpos]
-                );
-                posY = result.currentPos;
-                isChanged = result.isChanged;
-                isBreak = result.isBreak;
-                if (isBreak) break;
-              }
-            }
-            if (isBreak) {
-              break;
-            }
-          }
-        }
-        for (let j = beforeVpos; j < comment.long + 125; j++) {
-          const vpos = comment.vpos + j;
-          const left_pos = getPosX(comment.width, j, comment.long);
-          arrayPush(this.timeline, vpos, comment);
-          if (
-            left_pos + comment.width >= config.collisionRange.right &&
-            left_pos <= config.collisionRange.right
-          ) {
-            arrayPush(this.collision.right, vpos, comment);
-          }
-          if (
-            left_pos + comment.width >= config.collisionRange.left &&
-            left_pos <= config.collisionRange.left
-          ) {
-            arrayPush(this.collision.left, vpos, comment);
-          }
-        }
-        comment.posY = posY;
+        processMovableComment(comment, this.collision, this.timeline);
       } else {
-        let posY = 0,
-          isChanged = true,
-          count = 0,
-          collision: collisionItem;
-        if (comment.loc === "ue") {
-          collision = this.collision.ue;
-        } else {
-          collision = this.collision.shita;
-        }
-        while (isChanged && count < 10) {
-          isChanged = false;
-          count++;
-          for (let j = 0; j < comment.long; j++) {
-            const result = getPosY(posY, comment, collision[comment.vpos + j]);
-            posY = result.currentPos;
-            isChanged = result.isChanged;
-            if (result.isBreak) break;
-          }
-        }
-        for (let j = 0; j < comment.long; j++) {
-          const vpos = comment.vpos + j;
-          arrayPush(this.timeline, vpos, comment);
-          if (j > comment.long - 20) continue;
-          if (comment.loc === "ue") {
-            arrayPush(this.collision.ue, vpos, comment);
-          } else {
-            arrayPush(this.collision.shita, vpos, comment);
-          }
-        }
-        comment.posY = posY;
+        processFixedComment(
+          comment,
+          this.collision[comment.loc],
+          this.timeline
+        );
       }
     });
     logger(

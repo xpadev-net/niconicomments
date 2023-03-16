@@ -69,9 +69,6 @@ class HTML5Comment implements IComment {
   get mail() {
     return this.comment.mail;
   }
-  get lineCount() {
-    return this.comment.lineCount;
-  }
 
   /**
    * コメントに含まれるニコスクリプトを処理する

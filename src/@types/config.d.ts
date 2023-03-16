@@ -60,6 +60,8 @@ type BaseConfig = {
   letterSpacing: number;
   scriptCharOffset: number;
   plugins: IPluginConstructor[];
+  commentLimit: number | undefined;
+  hideCommentOrder: "asc" | "desc";
 };
 
 export type Config = Partial<BaseConfig>;

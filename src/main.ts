@@ -475,7 +475,16 @@ class NiconiComments {
     }
 
     if (timelineRange) {
-      for (const comment of timelineRange) {
+      const targetComment = (() => {
+        if (config.commentLimit === undefined) {
+          return timelineRange;
+        }
+        if (config.hideCommentOrder === "asc") {
+          return timelineRange.slice(-config.commentLimit);
+        }
+        return timelineRange.slice(0, config.commentLimit);
+      })();
+      for (const comment of targetComment) {
         if (comment.invisible) {
           continue;
         }

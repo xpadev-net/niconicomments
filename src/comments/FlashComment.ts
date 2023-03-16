@@ -1,4 +1,5 @@
 import {
+  createError,
   getConfig,
   getFlashFontIndex,
   getFlashFontName,
@@ -452,7 +453,7 @@ class FlashComment implements IComment {
     image.width = this.comment.width;
     image.height = this.comment.height;
     const context = image.getContext("2d");
-    if (!context) throw new Error("Fail to get CanvasRenderingContext2D");
+    if (!context) throw createError("Fail to get CanvasRenderingContext2D");
     context.strokeStyle = getStrokeColor(this.comment);
     context.textAlign = "start";
     context.textBaseline = "alphabetic";

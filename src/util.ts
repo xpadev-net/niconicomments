@@ -639,6 +639,13 @@ const nativeSort = <T>(getter: (input: T) => number) => {
   };
 };
 
+const createError = (message: string) => {
+  return {
+    message,
+    stackTrace: Error().stack,
+  };
+};
+
 export {
   getPosY,
   getPosX,
@@ -656,4 +663,5 @@ export {
   getFlashFontName,
   getValue,
   nativeSort,
+  createError,
 };

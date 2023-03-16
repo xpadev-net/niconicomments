@@ -7,6 +7,7 @@ import type {
 import type { rawApiResponse } from "@/@types/format.legacy";
 import type { ownerComment } from "@/@types/format.owner";
 import type { v1Thread } from "@/@types/format.v1";
+import { createError } from "@/util";
 
 /**
  * 入力されたデータを内部用のデータに変換
@@ -37,7 +38,7 @@ const convert2formattedComment = (
   } else if (type === "v1" && typeGuard.v1.threads(data)) {
     result = fromV1(data);
   } else {
-    throw new Error("unknown input format");
+    throw createError("failed to identify input format");
   }
   return sort(result);
 };

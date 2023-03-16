@@ -1,4 +1,5 @@
 import {
+  createError,
   getConfig,
   getPosX,
   getStrokeColor,
@@ -369,7 +370,7 @@ class HTML5Comment implements IComment {
     image.height =
       this.comment.height - (this.comment.charSize - this.comment.lineHeight);
     const context = image.getContext("2d");
-    if (!context) throw new Error("Fail to get CanvasRenderingContext2D");
+    if (!context) throw createError("Fail to get CanvasRenderingContext2D");
     context.strokeStyle = getStrokeColor(this.comment);
     context.textAlign = "start";
     context.textBaseline = "alphabetic";

@@ -1,7 +1,12 @@
-import type { measureTextInput } from "@/@types/types";
+import type {
+  measureTextInput,
+  formattedCommentWithFont,
+  parsedCommand,
+  commentSize,
+  commentLoc,
+} from "@/@types/types";
 import { config, options } from "@/definition/config";
 import type { formattedComment } from "@/@types/format.formatted";
-import type { formattedCommentWithFont, parsedCommand } from "@/@types/types";
 import { nicoScripts } from "@/contexts/nicoscript";
 import { getConfig } from "@/util";
 import typeGuard from "@/typeGuard";
@@ -15,23 +20,15 @@ const isLineBreakResize = (comment: measureTextInput) => {
   );
 };
 
-const parseCommandAndNicoScript = (
-  comment: formattedComment
-): formattedCommentWithFont => {
-  const isFlash = isFlashComment(comment);
-  const commands = parseCommand(comment);
-  processNicoscript(comment, commands);
+const getDefaultCommand = (vpos: number) => {
+  nicoScripts.default = nicoScripts.default.filter(
+    (item) => !item.long || item.start + item.long >= vpos
+  );
   let color = undefined,
-    size = undefined,
+    size: commentSize | undefined = undefined,
     font = undefined,
-    loc = undefined;
-  for (let i = 0; i < nicoScripts.default.length; i++) {
-    const item = nicoScripts.default[i];
-    if (!item) continue;
-    if (item.long !== undefined && item.start + item.long < comment.vpos) {
-      nicoScripts.default = nicoScripts.default.splice(Number(i), 1);
-      continue;
-    }
+    loc: commentLoc | undefined = undefined;
+  for (const item of nicoScripts.default) {
     if (item.loc) {
       loc = item.loc;
     }
@@ -46,65 +43,56 @@ const parseCommandAndNicoScript = (
     }
     if (loc && color && size && font) break;
   }
-  for (let i = 0; i < nicoScripts.replace.length; i++) {
-    const item = nicoScripts.replace[i];
-    if (!item) continue;
-    if (item.long !== undefined && item.start + item.long < comment.vpos) {
-      nicoScripts.default = nicoScripts.default.splice(Number(i), 1);
-      continue;
-    }
+  return { color, size, font, loc };
+};
+
+const applyNicoScriptReplace = (
+  comment: formattedComment,
+  commands: parsedCommand
+) => {
+  nicoScripts.replace = nicoScripts.replace.filter(
+    (item) => !item.long || item.start + item.long >= comment.vpos
+  );
+  for (const item of nicoScripts.replace) {
     if (
-      (item.target === "\u30b3\u30e1" && comment.owner) ||
+      ((item.target === "\u30b3\u30e1" ||
+        item.target === "\u542b\u307e\u306a\u3044") &&
+        comment.owner) ||
       (item.target === "\u6295\u30b3\u30e1" && !comment.owner) ||
-      (item.target === "\u542b\u307e\u306a\u3044" && comment.owner)
+      (item.target === "\u542b\u307e\u306a\u3044" && comment.owner) ||
+      (item.condition === "\u5b8c\u5168\u4e00\u81f4" &&
+        comment.content !== item.keyword) ||
+      (item.condition === "\u90e8\u5206\u4e00\u81f4" &&
+        comment.content.indexOf(item.keyword) === -1)
     )
       continue;
-    if (
-      (item.condition === "\u5b8c\u5168\u4e00\u81f4" &&
-        comment.content === item.keyword) ||
-      (item.condition === "\u90e8\u5206\u4e00\u81f4" &&
-        comment.content.indexOf(item.keyword) !== -1)
-    ) {
-      if (item.range === "\u5358") {
-        comment.content = comment.content.replaceAll(
-          item.keyword,
-          item.replace
-        );
-      } else {
-        comment.content = item.replace;
-      }
-      if (item.loc) {
-        commands.loc = item.loc;
-      }
-      if (item.color) {
-        commands.color = item.color;
-      }
-      if (item.size) {
-        commands.size = item.size;
-        commands.fontSize = getConfig(config.fontSize, isFlash)[
-          commands.size
-        ].default;
-      }
-      if (item.font) {
-        commands.font = item.font;
-      }
+    if (item.range === "\u5358") {
+      comment.content = comment.content.replaceAll(item.keyword, item.replace);
+    } else {
+      comment.content = item.replace;
     }
+    item.loc && (commands.loc = item.loc);
+    item.color && (commands.color = item.color);
+    item.size && (commands.size = item.size);
+    item.font && (commands.font = item.font);
   }
-  if (!commands.loc) {
-    commands.loc = loc || "naka";
-  }
-  if (!commands.color) {
-    commands.color = color || "#FFFFFF";
-  }
-  if (!commands.size) {
-    commands.size = size || "medium";
-    commands.fontSize = getConfig(config.fontSize, isFlash)[
-      commands.size
-    ].default;
-  }
-  if (!commands.font) {
-    commands.font = font || "defont";
-  }
+};
+
+const parseCommandAndNicoScript = (
+  comment: formattedComment
+): formattedCommentWithFont => {
+  const isFlash = isFlashComment(comment);
+  const commands = parseCommand(comment);
+  processNicoscript(comment, commands);
+  const defaultCommand = getDefaultCommand(comment.vpos);
+  applyNicoScriptReplace(comment, commands);
+  commands.size ||= defaultCommand.size || "medium";
+  commands.loc ||= defaultCommand.loc || "naka";
+  commands.color ||= defaultCommand.color || "#FFFFFF";
+  commands.font ||= defaultCommand.font || "defont";
+  commands.fontSize = getConfig(config.fontSize, isFlash)[
+    commands.size
+  ].default;
   if (!commands.long) {
     commands.long = 300;
   } else {

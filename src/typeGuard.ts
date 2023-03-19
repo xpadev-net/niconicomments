@@ -211,6 +211,8 @@ const typeGuard = {
     color: (i: unknown): i is keyof typeof colors =>
       typeof i === "string" && Object.keys(colors).includes(i),
     colorCode: (i: unknown): i is string =>
+      typeof i === "string" && !!i.match(/^#(?:[0-9a-z]{3}|[0-9a-z]{6})$/),
+    colorCodeAllowAlpha: (i: unknown): i is string =>
       typeof i === "string" &&
       !!i.match(/^#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/),
   },

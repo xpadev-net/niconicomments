@@ -312,6 +312,12 @@ const initConfig = () => {
       medium: 5,
       small: 7,
     },
+    /**
+     * 独自のコメントを追加するための拡張
+     * 多分画像流したりコメントに背景つけたりできる
+     * class: コメント描画クラス
+     * condition: コメント描画クラスを適用する条件
+     */
     commentPlugins: [
       {
         class: FlashComment,

@@ -11,7 +11,6 @@ import {
 import { config, options } from "@/definition/config";
 import { nicoScripts } from "@/contexts/nicoscript";
 import { imageCache } from "@/contexts/cache";
-import type { IComment } from "@/@types/IComment";
 import type {
   commentContentItem,
   commentMeasuredContentItem,
@@ -22,54 +21,28 @@ import type {
 } from "@/@types/types";
 import type { formattedComment } from "@/@types/format.formatted";
 import { isLineBreakResize, parseCommandAndNicoScript } from "@/utils/comment";
+import { BaseComment } from "@/comments/BaseComment";
 
-class FlashComment implements IComment {
-  private readonly context: CanvasRenderingContext2D;
-  public readonly comment: formattedCommentWithSize;
-  private readonly _globalScale: number;
+class FlashComment extends BaseComment {
+  private _globalScale: number;
   private scale: number;
   private scaleX: number;
-  public posY: number;
   public image?: HTMLCanvasElement | null;
+  override readonly pluginName: string = "FlashComment";
   constructor(comment: formattedComment, context: CanvasRenderingContext2D) {
-    this.context = context;
+    super(comment, context);
     this.scale = 1;
     this.scaleX = 1;
     this._globalScale = getConfig(config.commentScale, true);
     this.posY = 0;
-    comment.content = comment.content.replace(/\t/g, "\u2003\u2003");
-    this.comment = this.getCommentSize(this.parseCommandAndNicoscript(comment));
   }
 
-  get invisible() {
-    return this.comment.invisible;
-  }
-  get loc() {
-    return this.comment.loc;
-  }
-  get long() {
-    return this.comment.long;
-  }
-  get vpos() {
-    return this.comment.vpos;
-  }
-  get width() {
-    return this.comment.width;
-  }
-  get height() {
-    return this.comment.height;
-  }
-  get flash() {
-    return false;
-  }
-  get layer() {
-    return this.comment.layer;
-  }
-  get owner() {
-    return this.comment.owner;
-  }
-  get mail() {
-    return this.comment.mail;
+  override convertComment(comment: formattedComment): formattedCommentWithSize {
+    this.scale = 1;
+    this.scaleX = 1;
+    this._globalScale = getConfig(config.commentScale, true);
+    this.posY = 0;
+    return this.getCommentSize(this.parseCommandAndNicoscript(comment));
   }
 
   /**
@@ -313,7 +286,7 @@ class FlashComment implements IComment {
     return size;
   }
 
-  draw(vpos: number, showCollision: boolean, debug: boolean) {
+  override draw(vpos: number, showCollision: boolean, debug: boolean) {
     let reverse = false;
     for (const range of nicoScripts.reverse) {
       if (
@@ -416,7 +389,7 @@ class FlashComment implements IComment {
   /**
    * drawTextで毎回fill/strokeすると重いので画像化して再利用できるようにする
    */
-  getTextImage(): HTMLCanvasElement | null {
+  override getTextImage(): HTMLCanvasElement | null {
     if (
       this.comment.invisible ||
       (this.comment.lineCount === 1 && this.comment.width === 0) ||

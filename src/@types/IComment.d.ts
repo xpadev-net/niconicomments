@@ -1,4 +1,5 @@
 import type { commentLoc, formattedCommentWithSize } from "@/@types/types";
+import { formattedComment } from "@/@types/format.formatted";
 
 export interface IComment {
   comment: formattedCommentWithSize;
@@ -14,6 +15,7 @@ export interface IComment {
   layer: number;
   mail: string[];
   image?: HTMLCanvasElement | null;
+  convertComment: (comment: formattedComment) => formattedCommentWithSize;
   getTextImage: (vpos: number) => void;
   draw: (vpos: number, showCollision: boolean, isDebug: boolean) => void;
 }

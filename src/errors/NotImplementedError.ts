@@ -1,9 +1,6 @@
 class NotImplementedError extends Error {
   pluginName: string;
   methodName: string;
-  static {
-    this.prototype.name = "NotImplementedError";
-  }
   constructor(
     pluginName: string,
     methodName: string,
@@ -14,4 +11,5 @@ class NotImplementedError extends Error {
     this.methodName = methodName;
   }
 }
+NotImplementedError.prototype.name = "NotImplementedError";
 export { NotImplementedError };

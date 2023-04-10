@@ -1,5 +1,7 @@
 import { IPluginConstructor } from "@/@types/IPlugins";
 import { commentSize } from "@/@types/types";
+import { formattedComment } from "@/@types/format.formatted";
+import { BaseComment } from "@/comments/BaseComment";
 
 type configItem<T> = T | { html5: T; flash: T };
 type configSizeItem<T> = { big: T; medium: T; small: T };
@@ -61,6 +63,10 @@ type BaseConfig = {
   letterSpacing: number;
   scriptCharOffset: number;
   plugins: IPluginConstructor[];
+  commentPlugins: {
+    class: typeof BaseComment;
+    condition: (comment: formattedComment) => boolean;
+  }[];
   commentLimit: number | undefined;
   hideCommentOrder: "asc" | "desc";
   lineBreakCount: { [key in commentSize]: number };

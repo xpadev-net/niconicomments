@@ -7,7 +7,6 @@ import {
   options,
   setConfig,
   setOptions,
-  initConfig,
 } from "@/definition/config";
 import {
   ArrayEqual,
@@ -38,6 +37,7 @@ import type { CommentEventHandlerMap } from "@/@types/event";
 import { plugins, setPlugins } from "@/contexts/plugins";
 import { registerHandler, removeHandler, triggerHandler } from "@/eventHandler";
 import { isFlashComment } from "@/utils/comment";
+import { initConfig } from "@/definition/initConfig";
 
 let isDebug = false;
 
@@ -54,6 +54,10 @@ class NiconiComments {
   private readonly timeline: Timeline;
   static typeGuard = typeGuard;
   static default = NiconiComments;
+  static FlashComment = {
+    condition: isFlashComment,
+    class: FlashComment,
+  };
 
   /**
    * NiconiComments Constructor
@@ -140,11 +144,14 @@ class NiconiComments {
     }
     this.getCommentPos(
       rawData.reduce((pv, val) => {
-        if (isFlashComment(val)) {
-          pv.push(new FlashComment(val, this.context));
-        } else {
-          pv.push(new HTML5Comment(val, this.context));
+        for (const plugin of config.commentPlugins) {
+          if (plugin.condition(val)) {
+            pv.push(new plugin.class(val, this.context));
+            console.log(new plugin.class(val, this.context));
+            return pv;
+          }
         }
+        pv.push(new HTML5Comment(val, this.context));
         return pv;
       }, [] as IComment[])
     );
@@ -337,12 +344,14 @@ class NiconiComments {
       this.timeline[this.lastVpos]?.filter((item) => item.loc === "naka")
         ?.length === 0
     ) {
+      console.log(timelineRange);
       const current = timelineRange.filter((item) => item.loc !== "naka"),
         last =
           this.timeline[this.lastVpos]?.filter((item) => item.loc !== "naka") ||
           [];
       if (ArrayEqual(current, last)) return false;
     }
+    console.log(1);
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.lastVpos = vpos;
     if (this.video) {
@@ -390,6 +399,7 @@ class NiconiComments {
       }
     }
 
+    console.log(timelineRange);
     if (timelineRange) {
       const targetComment = (() => {
         if (config.commentLimit === undefined) {

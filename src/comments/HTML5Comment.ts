@@ -14,7 +14,6 @@ import {
   measure,
 } from "@/nico";
 import { imageCache } from "@/contexts/cache";
-import type { IComment } from "@/@types/IComment";
 import type {
   commentContentItem,
   commentMeasuredContentItem,
@@ -26,48 +25,18 @@ import type {
 } from "@/@types/types";
 import type { formattedComment } from "@/@types/format.formatted";
 import { isLineBreakResize, parseCommandAndNicoScript } from "@/utils/comment";
+import { BaseComment } from "@/comments/BaseComment";
 
-class HTML5Comment implements IComment {
-  private readonly context: CanvasRenderingContext2D;
-  public readonly comment: formattedCommentWithSize;
-  public posY: number;
+class HTML5Comment extends BaseComment {
   public image?: HTMLCanvasElement | null;
+  override readonly pluginName: string = "HTML5Comment";
   constructor(comment: formattedComment, context: CanvasRenderingContext2D) {
-    this.context = context;
-    comment.content = comment.content.replace(/\t/g, "\u2003\u2003");
-    this.comment = this.getCommentSize(this.parseCommandAndNicoscript(comment));
+    super(comment, context);
     this.posY = 0;
   }
 
-  get invisible() {
-    return this.comment.invisible;
-  }
-  get loc() {
-    return this.comment.loc;
-  }
-  get long() {
-    return this.comment.long;
-  }
-  get vpos() {
-    return this.comment.vpos;
-  }
-  get width() {
-    return this.comment.width;
-  }
-  get height() {
-    return this.comment.height;
-  }
-  get flash() {
-    return false;
-  }
-  get layer() {
-    return this.comment.layer;
-  }
-  get owner() {
-    return this.comment.owner;
-  }
-  get mail() {
-    return this.comment.mail;
+  override convertComment(comment: formattedComment): formattedCommentWithSize {
+    return this.getCommentSize(this.parseCommandAndNicoscript(comment));
   }
 
   /**
@@ -223,7 +192,7 @@ class HTML5Comment implements IComment {
     return size;
   }
 
-  draw(vpos: number, showCollision: boolean, debug: boolean) {
+  override draw(vpos: number, showCollision: boolean, debug: boolean) {
     let reverse = false;
     for (const range of nicoScripts.reverse) {
       if (
@@ -323,7 +292,7 @@ class HTML5Comment implements IComment {
   /**
    * drawTextで毎回fill/strokeすると重いので画像化して再利用できるようにする
    */
-  getTextImage(): HTMLCanvasElement | null {
+  override getTextImage(): HTMLCanvasElement | null {
     if (
       this.comment.invisible ||
       (this.comment.lineCount === 1 && this.comment.width === 0) ||

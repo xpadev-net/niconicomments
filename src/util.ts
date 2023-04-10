@@ -378,13 +378,6 @@ const processMovableComment = (
   comment.posY = posY;
 };
 
-const createError = (message: string) => {
-  return {
-    message,
-    stackTrace: Error().stack,
-  };
-};
-
 export {
   getPosY,
   getPosX,
@@ -401,5 +394,4 @@ export {
   nativeSort,
   processFixedComment,
   processMovableComment,
-  createError,
 };

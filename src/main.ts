@@ -12,7 +12,6 @@ import {
   ArrayEqual,
   arrayPush,
   changeCALayer,
-  createError,
   getPosX,
   getPosY,
   hex2rgb,
@@ -38,6 +37,8 @@ import { plugins, setPlugins } from "@/contexts/plugins";
 import { registerHandler, removeHandler, triggerHandler } from "@/eventHandler";
 import { isFlashComment } from "@/utils/comment";
 import { initConfig } from "@/definition/initConfig";
+import { CanvasRenderingContext2DError } from "@/errors/CanvasRenderingContext2DError";
+import { InvalidOptionError } from "@/errors/InvalidOptionError";
 
 let isDebug = false;
 
@@ -73,9 +74,7 @@ class NiconiComments {
     const constructorStart = performance.now();
     initConfig();
     if (!typeGuard.config.initOptions(initOptions))
-      throw createError(
-        "Invalid option\nPlease check document: https://xpadev-net.github.io/niconicomments/#p_options"
-      );
+      throw new InvalidOptionError();
     setOptions(Object.assign(defaultOptions, initOptions));
     setConfig(Object.assign(defaultConfig, options.config));
     isDebug = options.debug;
@@ -83,7 +82,7 @@ class NiconiComments {
     resetNicoScripts();
     this.canvas = canvas;
     const context = canvas.getContext("2d");
-    if (!context) throw createError("Fail to get CanvasRenderingContext2D");
+    if (!context) throw new CanvasRenderingContext2DError();
     this.context = context;
     this.context.strokeStyle = `rgba(${hex2rgb(config.contextStrokeColor).join(
       ","

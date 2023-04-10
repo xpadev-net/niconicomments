@@ -1,5 +1,4 @@
 import {
-  createError,
   getConfig,
   getFlashFontIndex,
   getFlashFontName,
@@ -22,6 +21,7 @@ import type {
 import type { formattedComment } from "@/@types/format.formatted";
 import { isLineBreakResize, parseCommandAndNicoScript } from "@/utils/comment";
 import { BaseComment } from "@/comments/BaseComment";
+import { CanvasRenderingContext2DError } from "@/errors/CanvasRenderingContext2DError";
 
 class FlashComment extends BaseComment {
   private _globalScale: number;
@@ -417,7 +417,7 @@ class FlashComment extends BaseComment {
     image.width = this.comment.width;
     image.height = this.comment.height;
     const context = image.getContext("2d");
-    if (!context) throw createError("Fail to get CanvasRenderingContext2D");
+    if (!context) throw new CanvasRenderingContext2DError();
     context.strokeStyle = getStrokeColor(this.comment);
     context.textAlign = "start";
     context.textBaseline = "alphabetic";

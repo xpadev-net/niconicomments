@@ -1,10 +1,4 @@
-import {
-  createError,
-  getConfig,
-  getPosX,
-  getStrokeColor,
-  parseFont,
-} from "@/util";
+import { getConfig, getPosX, getStrokeColor, parseFont } from "@/util";
 import { config, options } from "@/definition/config";
 import { nicoScripts } from "@/contexts/nicoscript";
 import {
@@ -26,6 +20,7 @@ import type {
 import type { formattedComment } from "@/@types/format.formatted";
 import { isLineBreakResize, parseCommandAndNicoScript } from "@/utils/comment";
 import { BaseComment } from "@/comments/BaseComment";
+import { CanvasRenderingContext2DError } from "@/errors/CanvasRenderingContext2DError";
 
 class HTML5Comment extends BaseComment {
   public image?: HTMLCanvasElement | null;
@@ -322,7 +317,7 @@ class HTML5Comment extends BaseComment {
     image.height =
       this.comment.height - (this.comment.charSize - this.comment.lineHeight);
     const context = image.getContext("2d");
-    if (!context) throw createError("Fail to get CanvasRenderingContext2D");
+    if (!context) throw new CanvasRenderingContext2DError();
     context.strokeStyle = getStrokeColor(this.comment);
     context.textAlign = "start";
     context.textBaseline = "alphabetic";

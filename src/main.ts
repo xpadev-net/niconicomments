@@ -146,7 +146,6 @@ class NiconiComments {
         for (const plugin of config.commentPlugins) {
           if (plugin.condition(val)) {
             pv.push(new plugin.class(val, this.context));
-            console.log(new plugin.class(val, this.context));
             return pv;
           }
         }
@@ -343,14 +342,12 @@ class NiconiComments {
       this.timeline[this.lastVpos]?.filter((item) => item.loc === "naka")
         ?.length === 0
     ) {
-      console.log(timelineRange);
       const current = timelineRange.filter((item) => item.loc !== "naka"),
         last =
           this.timeline[this.lastVpos]?.filter((item) => item.loc !== "naka") ||
           [];
       if (ArrayEqual(current, last)) return false;
     }
-    console.log(1);
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.lastVpos = vpos;
     if (this.video) {
@@ -397,8 +394,6 @@ class NiconiComments {
         }
       }
     }
-
-    console.log(timelineRange);
     if (timelineRange) {
       const targetComment = (() => {
         if (config.commentLimit === undefined) {

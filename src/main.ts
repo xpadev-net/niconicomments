@@ -1,13 +1,32 @@
-import convert2formattedComment from "@/inputParser";
-import typeGuard from "@/typeGuard";
+import type { CommentEventHandlerMap } from "@/@types/event";
+import type { formattedComment } from "@/@types/format.formatted";
+import type { IComment } from "@/@types/IComment";
+import type { inputFormat, Options } from "@/@types/options";
+import type {
+  collision,
+  collisionItem,
+  collisionPos,
+  Timeline,
+} from "@/@types/types";
+import { FlashComment } from "@/comments/FlashComment";
+import { HTML5Comment } from "@/comments/HTML5Comment";
+import { resetImageCache } from "@/contexts/cache";
+import { resetNicoScripts } from "@/contexts/nicoscript";
+import { plugins, setPlugins } from "@/contexts/plugins";
 import {
+  config,
   defaultConfig,
   defaultOptions,
-  config,
   options,
   setConfig,
   setOptions,
 } from "@/definition/config";
+import { initConfig } from "@/definition/initConfig";
+import { CanvasRenderingContext2DError } from "@/errors/CanvasRenderingContext2DError";
+import { InvalidOptionError } from "@/errors/InvalidOptionError";
+import { registerHandler, removeHandler, triggerHandler } from "@/eventHandler";
+import convert2formattedComment from "@/inputParser";
+import typeGuard from "@/typeGuard";
 import {
   ArrayEqual,
   arrayPush,
@@ -19,26 +38,7 @@ import {
   processFixedComment,
   processMovableComment,
 } from "@/util";
-import { HTML5Comment } from "@/comments/HTML5Comment";
-import { FlashComment } from "@/comments/FlashComment";
-import { resetImageCache } from "@/contexts/cache";
-import { resetNicoScripts } from "@/contexts/nicoscript";
-import type { IComment } from "@/@types/IComment";
-import type { inputFormat, Options } from "@/@types/options";
-import type {
-  collision,
-  collisionItem,
-  collisionPos,
-  Timeline,
-} from "@/@types/types";
-import type { formattedComment } from "@/@types/format.formatted";
-import type { CommentEventHandlerMap } from "@/@types/event";
-import { plugins, setPlugins } from "@/contexts/plugins";
-import { registerHandler, removeHandler, triggerHandler } from "@/eventHandler";
 import { isFlashComment } from "@/utils/comment";
-import { initConfig } from "@/definition/initConfig";
-import { CanvasRenderingContext2DError } from "@/errors/CanvasRenderingContext2DError";
-import { InvalidOptionError } from "@/errors/InvalidOptionError";
 
 let isDebug = false;
 

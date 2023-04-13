@@ -29,9 +29,9 @@ let options: BaseOptions;
 const setConfig = (value: BaseConfig) => (config = value);
 const setOptions = (value: BaseOptions) => (options = value);
 export {
+  config,
   defaultConfig,
   defaultOptions,
-  config,
   options,
   setConfig,
   setOptions,

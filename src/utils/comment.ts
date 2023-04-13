@@ -1,17 +1,17 @@
-import type {
-  measureTextInput,
-  formattedCommentWithFont,
-  parsedCommand,
-  commentSize,
-  commentLoc,
-  nicoScriptReplace,
-} from "@/@types/types";
-import { config, options } from "@/definition/config";
 import type { formattedComment } from "@/@types/format.formatted";
+import type {
+  commentLoc,
+  commentSize,
+  formattedCommentWithFont,
+  measureTextInput,
+  nicoScriptReplace,
+  parsedCommand,
+} from "@/@types/types";
 import { nicoScripts } from "@/contexts/nicoscript";
-import { getConfig } from "@/util";
-import typeGuard from "@/typeGuard";
 import { colors } from "@/definition/colors";
+import { config, options } from "@/definition/config";
+import typeGuard from "@/typeGuard";
+import { getConfig } from "@/util";
 
 const isLineBreakResize = (comment: measureTextInput) => {
   return (
@@ -375,4 +375,4 @@ const isFlashComment = (comment: formattedComment): boolean =>
     (comment.date < config.flashThreshold ||
       comment.mail.includes("nico:flash")));
 
-export { isLineBreakResize, parseCommandAndNicoScript, isFlashComment };
+export { isFlashComment, isLineBreakResize, parseCommandAndNicoScript };

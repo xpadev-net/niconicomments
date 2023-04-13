@@ -1,6 +1,6 @@
-import { getConfig, parseFont } from "@/util";
-import { config } from "@/definition/config";
 import type { commentSize, measureInput } from "@/@types/types";
+import { config } from "@/definition/config";
+import { getConfig, parseFont } from "@/util";
 
 /**
  * 各サイズの行高を返す
@@ -88,4 +88,4 @@ const getFontSizeAndScale = (charSize: number) => {
   };
 };
 
-export { getLineHeight, getCharSize, measure, getFontSizeAndScale };
+export { getCharSize, getFontSizeAndScale, getLineHeight, measure };

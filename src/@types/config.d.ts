@@ -1,6 +1,6 @@
+import { formattedComment } from "@/@types/format.formatted";
 import { IPluginConstructor } from "@/@types/IPlugins";
 import { commentSize } from "@/@types/types";
-import { formattedComment } from "@/@types/format.formatted";
 import { BaseComment } from "@/comments/BaseComment";
 
 type configItem<T> = T | { html5: T; flash: T };

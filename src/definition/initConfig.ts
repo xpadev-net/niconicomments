@@ -1,9 +1,9 @@
-import { colors } from "@/definition/colors";
-import { fonts } from "@/definition/fonts";
-import { FlashComment } from "@/comments/FlashComment";
-import { isFlashComment } from "@/utils/comment";
-import { updateConfig } from "@/definition/config";
 import { BaseConfig } from "@/@types/config";
+import { FlashComment } from "@/comments/FlashComment";
+import { colors } from "@/definition/colors";
+import { updateConfig } from "@/definition/config";
+import { fonts } from "@/definition/fonts";
+import { isFlashComment } from "@/utils/comment";
 
 const initConfig = () => {
   const platform: platform = (function (ua) {

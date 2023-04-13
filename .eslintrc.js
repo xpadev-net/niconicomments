@@ -14,6 +14,7 @@ module.exports = {
     ignorePatterns: ['*.js'],
     plugins: [
         '@typescript-eslint',
+        'simple-import-sort',
     ],
     extends: [
         'eslint:recommended',
@@ -26,5 +27,7 @@ module.exports = {
         "@typescript-eslint/no-unused-vars": "error",
         "no-unused-vars": "off",
         "no-control-regex": "off",
+        "simple-import-sort/imports": "error",
+        "simple-import-sort/exports": "error"
     },
 };

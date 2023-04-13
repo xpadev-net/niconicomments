@@ -1,5 +1,5 @@
-import { config } from "@/definition/config";
 import type { configItem } from "@/@types/config";
+import type { formattedComment } from "@/@types/format.formatted";
 import type { IComment } from "@/@types/IComment";
 import type {
   collision,
@@ -8,8 +8,8 @@ import type {
   formattedCommentWithSize,
   Timeline,
 } from "@/@types/types";
-import type { formattedComment } from "@/@types/format.formatted";
 import type { collisionItem, commentFlashFont } from "@/@types/types";
+import { config } from "@/definition/config";
 /**
  * 当たり判定からコメントを配置できる場所を探す
  * @param {number} currentPos
@@ -379,19 +379,19 @@ const processMovableComment = (
 };
 
 export {
-  getPosY,
-  getPosX,
-  parseFont,
+  ArrayEqual,
   arrayPush,
-  hex2rgb,
-  hex2rgba,
-  getStrokeColor,
   changeCALayer,
   getConfig,
-  ArrayEqual,
   getFlashFontIndex,
   getFlashFontName,
+  getPosX,
+  getPosY,
+  getStrokeColor,
+  hex2rgb,
+  hex2rgba,
   nativeSort,
+  parseFont,
   processFixedComment,
   processMovableComment,
 };

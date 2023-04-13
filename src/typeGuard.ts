@@ -1,5 +1,3 @@
-import { colors } from "@/definition/colors";
-
 import type {
   formattedComment,
   formattedLegacyComment,
@@ -14,6 +12,7 @@ import type {
 } from "@/@types/format.legacy";
 import type { ownerComment } from "@/@types/format.owner";
 import type { v1Comment, v1Thread } from "@/@types/format.v1";
+import type { Options } from "@/@types/options";
 import type {
   commentFont,
   commentLoc,
@@ -23,7 +22,7 @@ import type {
   nicoScriptReplaceTarget,
   nicoScriptReverseTarget,
 } from "@/@types/types";
-import type { Options } from "@/@types/options";
+import { colors } from "@/definition/colors";
 
 const isBoolean = (i: unknown): i is boolean => typeof i === "boolean";
 const isNumber = (i: unknown): i is number => typeof i === "number";

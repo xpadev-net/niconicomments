@@ -1,3 +1,17 @@
+import type { formattedComment } from "@/@types/format.formatted";
+import type {
+  commentContentItem,
+  commentMeasuredContentItem,
+  formattedCommentWithFont,
+  formattedCommentWithSize,
+  measureTextInput,
+  measureTextResult,
+} from "@/@types/types";
+import { BaseComment } from "@/comments/BaseComment";
+import { imageCache } from "@/contexts/cache";
+import { nicoScripts } from "@/contexts/nicoscript";
+import { config, options } from "@/definition/config";
+import { CanvasRenderingContext2DError } from "@/errors/CanvasRenderingContext2DError";
 import {
   getConfig,
   getFlashFontIndex,
@@ -7,21 +21,7 @@ import {
   nativeSort,
   parseFont,
 } from "@/util";
-import { config, options } from "@/definition/config";
-import { nicoScripts } from "@/contexts/nicoscript";
-import { imageCache } from "@/contexts/cache";
-import type {
-  commentContentItem,
-  commentMeasuredContentItem,
-  formattedCommentWithFont,
-  formattedCommentWithSize,
-  measureTextInput,
-  measureTextResult,
-} from "@/@types/types";
-import type { formattedComment } from "@/@types/format.formatted";
 import { isLineBreakResize, parseCommandAndNicoScript } from "@/utils/comment";
-import { BaseComment } from "@/comments/BaseComment";
-import { CanvasRenderingContext2DError } from "@/errors/CanvasRenderingContext2DError";
 
 class FlashComment extends BaseComment {
   private _globalScale: number;

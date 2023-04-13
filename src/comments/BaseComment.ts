@@ -1,6 +1,6 @@
+import { formattedComment } from "@/@types/format.formatted";
 import { IComment } from "@/@types/IComment";
 import { formattedCommentWithSize } from "@/@types/types";
-import { formattedComment } from "@/@types/format.formatted";
 import { NotImplementedError } from "@/errors/NotImplementedError";
 
 class BaseComment implements IComment {

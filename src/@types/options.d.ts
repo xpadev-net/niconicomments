@@ -1,3 +1,4 @@
+import type { Config } from "@/@types/config";
 import type {
   formattedComment,
   formattedLegacyComment,
@@ -5,7 +6,6 @@ import type {
 import type { rawApiResponse } from "@/@types/format.legacy";
 import type { ownerComment } from "@/@types/format.owner";
 import type { v1Thread } from "@/@types/format.v1";
-import type { Config } from "@/@types/config";
 
 export type inputFormatType =
   | "XMLDocument"

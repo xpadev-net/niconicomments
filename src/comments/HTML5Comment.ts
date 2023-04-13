@@ -1,13 +1,4 @@
-import { getConfig, getPosX, getStrokeColor, parseFont } from "@/util";
-import { config, options } from "@/definition/config";
-import { nicoScripts } from "@/contexts/nicoscript";
-import {
-  getCharSize,
-  getFontSizeAndScale,
-  getLineHeight,
-  measure,
-} from "@/nico";
-import { imageCache } from "@/contexts/cache";
+import type { formattedComment } from "@/@types/format.formatted";
 import type {
   commentContentItem,
   commentMeasuredContentItem,
@@ -17,10 +8,19 @@ import type {
   measureTextInput,
   measureTextResult,
 } from "@/@types/types";
-import type { formattedComment } from "@/@types/format.formatted";
-import { isLineBreakResize, parseCommandAndNicoScript } from "@/utils/comment";
 import { BaseComment } from "@/comments/BaseComment";
+import { imageCache } from "@/contexts/cache";
+import { nicoScripts } from "@/contexts/nicoscript";
+import { config, options } from "@/definition/config";
 import { CanvasRenderingContext2DError } from "@/errors/CanvasRenderingContext2DError";
+import {
+  getCharSize,
+  getFontSizeAndScale,
+  getLineHeight,
+  measure,
+} from "@/nico";
+import { getConfig, getPosX, getStrokeColor, parseFont } from "@/util";
+import { isLineBreakResize, parseCommandAndNicoScript } from "@/utils/comment";
 
 class HTML5Comment extends BaseComment {
   public image?: HTMLCanvasElement | null;

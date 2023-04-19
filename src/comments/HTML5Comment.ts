@@ -242,17 +242,22 @@ class HTML5Comment extends BaseComment {
       return cache.image;
     }
     if (this.image) return this.image;
+    const { fontSize, scale } = getFontSizeAndScale(this.comment.charSize);
+    const paddingTop =
+      (10 - scale * 10) *
+      ((this.comment.lineCount + 1) / config.hiResCommentCorrection);
     const image = document.createElement("canvas");
     image.width = this.comment.width + 2 * 2 * this.comment.charSize;
+    document.body.append(image);
     image.height =
-      this.comment.height - (this.comment.charSize - this.comment.lineHeight);
+      this.comment.height +
+      ((paddingTop + 1) * this.comment.lineHeight) / scale;
     const context = image.getContext("2d");
     if (!context) throw new CanvasRenderingContext2DError();
     context.strokeStyle = getStrokeColor(this.comment);
     context.textAlign = "start";
     context.textBaseline = "alphabetic";
     context.lineWidth = config.contextLineWidth;
-    const { fontSize, scale } = getFontSizeAndScale(this.comment.charSize);
     context.font = parseFont(this.comment.font, fontSize);
     const drawScale =
       getConfig(config.commentScale, false) *
@@ -262,9 +267,6 @@ class HTML5Comment extends BaseComment {
     context.fillStyle = this.comment.color;
     let leftOffset = 0,
       lineCount = 0;
-    const paddingTop =
-      (10 - scale * 10) *
-      ((this.comment.lineCount + 1) / config.hiResCommentCorrection);
     for (const item of this.comment.content) {
       const lines = item.content.split("\n");
       for (let j = 0; j < lines.length; j++) {

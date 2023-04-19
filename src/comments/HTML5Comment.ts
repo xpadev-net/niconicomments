@@ -207,7 +207,7 @@ class HTML5Comment extends BaseComment {
     if (this.comment.loc === "naka") {
       if (reverse) {
         posX =
-          config.canvasWidth +
+          config.canvasWidth -
           this.comment.width -
           getPosX(
             this.comment.width,

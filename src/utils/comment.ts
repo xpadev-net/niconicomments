@@ -375,4 +375,31 @@ const isFlashComment = (comment: formattedComment): boolean =>
     (comment.date < config.flashThreshold ||
       comment.mail.includes("nico:flash")));
 
-export { isFlashComment, isLineBreakResize, parseCommandAndNicoScript };
+const isReverseActive = (vpos: number, isOwner: boolean): boolean => {
+  for (const range of nicoScripts.reverse) {
+    if (
+      (range.target === "コメ" && isOwner) ||
+      (range.target === "投コメ" && !isOwner)
+    )
+      continue;
+    if (range.start < vpos && vpos < range.end) {
+      return true;
+    }
+  }
+  return false;
+};
+
+const isBanActive = (vpos: number): boolean => {
+  for (const range of nicoScripts.ban) {
+    if (range.start < vpos && vpos < range.end) return true;
+  }
+  return false;
+};
+
+export {
+  isBanActive,
+  isFlashComment,
+  isLineBreakResize,
+  isReverseActive,
+  parseCommandAndNicoScript,
+};

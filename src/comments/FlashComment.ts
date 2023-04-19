@@ -9,14 +9,12 @@ import type {
 } from "@/@types/types";
 import { BaseComment } from "@/comments/BaseComment";
 import { imageCache } from "@/contexts/cache";
-import { nicoScripts } from "@/contexts/nicoscript";
 import { config, options } from "@/definition/config";
 import { CanvasRenderingContext2DError } from "@/errors/CanvasRenderingContext2DError";
 import {
   getConfig,
   getFlashFontIndex,
   getFlashFontName,
-  getPosX,
   getStrokeColor,
   nativeSort,
   parseFont,
@@ -27,7 +25,6 @@ class FlashComment extends BaseComment {
   private _globalScale: number;
   private scale: number;
   private scaleX: number;
-  public image?: HTMLCanvasElement | null;
   override readonly pluginName: string = "FlashComment";
   constructor(comment: formattedComment, context: CanvasRenderingContext2D) {
     super(comment, context);
@@ -285,67 +282,7 @@ class FlashComment extends BaseComment {
     size.charSize = measure.charSize;
     return size;
   }
-
-  override draw(vpos: number, showCollision: boolean, debug: boolean) {
-    let reverse = false;
-    for (const range of nicoScripts.reverse) {
-      if (
-        (range.target === "コメ" && this.comment.owner) ||
-        (range.target === "投コメ" && !this.comment.owner)
-      )
-        break;
-      if (range.start < vpos && vpos < range.end) {
-        reverse = true;
-      }
-    }
-    for (const range of nicoScripts.ban) {
-      if (range.start < vpos && vpos < range.end) return;
-    }
-    let posX = (config.canvasWidth - this.comment.width) / 2,
-      posY = this.posY;
-    if (this.comment.loc === "naka") {
-      if (reverse) {
-        posX =
-          config.canvasWidth -
-          this.comment.width -
-          getPosX(
-            this.comment.width,
-            vpos - this.comment.vpos,
-            this.comment.long
-          );
-      } else {
-        posX = getPosX(
-          this.comment.width,
-          vpos - this.comment.vpos,
-          this.comment.long
-        );
-      }
-      if (posX > config.canvasWidth || posX + this.comment.width < 0) {
-        return;
-      }
-    } else if (this.comment.loc === "shita") {
-      posY = config.canvasHeight - this.posY - this.comment.height;
-    }
-    if (this.image === undefined) {
-      this.image = this.getTextImage();
-    }
-    if (this.image) {
-      if (this.comment._live) {
-        this.context.globalAlpha = config.contextFillLiveOpacity;
-      } else {
-        this.context.globalAlpha = 1;
-      }
-      this.context.drawImage(this.image, posX, posY);
-    }
-    if (this.comment.wakuColor) {
-      this.context.strokeStyle = this.comment.wakuColor;
-      this.context.strokeRect(
-        posX,
-        posY,
-        this.comment.width,
-        this.comment.height
-      );
-    }
+  override _drawCollision(posX: number, posY: number, showCollision: boolean) {
     if (showCollision) {
       this.context.strokeStyle = "rgba(255,0,255,1)";
       this.context.strokeRect(
@@ -375,17 +312,7 @@ class FlashComment extends BaseComment {
         );
       }
     }
-    if (debug) {
-      const font = this.context.font;
-      const fillStyle = this.context.fillStyle;
-      this.context.font = parseFont("defont", 30);
-      this.context.fillStyle = "#ff00ff";
-      this.context.fillText(this.comment.mail.join(","), posX, posY + 30);
-      this.context.font = font;
-      this.context.fillStyle = fillStyle;
-    }
   }
-
   /**
    * drawTextで毎回fill/strokeすると重いので画像化して再利用できるようにする
    */

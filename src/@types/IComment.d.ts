@@ -16,6 +16,6 @@ export interface IComment {
   mail: string[];
   image?: HTMLCanvasElement | null;
   convertComment: (comment: formattedComment) => formattedCommentWithSize;
-  getTextImage: (vpos: number) => void;
+  getTextImage: () => void;
   draw: (vpos: number, showCollision: boolean, isDebug: boolean) => void;
 }

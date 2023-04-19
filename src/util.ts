@@ -3,12 +3,13 @@ import type { formattedComment } from "@/@types/format.formatted";
 import type { IComment } from "@/@types/IComment";
 import type {
   collision,
+  collisionItem,
   commentContentIndex,
+  commentFlashFont,
   commentFont,
   formattedCommentWithSize,
   Timeline,
 } from "@/@types/types";
-import type { collisionItem, commentFlashFont } from "@/@types/types";
 import { config } from "@/definition/config";
 /**
  * 当たり判定からコメントを配置できる場所を探す
@@ -56,15 +57,29 @@ const getPosY = (
 };
 /**
  * コメントのvposと現在のvposから左右の位置を返す
- * @param {number} width
- * @param {number} vpos
- * @param {number} long
+ * @param {formattedCommentWithSize} comment
+ * @param {number} vposLapsed
+ * @param {boolean} isReverse
  */
-const getPosX = (width: number, vpos: number, long: number): number => {
-  const speed = (config.commentDrawRange + width) / (long + 100);
-  return (
-    config.commentDrawPadding + config.commentDrawRange - (vpos + 100) * speed
-  );
+const getPosX = (
+  comment: formattedCommentWithSize,
+  vpos: number,
+  isReverse = false
+): number => {
+  if (comment.loc !== "naka") {
+    return (config.canvasWidth - comment.width) / 2;
+  }
+  const speed =
+    (config.commentDrawRange + comment.width) / (comment.long + 100);
+  const vposLapsed = vpos - comment.vpos;
+  const posX =
+    config.commentDrawPadding +
+    config.commentDrawRange -
+    (vposLapsed + 100) * speed;
+  if (isReverse) {
+    return config.canvasWidth - comment.width - posX;
+  }
+  return posX;
 };
 /**
  * フォント名とサイズをもとにcontextで使えるフォントを生成する
@@ -333,7 +348,7 @@ const processMovableComment = (
       count++;
       for (let j = beforeVpos; j < comment.long + 125; j++) {
         const vpos = comment.vpos + j;
-        const left_pos = getPosX(comment.width, j, comment.long);
+        const left_pos = getPosX(comment.comment, vpos);
         let isBreak = false;
         if (
           left_pos + comment.width >= config.collisionRange.right &&
@@ -360,7 +375,7 @@ const processMovableComment = (
   })();
   for (let j = beforeVpos; j < comment.long + 125; j++) {
     const vpos = comment.vpos + j;
-    const left_pos = getPosX(comment.width, j, comment.long);
+    const left_pos = getPosX(comment.comment, vpos);
     arrayPush(timeline, vpos, comment);
     if (
       left_pos + comment.width >= config.collisionRange.right &&

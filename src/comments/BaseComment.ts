@@ -1,13 +1,17 @@
 import { formattedComment } from "@/@types/format.formatted";
 import { IComment } from "@/@types/IComment";
 import { formattedCommentWithSize } from "@/@types/types";
+import { config } from "@/definition/config";
 import { NotImplementedError } from "@/errors/NotImplementedError";
+import { getPosX, parseFont } from "@/util";
+import { isBanActive, isReverseActive } from "@/utils/comment";
 
 class BaseComment implements IComment {
   protected readonly context: CanvasRenderingContext2D;
   public comment: formattedCommentWithSize;
   public posY: number;
   public readonly pluginName: string = "BaseComment";
+  public image?: HTMLCanvasElement | null;
   constructor(comment: formattedComment, context: CanvasRenderingContext2D) {
     this.context = context;
     this.posY = 0;
@@ -50,11 +54,66 @@ class BaseComment implements IComment {
     return {} as formattedCommentWithSize;
   }
   draw(vpos: number, showCollision: boolean, debug: boolean) {
-    console.error("draw method is not implemented", vpos, showCollision, debug);
-    throw new NotImplementedError(this.pluginName, "draw");
+    if (isBanActive(vpos)) return;
+    const reverse = isReverseActive(vpos, this.comment.owner);
+    const posX = getPosX(this.comment, vpos, reverse);
+    const posY =
+      this.comment.loc === "shita"
+        ? config.canvasHeight - this.posY - this.comment.height
+        : this.posY;
+    this._draw(posX, posY);
+    this._drawRectColor(posX, posY);
+    this._drawCollision(posX, posY, showCollision);
+    this._drawDebugInfo(posX, posY, debug);
   }
-  getTextImage(vpos: number) {
-    console.error("getTextImage method is not implemented", vpos);
+
+  _draw(posX: number, posY: number) {
+    if (this.image === undefined) {
+      this.image = this.getTextImage();
+    }
+    if (this.image) {
+      if (this.comment._live) {
+        this.context.globalAlpha = config.contextFillLiveOpacity;
+      } else {
+        this.context.globalAlpha = 1;
+      }
+      this.context.drawImage(this.image, posX, posY);
+    }
+  }
+
+  _drawRectColor(posX: number, posY: number) {
+    if (this.comment.wakuColor) {
+      this.context.strokeStyle = this.comment.wakuColor;
+      this.context.strokeRect(
+        posX,
+        posY,
+        this.comment.width,
+        this.comment.height
+      );
+    }
+  }
+  _drawDebugInfo(posX: number, posY: number, debug: boolean) {
+    if (debug) {
+      const font = this.context.font;
+      const fillStyle = this.context.fillStyle;
+      this.context.font = parseFont("defont", 30);
+      this.context.fillStyle = "#ff00ff";
+      this.context.fillText(this.comment.mail.join(","), posX, posY + 30);
+      this.context.font = font;
+      this.context.fillStyle = fillStyle;
+    }
+  }
+  _drawCollision(posX: number, posY: number, showCollision: boolean) {
+    console.error(
+      "_drawCollision method is not implemented",
+      posX,
+      posY,
+      showCollision
+    );
+    throw new NotImplementedError(this.pluginName, "_drawCollision");
+  }
+  getTextImage(): HTMLCanvasElement | null {
+    console.error("getTextImage method is not implemented");
     throw new NotImplementedError(this.pluginName, "getTextImage");
   }
 }

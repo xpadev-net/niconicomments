@@ -50,10 +50,9 @@ class BaseComment implements IComment {
   get mail() {
     return this.comment.mail;
   }
-  convertComment(comment: formattedComment) {
+  convertComment(comment: formattedComment): formattedCommentWithSize {
     console.error("convertComment method is not implemented", comment);
     throw new NotImplementedError(this.pluginName, "convertComment");
-    return {} as formattedCommentWithSize;
   }
   draw(vpos: number, showCollision: boolean, debug: boolean) {
     if (isBanActive(vpos)) return;

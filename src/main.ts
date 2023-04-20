@@ -247,6 +247,33 @@ class NiconiComments {
     }
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.lastVpos = vpos;
+    this._drawVideo();
+    this._drawCollision(vpos);
+    if (timelineRange) {
+      const targetComment = (() => {
+        if (config.commentLimit === undefined) {
+          return timelineRange;
+        }
+        if (config.hideCommentOrder === "asc") {
+          return timelineRange.slice(-config.commentLimit);
+        }
+        return timelineRange.slice(0, config.commentLimit);
+      })();
+      for (const comment of targetComment) {
+        if (comment.invisible) {
+          continue;
+        }
+        comment.draw(vpos, this.showCollision, isDebug);
+      }
+    }
+    plugins.forEach((val) => val.draw(vpos));
+    this._drawFPS(drawCanvasStart);
+    this._drawCommentCount(timelineRange?.length);
+    logger(`drawCanvas complete: ${performance.now() - drawCanvasStart}ms`);
+    return true;
+  }
+
+  private _drawVideo() {
     if (this.video) {
       let scale;
       const height = this.canvas.height / this.video.videoHeight,
@@ -266,6 +293,9 @@ class NiconiComments {
         this.video.videoHeight * scale
       );
     }
+  }
+
+  private _drawCollision(vpos: number) {
     if (this.showCollision) {
       const leftCollision = this.collision.left[vpos],
         rightCollision = this.collision.right[vpos];
@@ -291,24 +321,9 @@ class NiconiComments {
         }
       }
     }
-    if (timelineRange) {
-      const targetComment = (() => {
-        if (config.commentLimit === undefined) {
-          return timelineRange;
-        }
-        if (config.hideCommentOrder === "asc") {
-          return timelineRange.slice(-config.commentLimit);
-        }
-        return timelineRange.slice(0, config.commentLimit);
-      })();
-      for (const comment of targetComment) {
-        if (comment.invisible) {
-          continue;
-        }
-        comment.draw(vpos, this.showCollision, isDebug);
-      }
-    }
-    plugins.forEach((val) => val.draw(vpos));
+  }
+
+  private _drawFPS(drawCanvasStart: number) {
     if (this.showFPS) {
       this.context.font = parseFont("defont", 60);
       this.context.fillStyle = "#00FF00";
@@ -320,22 +335,18 @@ class NiconiComments {
       this.context.strokeText(`FPS:${fps}(${drawTime}ms)`, 100, 100);
       this.context.fillText(`FPS:${fps}(${drawTime}ms)`, 100, 100);
     }
+  }
+
+  private _drawCommentCount(count?: number | undefined) {
     if (this.showCommentCount) {
       this.context.font = parseFont("defont", 60);
       this.context.fillStyle = "#00FF00";
       this.context.strokeStyle = `rgba(${hex2rgb(
         config.contextStrokeColor
       ).join(",")},${config.contextStrokeOpacity})`;
-      if (timelineRange) {
-        this.context.strokeText(`Count:${timelineRange.length}`, 100, 200);
-        this.context.fillText(`Count:${timelineRange.length}`, 100, 200);
-      } else {
-        this.context.strokeText("Count:0", 100, 200);
-        this.context.fillText("Count:0", 100, 200);
-      }
+      this.context.strokeText(`Count:${count || 0}`, 100, 200);
+      this.context.fillText(`Count:${count || 0}`, 100, 200);
     }
-    logger(`drawCanvas complete: ${performance.now() - drawCanvasStart}ms`);
-    return true;
   }
 
   public addEventListener<K extends keyof CommentEventHandlerMap>(

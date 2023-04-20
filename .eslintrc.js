@@ -28,6 +28,7 @@ module.exports = {
         "no-unused-vars": "off",
         "no-control-regex": "off",
         "simple-import-sort/imports": "error",
-        "simple-import-sort/exports": "error"
+        "simple-import-sort/exports": "error",
+        "@typescript-eslint/typedef": "error"
     },
 };

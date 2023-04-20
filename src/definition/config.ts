@@ -1,5 +1,4 @@
-import type { BaseConfig } from "@/@types/config";
-import type { BaseOptions } from "@/@types/options";
+import type { BaseConfig, BaseOptions } from "@/@types/";
 let defaultConfig: BaseConfig;
 const updateConfig = (config: BaseConfig) => {
   defaultConfig = config;

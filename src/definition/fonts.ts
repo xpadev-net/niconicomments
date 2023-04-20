@@ -1,3 +1,5 @@
+import { FontItem } from "@/@types";
+
 const build = (fonts: FontItem[]): FontItem => {
   return fonts.reduce(
     (pv, val, index) => {

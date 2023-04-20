@@ -1,28 +1,25 @@
 import type {
-  formattedComment,
-  formattedLegacyComment,
-} from "@/@types/format.formatted";
-import type {
   apiChat,
   apiGlobalNumRes,
   apiLeaf,
   apiPing,
   apiThread,
-  rawApiResponse,
-} from "@/@types/format.legacy";
-import type { ownerComment } from "@/@types/format.owner";
-import type { v1Comment, v1Thread } from "@/@types/format.v1";
-import type { Options } from "@/@types/options";
-import type {
   commentFont,
   commentLoc,
   commentSize,
+  formattedComment,
+  formattedLegacyComment,
   nicoScriptReplaceCondition,
   nicoScriptReplaceRange,
   nicoScriptReplaceTarget,
   nicoScriptReverseTarget,
-} from "@/@types/types";
-import { colors } from "@/definition/colors";
+  Options,
+  ownerComment,
+  rawApiResponse,
+  v1Comment,
+  v1Thread,
+} from "@/@types/";
+import { colors } from "@/definition/";
 
 const isBoolean = (i: unknown): i is boolean => typeof i === "boolean";
 const isNumber = (i: unknown): i is number => typeof i === "number";

@@ -1,12 +1,12 @@
 import type {
   formattedComment,
   formattedLegacyComment,
-} from "@/@types/format.formatted";
-import type { rawApiResponse } from "@/@types/format.legacy";
-import type { ownerComment } from "@/@types/format.owner";
-import type { v1Thread } from "@/@types/format.v1";
-import type { inputFormatType } from "@/@types/options";
-import { InvalidFormatError } from "@/errors/InvalidFormatError";
+  inputFormatType,
+  ownerComment,
+  rawApiResponse,
+  v1Thread,
+} from "@/@types/";
+import { InvalidFormatError } from "@/errors/";
 import typeGuard from "@/typeGuard";
 
 /**

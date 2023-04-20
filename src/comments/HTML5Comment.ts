@@ -1,17 +1,18 @@
-import type { formattedComment } from "@/@types/format.formatted";
 import type {
   commentContentItem,
   commentMeasuredContentItem,
+  formattedComment,
   formattedCommentWithFont,
   formattedCommentWithSize,
+  HTML5Fonts,
   measureInput,
   measureTextInput,
   measureTextResult,
-} from "@/@types/types";
-import { BaseComment } from "@/comments/BaseComment";
-import { imageCache } from "@/contexts/cache";
-import { config, options } from "@/definition/config";
-import { CanvasRenderingContext2DError } from "@/errors/CanvasRenderingContext2DError";
+} from "@/@types/";
+import { BaseComment } from "@/comments/";
+import { imageCache } from "@/contexts/";
+import { config, options } from "@/definition/";
+import { CanvasRenderingContext2DError } from "@/errors/";
 import {
   getCharSize,
   getFontSizeAndScale,
@@ -19,7 +20,7 @@ import {
   measure,
 } from "@/nico";
 import { getConfig, getStrokeColor, parseFont } from "@/util";
-import { isLineBreakResize, parseCommandAndNicoScript } from "@/utils/comment";
+import { isLineBreakResize, parseCommandAndNicoScript } from "@/utils/";
 
 class HTML5Comment extends BaseComment {
   override readonly pluginName: string = "HTML5Comment";

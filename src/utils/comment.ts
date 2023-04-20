@@ -1,15 +1,14 @@
-import type { formattedComment } from "@/@types/format.formatted";
 import type {
   commentLoc,
   commentSize,
+  formattedComment,
   formattedCommentWithFont,
   measureTextInput,
   nicoScriptReplace,
   parsedCommand,
-} from "@/@types/types";
-import { nicoScripts } from "@/contexts/nicoscript";
-import { colors } from "@/definition/colors";
-import { config, options } from "@/definition/config";
+} from "@/@types/";
+import { nicoScripts } from "@/contexts/";
+import { colors, config, options } from "@/definition/";
 import typeGuard from "@/typeGuard";
 import { getConfig } from "@/util";
 

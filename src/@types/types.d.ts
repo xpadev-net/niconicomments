@@ -1,4 +1,4 @@
-import type { IComment } from "@/@types/IComment";
+import type { IComment } from "@/@types/";
 
 type formattedCommentWithFont = {
   id: number;

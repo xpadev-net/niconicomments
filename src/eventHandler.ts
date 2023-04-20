@@ -1,6 +1,9 @@
-import type { CommentEventHandlerMap, CommentEventMap } from "@/@types/event";
-import type { valueOf } from "@/@types/types";
-import { nicoScripts } from "@/contexts/nicoscript";
+import type {
+  CommentEventHandlerMap,
+  CommentEventMap,
+  valueOf,
+} from "@/@types/";
+import { nicoScripts } from "@/contexts/";
 
 let handlerList: {
   eventName: keyof CommentEventHandlerMap;

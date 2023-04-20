@@ -1,16 +1,16 @@
-import type { formattedComment } from "@/@types/format.formatted";
 import type {
   commentContentItem,
   commentMeasuredContentItem,
+  formattedComment,
   formattedCommentWithFont,
   formattedCommentWithSize,
   measureTextInput,
   measureTextResult,
-} from "@/@types/types";
-import { BaseComment } from "@/comments/BaseComment";
-import { imageCache } from "@/contexts/cache";
-import { config, options } from "@/definition/config";
-import { CanvasRenderingContext2DError } from "@/errors/CanvasRenderingContext2DError";
+} from "@/@types/";
+import { BaseComment } from "@/comments/";
+import { imageCache } from "@/contexts/";
+import { config, options } from "@/definition/";
+import { CanvasRenderingContext2DError } from "@/errors/";
 import {
   getConfig,
   getFlashFontIndex,
@@ -19,7 +19,7 @@ import {
   nativeSort,
   parseFont,
 } from "@/util";
-import { isLineBreakResize, parseCommandAndNicoScript } from "@/utils/comment";
+import { isLineBreakResize, parseCommandAndNicoScript } from "@/utils/";
 
 class FlashComment extends BaseComment {
   private _globalScale: number;

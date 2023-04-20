@@ -1,16 +1,16 @@
-import type { configItem } from "@/@types/config";
-import type { formattedComment } from "@/@types/format.formatted";
-import type { IComment } from "@/@types/IComment";
 import type {
   collision,
   collisionItem,
   commentContentIndex,
   commentFlashFont,
   commentFont,
+  configItem,
+  formattedComment,
   formattedCommentWithSize,
+  IComment,
   Timeline,
-} from "@/@types/types";
-import { config } from "@/definition/config";
+} from "@/@types/";
+import { config } from "@/definition/";
 /**
  * 当たり判定からコメントを配置できる場所を探す
  * @param {number} currentPos

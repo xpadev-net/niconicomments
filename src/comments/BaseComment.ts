@@ -1,10 +1,12 @@
-import { formattedComment } from "@/@types/format.formatted";
-import { IComment } from "@/@types/IComment";
-import { formattedCommentWithSize } from "@/@types/types";
-import { config } from "@/definition/config";
-import { NotImplementedError } from "@/errors/NotImplementedError";
+import type {
+  formattedComment,
+  formattedCommentWithSize,
+  IComment,
+} from "@/@types/";
+import { config } from "@/definition/";
+import { NotImplementedError } from "@/errors/";
 import { getPosX, parseFont } from "@/util";
-import { isBanActive, isReverseActive } from "@/utils/comment";
+import { isBanActive, isReverseActive } from "@/utils/";
 
 class BaseComment implements IComment {
   protected readonly context: CanvasRenderingContext2D;

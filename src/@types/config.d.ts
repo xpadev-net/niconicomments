@@ -1,7 +1,10 @@
-import { formattedComment } from "@/@types/format.formatted";
-import { IPluginConstructor } from "@/@types/IPlugins";
-import { commentSize } from "@/@types/types";
-import { BaseComment } from "@/comments/BaseComment";
+import type {
+  commentSize,
+  formattedComment,
+  IPluginConstructor,
+  platformFont,
+} from "@/@types/";
+import { BaseComment } from "@/comments/";
 
 type configItem<T> = T | { html5: T; flash: T };
 type configSizeItem<T> = { big: T; medium: T; small: T };

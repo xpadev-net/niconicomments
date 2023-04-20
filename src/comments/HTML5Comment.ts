@@ -9,9 +9,9 @@ import type {
   measureTextInput,
   measureTextResult,
 } from "@/@types/";
-import { BaseComment } from "@/comments/";
+import { BaseComment } from "@/comments/BaseComment";
 import { imageCache } from "@/contexts/";
-import { config, options } from "@/definition/";
+import { config, options } from "@/definition/config";
 import { CanvasRenderingContext2DError } from "@/errors/";
 import {
   getCharSize,
@@ -20,7 +20,7 @@ import {
   measure,
 } from "@/nico";
 import { getConfig, getStrokeColor, parseFont } from "@/util";
-import { isLineBreakResize, parseCommandAndNicoScript } from "@/utils/";
+import { isLineBreakResize, parseCommandAndNicoScript } from "@/utils/comment";
 
 class HTML5Comment extends BaseComment {
   override readonly pluginName: string = "HTML5Comment";

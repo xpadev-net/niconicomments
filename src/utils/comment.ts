@@ -8,7 +8,8 @@ import type {
   parsedCommand,
 } from "@/@types/";
 import { nicoScripts } from "@/contexts/";
-import { colors, config, options } from "@/definition/";
+import { colors } from "@/definition/colors";
+import { config, options } from "@/definition/config";
 import typeGuard from "@/typeGuard";
 import { getConfig } from "@/util";
 

@@ -20,11 +20,11 @@ import {
   config,
   defaultConfig,
   defaultOptions,
-  initConfig,
   options,
   setConfig,
   setOptions,
-} from "@/definition/";
+} from "@/definition/config";
+import { initConfig } from "@/definition/initConfig";
 import { CanvasRenderingContext2DError, InvalidOptionError } from "@/errors/";
 import { registerHandler, removeHandler, triggerHandler } from "@/eventHandler";
 import convert2formattedComment from "@/inputParser";
@@ -37,7 +37,7 @@ import {
   processFixedComment,
   processMovableComment,
 } from "@/util";
-import { isFlashComment } from "@/utils/";
+import { isFlashComment } from "@/utils/comment";
 import { createCommentInstance } from "@/utils/plugins";
 
 import * as internal from "./internal";

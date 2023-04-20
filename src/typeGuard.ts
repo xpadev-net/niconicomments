@@ -19,7 +19,7 @@ import type {
   v1Comment,
   v1Thread,
 } from "@/@types/";
-import { colors } from "@/definition/";
+import { colors } from "@/definition/colors";
 
 const isBoolean = (i: unknown): i is boolean => typeof i === "boolean";
 const isNumber = (i: unknown): i is number => typeof i === "number";

@@ -3,10 +3,10 @@ import type {
   formattedCommentWithSize,
   IComment,
 } from "@/@types/";
-import { config } from "@/definition/";
+import { config } from "@/definition/config";
 import { NotImplementedError } from "@/errors/";
 import { getPosX, parseFont } from "@/util";
-import { isBanActive, isReverseActive } from "@/utils/";
+import { isBanActive, isReverseActive } from "@/utils/comment";
 
 class BaseComment implements IComment {
   protected readonly context: CanvasRenderingContext2D;

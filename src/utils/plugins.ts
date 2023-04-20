@@ -1,6 +1,6 @@
 import type { formattedComment } from "@/@types";
 import { HTML5Comment } from "@/comments";
-import { config } from "@/definition";
+import { config } from "@/definition/config";
 
 const createCommentInstance = (
   comment: formattedComment,

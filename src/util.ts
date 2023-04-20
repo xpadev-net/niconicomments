@@ -10,7 +10,7 @@ import type {
   IComment,
   Timeline,
 } from "@/@types/";
-import { config } from "@/definition/";
+import { config } from "@/definition/config";
 /**
  * 当たり判定からコメントを配置できる場所を探す
  * @param {number} currentPos

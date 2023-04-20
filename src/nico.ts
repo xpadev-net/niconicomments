@@ -1,5 +1,5 @@
 import type { commentSize, measureInput } from "@/@types/";
-import { config } from "@/definition/";
+import { config } from "@/definition/config";
 import { getConfig, parseFont } from "@/util";
 
 /**

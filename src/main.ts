@@ -41,6 +41,7 @@ import {
   processMovableComment,
 } from "@/util";
 import { isFlashComment } from "@/utils/";
+import * as internal from "./internal";
 
 let isDebug = false;
 
@@ -61,6 +62,7 @@ class NiconiComments {
     condition: isFlashComment,
     class: FlashComment,
   };
+  static internal = internal;
 
   /**
    * NiconiComments Constructor

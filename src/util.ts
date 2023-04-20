@@ -58,7 +58,7 @@ const getPosY = (
 /**
  * コメントのvposと現在のvposから左右の位置を返す
  * @param {formattedCommentWithSize} comment
- * @param {number} vposLapsed
+ * @param {number} vpos
  * @param {boolean} isReverse
  */
 const getPosX = (

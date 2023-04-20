@@ -9,7 +9,7 @@ import type {
   Options,
   Timeline,
 } from "@/@types/";
-import { FlashComment, HTML5Comment } from "@/comments/";
+import { FlashComment } from "@/comments/";
 import {
   plugins,
   resetImageCache,
@@ -41,6 +41,8 @@ import {
   processMovableComment,
 } from "@/util";
 import { isFlashComment } from "@/utils/";
+import { createCommentInstance } from "@/utils/plugins";
+
 import * as internal from "./internal";
 
 let isDebug = false;
@@ -147,13 +149,7 @@ class NiconiComments {
     }
     this.getCommentPos(
       rawData.reduce((pv, val) => {
-        for (const plugin of config.commentPlugins) {
-          if (plugin.condition(val)) {
-            pv.push(new plugin.class(val, this.context));
-            return pv;
-          }
-        }
-        pv.push(new HTML5Comment(val, this.context));
+        pv.push(createCommentInstance(val, this.context));
         return pv;
       }, [] as IComment[])
     );
@@ -212,11 +208,7 @@ class NiconiComments {
   public addComments(...rawComments: formattedComment[]) {
     plugins.forEach((val) => val.addComments(rawComments));
     const comments = rawComments.reduce((pv, val) => {
-      if (isFlashComment(val)) {
-        pv.push(new FlashComment(val, this.context));
-      } else {
-        pv.push(new HTML5Comment(val, this.context));
-      }
+      pv.push(createCommentInstance(val, this.context));
       return pv;
     }, [] as IComment[]);
     for (const comment of comments) {

@@ -11,7 +11,7 @@ import typeGuard from "@/typeGuard";
 
 /**
  * 入力されたデータを内部用のデータに変換
- * @param data {any} 入力データ(XMLDocument/niconicome/formatted/legacy/owner/v1)
+ * @param data {XMLDocument|niconicome|formatted|legacy|owner|v1} 入力データ(XMLDocument/niconicome/formatted/legacy/owner/v1)
  * @param type {inputFormatType} 誤検出防止のため入力フォーマットは書かせる
  * @return {formattedComment[]} 変換後のデータを返す
  */

@@ -156,7 +156,7 @@ const fromLegacy = (data: rawApiResponse[]): formattedComment[] => {
 const fromLegacyOwner = (data: string): formattedComment[] => {
   const data_: formattedComment[] = [],
     comments = data.split("\n");
-  for (let i = 0; i < comments.length; i++) {
+  for (let i = 0, n = comments.length; i < n; i++) {
     const value = comments[i];
     if (!value) continue;
     const commentData = value.split(":");
@@ -197,12 +197,14 @@ const fromLegacyOwner = (data: string): formattedComment[] => {
  */
 const fromOwner = (data: ownerComment[]): formattedComment[] => {
   const data_: formattedComment[] = [];
-  data.forEach((value, index) => {
+  for (let i = 0, n = data.length; i < n; i++) {
+    const value = data[i];
+    if (!value) continue;
     const tmpParam: formattedComment = {
-      id: index,
+      id: i,
       vpos: time2vpos(value.time),
       content: value.comment,
-      date: index,
+      date: i,
       date_usec: 0,
       owner: true,
       premium: true,
@@ -217,7 +219,7 @@ const fromOwner = (data: ownerComment[]): formattedComment[] => {
       tmpParam.mail.push("invisible");
     }
     data_.push(tmpParam);
-  });
+  }
   return data_;
 };
 

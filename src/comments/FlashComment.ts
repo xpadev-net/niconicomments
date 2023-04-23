@@ -182,7 +182,7 @@ class FlashComment extends BaseComment {
         item.font || comment.font,
         comment.fontSize
       );
-      for (let i = 0; i < lines.length; i++) {
+      for (let i = 0, n = lines.length; i < n; i++) {
         const value = lines[i];
         if (value === undefined) continue;
         const measure = this.context.measureText(value);
@@ -291,7 +291,7 @@ class FlashComment extends BaseComment {
         this.comment.width,
         this.comment.height
       );
-      for (let i = 0; i < this.comment.lineCount; i++) {
+      for (let i = 0, n = this.comment.lineCount; i < n; i++) {
         const linePosY =
           ((i + 1) * (this.comment.fontSize * this.comment.lineHeight) +
             config.commentYPaddingTop[

@@ -203,7 +203,9 @@ class NiconiComments {
    * 動的にコメント追加
    */
   public addComments(...rawComments: formattedComment[]) {
-    plugins.forEach((val) => val.addComments(rawComments));
+    for (const plugin of plugins) {
+      plugin.addComments(rawComments);
+    }
     const comments = rawComments.reduce((pv, val) => {
       pv.push(createCommentInstance(val, this.context));
       return pv;
@@ -266,7 +268,9 @@ class NiconiComments {
         comment.draw(vpos, this.showCollision, isDebug);
       }
     }
-    plugins.forEach((val) => val.draw(vpos));
+    for (const plugin of plugins) {
+      plugin.draw(vpos);
+    }
     this._drawFPS(drawCanvasStart);
     this._drawCommentCount(timelineRange?.length);
     logger(`drawCanvas complete: ${performance.now() - drawCanvasStart}ms`);

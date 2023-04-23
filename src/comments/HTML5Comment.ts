@@ -129,7 +129,7 @@ class HTML5Comment extends BaseComment {
       itemWidth = result.itemWidth;
     }
 
-    for (let i = 0; i < comment.content.length; i++) {
+    for (let i = 0, n = comment.content.length; i < n; i++) {
       const item = comment.content[i];
       if (!item || !itemWidth) continue;
       item.width = itemWidth[i];
@@ -196,7 +196,7 @@ class HTML5Comment extends BaseComment {
         this.comment.width,
         this.comment.height
       );
-      for (let i = 0; i < this.comment.lineCount; i++) {
+      for (let i = 0, n = this.comment.lineCount; i < n; i++) {
         const linePosY =
           (this.comment.lineHeight * (i + 1) +
             (this.comment.charSize - this.comment.lineHeight) / 2 +

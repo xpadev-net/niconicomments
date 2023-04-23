@@ -54,7 +54,7 @@ const measureWidth = (
     const lines = item.content.split("\n");
     context.font = parseFont(item.font || comment.font, fontSize);
     const width = [];
-    for (let j = 0; j < lines.length; j++) {
+    for (let j = 0, n = lines.length; j < n; j++) {
       const measure = context.measureText(lines[j] as string);
       currentWidth += measure.width;
       width.push(measure.width);

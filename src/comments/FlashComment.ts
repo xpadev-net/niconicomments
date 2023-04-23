@@ -73,7 +73,7 @@ class FlashComment extends BaseComment {
           index.sort(nativeSort((val) => val.index));
           if (config.flashMode === "xp") {
             let offset = 0;
-            for (let i = 1; i < index.length; i++) {
+            for (let i = 1, n = index.length; i < n; i++) {
               const currentVal = index[i],
                 lastVal = index[i - 1];
               if (currentVal === undefined || lastVal === undefined) continue;
@@ -370,7 +370,7 @@ class FlashComment extends BaseComment {
         context.font = parseFont(lastFont, this.comment.fontSize);
       }
       const lines = item.content.split("\n");
-      for (let j = 0; j < lines.length; j++) {
+      for (let j = 0, n = lines.length; j < n; j++) {
         const line = lines[j];
         if (line === undefined) continue;
         const posY =

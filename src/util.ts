@@ -346,7 +346,7 @@ const processMovableComment = (
     while (isChanged && count < 10) {
       isChanged = false;
       count++;
-      for (let j = beforeVpos; j < comment.long + 125; j++) {
+      for (let j = beforeVpos, n = comment.long + 125; j < n; j++) {
         const vpos = comment.vpos + j;
         const left_pos = getPosX(comment.comment, vpos);
         let isBreak = false;
@@ -373,7 +373,7 @@ const processMovableComment = (
     }
     return posY;
   })();
-  for (let j = beforeVpos; j < comment.long + 125; j++) {
+  for (let j = beforeVpos, n = comment.long + 125; j < n; j++) {
     const vpos = comment.vpos + j;
     const left_pos = getPosX(comment.comment, vpos);
     arrayPush(timeline, vpos, comment);

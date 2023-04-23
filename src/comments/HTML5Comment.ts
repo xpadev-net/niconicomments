@@ -270,7 +270,7 @@ class HTML5Comment extends BaseComment {
       lineCount = 0;
     for (const item of this.comment.content) {
       const lines = item.content.split("\n");
-      for (let j = 0; j < lines.length; j++) {
+      for (let j = 0, n = lines.length; j < n; j++) {
         const line = lines[j];
         if (line === undefined) continue;
         const posY =

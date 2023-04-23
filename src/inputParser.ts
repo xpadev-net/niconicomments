@@ -163,7 +163,7 @@ const fromLegacyOwner = (data: string): formattedComment[] => {
     if (commentData.length < 3) {
       continue;
     } else if (commentData.length > 3) {
-      for (let j = 3; j < commentData.length; j++) {
+      for (let j = 3, n = commentData.length; j < n; j++) {
         commentData[2] += `:${commentData[j]}`;
       }
     }

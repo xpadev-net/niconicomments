@@ -236,7 +236,7 @@ const typeGuard = {
         video: (i: unknown) =>
           typeof i === "object" && (i as HTMLVideoElement).nodeName === "VIDEO",
       };
-      for (const key in keys) {
+      for (const key of Object.keys(keys)) {
         if (
           (item as { [key: string]: unknown })[key] !== undefined &&
           !(keys[key] as (i: unknown) => boolean)(

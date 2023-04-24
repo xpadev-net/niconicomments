@@ -255,7 +255,6 @@ class HTML5Comment extends BaseComment {
       ((this.comment.lineCount + 1) / config.hiResCommentCorrection);
     const image = document.createElement("canvas");
     image.width = this.comment.width + 2 * 2 * this.comment.charSize;
-    document.body.append(image);
     image.height =
       this.comment.height +
       ((paddingTop + 1) * this.comment.lineHeight) / scale;

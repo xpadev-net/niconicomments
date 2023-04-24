@@ -1,4 +1,4 @@
-import type { formattedComment } from "@/@types";
+import { formattedComment } from "@/@types";
 import { HTML5Comment } from "@/comments";
 import { config } from "@/definition/config";
 
@@ -13,4 +13,5 @@ const createCommentInstance = (
   }
   return new HTML5Comment(comment, context);
 };
+
 export { createCommentInstance };

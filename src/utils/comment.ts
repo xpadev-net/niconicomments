@@ -1,17 +1,23 @@
 import type {
+  collision,
+  commentFont,
   commentLoc,
   commentSize,
   formattedComment,
   formattedCommentWithFont,
+  formattedCommentWithSize,
   measureTextInput,
   nicoScriptReplace,
   parsedCommand,
 } from "@/@types/";
+import { collisionItem, IComment, Timeline } from "@/@types/";
 import { nicoScripts } from "@/contexts/";
 import { colors } from "@/definition/colors";
 import { config, options } from "@/definition/config";
 import typeGuard from "@/typeGuard";
-import { getConfig } from "@/util";
+
+import { ArrayPush } from "./array";
+import { getConfig } from "./config";
 
 const isLineBreakResize = (comment: measureTextInput) => {
   return (
@@ -396,10 +402,196 @@ const isBanActive = (vpos: number): boolean => {
   return false;
 };
 
+const processFixedComment = (
+  comment: IComment,
+  collision: collisionItem,
+  timeline: Timeline
+) => {
+  let posY = 0,
+    isChanged = true,
+    count = 0;
+  while (isChanged && count < 10) {
+    isChanged = false;
+    count++;
+    for (let j = 0; j < comment.long; j++) {
+      const result = getPosY(posY, comment, collision[comment.vpos + j]);
+      posY = result.currentPos;
+      isChanged = result.isChanged;
+      if (result.isBreak) break;
+    }
+  }
+  for (let j = 0; j < comment.long; j++) {
+    const vpos = comment.vpos + j;
+    ArrayPush(timeline, vpos, comment);
+    if (j > comment.long - 20) continue;
+    ArrayPush(collision, vpos, comment);
+  }
+  comment.posY = posY;
+};
+
+const processMovableComment = (
+  comment: IComment,
+  collision: collision,
+  timeline: Timeline
+) => {
+  const beforeVpos =
+    Math.round(-288 / ((1632 + comment.width) / (comment.long + 125))) - 100;
+  const posY = (() => {
+    if (config.canvasHeight < comment.height) {
+      return (comment.height - config.canvasHeight) / -2;
+    }
+    let posY = 0;
+    let isChanged = true,
+      count = 0;
+    while (isChanged && count < 10) {
+      isChanged = false;
+      count++;
+      for (let j = beforeVpos, n = comment.long + 125; j < n; j++) {
+        const vpos = comment.vpos + j;
+        const left_pos = getPosX(comment.comment, vpos);
+        let isBreak = false;
+        if (
+          left_pos + comment.width >= config.collisionRange.right &&
+          left_pos <= config.collisionRange.right
+        ) {
+          const result = getPosY(posY, comment, collision.right[vpos]);
+          posY = result.currentPos;
+          isChanged = result.isChanged;
+          isBreak = result.isBreak;
+        }
+        if (
+          left_pos + comment.width >= config.collisionRange.left &&
+          left_pos <= config.collisionRange.left
+        ) {
+          const result = getPosY(posY, comment, collision.left[vpos]);
+          posY = result.currentPos;
+          isChanged = result.isChanged;
+          isBreak = result.isBreak;
+        }
+        if (isBreak) return posY;
+      }
+    }
+    return posY;
+  })();
+  for (let j = beforeVpos, n = comment.long + 125; j < n; j++) {
+    const vpos = comment.vpos + j;
+    const left_pos = getPosX(comment.comment, vpos);
+    ArrayPush(timeline, vpos, comment);
+    if (
+      left_pos + comment.width >= config.collisionRange.right &&
+      left_pos <= config.collisionRange.right
+    ) {
+      ArrayPush(collision.right, vpos, comment);
+    }
+    if (
+      left_pos + comment.width >= config.collisionRange.left &&
+      left_pos <= config.collisionRange.left
+    ) {
+      ArrayPush(collision.left, vpos, comment);
+    }
+  }
+  comment.posY = posY;
+};
+
+/**
+ * 当たり判定からコメントを配置できる場所を探す
+ * @param {number} currentPos
+ * @param {parsedComment} targetComment
+ * @param {number[]|undefined} collision
+ */
+const getPosY = (
+  currentPos: number,
+  targetComment: IComment,
+  collision: IComment[] | undefined
+): { currentPos: number; isChanged: boolean; isBreak: boolean } => {
+  let isChanged = false,
+    isBreak = false;
+  if (!collision) return { currentPos, isChanged, isBreak };
+  for (const collisionItem of collision) {
+    if (
+      currentPos < collisionItem.posY + collisionItem.height &&
+      currentPos + targetComment.height > collisionItem.posY &&
+      collisionItem.owner === targetComment.owner &&
+      collisionItem.layer === targetComment.layer
+    ) {
+      if (collisionItem.posY + collisionItem.height > currentPos) {
+        currentPos = collisionItem.posY + collisionItem.height;
+        isChanged = true;
+      }
+      if (currentPos + targetComment.height > config.canvasHeight) {
+        if (config.canvasHeight < targetComment.height) {
+          if (targetComment.mail.includes("naka")) {
+            currentPos = (targetComment.height - config.canvasHeight) / -2;
+          } else {
+            currentPos = 0;
+          }
+        } else {
+          currentPos = Math.floor(
+            Math.random() * (config.canvasHeight - targetComment.height)
+          );
+        }
+        isBreak = true;
+        break;
+      }
+    }
+  }
+  return { currentPos, isChanged, isBreak };
+};
+/**
+ * コメントのvposと現在のvposから左右の位置を返す
+ * @param {formattedCommentWithSize} comment
+ * @param {number} vpos
+ * @param {boolean} isReverse
+ */
+const getPosX = (
+  comment: formattedCommentWithSize,
+  vpos: number,
+  isReverse = false
+): number => {
+  if (comment.loc !== "naka") {
+    return (config.canvasWidth - comment.width) / 2;
+  }
+  const speed =
+    (config.commentDrawRange + comment.width) / (comment.long + 100);
+  const vposLapsed = vpos - comment.vpos;
+  const posX =
+    config.commentDrawPadding +
+    config.commentDrawRange -
+    (vposLapsed + 100) * speed;
+  if (isReverse) {
+    return config.canvasWidth - comment.width - posX;
+  }
+  return posX;
+};
+/**
+ * フォント名とサイズをもとにcontextで使えるフォントを生成する
+ * @param {string} font
+ * @param {string|number} size
+ * @returns {string}
+ */
+const parseFont = (font: commentFont, size: string | number): string => {
+  switch (font) {
+    case "gulim":
+    case "simsun":
+      return config.font[font].replace("[size]", `${size}`);
+    case "gothic":
+    case "mincho":
+      return `${config.fonts[font].weight} ${size}px ${config.fonts[font].font}`;
+    default:
+      return `${config.fonts.defont.weight} ${size}px ${config.fonts.defont.font}`;
+  }
+};
+
 export {
+  getDefaultCommand,
+  getPosX,
+  getPosY,
   isBanActive,
   isFlashComment,
   isLineBreakResize,
   isReverseActive,
   parseCommandAndNicoScript,
+  parseFont,
+  processFixedComment,
+  processMovableComment,
 };

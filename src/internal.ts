@@ -10,14 +10,8 @@ import * as eventHandler from "@/eventHandler";
 import * as inputParser from "@/inputParser";
 import * as nico from "@/nico";
 import * as typeGuard from "@/typeGuard";
-import * as util from "@/util";
-import * as comment from "@/utils/comment";
-import * as plugins from "@/utils/plugins";
+import * as utils from "@/utils";
 
-const utils = {
-  comment,
-  plugins,
-};
 const definition = {
   colors,
   config,
@@ -35,6 +29,5 @@ export {
   nico,
   typeGuard,
   types,
-  util,
   utils,
 };

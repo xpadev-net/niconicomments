@@ -31,13 +31,13 @@ import convert2formattedComment from "@/inputParser";
 import typeGuard from "@/typeGuard";
 import {
   ArrayEqual,
+  changeCALayer,
   hex2rgb,
+  isFlashComment,
   parseFont,
   processFixedComment,
   processMovableComment,
-} from "@/util";
-import { isFlashComment } from "@/utils/comment";
-import { changeCALayer } from "@/utils/commentArt";
+} from "@/utils";
 import { createCommentInstance } from "@/utils/plugins";
 
 import * as internal from "./internal";

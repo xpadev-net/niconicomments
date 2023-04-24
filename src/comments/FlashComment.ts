@@ -7,7 +7,6 @@ import type {
   measureTextInput,
   measureTextResult,
 } from "@/@types/";
-import { BaseComment } from "@/comments/BaseComment";
 import { imageCache } from "@/contexts/";
 import { config, options } from "@/definition/config";
 import { CanvasRenderingContext2DError } from "@/errors/";
@@ -16,10 +15,13 @@ import {
   getFlashFontIndex,
   getFlashFontName,
   getStrokeColor,
+  isLineBreakResize,
   nativeSort,
+  parseCommandAndNicoScript,
   parseFont,
-} from "@/util";
-import { isLineBreakResize, parseCommandAndNicoScript } from "@/utils/comment";
+} from "@/utils";
+
+import { BaseComment } from "./BaseComment";
 
 class FlashComment extends BaseComment {
   private _globalScale: number;

@@ -1,6 +1,6 @@
 import type { commentSize, measureInput } from "@/@types/";
 import { config } from "@/definition/config";
-import { getConfig, parseFont } from "@/util";
+import { getConfig, parseFont } from "@/utils";
 
 /**
  * 各サイズの行高を返す

@@ -5,8 +5,7 @@ import type {
 } from "@/@types/";
 import { config } from "@/definition/config";
 import { NotImplementedError } from "@/errors/";
-import { getPosX, parseFont } from "@/util";
-import { isBanActive, isReverseActive } from "@/utils/comment";
+import { getPosX, isBanActive, isReverseActive, parseFont } from "@/utils";
 
 class BaseComment implements IComment {
   protected readonly context: CanvasRenderingContext2D;

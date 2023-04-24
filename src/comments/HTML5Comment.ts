@@ -14,14 +14,12 @@ import { config, options } from "@/definition/config";
 import { CanvasRenderingContext2DError } from "@/errors/";
 import {
   getCharSize,
+  getConfig,
   getFontSizeAndScale,
   getLineHeight,
-  measure,
-} from "@/nico";
-import {
-  getConfig,
   getStrokeColor,
   isLineBreakResize,
+  measure,
   parseCommandAndNicoScript,
   parseFont,
 } from "@/utils";

@@ -15,6 +15,7 @@ import {
   getConfig,
   getFontSizeAndScale,
   getLineHeight,
+  getStrokeColor,
   isLineBreakResize,
   measure,
   parseCommandAndNicoScript,
@@ -32,6 +33,43 @@ class HTML5Comment extends BaseComment {
 
   override convertComment(comment: formattedComment): formattedCommentWithSize {
     return this.getCommentSize(this.parseCommandAndNicoscript(comment));
+  }
+  /**
+   * コメントの描画サイズを計算する
+   */
+  override getCommentSize(
+    parsedData: formattedCommentWithFont
+  ): formattedCommentWithSize {
+    this.context.font = parseFont(parsedData.font, parsedData.fontSize);
+    const size = parsedData as formattedCommentWithSize;
+    if (parsedData.invisible) {
+      size.height = 0;
+      size.width = 0;
+      size.lineHeight = 0;
+      size.fontSize = 0;
+      size.content = [];
+      size.resized = false;
+      size.resizedX = false;
+      size.resizedY = false;
+      size.charSize = 0;
+      return size;
+    }
+    const measure = this.measureText(parsedData);
+    if (options.scale !== 1 && size.layer === -1) {
+      measure.height *= options.scale;
+      measure.width *= options.scale;
+      measure.fontSize *= options.scale;
+    }
+    size.height = measure.height;
+    size.width = measure.width;
+    size.lineHeight = measure.lineHeight;
+    size.fontSize = measure.fontSize;
+    size.content = measure.content;
+    size.resized = measure.resized;
+    size.resizedX = measure.resizedX;
+    size.resizedY = measure.resizedY;
+    size.charSize = measure.charSize;
+    return size;
   }
 
   /**
@@ -192,6 +230,10 @@ class HTML5Comment extends BaseComment {
     image.height =
       this.comment.height +
       ((paddingTop + 1) * this.comment.lineHeight) / scale;
+    context.strokeStyle = getStrokeColor(this.comment);
+    context.fillStyle = this.comment.color;
+    context.textAlign = "start";
+    context.textBaseline = "alphabetic";
     context.lineWidth = config.contextLineWidth;
     context.font = parseFont(this.comment.font, fontSize);
     const drawScale =

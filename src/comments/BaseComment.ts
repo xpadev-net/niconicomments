@@ -9,15 +9,9 @@ import {
   measureTextResult,
 } from "@/@types/";
 import { imageCache } from "@/contexts";
-import { config, options } from "@/definition/config";
+import { config } from "@/definition/config";
 import { CanvasRenderingContext2DError, NotImplementedError } from "@/errors/";
-import {
-  getPosX,
-  getStrokeColor,
-  isBanActive,
-  isReverseActive,
-  parseFont,
-} from "@/utils";
+import { getPosX, isBanActive, isReverseActive, parseFont } from "@/utils";
 
 /**
  * コメントの描画を行うクラスの基底クラス
@@ -85,36 +79,8 @@ class BaseComment implements IComment {
   protected getCommentSize(
     parsedData: formattedCommentWithFont
   ): formattedCommentWithSize {
-    this.context.font = parseFont(parsedData.font, parsedData.fontSize);
-    const size = parsedData as formattedCommentWithSize;
-    if (parsedData.invisible) {
-      size.height = 0;
-      size.width = 0;
-      size.lineHeight = 0;
-      size.fontSize = 0;
-      size.content = [];
-      size.resized = false;
-      size.resizedX = false;
-      size.resizedY = false;
-      size.charSize = 0;
-      return size;
-    }
-    const measure = this.measureText(parsedData);
-    if (options.scale !== 1 && size.layer === -1) {
-      measure.height *= options.scale;
-      measure.width *= options.scale;
-      measure.fontSize *= options.scale;
-    }
-    size.height = measure.height;
-    size.width = measure.width;
-    size.lineHeight = measure.lineHeight;
-    size.fontSize = measure.fontSize;
-    size.content = measure.content;
-    size.resized = measure.resized;
-    size.resizedX = measure.resizedX;
-    size.resizedY = measure.resizedY;
-    size.charSize = measure.charSize;
-    return size;
+    console.error("getCommentSize method is not implemented", parsedData);
+    throw new NotImplementedError(this.pluginName, "getCommentSize");
   }
 
   /**
@@ -304,10 +270,6 @@ class BaseComment implements IComment {
     const image = document.createElement("canvas");
     const context = image.getContext("2d");
     if (!context) throw new CanvasRenderingContext2DError();
-    context.strokeStyle = getStrokeColor(this.comment);
-    context.fillStyle = this.comment.color;
-    context.textAlign = "start";
-    context.textBaseline = "alphabetic";
     return {
       image,
       context,

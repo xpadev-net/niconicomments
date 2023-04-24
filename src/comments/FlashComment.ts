@@ -57,15 +57,16 @@ class FlashComment extends BaseComment {
       const lineContent: commentContentItem[] = [];
       for (const part of line) {
         if (part.match(/[ -~｡-ﾟ]+/g) !== null) {
-          lineContent.push({ content: part });
+          lineContent.push({ content: part, slicedContent: part.split("\n") });
           continue;
         }
         const index = getFlashFontIndex(part);
         if (index.length === 0) {
-          lineContent.push({ content: part });
+          lineContent.push({ content: part, slicedContent: part.split("\n") });
         } else if (index.length === 1 && index[0]) {
           lineContent.push({
             content: part,
+            slicedContent: part.split("\n"),
             font: getFlashFontName(index[0].font),
           });
         } else {
@@ -76,37 +77,50 @@ class FlashComment extends BaseComment {
               const currentVal = index[i],
                 lastVal = index[i - 1];
               if (currentVal === undefined || lastVal === undefined) continue;
+              const content = part.slice(offset, currentVal.index);
               lineContent.push({
-                content: part.slice(offset, currentVal.index),
+                content: content,
+                slicedContent: content.split("\n"),
                 font: getFlashFontName(lastVal.font),
               });
               offset = currentVal.index;
             }
             const val = index[index.length - 1];
-            if (val)
+            if (val) {
+              const content = part.slice(offset);
               lineContent.push({
-                content: part.slice(offset),
+                content: content,
+                slicedContent: content.split("\n"),
                 font: getFlashFontName(val.font),
               });
+            }
           } else {
             const firstVal = index[0],
               secondVal = index[1];
             if (!firstVal || !secondVal) {
-              lineContent.push({ content: part });
+              lineContent.push({
+                content: part,
+                slicedContent: part.split("\n"),
+              });
               continue;
             }
             if (firstVal.font !== "gothic") {
               lineContent.push({
                 content: part,
+                slicedContent: part.split("\n"),
                 font: getFlashFontName(firstVal.font),
               });
             } else {
+              const firstContent = part.slice(0, secondVal.index);
+              const secondContent = part.slice(secondVal.index);
               lineContent.push({
-                content: part.slice(0, secondVal.index),
+                content: firstContent,
+                slicedContent: firstContent.split("\n"),
                 font: getFlashFontName(firstVal.font),
               });
               lineContent.push({
-                content: part.slice(secondVal.index),
+                content: secondContent,
+                slicedContent: secondContent.split("\n"),
                 font: getFlashFontName(secondVal.font),
               });
             }
@@ -303,7 +317,7 @@ class FlashComment extends BaseComment {
         lastFont = item.font || this.comment.font;
         context.font = parseFont(lastFont, this.comment.fontSize);
       }
-      const lines = item.content.split("\n");
+      const lines = item.slicedContent;
       for (let j = 0, n = lines.length; j < n; j++) {
         const line = lines[j];
         if (line === undefined) continue;

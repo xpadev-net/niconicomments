@@ -43,6 +43,7 @@ type parsedComment = formattedCommentWithSize & {
 };
 type commentContentItem = {
   content: string;
+  slicedContent: string[];
   font?: commentFlashFont;
   width?: number[];
 };

@@ -43,7 +43,10 @@ class HTML5Comment extends BaseComment {
   ): formattedCommentWithFont {
     const data = parseCommandAndNicoScript(comment);
     const content: commentContentItem[] = [];
-    content.push({ content: comment.content });
+    content.push({
+      content: comment.content,
+      slicedContent: comment.content.split("\n"),
+    });
     const lineCount = content.reduce((pv, val) => {
       return pv + (val.content.match(/\n/g)?.length || 0);
     }, 1);
@@ -196,28 +199,22 @@ class HTML5Comment extends BaseComment {
       scale *
       (this.comment.layer === -1 ? options.scale : 1);
     context.scale(drawScale, drawScale);
-    let leftOffset = 0,
-      lineCount = 0;
+    let lineCount = 0;
     const offsetY =
       (this.comment.charSize - this.comment.lineHeight) / 2 +
       this.comment.lineHeight * -0.16 +
       (config.fonts[this.comment.font as unknown as HTML5Fonts]?.offset || 0);
     for (const item of this.comment.content) {
-      const lines = item.content.split("\n");
+      const lines = item.slicedContent;
       for (let j = 0, n = lines.length; j < n; j++) {
         const line = lines[j];
         if (line === undefined) continue;
         const posY =
           (this.comment.lineHeight * (lineCount + 1 + paddingTop) + offsetY) /
           scale;
-        context.strokeText(line, leftOffset, posY);
-        context.fillText(line, leftOffset, posY);
-        if (j < n - 1) {
-          leftOffset = 0;
-          lineCount += 1;
-        } else {
-          leftOffset += item.width[j] || 0;
-        }
+        context.strokeText(line, 0, posY);
+        context.fillText(line, 0, posY);
+        lineCount += 1;
       }
     }
     return image;

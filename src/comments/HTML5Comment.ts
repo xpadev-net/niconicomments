@@ -61,12 +61,6 @@ class HTML5Comment extends BaseComment {
     } as formattedCommentWithFont;
   }
 
-  /**
-   * context.measureTextの複数行対応版
-   * 画面外にはみ出すコメントの縮小も行う
-   * @param comment - 独自フォーマットのコメントデータ
-   * @returns {{resized: boolean, width: number, width: number, fontSize: number, width_min: number, height: number, lineHeight: number}} - 描画サイズとリサイズの情報
-   */
   override measureText(comment: measureTextInput): measureTextResult {
     const widthLimit = getConfig(config.commentStageSize, false)[
         comment.full ? "fullWidth" : "width"
@@ -183,9 +177,6 @@ class HTML5Comment extends BaseComment {
     }
   }
 
-  /**
-   * drawTextで毎回fill/strokeすると重いので画像化して再利用できるようにする
-   */
   override getTextImage(): HTMLCanvasElement | null {
     if (
       this.comment.invisible ||

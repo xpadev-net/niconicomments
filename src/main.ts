@@ -66,8 +66,8 @@ class NiconiComments {
   /**
    * NiconiComments Constructor
    * @param {HTMLCanvasElement} canvas - 描画対象のキャンバス
-   * @param {[]} data - 描画用のコメント
-   * @param initOptions
+   * @param {inputFormat} data - 描画用のコメント
+   * @param {Options|undefined} initOptions
    */
   constructor(
     canvas: HTMLCanvasElement,
@@ -137,7 +137,7 @@ class NiconiComments {
 
   /**
    * 事前に当たり判定を考慮してコメントの描画場所を決定する
-   * @param {any[]} rawData
+   * @param {formattedComment[]} rawData
    */
   private preRendering(rawData: formattedComment[]) {
     const preRenderingStart = performance.now();
@@ -156,6 +156,8 @@ class NiconiComments {
 
   /**
    * 計算された描画サイズをもとに各コメントの配置位置を決定する
+   * @param {IComment[]} data
+   * @returns {IComment[]}
    */
   private getCommentPos(data: IComment[]): IComment[] {
     const getCommentPosStart = performance.now();
@@ -200,7 +202,9 @@ class NiconiComments {
   }
 
   /**
-   * 動的にコメント追加
+   * 動的にコメント追加する
+   * ※すでに存在するコメントの位置はvposに関係なく更新されません
+   * @param {...formattedComment} rawComments
    */
   public addComments(...rawComments: formattedComment[]) {
     for (const plugin of plugins) {
@@ -226,9 +230,9 @@ class NiconiComments {
 
   /**
    * キャンバスを描画する
-   * @param vpos - 動画の現在位置の100倍 ニコニコから吐き出されるコメントの位置情報は主にこれ
-   * @param forceRendering
-   * @return isChanged - 再描画されたか
+   * @param {number} vpos 動画の現在位置の100倍 ニコニコから吐き出されるコメントの位置情報は主にこれ
+   * @param {boolean} forceRendering キャッシュを使用せずに再描画を強制するか
+   * @return {boolean} 再描画されたか
    */
   public drawCanvas(vpos: number, forceRendering = false): boolean {
     const drawCanvasStart = performance.now();
@@ -251,23 +255,7 @@ class NiconiComments {
     this.lastVpos = vpos;
     this._drawVideo();
     this._drawCollision(vpos);
-    if (timelineRange) {
-      const targetComment = (() => {
-        if (config.commentLimit === undefined) {
-          return timelineRange;
-        }
-        if (config.hideCommentOrder === "asc") {
-          return timelineRange.slice(-config.commentLimit);
-        }
-        return timelineRange.slice(0, config.commentLimit);
-      })();
-      for (const comment of targetComment) {
-        if (comment.invisible) {
-          continue;
-        }
-        comment.draw(vpos, this.showCollision, isDebug);
-      }
-    }
+    this._drawComments(timelineRange, vpos);
     for (const plugin of plugins) {
       plugin.draw(vpos);
     }
@@ -277,6 +265,10 @@ class NiconiComments {
     return true;
   }
 
+  /**
+   * 背景動画が設定されている場合に描画する
+   * @private
+   */
   private _drawVideo() {
     if (this.video) {
       let scale;
@@ -299,6 +291,37 @@ class NiconiComments {
     }
   }
 
+  /**
+   * コメントを描画する
+   * @param {IComment[]} timelineRange 指定されたvposに存在するコメント
+   * @param {number} vpos
+   * @private
+   */
+  private _drawComments(timelineRange: IComment[] | undefined, vpos: number) {
+    if (timelineRange) {
+      const targetComment = (() => {
+        if (config.commentLimit === undefined) {
+          return timelineRange;
+        }
+        if (config.hideCommentOrder === "asc") {
+          return timelineRange.slice(-config.commentLimit);
+        }
+        return timelineRange.slice(0, config.commentLimit);
+      })();
+      for (const comment of targetComment) {
+        if (comment.invisible) {
+          continue;
+        }
+        comment.draw(vpos, this.showCollision, isDebug);
+      }
+    }
+  }
+
+  /**
+   * 当たり判定を描画する
+   * @param {number} vpos
+   * @private
+   */
   private _drawCollision(vpos: number) {
     if (this.showCollision) {
       const leftCollision = this.collision.left[vpos],
@@ -327,6 +350,11 @@ class NiconiComments {
     }
   }
 
+  /**
+   * FPSを描画する
+   * @param {number} drawCanvasStart 処理を開始した時間(ms)
+   * @private
+   */
   private _drawFPS(drawCanvasStart: number) {
     if (this.showFPS) {
       this.context.font = parseFont("defont", 60);
@@ -341,6 +369,11 @@ class NiconiComments {
     }
   }
 
+  /**
+   * 描画されたコメント数を描画する
+   * @param {number} count
+   * @private
+   */
   private _drawCommentCount(count?: number | undefined) {
     if (this.showCommentCount) {
       this.context.font = parseFont("defont", 60);
@@ -353,6 +386,11 @@ class NiconiComments {
     }
   }
 
+  /**
+   * イベントハンドラを追加
+   * @param {CommentEventName} eventName イベント名
+   * @param {CommentEventHandler} handler イベントハンドラ
+   */
   public addEventListener<K extends keyof CommentEventHandlerMap>(
     eventName: K,
     handler: CommentEventHandlerMap[K]
@@ -360,6 +398,11 @@ class NiconiComments {
     registerHandler(eventName, handler);
   }
 
+  /**
+   * イベントハンドラを削除
+   * @param {CommentEventName} eventName イベント名
+   * @param {CommentEventHandler} handler イベントハンドラ
+   */
   public removeEventListener<K extends keyof CommentEventHandlerMap>(
     eventName: K,
     handler: CommentEventHandlerMap[K]

@@ -7,14 +7,11 @@ import type {
   measureTextInput,
   measureTextResult,
 } from "@/@types/";
-import { imageCache } from "@/contexts/";
 import { config, options } from "@/definition/config";
-import { CanvasRenderingContext2DError } from "@/errors/";
 import {
   getConfig,
   getFlashFontIndex,
   getFlashFontName,
-  getStrokeColor,
   isLineBreakResize,
   nativeSort,
   parseCommandAndNicoScript,
@@ -279,54 +276,25 @@ class FlashComment extends BaseComment {
       }
     }
   }
-  /**
-   * drawTextで毎回fill/strokeすると重いので画像化して再利用できるようにする
-   */
-  override getTextImage(): HTMLCanvasElement | null {
-    if (
-      this.comment.invisible ||
-      (this.comment.lineCount === 1 && this.comment.width === 0) ||
-      this.comment.height - (this.comment.charSize - this.comment.lineHeight) <=
-        0
-    )
-      return null;
-    const cacheKey =
-        JSON.stringify(this.comment.content) +
-        "@@FLASH@@" +
-        [...this.comment.mail].sort().join(","),
-      cache = imageCache[cacheKey];
-    if (cache) {
-      this.image = cache.image;
-      window.setTimeout(() => {
-        delete this.image;
-      }, this.comment.long * 10 + config.cacheAge);
-      clearTimeout(cache.timeout);
-      cache.timeout = window.setTimeout(() => {
-        delete imageCache[cacheKey];
-      }, this.comment.long * 10 + config.cacheAge);
-      return cache.image;
-    }
-    const image = document.createElement("canvas");
+
+  override _generateTextImage(): HTMLCanvasElement {
+    const { image, context } = this.createCanvas();
     image.width = this.comment.width;
     image.height = this.comment.height;
-    const context = image.getContext("2d");
-    if (!context) throw new CanvasRenderingContext2DError();
-    context.strokeStyle = getStrokeColor(this.comment);
-    context.textAlign = "start";
-    context.textBaseline = "alphabetic";
     context.lineWidth = 4;
     context.font = parseFont(this.comment.font, this.comment.fontSize);
-    context.scale(
+    const scale =
       this._globalScale *
-        this.scale *
-        (this.comment.layer === -1 ? options.scale : 1) *
-        this.scaleX,
-      this._globalScale *
-        this.scale *
-        (this.comment.layer === -1 ? options.scale : 1)
-    );
-    context.fillStyle = this.comment.color;
+      this.scale *
+      (this.comment.layer === -1 ? options.scale : 1);
+    context.scale(scale * this.scaleX, scale);
     const lineOffset = this.comment.lineOffset;
+    const offsetKey = this.comment.resizedY ? "resized" : "default";
+    const offsetY =
+      config.commentYPaddingTop[offsetKey] +
+      this.comment.fontSize *
+        this.comment.lineHeight *
+        config.commentYOffset[this.comment.size][offsetKey];
     let lastFont = this.comment.font,
       leftOffset = 0,
       lineCount = 0;
@@ -342,17 +310,10 @@ class FlashComment extends BaseComment {
         const posY =
           (lineOffset + lineCount + 1) *
             (this.comment.fontSize * this.comment.lineHeight) +
-          config.commentYPaddingTop[
-            this.comment.resizedY ? "resized" : "default"
-          ] +
-          this.comment.fontSize *
-            this.comment.lineHeight *
-            config.commentYOffset[this.comment.size][
-              this.comment.resizedY ? "resized" : "default"
-            ];
+          offsetY;
         context.strokeText(line, leftOffset, posY);
         context.fillText(line, leftOffset, posY);
-        if (j < lines.length - 1) {
+        if (j < n - 1) {
           leftOffset = 0;
           lineCount += 1;
         } else {
@@ -360,18 +321,6 @@ class FlashComment extends BaseComment {
         }
       }
     }
-
-    this.image = image;
-    window.setTimeout(() => {
-      delete this.image;
-    }, this.comment.long * 10 + config.cacheAge);
-    imageCache[cacheKey] = {
-      timeout: window.setTimeout(() => {
-        delete imageCache[cacheKey];
-      }, this.comment.long * 10 + config.cacheAge),
-      image,
-    };
-
     return image;
   }
 }

@@ -8,15 +8,23 @@ import {
   measureTextInput,
   measureTextResult,
 } from "@/@types/";
+import { imageCache } from "@/contexts";
 import { config, options } from "@/definition/config";
-import { NotImplementedError } from "@/errors/";
-import { getPosX, isBanActive, isReverseActive, parseFont } from "@/utils";
+import { CanvasRenderingContext2DError, NotImplementedError } from "@/errors/";
+import {
+  getPosX,
+  getStrokeColor,
+  isBanActive,
+  isReverseActive,
+  parseFont,
+} from "@/utils";
 
 /**
  * コメントの描画を行うクラスの基底クラス
  */
 class BaseComment implements IComment {
   protected readonly context: CanvasRenderingContext2D;
+  protected readonly cacheKey: string;
   public comment: formattedCommentWithSize;
   public posY: number;
   public readonly pluginName: string = "BaseComment";
@@ -32,6 +40,10 @@ class BaseComment implements IComment {
     this.posY = 0;
     comment.content = comment.content.replace(/\t/g, "\u2003\u2003");
     this.comment = this.convertComment(comment);
+    this.cacheKey =
+      JSON.stringify(this.comment.content) +
+      `@@${this.pluginName}@@` +
+      [...this.comment.mail].sort().join(",");
   }
   get invisible() {
     return this.comment.invisible;
@@ -68,8 +80,9 @@ class BaseComment implements IComment {
    * コメントの描画サイズを計算する
    * @param {formattedCommentWithFont} parsedData コメント
    * @returns {formattedCommentWithSize} 描画サイズを含むコメント
+   * @protected
    */
-  getCommentSize(
+  protected getCommentSize(
     parsedData: formattedCommentWithFont
   ): formattedCommentWithSize {
     this.context.font = parseFont(parsedData.font, parsedData.fontSize);
@@ -109,8 +122,9 @@ class BaseComment implements IComment {
    * 画面外にはみ出すコメントの縮小も行う
    * @param {measureTextInput} comment - 独自フォーマットのコメントデータ
    * @returns {measureTextResult} - 描画サイズとリサイズの情報
+   * @protected
    */
-  measureText(comment: measureTextInput): measureTextResult {
+  protected measureText(comment: measureTextInput): measureTextResult {
     console.error("measureText method is not implemented", comment);
     throw new NotImplementedError(this.pluginName, "measureText");
   }
@@ -119,8 +133,11 @@ class BaseComment implements IComment {
    * サイズ計測などを行うためのラッパー関数
    * @param {formattedComment} comment コンストラクタで受け取ったコメント
    * @returns {formattedCommentWithSize} 描画サイズを含むコメント
+   * @protected
    */
-  convertComment(comment: formattedComment): formattedCommentWithSize {
+  protected convertComment(
+    comment: formattedComment
+  ): formattedCommentWithSize {
     console.error("convertComment method is not implemented", comment);
     throw new NotImplementedError(this.pluginName, "convertComment");
   }
@@ -130,8 +147,9 @@ class BaseComment implements IComment {
    * @param {number} vpos
    * @param {boolean} showCollision
    * @param {boolean} debug
+   * @public
    */
-  draw(vpos: number, showCollision: boolean, debug: boolean) {
+  public draw(vpos: number, showCollision: boolean, debug: boolean) {
     if (isBanActive(vpos)) return;
     const reverse = isReverseActive(vpos, this.comment.owner);
     const posX = getPosX(this.comment, vpos, reverse);
@@ -149,8 +167,9 @@ class BaseComment implements IComment {
    * コメント本体を描画する
    * @param {number} posX 描画位置
    * @param {number} posY 描画位置
+   * @protected
    */
-  _draw(posX: number, posY: number) {
+  protected _draw(posX: number, posY: number) {
     if (this.image === undefined) {
       this.image = this.getTextImage();
     }
@@ -168,8 +187,9 @@ class BaseComment implements IComment {
    * 枠コマンドで指定されている場合に枠を描画する
    * @param {number} posX 描画位置
    * @param {number} posY 描画位置
+   * @protected
    */
-  _drawRectColor(posX: number, posY: number) {
+  protected _drawRectColor(posX: number, posY: number) {
     if (this.comment.wakuColor) {
       this.context.strokeStyle = this.comment.wakuColor;
       this.context.strokeRect(
@@ -186,8 +206,9 @@ class BaseComment implements IComment {
    * @param {number} posX 描画位置
    * @param {number} posY 描画位置
    * @param {boolean} debug デバッグモードかどうか
+   * @protected
    */
-  _drawDebugInfo(posX: number, posY: number, debug: boolean) {
+  protected _drawDebugInfo(posX: number, posY: number, debug: boolean) {
     if (debug) {
       const font = this.context.font;
       const fillStyle = this.context.fillStyle;
@@ -204,8 +225,9 @@ class BaseComment implements IComment {
    * @param {number} posX 描画位置
    * @param {number} posY 描画位置
    * @param {boolean} showCollision 当たり判定を表示するかどうか
+   * @protected
    */
-  _drawCollision(posX: number, posY: number, showCollision: boolean) {
+  protected _drawCollision(posX: number, posY: number, showCollision: boolean) {
     console.error(
       "_drawCollision method is not implemented",
       posX,
@@ -217,10 +239,79 @@ class BaseComment implements IComment {
 
   /**
    * コメントの画像を生成する
+   * @protected
    */
-  getTextImage(): HTMLCanvasElement | null {
-    console.error("getTextImage method is not implemented");
-    throw new NotImplementedError(this.pluginName, "getTextImage");
+  protected getTextImage(): HTMLCanvasElement | null {
+    if (
+      this.comment.invisible ||
+      (this.comment.lineCount === 1 && this.comment.width === 0) ||
+      this.comment.height - (this.comment.charSize - this.comment.lineHeight) <=
+        0
+    )
+      return null;
+    const cache = imageCache[this.cacheKey];
+    if (cache) {
+      this.image = cache.image;
+      window.setTimeout(() => {
+        delete this.image;
+      }, this.comment.long * 10 + config.cacheAge);
+      clearTimeout(cache.timeout);
+      cache.timeout = window.setTimeout(() => {
+        delete imageCache[this.cacheKey];
+      }, this.comment.long * 10 + config.cacheAge);
+      return cache.image;
+    }
+    if (this.image) return this.image;
+    const image = this._generateTextImage();
+    this._cacheImage(image);
+    return image;
+  }
+
+  /**
+   * コメントの画像を実際に生成する
+   * @protected
+   */
+  protected _generateTextImage(): HTMLCanvasElement {
+    console.error("_generateTextImage method is not implemented");
+    throw new NotImplementedError(this.pluginName, "_generateTextImage");
+  }
+
+  /**
+   * 画像をキャッシュする
+   * @param {HTMLCanvasElement} image
+   * @protected
+   */
+  protected _cacheImage(image: HTMLCanvasElement) {
+    this.image = image;
+    window.setTimeout(() => {
+      delete this.image;
+    }, this.comment.long * 10 + config.cacheAge);
+    imageCache[this.cacheKey] = {
+      timeout: window.setTimeout(() => {
+        delete imageCache[this.cacheKey];
+      }, this.comment.long * 10 + config.cacheAge),
+      image,
+    };
+  }
+
+  /**
+   * Canvasを生成する
+   */
+  protected createCanvas(): {
+    image: HTMLCanvasElement;
+    context: CanvasRenderingContext2D;
+  } {
+    const image = document.createElement("canvas");
+    const context = image.getContext("2d");
+    if (!context) throw new CanvasRenderingContext2DError();
+    context.strokeStyle = getStrokeColor(this.comment);
+    context.fillStyle = this.comment.color;
+    context.textAlign = "start";
+    context.textBaseline = "alphabetic";
+    return {
+      image,
+      context,
+    };
   }
 }
 

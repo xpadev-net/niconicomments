@@ -187,6 +187,10 @@ const initConfig = () => {
      */
     sameCAMinScore: 10,
     /**
+     * レイヤーを分ける際に同一CAとして扱う時間(範囲)
+     */
+    sameCATimestampRange: 300,
+    /**
      * プラグインを保持するようの変数
      */
     plugins: [],

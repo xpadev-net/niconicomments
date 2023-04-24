@@ -5,7 +5,6 @@ import type {
   commentFlashFont,
   commentFont,
   configItem,
-  formattedComment,
   formattedCommentWithSize,
   IComment,
   Timeline,
@@ -167,53 +166,6 @@ const hex2rgba = (hex: string) => {
     if (index === 3) return parseInt(str, 16) / 256;
     return parseInt(str, 16);
   });
-};
-/**
- * CAと思われるコメントのレイヤーを分離する
- * @param {formattedComment[]} rawData
- */
-const changeCALayer = (rawData: formattedComment[]): formattedComment[] => {
-  const userList: { [key: number]: number } = {};
-  const data: formattedComment[] = [],
-    index: { [key: string]: formattedComment } = {};
-  for (const value of rawData) {
-    if (value.user_id === undefined || value.user_id === -1) continue;
-    if (userList[value.user_id] === undefined) userList[value.user_id] = 0;
-    if (
-      value.mail.indexOf("ca") > -1 ||
-      value.mail.indexOf("patissier") > -1 ||
-      value.mail.indexOf("ender") > -1 ||
-      value.mail.indexOf("full") > -1
-    ) {
-      userList[value.user_id] += 5;
-    }
-    if ((value.content.match(/\r\n|\n|\r/g) || []).length > 2) {
-      userList[value.user_id] +=
-        (value.content.match(/\r\n|\n|\r/g) || []).length / 2;
-    }
-    const key = `${value.content}@@${[...value.mail]
-        .sort()
-        .filter((e) => !e.match(/@[\d.]+|184|device:.+|patissier|ca/))
-        .join("")}`,
-      lastComment = index[key];
-    if (lastComment !== undefined) {
-      if (
-        value.vpos - lastComment.vpos > config.sameCAGap ||
-        Math.abs(value.date - lastComment.date) < config.sameCARange
-      ) {
-        data.push(value);
-        index[key] = value;
-      }
-    } else {
-      data.push(value);
-      index[key] = value;
-    }
-  }
-  for (const value of data) {
-    if (userList[value.user_id] || 0 >= config.sameCAMinScore)
-      value.layer = value.user_id;
-  }
-  return data;
 };
 
 /**
@@ -396,7 +348,6 @@ const processMovableComment = (
 export {
   ArrayEqual,
   arrayPush,
-  changeCALayer,
   getConfig,
   getFlashFontIndex,
   getFlashFontName,

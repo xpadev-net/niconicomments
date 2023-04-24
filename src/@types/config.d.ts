@@ -63,6 +63,7 @@ type BaseConfig = {
   sameCAGap: number;
   sameCAMinScore: number;
   sameCARange: number;
+  sameCATimestampRange: number;
   letterSpacing: number;
   scriptCharOffset: number;
   plugins: IPluginConstructor[];

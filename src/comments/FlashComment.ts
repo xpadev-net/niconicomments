@@ -159,7 +159,7 @@ class FlashComment extends BaseComment {
    * @param comment - 独自フォーマットのコメントデータ
    * @returns {{resized: boolean, width: number, width: number, fontSize: number, width_min: number, height: number, lineHeight: number}} - 描画サイズとリサイズの情報
    */
-  measureText(comment: measureTextInput): measureTextResult {
+  override measureText(comment: measureTextInput): measureTextResult {
     const configLineHeight = getConfig(config.lineHeight, true),
       configFontSize = getConfig(config.fontSize, true);
     const lineCount = comment.lineCount;
@@ -248,42 +248,6 @@ class FlashComment extends BaseComment {
     };
   }
 
-  /**
-   * コメントの描画サイズを計算する
-   */
-  getCommentSize(
-    parsedData: formattedCommentWithFont
-  ): formattedCommentWithSize {
-    this.context.font = parseFont(parsedData.font, parsedData.fontSize);
-    const size = parsedData as formattedCommentWithSize;
-    if (parsedData.invisible) {
-      size.height = 0;
-      size.width = 0;
-      size.lineHeight = 0;
-      size.fontSize = 0;
-      size.content = [];
-      size.resized = false;
-      size.resizedX = false;
-      size.resizedY = false;
-      size.charSize = 0;
-      return size;
-    }
-    const measure = this.measureText(parsedData);
-    if (options.scale !== 1 && size.layer === -1) {
-      measure.height *= options.scale;
-      measure.width *= options.scale;
-    }
-    size.height = measure.height * this._globalScale;
-    size.width = measure.width * this._globalScale;
-    size.lineHeight = measure.lineHeight;
-    size.fontSize = measure.fontSize;
-    size.content = measure.content;
-    size.resized = measure.resized;
-    size.resizedX = measure.resizedX;
-    size.resizedY = measure.resizedY;
-    size.charSize = measure.charSize;
-    return size;
-  }
   override _drawCollision(posX: number, posY: number, showCollision: boolean) {
     if (showCollision) {
       this.context.strokeStyle = "rgba(255,0,255,1)";

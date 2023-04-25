@@ -201,7 +201,7 @@ const processNicoscript = (
   commands: parsedCommand
 ) => {
   const nicoscript = comment.content.match(
-    /^(?:@|\uff20)(\u30c7\u30d5\u30a9\u30eb\u30c8|\u7f6e\u63db|\u9006|\u30b3\u30e1\u30f3\u30c8\u7981\u6b62|\u30b7\u30fc\u30af\u7981\u6b62|\u30b8\u30e3\u30f3\u30d7)(.*)/
+    /^[@\uff20](\u30c7\u30d5\u30a9\u30eb\u30c8|\u7f6e\u63db|\u9006|\u30b3\u30e1\u30f3\u30c8\u7981\u6b62|\u30b7\u30fc\u30af\u7981\u6b62|\u30b8\u30e3\u30f3\u30d7)(.*)/
     //^(?:@|＠)(デフォルト|置換|逆|コメント禁止|シーク禁止|ジャンプ)(.*)
   );
   if (!nicoscript || !comment.owner) return;
@@ -224,7 +224,7 @@ const processNicoscript = (
   if (nicoscript[1] === "\u9006") {
     //＠逆
     const reverse = comment.content.match(
-      /^(?:@|\uff20)\u9006(?:\s+)?(\u5168|\u30b3\u30e1|\u6295\u30b3\u30e1)?/
+      /^[@\uff20]\u9006(?:\s+)?(\u5168|\u30b3\u30e1|\u6295\u30b3\u30e1)?/
       //^(?:@|＠)逆(?:\s+)?(全|コメ|投コメ)?
     );
     if (
@@ -318,7 +318,7 @@ const parseCommand = (
   isFlash: boolean
 ) => {
   const command = _command.toLowerCase();
-  let match = command.match(/^(?:@|\uff20)([0-9.]+)/);
+  let match = command.match(/^[@\uff20]([0-9.]+)/);
   if (match && match[1]) {
     result.long = Number(match[1]);
     return;

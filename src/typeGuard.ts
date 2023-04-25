@@ -182,7 +182,7 @@ const typeGuard = {
     },
     replace: {
       range: (i: unknown): i is nicoScriptReplaceRange =>
-        typeof i === "string" && !!i.match(/^(?:\u5358|\u5168)$/),
+        typeof i === "string" && !!i.match(/^[\u5358\u5168]$/),
       target: (i: unknown): i is nicoScriptReplaceTarget =>
         typeof i === "string" &&
         !!i.match(

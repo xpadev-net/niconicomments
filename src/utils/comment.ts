@@ -207,82 +207,107 @@ const processNicoscript = (
   if (!nicoscript || !comment.owner) return;
   commands.invisible = true;
   if (nicoscript[1] === "\u30c7\u30d5\u30a9\u30eb\u30c8") {
-    //＠デフォルト
-    nicoScripts.default.unshift({
-      start: comment.vpos,
-      long:
-        commands.long === undefined
-          ? undefined
-          : Math.floor(commands.long * 100),
-      color: commands.color,
-      size: commands.size,
-      font: commands.font,
-      loc: commands.loc,
-    });
+    processDefaultScript(comment, commands);
     return;
   }
   if (nicoscript[1] === "\u9006") {
-    //＠逆
-    const reverse = comment.content.match(
-      /^[@\uff20]\u9006(?:\s+)?(\u5168|\u30b3\u30e1|\u6295\u30b3\u30e1)?/
-      //^(?:@|＠)逆(?:\s+)?(全|コメ|投コメ)?
-    );
-    if (
-      !reverse ||
-      !reverse[1] ||
-      !typeGuard.nicoScript.range.target(reverse[1])
-    )
-      return;
-    if (commands.long === undefined) {
-      commands.long = 30;
-    }
-    nicoScripts.reverse.unshift({
-      start: comment.vpos,
-      end: comment.vpos + commands.long * 100,
-      target: reverse[1],
-    });
+    processReverseScript(comment, commands);
     return;
   }
   if (nicoscript[1] === "\u30b3\u30e1\u30f3\u30c8\u7981\u6b62") {
-    //@コメント禁止
-    if (commands.long === undefined) {
-      commands.long = 30;
-    }
-    nicoScripts.ban.unshift({
-      start: comment.vpos,
-      end: comment.vpos + commands.long * 100,
-    });
+    processBanScript(comment, commands);
     return;
   }
   if (nicoscript[1] === "\u30b7\u30fc\u30af\u7981\u6b62") {
-    //@シーク禁止
-    if (commands.long === undefined) {
-      commands.long = 30;
-    }
-    nicoScripts.seekDisable.unshift({
-      start: comment.vpos,
-      end: comment.vpos + commands.long * 100,
-    });
+    processSeekDisableScript(comment, commands);
     return;
   }
   if (nicoscript[1] === "\u30b8\u30e3\u30f3\u30d7" && nicoscript[2]) {
-    //@ジャンプ
-    const to = nicoscript[2].match(
-      /\s*((?:sm|so|nm|\uff53\uff4d|\uff53\uff4f|\uff4e\uff4d)?[1-9\uff11-\uff19][0-9\uff11-\uff19]*|#[0-9]+:[0-9]+(?:\.[0-9]+)?)\s+(.*)/
-      //\s*((?:sm|so|nm|ｓｍ|ｓｏ|ｎｍ)?[1-9１-９][0-9１-９]*|#[0-9]+:[0-9]+(?:\.[0-9]+)?)\s+(.*)
-    );
-    if (!to || !to[1]) return;
-    nicoScripts.jump.unshift({
-      start: comment.vpos,
-      end: commands.long === undefined ? undefined : commands.long * 100,
-      to: to[1],
-      message: to[2],
-    });
+    processJumpScript(comment, commands, nicoscript[2]);
     return;
   }
   if (nicoscript[1] === "\u7f6e\u63db") {
     addNicoscriptReplace(comment, commands);
   }
+};
+
+const processDefaultScript = (
+  comment: formattedComment,
+  commands: parsedCommand
+) => {
+  nicoScripts.default.unshift({
+    start: comment.vpos,
+    long:
+      commands.long === undefined ? undefined : Math.floor(commands.long * 100),
+    color: commands.color,
+    size: commands.size,
+    font: commands.font,
+    loc: commands.loc,
+  });
+};
+
+const processReverseScript = (
+  comment: formattedComment,
+  commands: parsedCommand
+) => {
+  const reverse = comment.content.match(
+    /^[@\uff20]\u9006(?:\s+)?(\u5168|\u30b3\u30e1|\u6295\u30b3\u30e1)?/
+    //^(?:@|＠)逆(?:\s+)?(全|コメ|投コメ)?
+  );
+  if (!reverse || !reverse[1] || !typeGuard.nicoScript.range.target(reverse[1]))
+    return;
+  if (commands.long === undefined) {
+    commands.long = 30;
+  }
+  nicoScripts.reverse.unshift({
+    start: comment.vpos,
+    end: comment.vpos + commands.long * 100,
+    target: reverse[1],
+  });
+};
+
+const processBanScript = (
+  comment: formattedComment,
+  commands: parsedCommand
+) => {
+  if (commands.long === undefined) {
+    commands.long = 30;
+  }
+  nicoScripts.ban.unshift({
+    start: comment.vpos,
+    end: comment.vpos + commands.long * 100,
+  });
+};
+
+const processSeekDisableScript = (
+  comment: formattedComment,
+  commands: parsedCommand
+) => {
+  if (commands.long === undefined) {
+    commands.long = 30;
+  }
+  nicoScripts.seekDisable.unshift({
+    start: comment.vpos,
+    end: comment.vpos + commands.long * 100,
+  });
+};
+
+const processJumpScript = (
+  comment: formattedComment,
+  commands: parsedCommand,
+  input: string
+) => {
+  const options = input.match(
+    /\s*((?:sm|so|nm|\uff53\uff4d|\uff53\uff4f|\uff4e\uff4d)?[1-9\uff11-\uff19][0-9\uff11-\uff19]*|#[0-9]+:[0-9]+(?:\.[0-9]+)?)\s+(.*)/
+    //\s*((?:sm|so|nm|ｓｍ|ｓｏ|ｎｍ)?[1-9１-９][0-9１-９]*|#[0-9]+:[0-9]+(?:\.[0-9]+)?)\s+(.*)
+  );
+  if (!options || !options[1]) return;
+  nicoScripts.jump.unshift({
+    start: comment.vpos,
+    end: commands.long === undefined ? undefined : commands.long * 100,
+    to: options[1],
+    message: options[2],
+  });
 };
 
 const parseCommands = (comment: formattedComment): parsedCommand => {

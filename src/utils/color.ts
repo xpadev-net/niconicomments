@@ -3,8 +3,8 @@ import { config } from "@/definition/config";
 
 /**
  * Hexからrgbに変換する(_live用)
- * @param {string} hex
- * @return {array} RGB
+ * @param hex カラコ
+ * @returns RGB
  */
 const hex2rgb = (hex: string) => {
   if (hex.slice(0, 1) === "#") hex = hex.slice(1);
@@ -25,8 +25,8 @@ const hex2rgb = (hex: string) => {
 };
 /**
  * Hexからrgbaに変換する(_live用)
- * @param {string} hex
- * @return {array} RGB
+ * @param hex カラコ
+ * @returns RGB
  */
 const hex2rgba = (hex: string) => {
   if (hex.slice(0, 1) === "#") hex = hex.slice(1);

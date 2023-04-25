@@ -11,9 +11,9 @@ import typeGuard from "@/typeGuard";
 
 /**
  * 入力されたデータを内部用のデータに変換
- * @param data {XMLDocument|niconicome|formatted|legacy|owner|v1} 入力データ(XMLDocument/niconicome/formatted/legacy/owner/v1)
- * @param type {inputFormatType} 誤検出防止のため入力フォーマットは書かせる
- * @return {formattedComment[]} 変換後のデータを返す
+ * @param data 入力データ(XMLDocument/niconicome/formatted/legacy/owner/v1)
+ * @param type 誤検出防止のため入力フォーマットは書かせる
+ * @returns 変換後のデータを返す
  */
 const convert2formattedComment = (
   data: unknown,
@@ -45,8 +45,8 @@ const convert2formattedComment = (
 
 /**
  * niconicome等が吐き出すxml形式のコメントデータを処理する
- * @param data {XMLDocument} 吐き出されたxmlをDOMParserでparseFromStringしたもの
- * @return {formattedComment[]}
+ * @param data 吐き出されたxmlをDOMParserでparseFromStringしたもの
+ * @returns 変換後のデータ
  */
 const fromXMLDocument = (data: XMLDocument): formattedComment[] => {
   const data_: formattedComment[] = [],
@@ -88,8 +88,8 @@ const fromXMLDocument = (data: XMLDocument): formattedComment[] => {
 /**
  * 内部処理用フォーマットを処理する
  * 旧版だとデータにlayerとuser_idが含まれないので追加する
- * @param data {formattedComment[] | formattedLegacyComment[]}
- * @return {formattedComment[]}
+ * @param data formattedからformattedに変換(不足データを追加)
+ * @returns 変換後のデータ
  */
 const fromFormatted = (
   data: formattedComment[] | formattedLegacyComment[]
@@ -107,8 +107,8 @@ const fromFormatted = (
 
 /**
  * ニコニコ公式のlegacy apiから帰ってきたデータ処理する
- * @param data {rawApiResponse[]}
- * @return {formattedComment[]}
+ * @param data legacy apiから帰ってきたデータ
+ * @returns 変換後のデータ
  */
 const fromLegacy = (data: rawApiResponse[]): formattedComment[] => {
   const data_: formattedComment[] = [],
@@ -150,8 +150,8 @@ const fromLegacy = (data: rawApiResponse[]): formattedComment[] => {
 
 /**
  * 旧プレイヤーの投稿者コメントのエディターのデータを処理する
- * @param data {string}
- * @return {formattedComment[]}
+ * @param data 旧投米のテキストデータ
+ * @returns 変換後のデータ
  */
 const fromLegacyOwner = (data: string): formattedComment[] => {
   const data_: formattedComment[] = [],
@@ -192,8 +192,8 @@ const fromLegacyOwner = (data: string): formattedComment[] => {
 
 /**
  * 投稿者コメントのエディターのデータを処理する
- * @param data {ownerComment[]}
- * @return {formattedComment[]}
+ * @param data 投米のデータ
+ * @returns 変換後のデータ
  */
 const fromOwner = (data: ownerComment[]): formattedComment[] => {
   const data_: formattedComment[] = [];
@@ -226,8 +226,8 @@ const fromOwner = (data: ownerComment[]): formattedComment[] => {
 /**
  * ニコニコ公式のv1 apiから帰ってきたデータ処理する
  * data内threadsのデータを渡されることを想定
- * @param data {v1Thread[]}
- * @return {formattedComment[]}
+ * @param data v1 apiから帰ってきたデータ
+ * @returns 変換後のデータ
  */
 const fromV1 = (data: v1Thread[]): formattedComment[] => {
   const data_: formattedComment[] = [],
@@ -267,7 +267,9 @@ const fromV1 = (data: v1Thread[]): formattedComment[] => {
 /**
  * 共通処理
  * 投稿時間、日時順にソート
- * @param data
+ * ※破壊関数
+ * @param data ソート対象の配列
+ * @returns ソート後の配列
  */
 const sort = (data: formattedComment[]): formattedComment[] => {
   data.sort((a: formattedComment, b: formattedComment) => {
@@ -284,8 +286,8 @@ const sort = (data: formattedComment[]): formattedComment[] => {
 
 /**
  * 投稿者コメントのエディターは秒数の入力フォーマットに割りと色々対応しているのでvposに変換
- * @param time_str {string} 分:秒.秒・分:秒・秒.秒・秒
- * @return {number} vpos
+ * @param time_str 分:秒.秒・分:秒・秒.秒・秒
+ * @returns vpos
  */
 const time2vpos = (time_str: string): number => {
   const time = time_str.match(
@@ -317,8 +319,8 @@ const time2vpos = (time_str: string): number => {
 
 /**
  * v1 apiのpostedAtはISO 8601のtimestampなのでDate関数を使ってunix timestampに変換
- * @param date {string} ISO 8601 timestamp
- * @return {number} unix timestamp
+ * @param date ISO 8601 timestamp
+ * @returns unix timestamp
  */
 const date2time = (date: string): number =>
   Math.floor(new Date(date).getTime() / 1000);

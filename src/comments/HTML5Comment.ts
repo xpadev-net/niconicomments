@@ -34,9 +34,6 @@ class HTML5Comment extends BaseComment {
   override convertComment(comment: formattedComment): formattedCommentWithSize {
     return this.getCommentSize(this.parseCommandAndNicoscript(comment));
   }
-  /**
-   * コメントの描画サイズを計算する
-   */
   override getCommentSize(
     parsedData: formattedCommentWithFont
   ): formattedCommentWithSize {
@@ -72,11 +69,7 @@ class HTML5Comment extends BaseComment {
     return size;
   }
 
-  /**
-   * コメントに含まれるニコスクリプトを処理する
-   * @param comment
-   */
-  parseCommandAndNicoscript(
+  override parseCommandAndNicoscript(
     comment: formattedComment
   ): formattedCommentWithFont {
     const data = parseCommandAndNicoScript(comment);

@@ -26,8 +26,8 @@ class BaseComment implements IComment {
 
   /**
    * コンストラクタ
-   * @param {formattedComment} comment 処理対象のコメント
-   * @param {CanvasRenderingContext2D} context 描画対象のcanvasのcontext
+   * @param comment 処理対象のコメント
+   * @param context 描画対象のcanvasのcontext
    */
   constructor(comment: formattedComment, context: CanvasRenderingContext2D) {
     this.context = context;
@@ -72,9 +72,8 @@ class BaseComment implements IComment {
 
   /**
    * コメントの描画サイズを計算する
-   * @param {formattedCommentWithFont} parsedData コメント
-   * @returns {formattedCommentWithSize} 描画サイズを含むコメント
-   * @protected
+   * @param parsedData コメント
+   * @returns 描画サイズを含むコメント
    */
   protected getCommentSize(
     parsedData: formattedCommentWithFont
@@ -84,11 +83,25 @@ class BaseComment implements IComment {
   }
 
   /**
+   * コメントに含まれるニコスクリプトを処理する
+   * @param comment 処理対象のコメント
+   * @returns 処理結果
+   */
+  protected parseCommandAndNicoscript(
+    comment: formattedComment
+  ): formattedCommentWithFont {
+    console.error(
+      "parseCommandAndNicoscript method is not implemented",
+      comment
+    );
+    throw new NotImplementedError(this.pluginName, "parseCommandAndNicoscript");
+  }
+
+  /**
    * context.measureTextの複数行対応版
    * 画面外にはみ出すコメントの縮小も行う
-   * @param {measureTextInput} comment - 独自フォーマットのコメントデータ
-   * @returns {measureTextResult} - 描画サイズとリサイズの情報
-   * @protected
+   * @param comment - 独自フォーマットのコメントデータ
+   * @returns - 描画サイズとリサイズの情報
    */
   protected measureText(comment: measureTextInput): measureTextResult {
     console.error("measureText method is not implemented", comment);
@@ -97,9 +110,8 @@ class BaseComment implements IComment {
 
   /**
    * サイズ計測などを行うためのラッパー関数
-   * @param {formattedComment} comment コンストラクタで受け取ったコメント
-   * @returns {formattedCommentWithSize} 描画サイズを含むコメント
-   * @protected
+   * @param comment コンストラクタで受け取ったコメント
+   * @returns 描画サイズを含むコメント
    */
   protected convertComment(
     comment: formattedComment
@@ -110,10 +122,9 @@ class BaseComment implements IComment {
 
   /**
    * コメントを描画する
-   * @param {number} vpos
-   * @param {boolean} showCollision
-   * @param {boolean} debug
-   * @public
+   * @param vpos vpos
+   * @param showCollision 当たり判定を表示するか
+   * @param debug デバッグ情報を表示するか
    */
   public draw(vpos: number, showCollision: boolean, debug: boolean) {
     if (isBanActive(vpos)) return;
@@ -131,9 +142,8 @@ class BaseComment implements IComment {
 
   /**
    * コメント本体を描画する
-   * @param {number} posX 描画位置
-   * @param {number} posY 描画位置
-   * @protected
+   * @param posX 描画位置
+   * @param posY 描画位置
    */
   protected _draw(posX: number, posY: number) {
     if (this.image === undefined) {
@@ -151,9 +161,8 @@ class BaseComment implements IComment {
 
   /**
    * 枠コマンドで指定されている場合に枠を描画する
-   * @param {number} posX 描画位置
-   * @param {number} posY 描画位置
-   * @protected
+   * @param posX 描画位置
+   * @param posY 描画位置
    */
   protected _drawRectColor(posX: number, posY: number) {
     if (this.comment.wakuColor) {
@@ -169,10 +178,9 @@ class BaseComment implements IComment {
 
   /**
    * コメントのメタデータを描画する
-   * @param {number} posX 描画位置
-   * @param {number} posY 描画位置
-   * @param {boolean} debug デバッグモードかどうか
-   * @protected
+   * @param posX 描画位置
+   * @param posY 描画位置
+   * @param debug デバッグモードかどうか
    */
   protected _drawDebugInfo(posX: number, posY: number, debug: boolean) {
     if (debug) {
@@ -188,10 +196,9 @@ class BaseComment implements IComment {
 
   /**
    * コメントの当たり判定を描画する
-   * @param {number} posX 描画位置
-   * @param {number} posY 描画位置
-   * @param {boolean} showCollision 当たり判定を表示するかどうか
-   * @protected
+   * @param posX 描画位置
+   * @param posY 描画位置
+   * @param showCollision 当たり判定を表示するかどうか
    */
   protected _drawCollision(posX: number, posY: number, showCollision: boolean) {
     console.error(
@@ -205,7 +212,7 @@ class BaseComment implements IComment {
 
   /**
    * コメントの画像を生成する
-   * @protected
+   * @returns 生成した画像
    */
   protected getTextImage(): HTMLCanvasElement | null {
     if (
@@ -235,7 +242,6 @@ class BaseComment implements IComment {
 
   /**
    * コメントの画像を実際に生成する
-   * @protected
    */
   protected _generateTextImage(): HTMLCanvasElement {
     console.error("_generateTextImage method is not implemented");
@@ -244,8 +250,7 @@ class BaseComment implements IComment {
 
   /**
    * 画像をキャッシュする
-   * @param {HTMLCanvasElement} image
-   * @protected
+   * @param image キャッシュ対象の画像
    */
   protected _cacheImage(image: HTMLCanvasElement) {
     this.image = image;
@@ -262,6 +267,7 @@ class BaseComment implements IComment {
 
   /**
    * Canvasを生成する
+   * @returns 生成したCanvas
    */
   protected createCanvas(): {
     image: HTMLCanvasElement;

@@ -65,9 +65,9 @@ class NiconiComments {
 
   /**
    * NiconiComments Constructor
-   * @param {HTMLCanvasElement} canvas - 描画対象のキャンバス
-   * @param {inputFormat} data - 描画用のコメント
-   * @param {Options|undefined} initOptions
+   * @param canvas 描画対象のキャンバス
+   * @param data 描画用のコメント
+   * @param initOptions 初期化オプション
    */
   constructor(
     canvas: HTMLCanvasElement,
@@ -137,7 +137,7 @@ class NiconiComments {
 
   /**
    * 事前に当たり判定を考慮してコメントの描画場所を決定する
-   * @param {formattedComment[]} rawData
+   * @param rawData コメントデータ
    */
   private preRendering(rawData: formattedComment[]) {
     const preRenderingStart = performance.now();
@@ -156,10 +156,9 @@ class NiconiComments {
 
   /**
    * 計算された描画サイズをもとに各コメントの配置位置を決定する
-   * @param {IComment[]} data
-   * @returns {IComment[]}
+   * @param data コメントデータ
    */
-  private getCommentPos(data: IComment[]): IComment[] {
+  private getCommentPos(data: IComment[]) {
     const getCommentPosStart = performance.now();
     for (const comment of data) {
       if (comment.invisible) continue;
@@ -176,7 +175,6 @@ class NiconiComments {
     logger(
       `getCommentPos complete: ${performance.now() - getCommentPosStart}ms`
     );
-    return data;
   }
 
   /**
@@ -204,7 +202,7 @@ class NiconiComments {
   /**
    * 動的にコメント追加する
    * ※すでに存在するコメントの位置はvposに関係なく更新されません
-   * @param {...formattedComment} rawComments
+   * @param rawComments コメントデータ
    */
   public addComments(...rawComments: formattedComment[]) {
     for (const plugin of plugins) {
@@ -230,9 +228,9 @@ class NiconiComments {
 
   /**
    * キャンバスを描画する
-   * @param {number} vpos 動画の現在位置の100倍 ニコニコから吐き出されるコメントの位置情報は主にこれ
-   * @param {boolean} forceRendering キャッシュを使用せずに再描画を強制するか
-   * @return {boolean} 再描画されたか
+   * @param vpos 動画の現在位置の100倍 ニコニコから吐き出されるコメントの位置情報は主にこれ
+   * @param forceRendering キャッシュを使用せずに再描画を強制するか
+   * @returns 再描画されたか
    */
   public drawCanvas(vpos: number, forceRendering = false): boolean {
     const drawCanvasStart = performance.now();
@@ -267,7 +265,6 @@ class NiconiComments {
 
   /**
    * 背景動画が設定されている場合に描画する
-   * @private
    */
   private _drawVideo() {
     if (this.video) {
@@ -293,9 +290,8 @@ class NiconiComments {
 
   /**
    * コメントを描画する
-   * @param {IComment[]} timelineRange 指定されたvposに存在するコメント
-   * @param {number} vpos
-   * @private
+   * @param timelineRange 指定されたvposに存在するコメント
+   * @param vpos vpos
    */
   private _drawComments(timelineRange: IComment[] | undefined, vpos: number) {
     if (timelineRange) {
@@ -319,8 +315,7 @@ class NiconiComments {
 
   /**
    * 当たり判定を描画する
-   * @param {number} vpos
-   * @private
+   * @param vpos vpos
    */
   private _drawCollision(vpos: number) {
     if (this.showCollision) {
@@ -352,8 +347,7 @@ class NiconiComments {
 
   /**
    * FPSを描画する
-   * @param {number} drawCanvasStart 処理を開始した時間(ms)
-   * @private
+   * @param drawCanvasStart 処理を開始した時間(ms)
    */
   private _drawFPS(drawCanvasStart: number) {
     if (this.showFPS) {
@@ -371,8 +365,7 @@ class NiconiComments {
 
   /**
    * 描画されたコメント数を描画する
-   * @param {number} count
-   * @private
+   * @param count コメント描画数
    */
   private _drawCommentCount(count?: number | undefined) {
     if (this.showCommentCount) {
@@ -388,8 +381,9 @@ class NiconiComments {
 
   /**
    * イベントハンドラを追加
-   * @param {CommentEventName} eventName イベント名
-   * @param {CommentEventHandler} handler イベントハンドラ
+   * @template K
+   * @param eventName イベント名
+   * @param handler イベントハンドラ
    */
   public addEventListener<K extends keyof CommentEventHandlerMap>(
     eventName: K,
@@ -400,8 +394,9 @@ class NiconiComments {
 
   /**
    * イベントハンドラを削除
-   * @param {CommentEventName} eventName イベント名
-   * @param {CommentEventHandler} handler イベントハンドラ
+   * @template K
+   * @param eventName イベント名
+   * @param handler イベントハンドラ
    */
   public removeEventListener<K extends keyof CommentEventHandlerMap>(
     eventName: K,

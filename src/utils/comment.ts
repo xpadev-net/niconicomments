@@ -368,7 +368,8 @@ const parseCommand = (
 
 /**
  * コメントがFlash適用対象化判定返す
- * @param {formattedComment} comment
+ * @param comment コメントデータ
+ * @returns Flash適用対象かどうか
  */
 const isFlashComment = (comment: formattedComment): boolean =>
   options.mode === "flash" ||
@@ -495,9 +496,10 @@ const processMovableComment = (
 
 /**
  * 当たり判定からコメントを配置できる場所を探す
- * @param {number} currentPos
- * @param {parsedComment} targetComment
- * @param {number[]|undefined} collision
+ * @param currentPos 現在のy座標
+ * @param targetComment 対象コメント
+ * @param collision 当たり判定
+ * @returns 現在地、更新されたか、終了すべきか
  */
 const getPosY = (
   currentPos: number,
@@ -539,9 +541,10 @@ const getPosY = (
 };
 /**
  * コメントのvposと現在のvposから左右の位置を返す
- * @param {formattedCommentWithSize} comment
- * @param {number} vpos
- * @param {boolean} isReverse
+ * @param comment コメントデータ
+ * @param vpos vpos
+ * @param isReverse @逆が有効か
+ * @returns x座標
  */
 const getPosX = (
   comment: formattedCommentWithSize,
@@ -565,9 +568,9 @@ const getPosX = (
 };
 /**
  * フォント名とサイズをもとにcontextで使えるフォントを生成する
- * @param {string} font
- * @param {string|number} size
- * @returns {string}
+ * @param font フォント名
+ * @param size サイズ
+ * @returns contextで使えるフォント
  */
 const parseFont = (font: commentFont, size: string | number): string => {
   switch (font) {

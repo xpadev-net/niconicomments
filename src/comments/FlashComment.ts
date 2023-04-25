@@ -44,6 +44,8 @@ class FlashComment extends BaseComment {
 
   /**
    * コメントの描画サイズを計算する
+   * @param parsedData 計算対象のコメント
+   * @returns 計算結果
    */
   override getCommentSize(
     parsedData: formattedCommentWithFont
@@ -78,11 +80,8 @@ class FlashComment extends BaseComment {
     size.charSize = measure.charSize;
     return size;
   }
-  /**
-   * コメントに含まれるニコスクリプトを処理する
-   * @param comment
-   */
-  parseCommandAndNicoscript(
+
+  override parseCommandAndNicoscript(
     comment: formattedComment
   ): formattedCommentWithFont {
     const data = parseCommandAndNicoScript(comment);
@@ -201,12 +200,6 @@ class FlashComment extends BaseComment {
     } as formattedCommentWithFont;
   }
 
-  /**
-   * context.measureTextの複数行対応版
-   * 画面外にはみ出すコメントの縮小も行う
-   * @param comment - 独自フォーマットのコメントデータ
-   * @returns {{resized: boolean, width: number, width: number, fontSize: number, width_min: number, height: number, lineHeight: number}} - 描画サイズとリサイズの情報
-   */
   override measureText(comment: measureTextInput): measureTextResult {
     const configLineHeight = getConfig(config.lineHeight, true),
       configFontSize = getConfig(config.fontSize, true);

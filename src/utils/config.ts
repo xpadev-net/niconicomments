@@ -2,8 +2,10 @@ import { configItem } from "@/@types";
 
 /**
  * Configがhtml5とflashで別れてる場合は対応するものを、そうでなければ初期値を返す
- * @param {configItem} input
- * @param {boolean} isFlash
+ * @template T
+ * @param input コンフィグアイテム
+ * @param isFlash Flashかどうか
+ * @returns コンフィグアイテムの値
  */
 const getConfig = <T>(input: configItem<T>, isFlash = false): T => {
   if (

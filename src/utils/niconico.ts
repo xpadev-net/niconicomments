@@ -6,9 +6,10 @@ import { getConfig } from "./config";
 
 /**
  * 各サイズの行高を返す
- * @param fontSize
- * @param resized
- * @param isFlash
+ * @param fontSize コメントサイズ
+ * @param isFlash Flashかどうか
+ * @param resized リサイズされているか
+ * @returns 行高
  */
 const getLineHeight = (
   fontSize: commentSize,

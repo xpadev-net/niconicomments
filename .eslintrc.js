@@ -21,7 +21,7 @@ module.exports = {
         'eslint:recommended',
         'plugin:@typescript-eslint/recommended',
         'plugin:@typescript-eslint/recommended-requiring-type-checking',
-        "plugin:jsdoc/recommended-error"
+        "plugin:jsdoc/recommended-typescript-error"
     ],
     rules: {
         "@typescript-eslint/restrict-template-expressions": "off",

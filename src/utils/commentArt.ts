@@ -19,7 +19,8 @@ type GroupedByTimeItem = {
 
 /**
  * CAと思われるコメントのレイヤーを分離する
- * @param {formattedComment[]} rawData
+ * @param rawData コメントデータ
+ * @returns レイヤー分離後のコメントデータ
  */
 const changeCALayer = (rawData: formattedComment[]): formattedComment[] => {
   const userScoreList = getUsersScore(rawData);
@@ -39,8 +40,8 @@ const changeCALayer = (rawData: formattedComment[]): formattedComment[] => {
 
 /**
  * ユーザーごとのコメントアートスコアを取得する
- * @param {formattedComment} comments
- * @returns {[key: string]: number}
+ * @param comments コメントデータ
+ * @returns ユーザーIDごとのスコア
  */
 const getUsersScore = (
   comments: formattedComment[]
@@ -67,8 +68,8 @@ const getUsersScore = (
 
 /**
  * 重複するコメントアートを削除する
- * @param {formattedComment[]} comments
- * @return {formattedComment[]}
+ * @param comments コメントデータ
+ * @returns 重複を排除したコメントデータ
  */
 const removeDuplicateCommentArt = (comments: formattedComment[]) => {
   const index: { [key: string]: formattedComment } = {};
@@ -95,7 +96,7 @@ const removeDuplicateCommentArt = (comments: formattedComment[]) => {
 
 /**
  * レイヤーIDを更新する
- * @param {GroupedByTime}filteredComments
+ * @param filteredComments 更新対象のコメントデータ
  */
 const updateLayerId = (filteredComments: GroupedByTime) => {
   let layerId = 0;
@@ -111,8 +112,8 @@ const updateLayerId = (filteredComments: GroupedByTime) => {
 
 /**
  * ユーザーごとにコメントをグループ化する
- * @param {formattedComment[]} comments
- * @returns {GroupedByUser}
+ * @param comments コメントデータ
+ * @returns ユーザーごとにグループ化したコメントデータ
  */
 const groupCommentsByUser = (comments: formattedComment[]) => {
   return comments.reduce((users, comment) => {
@@ -124,10 +125,14 @@ const groupCommentsByUser = (comments: formattedComment[]) => {
 
 /**
  * ユーザー配列から該当のユーザーの参照を取得する
- * @param {number} userId 探す対処のuserId
- * @param {GroupedByUser} users
+ * @param userId 探す対処のuserId
+ * @param users ユーザー配列
+ * @returns 該当のユーザーの参照
  */
-const getUser = (userId: number, users: GroupedByUser) => {
+const getUser = (
+  userId: number,
+  users: GroupedByUser
+): { comments: formattedComment[]; userId: number } => {
   const user = users.find((user) => user.userId === userId);
   if (user) return user;
   const obj = {
@@ -140,8 +145,8 @@ const getUser = (userId: number, users: GroupedByUser) => {
 
 /**
  * ユーザーごとにグループ化されたコメントを時間ごとにグループ化する
- * @param {GroupedByUser} comments
- * @returns {GroupedByTime}
+ * @param comments ユーザーごとにグループ化されたコメントデータ
+ * @returns 時間ごとにグループ化されたコメントデータ
  */
 const groupCommentsByTime = (comments: GroupedByUser) => {
   return comments.reduce((result, user) => {
@@ -161,10 +166,14 @@ const groupCommentsByTime = (comments: GroupedByUser) => {
 
 /**
  * 時間配列から該当の時間の参照を取得する
- * @param {number} time
- * @param {GroupedByTimeItem[]} times
+ * @param time 探す対象の時間
+ * @param times 時間配列
+ * @returns 該当の時間の参照
  */
-const getTime = (time: number, times: GroupedByTimeItem[]) => {
+const getTime = (
+  time: number,
+  times: GroupedByTimeItem[]
+): GroupedByTimeItem => {
   const timeObj = times.find(
     (timeObj) =>
       timeObj.range.start - config.sameCATimestampRange <= time &&

@@ -22,56 +22,81 @@ type GroupedByTimeItem = {
  * @param {formattedComment[]} rawData
  */
 const changeCALayer = (rawData: formattedComment[]): formattedComment[] => {
+  const userScoreList = getUsersScore(rawData);
+  const filteredComments = removeDuplicateCommentArt(rawData);
+  const commentArts = filteredComments.filter(
+    (comment) =>
+      (userScoreList[comment.user_id] || 0) >= config.sameCAMinScore &&
+      !comment.owner
+  );
+  const commentArtsGroupedByUser = groupCommentsByUser(commentArts);
+  const commentArtsGroupedByTimes = groupCommentsByTime(
+    commentArtsGroupedByUser
+  );
+  updateLayerId(commentArtsGroupedByTimes);
+  return filteredComments;
+};
+
+/**
+ * ユーザーごとのコメントアートスコアを取得する
+ * @param {formattedComment} comments
+ * @returns {[key: string]: number}
+ */
+const getUsersScore = (
+  comments: formattedComment[]
+): { [key: string]: number } => {
   const userScoreList: { [key: number]: number } = {};
-  const data: formattedComment[] = [],
-    index: { [key: string]: formattedComment } = {};
-  for (const value of rawData) {
-    if (value.user_id === undefined || value.user_id === -1) continue;
-    if (userScoreList[value.user_id] === undefined)
-      userScoreList[value.user_id] = 0;
+  for (const comment of comments) {
+    if (comment.user_id === undefined || comment.user_id === -1) continue;
+    userScoreList[comment.user_id] ||= 0;
     if (
-      value.mail.indexOf("ca") > -1 ||
-      value.mail.indexOf("patissier") > -1 ||
-      value.mail.indexOf("ender") > -1 ||
-      value.mail.indexOf("full") > -1
+      comment.mail.includes("ca") ||
+      comment.mail.includes("patissier") ||
+      comment.mail.includes("ender") ||
+      comment.mail.includes("full")
     ) {
-      userScoreList[value.user_id] += 5;
+      userScoreList[comment.user_id] += 5;
     }
-    if ((value.content.match(/\r\n|\n|\r/g) || []).length > 2) {
-      userScoreList[value.user_id] +=
-        (value.content.match(/\r\n|\n|\r/g) || []).length / 2;
+    const lineCount = (comment.content.match(/\r\n|\n|\r/g) || []).length;
+    if (lineCount > 2) {
+      userScoreList[comment.user_id] += lineCount / 2;
     }
-    const key = `${value.content}@@${[...value.mail]
+  }
+  return userScoreList;
+};
+
+/**
+ * 重複するコメントアートを削除する
+ * @param {formattedComment[]} comments
+ * @return {formattedComment[]}
+ */
+const removeDuplicateCommentArt = (comments: formattedComment[]) => {
+  const index: { [key: string]: formattedComment } = {};
+  return comments.filter((comment) => {
+    const key = `${comment.content}@@${[...comment.mail]
         .sort()
         .filter((e) => !e.match(/@[\d.]+|184|device:.+|patissier|ca/))
         .join("")}`,
       lastComment = index[key];
-    if (lastComment !== undefined) {
-      if (
-        value.vpos - lastComment.vpos > config.sameCAGap ||
-        Math.abs(value.date - lastComment.date) < config.sameCARange
-      ) {
-        data.push(value);
-        index[key] = value;
-      }
-    } else {
-      data.push(value);
-      index[key] = value;
+    if (lastComment === undefined) {
+      index[key] = comment;
+      return true;
     }
-  }
-  const filteredComments = groupCommentsByTime(
-    groupCommentsByUser(
-      data.filter(
-        (comment) =>
-          (userScoreList[comment.user_id] || 0) >= config.sameCAMinScore &&
-          !comment.owner
-      )
-    )
-  );
-  updateLayerId(filteredComments);
-  return data;
+    if (
+      comment.vpos - lastComment.vpos > config.sameCAGap ||
+      Math.abs(comment.date - lastComment.date) < config.sameCARange
+    ) {
+      index[key] = comment;
+      return true;
+    }
+    return false;
+  });
 };
 
+/**
+ * レイヤーIDを更新する
+ * @param {GroupedByTime}filteredComments
+ */
 const updateLayerId = (filteredComments: GroupedByTime) => {
   let layerId = 0;
   for (const user of filteredComments) {
@@ -84,6 +109,11 @@ const updateLayerId = (filteredComments: GroupedByTime) => {
   }
 };
 
+/**
+ * ユーザーごとにコメントをグループ化する
+ * @param {formattedComment[]} comments
+ * @returns {GroupedByUser}
+ */
 const groupCommentsByUser = (comments: formattedComment[]) => {
   return comments.reduce((users, comment) => {
     const user = getUser(comment.user_id, users);
@@ -92,6 +122,11 @@ const groupCommentsByUser = (comments: formattedComment[]) => {
   }, [] as GroupedByUser);
 };
 
+/**
+ * ユーザー配列から該当のユーザーの参照を取得する
+ * @param {number} userId 探す対処のuserId
+ * @param {GroupedByUser} users
+ */
 const getUser = (userId: number, users: GroupedByUser) => {
   const user = users.find((user) => user.userId === userId);
   if (user) return user;
@@ -103,6 +138,11 @@ const getUser = (userId: number, users: GroupedByUser) => {
   return obj;
 };
 
+/**
+ * ユーザーごとにグループ化されたコメントを時間ごとにグループ化する
+ * @param {GroupedByUser} comments
+ * @returns {GroupedByTime}
+ */
 const groupCommentsByTime = (comments: GroupedByUser) => {
   return comments.reduce((result, user) => {
     result.push({
@@ -119,6 +159,11 @@ const groupCommentsByTime = (comments: GroupedByUser) => {
   }, [] as GroupedByTime);
 };
 
+/**
+ * 時間配列から該当の時間の参照を取得する
+ * @param {number} time
+ * @param {GroupedByTimeItem[]} times
+ */
 const getTime = (time: number, times: GroupedByTimeItem[]) => {
   const timeObj = times.find(
     (timeObj) =>

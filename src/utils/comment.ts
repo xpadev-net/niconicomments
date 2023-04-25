@@ -354,7 +354,7 @@ const parseCommand = (
     result.color = config.colors[command];
     return;
   }
-  match = command.match(/#(?:[0-9a-z]{3}|[0-9a-z]{6})/);
+  match = command.match(/^#(?:[0-9a-z]{3}|[0-9a-z]{6})$/);
   if (result.color === undefined && match && match[0] && comment.premium) {
     result.color = match[0].toUpperCase();
     return;

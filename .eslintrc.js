@@ -15,11 +15,13 @@ module.exports = {
     plugins: [
         '@typescript-eslint',
         'simple-import-sort',
+        'jsdoc'
     ],
     extends: [
         'eslint:recommended',
         'plugin:@typescript-eslint/recommended',
         'plugin:@typescript-eslint/recommended-requiring-type-checking',
+        "plugin:jsdoc/recommended-error"
     ],
     rules: {
         "@typescript-eslint/restrict-template-expressions": "off",
@@ -29,6 +31,7 @@ module.exports = {
         "no-control-regex": "off",
         "simple-import-sort/imports": "error",
         "simple-import-sort/exports": "error",
-        "@typescript-eslint/typedef": "error"
+        "@typescript-eslint/typedef": "error",
+        'jsdoc/require-returns-check': "off"
     },
 };

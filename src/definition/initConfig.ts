@@ -328,6 +328,7 @@ const initConfig = () => {
         condition: isFlashComment,
       },
     ],
+    nakaCommentSpeedOffset: 0.25,
   };
   updateConfig(defaultConfig);
 };

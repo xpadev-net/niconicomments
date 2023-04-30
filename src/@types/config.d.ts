@@ -74,6 +74,7 @@ type BaseConfig = {
   commentLimit: number | undefined;
   hideCommentOrder: "asc" | "desc";
   lineBreakCount: { [key in commentSize]: number };
+  nakaCommentSpeedOffset: number;
 };
 
 export type Config = Partial<BaseConfig>;

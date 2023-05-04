@@ -28,10 +28,10 @@ class FlashComment extends BaseComment {
   override readonly pluginName: string = "FlashComment";
   constructor(comment: formattedComment, context: CanvasRenderingContext2D) {
     super(comment, context);
-    this.scale = 1;
-    this.scaleX = 1;
-    this._globalScale = getConfig(config.commentScale, true);
-    this.posY = 0;
+    this.scale ??= 1;
+    this.scaleX ??= 1;
+    this._globalScale ??= getConfig(config.commentScale, true);
+    this.posY ??= 0;
   }
 
   override convertComment(comment: formattedComment): formattedCommentWithSize {

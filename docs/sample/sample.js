@@ -190,6 +190,8 @@ const videos = [
 ];
 const urlParams = new URLSearchParams(window.location.search);
 let video = Number(urlParams.get("video") || 0),
+  noVideo = !!urlParams.get("novideo"),
+  time = Number(urlParams.get("time")||-1),
   player,
   interval = null,
   nico = null,
@@ -244,6 +246,10 @@ const onYouTubeIframeAPIReady = () => {
     }
     controlVideoElement.appendChild(groupElement);
   }
+  if (noVideo) {
+    void loadComments();
+    return;
+  }
   player = new YT.Player("player", {
     height: "360",
     width: "640",
@@ -265,7 +271,7 @@ const onReady = () => {
 controlVideoElement.onchange = (e) => {
   video = e.target.value;
   const videoItem = getVideoItem();
-  player.loadVideoById({
+  player?.loadVideoById({
     videoId: videoItem.yt,
     suggestedQuality: "large",
   });
@@ -319,6 +325,10 @@ const updateTime = (e) => {
 };
 
 const updateCanvas = () => {
+  if (noVideo && time>=0){
+    nico.drawCanvas(Math.floor(time*100));
+    return;
+  }
   nico.drawCanvas(Math.floor(player.getCurrentTime() * 100));
   requestAnimationFrame(updateCanvas);
 };
@@ -341,8 +351,8 @@ const loadComments = async () => {
   });
   const background = getById(videos, video).bg;
   backgroundElement.style.background = background || "none";
-  if (urlParams.get("time")) {
-    player.seekTo(Number(urlParams.get("time")), true);
+  if (time>=0) {
+    player?.seekTo(time, true);
   }
   if (!interval) {
     updateCanvas();

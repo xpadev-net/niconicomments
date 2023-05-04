@@ -1,0 +1,17 @@
+version: "3"
+services:
+  pw:
+    container_name: pw
+    image: pw:1.0
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    # tty: true
+    user: 1000:1000
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+    volumes:
+      - ./:/home/pwuser/app/
+    working_dir: /home/pwuser/app
+    entrypoint: yarn playwright test

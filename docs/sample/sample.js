@@ -381,3 +381,4 @@ const getVideoItem = () => {
 };
 window.onresize = resize;
 window.onload = resize;
+window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;

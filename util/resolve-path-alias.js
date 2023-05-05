@@ -11,6 +11,7 @@ const processDir = (dir = "./dist/dts",deps=0) => {
             if (`${path}`==="./dist/bundle.d.ts")continue;
 
             const content = fs.readFileSync(path, "utf-8")
+              .replace(/import (?:type )?[\s\S]*? from "@\/@types.*?";/g,"")
               .replace(/@\//g,"./"+"../".repeat(deps))
               .replace(/\/\/# sourceMappingURL=.+\.d\.ts\.map/g,"");
             fs.writeFileSync(path,content,"utf-8");

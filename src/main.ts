@@ -418,3 +418,4 @@ const logger = (msg: string) => {
 };
 
 export default NiconiComments;
+export type * from "@/@types";

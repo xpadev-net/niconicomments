@@ -582,8 +582,8 @@ const getPosX = (
     return (config.canvasWidth - comment.width) / 2;
   }
   const speed =
-    (config.commentDrawRange + comment.width) / (comment.long + 100) -
-    config.nakaCommentSpeedOffset;
+    (config.commentDrawRange + comment.width * config.nakaCommentSpeedOffset) /
+    (comment.long + 100);
   const vposLapsed = vpos - comment.vpos;
   const posX =
     config.commentDrawPadding +

@@ -246,10 +246,6 @@ const onYouTubeIframeAPIReady = () => {
     }
     controlVideoElement.appendChild(groupElement);
   }
-  if (noVideo) {
-    void loadComments();
-    return;
-  }
   player = new YT.Player("player", {
     height: "360",
     width: "640",
@@ -392,6 +388,10 @@ const resize = () => {
 const getVideoItem = () => {
   return getById(videos, video);
 };
+if (noVideo) {
+  void loadComments();
+}else{
+  window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
+}
 window.onresize = resize;
 window.onload = resize;
-window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;

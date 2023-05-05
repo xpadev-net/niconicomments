@@ -1,6 +1,8 @@
 import type {
+  Canvas,
   CommentContentItem,
   CommentMeasuredContentItem,
+  Context2D,
   FormattedComment,
   FormattedCommentWithFont,
   FormattedCommentWithSize,
@@ -26,7 +28,7 @@ class FlashComment extends BaseComment {
   private scale: number;
   private scaleX: number;
   override readonly pluginName: string = "FlashComment";
-  constructor(comment: FormattedComment, context: CanvasRenderingContext2D) {
+  constructor(comment: FormattedComment, context: Context2D) {
     super(comment, context);
     this.scale ??= 1;
     this.scaleX ??= 1;
@@ -321,7 +323,7 @@ class FlashComment extends BaseComment {
     }
   }
 
-  override _generateTextImage(): HTMLCanvasElement {
+  override _generateTextImage(): Canvas {
     const { image, context } = this.createCanvas();
     image.width = this.comment.width;
     image.height = this.comment.height;

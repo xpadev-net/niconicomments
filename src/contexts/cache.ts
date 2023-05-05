@@ -1,5 +1,7 @@
+import { Canvas } from "@/@types";
+
 let imageCache: {
-  [key: string]: { image: HTMLCanvasElement; timeout: number };
+  [key: string]: { image: Canvas; timeout: number | NodeJS.Timeout };
 } = {};
 const resetImageCache = () => {
   imageCache = {};

@@ -1,4 +1,4 @@
-import type { CommentSize, MeasureInput } from "@/@types";
+import type { CommentSize, Context2D, MeasureInput } from "@/@types";
 import { config } from "@/definition/config";
 
 import { parseFont } from "./comment";
@@ -36,7 +36,7 @@ const getCharSize = (fontSize: CommentSize, isFlash: boolean): number => {
   return CommentStageSize.height / lineCounts.doubleResized[fontSize];
 };
 
-const measure = (comment: MeasureInput, context: CanvasRenderingContext2D) => {
+const measure = (comment: MeasureInput, context: Context2D) => {
   const width = measureWidth(comment, context);
   return {
     ...width,
@@ -44,10 +44,7 @@ const measure = (comment: MeasureInput, context: CanvasRenderingContext2D) => {
   };
 };
 
-const measureWidth = (
-  comment: MeasureInput,
-  context: CanvasRenderingContext2D
-) => {
+const measureWidth = (comment: MeasureInput, context: Context2D) => {
   const { fontSize, scale } = getFontSizeAndScale(comment.charSize),
     lineWidth = [],
     itemWidth = [];

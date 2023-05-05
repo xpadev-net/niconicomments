@@ -1,6 +1,8 @@
 import type {
+  Canvas,
   CommentContentItem,
   CommentMeasuredContentItem,
+  Context2D,
   FormattedComment,
   FormattedCommentWithFont,
   FormattedCommentWithSize,
@@ -26,7 +28,7 @@ import { BaseComment } from "./BaseComment";
 
 class HTML5Comment extends BaseComment {
   override readonly pluginName: string = "HTML5Comment";
-  constructor(comment: FormattedComment, context: CanvasRenderingContext2D) {
+  constructor(comment: FormattedComment, context: Context2D) {
     super(comment, context);
     this.posY = 0;
   }
@@ -213,7 +215,7 @@ class HTML5Comment extends BaseComment {
     }
   }
 
-  override _generateTextImage(): HTMLCanvasElement {
+  override _generateTextImage(): Canvas {
     const { fontSize, scale } = getFontSizeAndScale(this.comment.charSize);
     const paddingTop =
       (10 - scale * 10) *

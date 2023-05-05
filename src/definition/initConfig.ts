@@ -8,13 +8,13 @@ import { isFlashComment } from "@/utils/comment";
 const initConfig = () => {
   const platform: Platform = (function (ua) {
     if (ua.match(/windows nt 6\.[12]/i)) return "win7";
-    else if (ua.match(/windows nt (6\.3|10\.\d+)/i)) return "win8_1";
+    else if (ua.match(/windows nt (6\.3|10\.\d+)|win32/i)) return "win8_1";
     else if (ua.match(/windows nt/i)) return "win";
     else if (ua.match(/mac os x 10(.|_)(9|10)/i)) return "mac10_9";
-    else if (ua.match(/mac os x 10(.|_)\d{2}/i)) return "mac10_11";
+    else if (ua.match(/mac os x 10(.|_)\d{2}|darwin/i)) return "mac10_11";
     else if (ua.match(/mac os x/i)) return "mac";
     return "other";
-  })(navigator.userAgent);
+  })(typeof navigator !== "undefined" ? navigator.userAgent : process.platform);
   const defaultConfig: BaseConfig = {
     /**
      * 色コマンド・カラコ対応

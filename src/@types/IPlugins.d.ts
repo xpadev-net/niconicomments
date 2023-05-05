@@ -1,8 +1,8 @@
-import type { FormattedComment } from "@/@types/";
+import type { Canvas, FormattedComment } from "@/@types/";
 
 export interface IPluginConstructor {
   id: string;
-  new (Canvas: HTMLCanvasElement, comments: FormattedComment[]): IPlugin;
+  new (Canvas: Canvas, comments: FormattedComment[]): IPlugin;
 }
 
 export interface IPlugin {

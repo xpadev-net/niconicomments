@@ -12,9 +12,10 @@ RUN npm i -g yarn
 
 USER $PWUSER
 
-WORKDIR /home/$PWUSER/app
 RUN sudo chown -R $PWUSER:$PWUSER /home/$PWUSER/app
+WORKDIR /home/$PWUSER/app
 COPY --chown=$PWUSER:$PWUSER . .
+RUN sudo chown -R $PWUSER:$PWUSER /home/$PWUSER/app
 RUN yarn add playwright
 RUN yarn playwright install firefox
 

@@ -1,4 +1,4 @@
-type platform =
+export type platform =
   | "win7"
   | "win8_1"
   | "win"
@@ -6,12 +6,12 @@ type platform =
   | "mac10_11"
   | "mac"
   | "other";
-type HTML5Fonts = "gothic" | "mincho" | "defont";
-type FontItem = {
+export type HTML5Fonts = "gothic" | "mincho" | "defont";
+export type FontItem = {
   font: string;
   offset: number;
   weight: number;
 };
-type platformFont = {
+export type platformFont = {
   [key in HTML5Fonts]: FontItem;
 };

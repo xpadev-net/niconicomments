@@ -1,0 +1,33 @@
+on: [ workflow_dispatch ]
+
+name: Update Playwright Screenshots
+
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+      - name: allow write in work dir
+        run: sudo chmod -R 777 .
+      - name: Install Dependencies
+        run: |
+          npm -g install yarn
+          yarn install
+          yarn build
+          yarn playwright install-deps
+          yarn playwright install firefox
+      - name: Run Playwright tests
+        run: yarn playwright test --update-snapshots
+      - name: Create new Branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.email "github-actions@xpadev.net"
+          git config user.name "github-actions"
+          git add ./src/__tests__/**/*.png
+          git commit -m "update: playwright screenshots" -n
+          git push

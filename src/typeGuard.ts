@@ -1,29 +1,25 @@
-import { colors } from "@/definition/colors";
-
-import type {
-  formattedComment,
-  formattedLegacyComment,
-} from "@/@types/format.formatted";
 import type {
   apiChat,
   apiGlobalNumRes,
   apiLeaf,
   apiPing,
   apiThread,
-  rawApiResponse,
-} from "@/@types/format.legacy";
-import type { ownerComment } from "@/@types/format.owner";
-import type { v1Comment, v1Thread } from "@/@types/format.v1";
-import type {
   commentFont,
   commentLoc,
   commentSize,
+  formattedComment,
+  formattedLegacyComment,
   nicoScriptReplaceCondition,
   nicoScriptReplaceRange,
   nicoScriptReplaceTarget,
   nicoScriptReverseTarget,
-} from "@/@types/types";
-import type { Options } from "@/@types/options";
+  Options,
+  ownerComment,
+  rawApiResponse,
+  v1Comment,
+  v1Thread,
+} from "@/@types/";
+import { colors } from "@/definition/colors";
 
 const isBoolean = (i: unknown): i is boolean => typeof i === "boolean";
 const isNumber = (i: unknown): i is number => typeof i === "number";
@@ -186,7 +182,7 @@ const typeGuard = {
     },
     replace: {
       range: (i: unknown): i is nicoScriptReplaceRange =>
-        typeof i === "string" && !!i.match(/^(?:\u5358|\u5168)$/),
+        typeof i === "string" && !!i.match(/^[\u5358\u5168]$/),
       target: (i: unknown): i is nicoScriptReplaceTarget =>
         typeof i === "string" &&
         !!i.match(
@@ -211,6 +207,8 @@ const typeGuard = {
     color: (i: unknown): i is keyof typeof colors =>
       typeof i === "string" && Object.keys(colors).includes(i),
     colorCode: (i: unknown): i is string =>
+      typeof i === "string" && !!i.match(/^#(?:[0-9a-z]{3}|[0-9a-z]{6})$/),
+    colorCodeAllowAlpha: (i: unknown): i is string =>
       typeof i === "string" &&
       !!i.match(/^#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/),
   },
@@ -238,7 +236,7 @@ const typeGuard = {
         video: (i: unknown) =>
           typeof i === "object" && (i as HTMLVideoElement).nodeName === "VIDEO",
       };
-      for (const key in keys) {
+      for (const key of Object.keys(keys)) {
         if (
           (item as { [key: string]: unknown })[key] !== undefined &&
           !(keys[key] as (i: unknown) => boolean)(

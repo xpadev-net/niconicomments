@@ -1,12 +1,15 @@
-import { getConfig, parseFont } from "@/util";
+import type { commentSize, measureInput } from "@/@types";
 import { config } from "@/definition/config";
-import type { commentSize, measureInput } from "@/@types/types";
+
+import { parseFont } from "./comment";
+import { getConfig } from "./config";
 
 /**
  * 各サイズの行高を返す
- * @param fontSize
- * @param resized
- * @param isFlash
+ * @param fontSize コメントサイズ
+ * @param isFlash Flashかどうか
+ * @param resized リサイズされているか
+ * @returns 行高
  */
 const getLineHeight = (
   fontSize: commentSize,
@@ -54,7 +57,7 @@ const measureWidth = (
     const lines = item.content.split("\n");
     context.font = parseFont(item.font || comment.font, fontSize);
     const width = [];
-    for (let j = 0; j < lines.length; j++) {
+    for (let j = 0, n = lines.length; j < n; j++) {
       const measure = context.measureText(lines[j] as string);
       currentWidth += measure.width;
       width.push(measure.width);
@@ -88,4 +91,4 @@ const getFontSizeAndScale = (charSize: number) => {
   };
 };
 
-export { getLineHeight, getCharSize, measure, getFontSizeAndScale };
+export { getCharSize, getFontSizeAndScale, getLineHeight, measure };

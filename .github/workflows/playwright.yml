@@ -1,0 +1,30 @@
+name: Playwright Tests
+on:
+  pull_request:
+     branches: [ master ]
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+      - name: allow write in work dir
+        run: sudo chmod -R 777 .
+      - name: Install Dependencies
+        run: |
+          npm -g install yarn
+          yarn install
+          yarn build
+          yarn playwright install-deps
+          yarn playwright install firefox
+      - name: Run Playwright tests
+        run: yarn playwright test
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: test-results
+          path: test-results/
+          retention-days: 30

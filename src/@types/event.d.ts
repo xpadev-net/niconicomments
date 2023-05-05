@@ -40,6 +40,12 @@ export type CommentEventName =
   | "commentDisable"
   | "commentEnable"
   | "jump";
+export type CommentEventHandler =
+  | SeekDisableEventHandler
+  | SeekEnableEventHandler
+  | CommentDisableEventHandler
+  | CommentEnableEventHandler
+  | JumpEventHandler;
 export interface CommentEventHandlerMap {
   seekDisable: SeekDisableEventHandler;
   seekEnable: SeekEnableEventHandler;

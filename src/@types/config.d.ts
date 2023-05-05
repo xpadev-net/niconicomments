@@ -1,4 +1,10 @@
-import { IPluginConstructor } from "@/@types/IPlugins";
+import type {
+  commentSize,
+  formattedComment,
+  IPluginConstructor,
+  platformFont,
+} from "@/@types/";
+import { BaseComment } from "@/comments/";
 
 type configItem<T> = T | { html5: T; flash: T };
 type configSizeItem<T> = { big: T; medium: T; small: T };
@@ -57,9 +63,18 @@ type BaseConfig = {
   sameCAGap: number;
   sameCAMinScore: number;
   sameCARange: number;
+  sameCATimestampRange: number;
   letterSpacing: number;
   scriptCharOffset: number;
   plugins: IPluginConstructor[];
+  commentPlugins: {
+    class: typeof BaseComment;
+    condition: (comment: formattedComment) => boolean;
+  }[];
+  commentLimit: number | undefined;
+  hideCommentOrder: "asc" | "desc";
+  lineBreakCount: { [key in commentSize]: number };
+  nakaCommentSpeedOffset: number;
 };
 
 export type Config = Partial<BaseConfig>;

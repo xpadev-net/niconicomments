@@ -1,35 +1,46 @@
-import convert2formattedComment from "./inputParser";
-import typeGuard from "@/typeGuard";
+import type {
+  collision,
+  collisionItem,
+  collisionPos,
+  CommentEventHandlerMap,
+  formattedComment,
+  IComment,
+  inputFormat,
+  Options,
+  Timeline,
+} from "@/@types/";
+import { FlashComment } from "@/comments/";
 import {
+  plugins,
+  resetImageCache,
+  resetNicoScripts,
+  setPlugins,
+} from "@/contexts/";
+import {
+  config,
   defaultConfig,
   defaultOptions,
-  config,
   options,
   setConfig,
   setOptions,
-  initConfig,
 } from "@/definition/config";
+import { initConfig } from "@/definition/initConfig";
+import { CanvasRenderingContext2DError, InvalidOptionError } from "@/errors/";
+import { registerHandler, removeHandler, triggerHandler } from "@/eventHandler";
+import convert2formattedComment from "@/inputParser";
+import typeGuard from "@/typeGuard";
 import {
   ArrayEqual,
-  arrayPush,
   changeCALayer,
-  getPosX,
-  getPosY,
   hex2rgb,
   isFlashComment,
   parseFont,
-} from "@/util";
-import { HTML5Comment } from "@/comments/HTML5Comment";
-import { FlashComment } from "@/comments/FlashComment";
-import { resetImageCache } from "@/contexts/cache";
-import { resetNicoScripts } from "@/contexts/nicoscript";
-import type { IComment } from "@/@types/IComment";
-import type { inputFormat, Options } from "@/@types/options";
-import type { collision, collisionItem, collisionPos } from "@/@types/types";
-import type { formattedComment } from "@/@types/format.formatted";
-import type { CommentEventHandlerMap } from "@/@types/event";
-import { plugins, setPlugins } from "@/contexts/plugins";
-import { registerHandler, removeHandler, triggerHandler } from "@/eventHandler";
+  processFixedComment,
+  processMovableComment,
+} from "@/utils";
+import { createCommentInstance } from "@/utils/plugins";
+
+import * as internal from "./internal";
 
 let isDebug = false;
 
@@ -43,15 +54,20 @@ class NiconiComments {
   private readonly canvas: HTMLCanvasElement;
   private readonly collision: collision;
   private readonly context: CanvasRenderingContext2D;
-  private readonly timeline: { [key: number]: IComment[] };
+  private readonly timeline: Timeline;
   static typeGuard = typeGuard;
   static default = NiconiComments;
+  static FlashComment = {
+    condition: isFlashComment,
+    class: FlashComment,
+  };
+  static internal = internal;
 
   /**
    * NiconiComments Constructor
-   * @param {HTMLCanvasElement} canvas - 描画対象のキャンバス
-   * @param {[]} data - 描画用のコメント
-   * @param initOptions
+   * @param canvas 描画対象のキャンバス
+   * @param data 描画用のコメント
+   * @param initOptions 初期化オプション
    */
   constructor(
     canvas: HTMLCanvasElement,
@@ -61,9 +77,7 @@ class NiconiComments {
     const constructorStart = performance.now();
     initConfig();
     if (!typeGuard.config.initOptions(initOptions))
-      throw new Error(
-        "Please see document: https://xpadev-net.github.io/niconicomments/#p_options"
-      );
+      throw new InvalidOptionError();
     setOptions(Object.assign(defaultOptions, initOptions));
     setConfig(Object.assign(defaultConfig, options.config));
     isDebug = options.debug;
@@ -71,7 +85,7 @@ class NiconiComments {
     resetNicoScripts();
     this.canvas = canvas;
     const context = canvas.getContext("2d");
-    if (!context) throw new Error("Fail to get CanvasRenderingContext2D");
+    if (!context) throw new CanvasRenderingContext2DError();
     this.context = context;
     this.context.strokeStyle = `rgba(${hex2rgb(config.contextStrokeColor).join(
       ","
@@ -123,7 +137,7 @@ class NiconiComments {
 
   /**
    * 事前に当たり判定を考慮してコメントの描画場所を決定する
-   * @param {any[]} rawData
+   * @param rawData コメントデータ
    */
   private preRendering(rawData: formattedComment[]) {
     const preRenderingStart = performance.now();
@@ -132,11 +146,7 @@ class NiconiComments {
     }
     this.getCommentPos(
       rawData.reduce((pv, val) => {
-        if (isFlashComment(val)) {
-          pv.push(new FlashComment(val, this.context));
-        } else {
-          pv.push(new HTML5Comment(val, this.context));
-        }
+        pv.push(createCommentInstance(val, this.context));
         return pv;
       }, [] as IComment[])
     );
@@ -146,117 +156,25 @@ class NiconiComments {
 
   /**
    * 計算された描画サイズをもとに各コメントの配置位置を決定する
+   * @param data コメントデータ
    */
-  private getCommentPos(data: IComment[]): IComment[] {
+  private getCommentPos(data: IComment[]) {
     const getCommentPosStart = performance.now();
-    data.forEach((comment) => {
-      if (comment.invisible) return;
+    for (const comment of data) {
+      if (comment.invisible) continue;
       if (comment.loc === "naka") {
-        let posY = 0;
-        const beforeVpos =
-          Math.round(-288 / ((1632 + comment.width) / (comment.long + 125))) -
-          100;
-        if (config.canvasHeight < comment.height) {
-          posY = (comment.height - config.canvasHeight) / -2;
-        } else {
-          let isBreak = false,
-            isChanged = true,
-            count = 0;
-          while (isChanged && count < 10) {
-            isChanged = false;
-            count++;
-            for (let j = beforeVpos; j < comment.long + 125; j++) {
-              const vpos = comment.vpos + j;
-              const left_pos = getPosX(comment.width, j, comment.long);
-              if (
-                left_pos + comment.width >= config.collisionRange.right &&
-                left_pos <= config.collisionRange.right
-              ) {
-                const result = getPosY(
-                  posY,
-                  comment,
-                  this.collision.right[vpos]
-                );
-                posY = result.currentPos;
-                isChanged = result.isChanged;
-                isBreak = result.isBreak;
-                if (isBreak) break;
-              }
-              if (
-                left_pos + comment.width >= config.collisionRange.left &&
-                left_pos <= config.collisionRange.left
-              ) {
-                const result = getPosY(
-                  posY,
-                  comment,
-                  this.collision.left[vpos]
-                );
-                posY = result.currentPos;
-                isChanged = result.isChanged;
-                isBreak = result.isBreak;
-                if (isBreak) break;
-              }
-            }
-            if (isBreak) {
-              break;
-            }
-          }
-        }
-        for (let j = beforeVpos; j < comment.long + 125; j++) {
-          const vpos = comment.vpos + j;
-          const left_pos = getPosX(comment.width, j, comment.long);
-          arrayPush(this.timeline, vpos, comment);
-          if (
-            left_pos + comment.width >= config.collisionRange.right &&
-            left_pos <= config.collisionRange.right
-          ) {
-            arrayPush(this.collision.right, vpos, comment);
-          }
-          if (
-            left_pos + comment.width >= config.collisionRange.left &&
-            left_pos <= config.collisionRange.left
-          ) {
-            arrayPush(this.collision.left, vpos, comment);
-          }
-        }
-        comment.posY = posY;
+        processMovableComment(comment, this.collision, this.timeline);
       } else {
-        let posY = 0,
-          isChanged = true,
-          count = 0,
-          collision: collisionItem;
-        if (comment.loc === "ue") {
-          collision = this.collision.ue;
-        } else {
-          collision = this.collision.shita;
-        }
-        while (isChanged && count < 10) {
-          isChanged = false;
-          count++;
-          for (let j = 0; j < comment.long; j++) {
-            const result = getPosY(posY, comment, collision[comment.vpos + j]);
-            posY = result.currentPos;
-            isChanged = result.isChanged;
-            if (result.isBreak) break;
-          }
-        }
-        for (let j = 0; j < comment.long; j++) {
-          const vpos = comment.vpos + j;
-          arrayPush(this.timeline, vpos, comment);
-          if (j > comment.long - 20) continue;
-          if (comment.loc === "ue") {
-            arrayPush(this.collision.ue, vpos, comment);
-          } else {
-            arrayPush(this.collision.shita, vpos, comment);
-          }
-        }
-        comment.posY = posY;
+        processFixedComment(
+          comment,
+          this.collision[comment.loc],
+          this.timeline
+        );
       }
-    });
+    }
     logger(
       `getCommentPos complete: ${performance.now() - getCommentPosStart}ms`
     );
-    return data;
   }
 
   /**
@@ -282,133 +200,37 @@ class NiconiComments {
   }
 
   /**
-   * 動的にコメント追加
+   * 動的にコメント追加する
+   * ※すでに存在するコメントの位置はvposに関係なく更新されません
+   * @param rawComments コメントデータ
    */
   public addComments(...rawComments: formattedComment[]) {
-    plugins.forEach((val) => val.addComments(rawComments));
+    for (const plugin of plugins) {
+      plugin.addComments(rawComments);
+    }
     const comments = rawComments.reduce((pv, val) => {
-      if (isFlashComment(val)) {
-        pv.push(new FlashComment(val, this.context));
-      } else {
-        pv.push(new HTML5Comment(val, this.context));
-      }
+      pv.push(createCommentInstance(val, this.context));
       return pv;
     }, [] as IComment[]);
     for (const comment of comments) {
       if (comment.invisible) continue;
       if (comment.loc === "naka") {
-        let posY = 0;
-        const beforeVpos =
-          Math.round(-288 / ((1632 + comment.width) / (comment.long + 125))) -
-          100;
-        if (config.canvasHeight < comment.height) {
-          posY = (comment.height - config.canvasHeight) / -2;
-        } else {
-          let isBreak = false,
-            isChanged = true,
-            count = 0;
-          while (isChanged && count < 10) {
-            isChanged = false;
-            count++;
-            for (let j = beforeVpos; j < comment.long + 125; j++) {
-              const vpos = comment.vpos + j;
-              const left_pos = getPosX(comment.width, j, comment.long);
-              if (
-                left_pos + comment.width >= config.collisionRange.right &&
-                left_pos <= config.collisionRange.right
-              ) {
-                const collision = this.collision.right[vpos]?.filter(
-                  (val) => val.vpos <= comment.vpos
-                );
-                const result = getPosY(posY, comment, collision);
-                posY = result.currentPos;
-                isChanged = result.isChanged;
-                isBreak = result.isBreak;
-                if (isBreak) break;
-              }
-              if (
-                left_pos + comment.width >= config.collisionRange.left &&
-                left_pos <= config.collisionRange.left
-              ) {
-                const collision = this.collision.left[vpos]?.filter(
-                  (val) => val.vpos <= comment.vpos
-                );
-                const result = getPosY(posY, comment, collision);
-                posY = result.currentPos;
-                isChanged = result.isChanged;
-                isBreak = result.isBreak;
-                if (isBreak) break;
-              }
-            }
-            if (isBreak) {
-              break;
-            }
-          }
-        }
-        for (let j = beforeVpos; j < comment.long + 125; j++) {
-          const vpos = comment.vpos + j;
-          const left_pos = getPosX(comment.width, j, comment.long);
-          arrayPush(this.timeline, vpos, comment);
-          if (
-            left_pos + comment.width >= config.collisionRange.right &&
-            left_pos <= config.collisionRange.right
-          ) {
-            arrayPush(this.collision.right, vpos, comment);
-          }
-          if (
-            left_pos + comment.width >= config.collisionRange.left &&
-            left_pos <= config.collisionRange.left
-          ) {
-            arrayPush(this.collision.left, vpos, comment);
-          }
-        }
-        comment.posY = posY;
+        processMovableComment(comment, this.collision, this.timeline);
       } else {
-        let posY = 0,
-          isChanged = true,
-          count = 0,
-          collision: collisionItem;
-        if (comment.loc === "ue") {
-          collision = this.collision.ue;
-        } else {
-          collision = this.collision.shita;
-        }
-        while (isChanged && count < 10) {
-          isChanged = false;
-          count++;
-          for (let j = 0; j < comment.long; j++) {
-            const result = getPosY(
-              posY,
-              comment,
-              collision[comment.vpos + j]?.filter(
-                (val) => val.vpos <= comment.vpos
-              )
-            );
-            posY = result.currentPos;
-            isChanged = result.isChanged;
-            if (result.isBreak) break;
-          }
-        }
-        for (let j = 0; j < comment.long; j++) {
-          const vpos = comment.vpos + j;
-          arrayPush(this.timeline, vpos, comment);
-          if (j > comment.long - 20) continue;
-          if (comment.loc === "ue") {
-            arrayPush(this.collision.ue, vpos, comment);
-          } else {
-            arrayPush(this.collision.shita, vpos, comment);
-          }
-        }
-        comment.posY = posY;
+        processFixedComment(
+          comment,
+          this.collision[comment.loc],
+          this.timeline
+        );
       }
     }
   }
 
   /**
    * キャンバスを描画する
-   * @param vpos - 動画の現在位置の100倍 ニコニコから吐き出されるコメントの位置情報は主にこれ
-   * @param forceRendering
-   * @return isChanged - 再描画されたか
+   * @param vpos 動画の現在位置の100倍 ニコニコから吐き出されるコメントの位置情報は主にこれ
+   * @param forceRendering キャッシュを使用せずに再描画を強制するか
+   * @returns 再描画されたか
    */
   public drawCanvas(vpos: number, forceRendering = false): boolean {
     const drawCanvasStart = performance.now();
@@ -429,6 +251,22 @@ class NiconiComments {
     }
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.lastVpos = vpos;
+    this._drawVideo();
+    this._drawCollision(vpos);
+    this._drawComments(timelineRange, vpos);
+    for (const plugin of plugins) {
+      plugin.draw(vpos);
+    }
+    this._drawFPS(drawCanvasStart);
+    this._drawCommentCount(timelineRange?.length);
+    logger(`drawCanvas complete: ${performance.now() - drawCanvasStart}ms`);
+    return true;
+  }
+
+  /**
+   * 背景動画が設定されている場合に描画する
+   */
+  private _drawVideo() {
     if (this.video) {
       let scale;
       const height = this.canvas.height / this.video.videoHeight,
@@ -448,6 +286,38 @@ class NiconiComments {
         this.video.videoHeight * scale
       );
     }
+  }
+
+  /**
+   * コメントを描画する
+   * @param timelineRange 指定されたvposに存在するコメント
+   * @param vpos vpos
+   */
+  private _drawComments(timelineRange: IComment[] | undefined, vpos: number) {
+    if (timelineRange) {
+      const targetComment = (() => {
+        if (config.commentLimit === undefined) {
+          return timelineRange;
+        }
+        if (config.hideCommentOrder === "asc") {
+          return timelineRange.slice(-config.commentLimit);
+        }
+        return timelineRange.slice(0, config.commentLimit);
+      })();
+      for (const comment of targetComment) {
+        if (comment.invisible) {
+          continue;
+        }
+        comment.draw(vpos, this.showCollision, isDebug);
+      }
+    }
+  }
+
+  /**
+   * 当たり判定を描画する
+   * @param vpos vpos
+   */
+  private _drawCollision(vpos: number) {
     if (this.showCollision) {
       const leftCollision = this.collision.left[vpos],
         rightCollision = this.collision.right[vpos];
@@ -473,16 +343,13 @@ class NiconiComments {
         }
       }
     }
+  }
 
-    if (timelineRange) {
-      for (const comment of timelineRange) {
-        if (comment.invisible) {
-          continue;
-        }
-        comment.draw(vpos, this.showCollision, isDebug);
-      }
-    }
-    plugins.forEach((val) => val.draw(vpos));
+  /**
+   * FPSを描画する
+   * @param drawCanvasStart 処理を開始した時間(ms)
+   */
+  private _drawFPS(drawCanvasStart: number) {
     if (this.showFPS) {
       this.context.font = parseFont("defont", 60);
       this.context.fillStyle = "#00FF00";
@@ -494,24 +361,30 @@ class NiconiComments {
       this.context.strokeText(`FPS:${fps}(${drawTime}ms)`, 100, 100);
       this.context.fillText(`FPS:${fps}(${drawTime}ms)`, 100, 100);
     }
+  }
+
+  /**
+   * 描画されたコメント数を描画する
+   * @param count コメント描画数
+   */
+  private _drawCommentCount(count?: number | undefined) {
     if (this.showCommentCount) {
       this.context.font = parseFont("defont", 60);
       this.context.fillStyle = "#00FF00";
       this.context.strokeStyle = `rgba(${hex2rgb(
         config.contextStrokeColor
       ).join(",")},${config.contextStrokeOpacity})`;
-      if (timelineRange) {
-        this.context.strokeText(`Count:${timelineRange.length}`, 100, 200);
-        this.context.fillText(`Count:${timelineRange.length}`, 100, 200);
-      } else {
-        this.context.strokeText("Count:0", 100, 200);
-        this.context.fillText("Count:0", 100, 200);
-      }
+      this.context.strokeText(`Count:${count || 0}`, 100, 200);
+      this.context.fillText(`Count:${count || 0}`, 100, 200);
     }
-    logger(`drawCanvas complete: ${performance.now() - drawCanvasStart}ms`);
-    return true;
   }
 
+  /**
+   * イベントハンドラを追加
+   * @template K
+   * @param eventName イベント名
+   * @param handler イベントハンドラ
+   */
   public addEventListener<K extends keyof CommentEventHandlerMap>(
     eventName: K,
     handler: CommentEventHandlerMap[K]
@@ -519,6 +392,12 @@ class NiconiComments {
     registerHandler(eventName, handler);
   }
 
+  /**
+   * イベントハンドラを削除
+   * @template K
+   * @param eventName イベント名
+   * @param handler イベントハンドラ
+   */
   public removeEventListener<K extends keyof CommentEventHandlerMap>(
     eventName: K,
     handler: CommentEventHandlerMap[K]

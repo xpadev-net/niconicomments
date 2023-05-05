@@ -1,0 +1,135 @@
+.wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  aspect-ratio: 16/9;
+  height: 100vh;
+  width: 100vw;
+  z-index: 0;
+  background-color: #333333;
+  overflow: hidden;
+}
+
+#container {
+  width: 1920px;
+  height: 1080px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}
+
+#player,
+#canvas,
+#background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+}
+
+#canvas {
+  pointer-events: none;
+}
+
+#background:hover {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+#control-wrapper {
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  right: 0;
+}
+
+#control {
+  position: relative;
+  background-color: rgba(0, 0, 0, 0.75);
+  border-radius: 0 0 0 10px;
+  padding: 10px 10px 20px 10px;
+  display: flex;
+  flex-direction: column;
+  transition: top 500ms ease;
+  color: white;
+  top: 0;
+}
+
+#control label {
+  display: block;
+  height: 30px;
+  line-height: 30px;
+}
+input[type="number"],
+select {
+  background-color: rgba(25, 25, 25, 0.75);
+  border: solid 1px white;
+  border-radius: 2px;
+  color: white;
+  height: 26px;
+  padding: 0;
+  margin: 2px;
+}
+
+#control label:hover {
+  background-color: rgba(100, 100, 100, 0.75);
+}
+
+#toggle {
+  position: absolute;
+  bottom: 0;
+  height: 20px;
+  width: 100%;
+}
+
+#toggle p {
+  transform: rotateZ(90deg);
+  transform-origin: center center 0;
+  text-align: center;
+  width: 20px;
+  height: 20px;
+  font-size: 10px;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  transition: 500ms ease-in-out transform;
+  position: absolute;
+  top: 0;
+  left: calc(50% - 10px);
+  line-height: 20px;
+}
+
+#control.close {
+  top: calc(-100% + 20px);
+}
+
+#control.close #toggle p {
+  transform: rotateZ(-90deg);
+}
+
+body,
+html {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+#loaded,#inited {
+  position: fixed;
+  width: 0;
+  height: 0;
+  left: 0;
+  top: 0;
+}

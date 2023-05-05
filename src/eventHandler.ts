@@ -1,6 +1,9 @@
-import { CommentEventHandlerMap, CommentEventMap } from "@/@types/event";
-import { valueOf } from "@/@types/types";
-import { nicoScripts } from "@/contexts/nicoscript";
+import type {
+  CommentEventHandlerMap,
+  CommentEventMap,
+  valueOf,
+} from "@/@types/";
+import { nicoScripts } from "@/contexts/";
 
 let handlerList: {
   eventName: keyof CommentEventHandlerMap;
@@ -34,7 +37,7 @@ const removeHandler = <K extends keyof CommentEventHandlerMap>(
 };
 
 const updateEventHandlerCounts = () => {
-  for (const key_ in handlerCounts) {
+  for (const key_ of Object.keys(handlerCounts)) {
     const key = key_ as keyof CommentEventHandlerMap;
     handlerCounts[key] = handlerList.filter(
       (item) => item.eventName === key

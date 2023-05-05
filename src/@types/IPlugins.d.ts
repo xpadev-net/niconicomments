@@ -1,4 +1,4 @@
-import { formattedComment } from "@/@types/format.formatted";
+import type { formattedComment } from "@/@types/";
 
 export interface IPluginConstructor {
   id: string;

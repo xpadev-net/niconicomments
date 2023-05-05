@@ -1,8 +1,8 @@
-import { formattedComment } from "@/@types";
+import { FormattedComment } from "@/@types";
 import { config } from "@/definition/config";
 
 type GroupedByUser = {
-  comments: formattedComment[];
+  comments: FormattedComment[];
   userId: number;
 }[];
 type GroupedByTime = {
@@ -10,7 +10,7 @@ type GroupedByTime = {
   userId: number;
 }[];
 type GroupedByTimeItem = {
-  comments: formattedComment[];
+  comments: FormattedComment[];
   range: {
     start: number;
     end: number;
@@ -22,7 +22,7 @@ type GroupedByTimeItem = {
  * @param rawData コメントデータ
  * @returns レイヤー分離後のコメントデータ
  */
-const changeCALayer = (rawData: formattedComment[]): formattedComment[] => {
+const changeCALayer = (rawData: FormattedComment[]): FormattedComment[] => {
   const userScoreList = getUsersScore(rawData);
   const filteredComments = removeDuplicateCommentArt(rawData);
   const commentArts = filteredComments.filter(
@@ -44,7 +44,7 @@ const changeCALayer = (rawData: formattedComment[]): formattedComment[] => {
  * @returns ユーザーIDごとのスコア
  */
 const getUsersScore = (
-  comments: formattedComment[]
+  comments: FormattedComment[]
 ): { [key: string]: number } => {
   const userScoreList: { [key: number]: number } = {};
   for (const comment of comments) {
@@ -71,8 +71,8 @@ const getUsersScore = (
  * @param comments コメントデータ
  * @returns 重複を排除したコメントデータ
  */
-const removeDuplicateCommentArt = (comments: formattedComment[]) => {
-  const index: { [key: string]: formattedComment } = {};
+const removeDuplicateCommentArt = (comments: FormattedComment[]) => {
+  const index: { [key: string]: FormattedComment } = {};
   return comments.filter((comment) => {
     const key = `${comment.content}@@${[...comment.mail]
         .sort()
@@ -115,7 +115,7 @@ const updateLayerId = (filteredComments: GroupedByTime) => {
  * @param comments コメントデータ
  * @returns ユーザーごとにグループ化したコメントデータ
  */
-const groupCommentsByUser = (comments: formattedComment[]) => {
+const groupCommentsByUser = (comments: FormattedComment[]) => {
   return comments.reduce((users, comment) => {
     const user = getUser(comment.user_id, users);
     user.comments.push(comment);
@@ -132,7 +132,7 @@ const groupCommentsByUser = (comments: formattedComment[]) => {
 const getUser = (
   userId: number,
   users: GroupedByUser
-): { comments: formattedComment[]; userId: number } => {
+): { comments: FormattedComment[]; userId: number } => {
   const user = users.find((user) => user.userId === userId);
   if (user) return user;
   const obj = {

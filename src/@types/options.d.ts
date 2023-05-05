@@ -1,13 +1,13 @@
 import type {
   Config,
-  formattedComment,
-  formattedLegacyComment,
-  ownerComment,
-  rawApiResponse,
-  v1Thread,
+  FormattedComment,
+  FormattedLegacyComment,
+  OwnerComment,
+  RawApiResponse,
+  V1Thread,
 } from "@/@types/";
 
-export type inputFormatType =
+export type InputFormatType =
   | "XMLDocument"
   | "niconicome"
   | "formatted"
@@ -17,24 +17,24 @@ export type inputFormatType =
   | "v1"
   | "empty"
   | "default";
-export type inputFormat =
+export type InputFormat =
   | XMLDocument
-  | formattedComment[]
-  | formattedLegacyComment[]
-  | rawApiResponse[]
-  | ownerComment[]
-  | v1Thread[]
+  | FormattedComment[]
+  | FormattedLegacyComment[]
+  | RawApiResponse[]
+  | OwnerComment[]
+  | V1Thread[]
   | string
   | undefined;
-type modeType = "default" | "html5" | "flash";
-type BaseOptions = {
+type ModeType = "default" | "html5" | "flash";
+export type BaseOptions = {
   config: Config;
   debug: boolean;
   enableLegacyPiP: boolean;
-  format: inputFormatType;
+  format: InputFormatType;
   formatted: boolean;
   keepCA: boolean;
-  mode: modeType;
+  mode: ModeType;
   scale: number;
   showCollision: boolean;
   showCommentCount: boolean;
@@ -43,3 +43,12 @@ type BaseOptions = {
   video: HTMLVideoElement | undefined;
 };
 export type Options = Partial<BaseOptions>;
+
+/**
+ * @deprecated
+ */
+export type inputFormatType = InputFormatType;
+/**
+ * @deprecated
+ */
+export type inputFormat = InputFormat;

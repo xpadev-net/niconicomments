@@ -1,4 +1,4 @@
-import { configItem } from "@/@types";
+import { ConfigItem } from "@/@types";
 
 /**
  * Configがhtml5とflashで別れてる場合は対応するものを、そうでなければ初期値を返す
@@ -7,7 +7,7 @@ import { configItem } from "@/@types";
  * @param isFlash Flashかどうか
  * @returns コンフィグアイテムの値
  */
-const getConfig = <T>(input: configItem<T>, isFlash = false): T => {
+const getConfig = <T>(input: ConfigItem<T>, isFlash = false): T => {
   if (
     Object.prototype.hasOwnProperty.call(input, "html5") &&
     Object.prototype.hasOwnProperty.call(input, "flash")

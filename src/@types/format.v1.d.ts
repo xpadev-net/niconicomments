@@ -1,10 +1,10 @@
-export type v1Thread = {
+export type V1Thread = {
   id: string;
   fork: string;
   commentCount: number;
-  comments: v1Comment[];
+  comments: V1Comment[];
 };
-type v1Comment = {
+export type V1Comment = {
   id: string;
   no: number;
   vposMs: number;
@@ -19,3 +19,8 @@ type v1Comment = {
   source: string;
   isMyPost: boolean;
 };
+
+/**
+ * @deprecated
+ */
+export type v1Thread = V1Thread;

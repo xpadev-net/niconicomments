@@ -1,10 +1,10 @@
 import type {
-  formattedComment,
-  formattedLegacyComment,
-  inputFormatType,
-  ownerComment,
-  rawApiResponse,
-  v1Thread,
+  FormattedComment,
+  FormattedLegacyComment,
+  InputFormatType,
+  OwnerComment,
+  RawApiResponse,
+  V1Thread,
 } from "@/@types/";
 import { InvalidFormatError } from "@/errors/";
 import typeGuard from "@/typeGuard";
@@ -17,9 +17,9 @@ import typeGuard from "@/typeGuard";
  */
 const convert2formattedComment = (
   data: unknown,
-  type: inputFormatType
-): formattedComment[] => {
-  let result: formattedComment[] = [];
+  type: InputFormatType
+): FormattedComment[] => {
+  let result: FormattedComment[] = [];
   if (type === "empty" && data === undefined) {
     return [];
   } else if (
@@ -48,13 +48,13 @@ const convert2formattedComment = (
  * @param data 吐き出されたxmlをDOMParserでparseFromStringしたもの
  * @returns 変換後のデータ
  */
-const fromXMLDocument = (data: XMLDocument): formattedComment[] => {
-  const data_: formattedComment[] = [],
+const fromXMLDocument = (data: XMLDocument): FormattedComment[] => {
+  const data_: FormattedComment[] = [],
     userList: string[] = [];
   let index = Array.from(data.documentElement.children).length;
   for (const item of Array.from(data.documentElement.children)) {
     if (item.nodeName !== "chat") continue;
-    const tmpParam: formattedComment = {
+    const tmpParam: FormattedComment = {
       id: Number(item.getAttribute("no")) || index++,
       vpos: Number(item.getAttribute("vpos")),
       content: item.innerHTML,
@@ -92,9 +92,9 @@ const fromXMLDocument = (data: XMLDocument): formattedComment[] => {
  * @returns 変換後のデータ
  */
 const fromFormatted = (
-  data: formattedComment[] | formattedLegacyComment[]
-): formattedComment[] => {
-  const tmpData = data as formattedComment[];
+  data: FormattedComment[] | FormattedLegacyComment[]
+): FormattedComment[] => {
+  const tmpData = data as FormattedComment[];
   if (!typeGuard.formatted.comments(data)) {
     for (const item of tmpData) {
       item.layer = -1;
@@ -110,14 +110,14 @@ const fromFormatted = (
  * @param data legacy apiから帰ってきたデータ
  * @returns 変換後のデータ
  */
-const fromLegacy = (data: rawApiResponse[]): formattedComment[] => {
-  const data_: formattedComment[] = [],
+const fromLegacy = (data: RawApiResponse[]): FormattedComment[] => {
+  const data_: FormattedComment[] = [],
     userList: string[] = [];
   for (const val of data) {
     if (!typeGuard.legacy.apiChat(val.chat)) continue;
     const value = val.chat;
     if (value.deleted !== 1) {
-      const tmpParam: formattedComment = {
+      const tmpParam: FormattedComment = {
         id: value.no,
         vpos: value.vpos,
         content: value.content || "",
@@ -153,8 +153,8 @@ const fromLegacy = (data: rawApiResponse[]): formattedComment[] => {
  * @param data 旧投米のテキストデータ
  * @returns 変換後のデータ
  */
-const fromLegacyOwner = (data: string): formattedComment[] => {
-  const data_: formattedComment[] = [],
+const fromLegacyOwner = (data: string): FormattedComment[] => {
+  const data_: FormattedComment[] = [],
     comments = data.split("\n");
   for (let i = 0, n = comments.length; i < n; i++) {
     const value = comments[i];
@@ -167,7 +167,7 @@ const fromLegacyOwner = (data: string): formattedComment[] => {
         commentData[2] += `:${commentData[j]}`;
       }
     }
-    const tmpParam: formattedComment = {
+    const tmpParam: FormattedComment = {
       id: i,
       vpos: Number(commentData[0]),
       content: commentData[2] || "",
@@ -195,12 +195,12 @@ const fromLegacyOwner = (data: string): formattedComment[] => {
  * @param data 投米のデータ
  * @returns 変換後のデータ
  */
-const fromOwner = (data: ownerComment[]): formattedComment[] => {
-  const data_: formattedComment[] = [];
+const fromOwner = (data: OwnerComment[]): FormattedComment[] => {
+  const data_: FormattedComment[] = [];
   for (let i = 0, n = data.length; i < n; i++) {
     const value = data[i];
     if (!value) continue;
-    const tmpParam: formattedComment = {
+    const tmpParam: FormattedComment = {
       id: i,
       vpos: time2vpos(value.time),
       content: value.comment,
@@ -229,14 +229,14 @@ const fromOwner = (data: ownerComment[]): formattedComment[] => {
  * @param data v1 apiから帰ってきたデータ
  * @returns 変換後のデータ
  */
-const fromV1 = (data: v1Thread[]): formattedComment[] => {
-  const data_: formattedComment[] = [],
+const fromV1 = (data: V1Thread[]): FormattedComment[] => {
+  const data_: FormattedComment[] = [],
     userList: string[] = [];
   for (const item of data) {
     const val = item.comments,
       forkName = item.fork;
     for (const value of val) {
-      const tmpParam: formattedComment = {
+      const tmpParam: FormattedComment = {
         id: value.no,
         vpos: Math.floor(value.vposMs / 10),
         content: value.body,
@@ -271,8 +271,8 @@ const fromV1 = (data: v1Thread[]): formattedComment[] => {
  * @param data ソート対象の配列
  * @returns ソート後の配列
  */
-const sort = (data: formattedComment[]): formattedComment[] => {
-  data.sort((a: formattedComment, b: formattedComment) => {
+const sort = (data: FormattedComment[]): FormattedComment[] => {
+  data.sort((a: FormattedComment, b: FormattedComment) => {
     if (a.vpos < b.vpos) return -1;
     if (a.vpos > b.vpos) return 1;
     if (a.date < b.date) return -1;

@@ -1,25 +1,25 @@
-export type rawApiResponse = {
-  [key: string]: apiPing | apiThread | apiLeaf | apiGlobalNumRes | apiChat;
+export type RawApiResponse = {
+  [key: string]: ApiPing | ApiThread | ApiLeaf | ApiGlobalNumRes | ApiChat;
 };
-type apiPing = {
+export type ApiPing = {
   content: string;
 };
-type apiThread = {
+export type ApiThread = {
   resultcode: number;
   thread: string;
   server_time: number;
   ticket: string;
   revision: number;
 };
-type apiLeaf = {
+export type ApiLeaf = {
   thread: string;
   count: number;
 };
-type apiGlobalNumRes = {
+export type ApiGlobalNumRes = {
   thread: string;
   num_res: number;
 };
-type apiChat = {
+export type ApiChat = {
   thread: string;
   no: number;
   vpos: number;
@@ -33,3 +33,8 @@ type apiChat = {
   content: string;
   deleted: number;
 };
+
+/**
+ * @deprecated
+ */
+export type rawApiResponse = RawApiResponse;

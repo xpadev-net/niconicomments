@@ -1,6 +1,6 @@
-import type { nicoScript } from "@/@types/";
+import type { NicoScript } from "@/@types/";
 
-let nicoScripts: nicoScript = {
+let nicoScripts: NicoScript = {
   reverse: [],
   default: [],
   replace: [],

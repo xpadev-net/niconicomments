@@ -1,9 +1,9 @@
-import { formattedComment } from "@/@types";
+import { FormattedComment } from "@/@types";
 import { HTML5Comment } from "@/comments";
 import { config } from "@/definition/config";
 
 const createCommentInstance = (
-  comment: formattedComment,
+  comment: FormattedComment,
   context: CanvasRenderingContext2D
 ) => {
   for (const plugin of config.commentPlugins) {

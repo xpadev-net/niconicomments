@@ -1,4 +1,4 @@
-import { formattedCommentWithSize } from "@/@types";
+import { FormattedCommentWithSize } from "@/@types";
 import { config } from "@/definition/config";
 
 /**
@@ -52,7 +52,7 @@ const hex2rgba = (hex: string) => {
   });
 };
 
-const getStrokeColor = (comment: formattedCommentWithSize) => {
+const getStrokeColor = (comment: FormattedCommentWithSize) => {
   if (comment.strokeColor) {
     const length = comment.strokeColor.length;
     if (length === 3 || length === 6) {

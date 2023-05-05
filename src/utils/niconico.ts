@@ -1,4 +1,4 @@
-import type { commentSize, measureInput } from "@/@types";
+import type { CommentSize, MeasureInput } from "@/@types";
 import { config } from "@/definition/config";
 
 import { parseFont } from "./comment";
@@ -12,31 +12,31 @@ import { getConfig } from "./config";
  * @returns 行高
  */
 const getLineHeight = (
-  fontSize: commentSize,
+  fontSize: CommentSize,
   isFlash: boolean,
   resized = false
 ) => {
   const lineCounts = getConfig(config.lineCounts, isFlash),
-    commentStageSize = getConfig(config.commentStageSize, isFlash),
-    lineHeight = commentStageSize.height / lineCounts.doubleResized[fontSize],
+    CommentStageSize = getConfig(config.CommentStageSize, isFlash),
+    lineHeight = CommentStageSize.height / lineCounts.doubleResized[fontSize],
     defaultLineCount = lineCounts.default[fontSize];
   if (resized) {
     const resizedLineCount = lineCounts.resized[fontSize];
     return (
-      (commentStageSize.height -
+      (CommentStageSize.height -
         lineHeight * (defaultLineCount / resizedLineCount)) /
       (resizedLineCount - 1)
     );
   }
-  return (commentStageSize.height - lineHeight) / (defaultLineCount - 1);
+  return (CommentStageSize.height - lineHeight) / (defaultLineCount - 1);
 };
-const getCharSize = (fontSize: commentSize, isFlash: boolean): number => {
+const getCharSize = (fontSize: CommentSize, isFlash: boolean): number => {
   const lineCounts = getConfig(config.lineCounts, isFlash),
-    commentStageSize = getConfig(config.commentStageSize, isFlash);
-  return commentStageSize.height / lineCounts.doubleResized[fontSize];
+    CommentStageSize = getConfig(config.CommentStageSize, isFlash);
+  return CommentStageSize.height / lineCounts.doubleResized[fontSize];
 };
 
-const measure = (comment: measureInput, context: CanvasRenderingContext2D) => {
+const measure = (comment: MeasureInput, context: CanvasRenderingContext2D) => {
   const width = measureWidth(comment, context);
   return {
     ...width,
@@ -45,7 +45,7 @@ const measure = (comment: measureInput, context: CanvasRenderingContext2D) => {
 };
 
 const measureWidth = (
-  comment: measureInput,
+  comment: MeasureInput,
   context: CanvasRenderingContext2D
 ) => {
   const { fontSize, scale } = getFontSizeAndScale(comment.charSize),

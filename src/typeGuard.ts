@@ -1,23 +1,23 @@
 import type {
-  apiChat,
-  apiGlobalNumRes,
-  apiLeaf,
-  apiPing,
-  apiThread,
-  commentFont,
-  commentLoc,
-  commentSize,
-  formattedComment,
-  formattedLegacyComment,
-  nicoScriptReplaceCondition,
-  nicoScriptReplaceRange,
-  nicoScriptReplaceTarget,
-  nicoScriptReverseTarget,
+  ApiChat,
+  ApiGlobalNumRes,
+  ApiLeaf,
+  ApiPing,
+  ApiThread,
+  CommentFont,
+  CommentLoc,
+  CommentSize,
+  FormattedComment,
+  FormattedLegacyComment,
+  NicoScriptReplaceCondition,
+  NicoScriptReplaceRange,
+  NicoScriptReplaceTarget,
+  NicoScriptReverseTarget,
   Options,
-  ownerComment,
-  rawApiResponse,
-  v1Comment,
-  v1Thread,
+  OwnerComment,
+  RawApiResponse,
+  V1Comment,
+  V1Thread,
 } from "@/@types/";
 import { colors } from "@/definition/colors";
 
@@ -27,7 +27,7 @@ const isObject = (i: unknown): i is object => typeof i === "object";
 
 const typeGuard = {
   formatted: {
-    comment: (i: unknown): i is formattedComment =>
+    comment: (i: unknown): i is FormattedComment =>
       objectVerify(i, [
         "id",
         "vpos",
@@ -40,14 +40,14 @@ const typeGuard = {
         "user_id",
         "layer",
       ]),
-    comments: (i: unknown): i is formattedComment[] => {
+    comments: (i: unknown): i is FormattedComment[] => {
       if (typeof i !== "object") return false;
-      for (const item of i as formattedComment[]) {
+      for (const item of i as FormattedComment[]) {
         if (!typeGuard.formatted.comment(item)) return false;
       }
       return true;
     },
-    legacyComment: (i: unknown): i is formattedLegacyComment =>
+    legacyComment: (i: unknown): i is FormattedLegacyComment =>
       objectVerify(i, [
         "id",
         "vpos",
@@ -57,18 +57,18 @@ const typeGuard = {
         "premium",
         "mail",
       ]),
-    legacyComments: (i: unknown): i is formattedLegacyComment[] => {
+    legacyComments: (i: unknown): i is FormattedLegacyComment[] => {
       if (typeof i !== "object") return false;
-      for (const item of i as formattedLegacyComment[]) {
+      for (const item of i as FormattedLegacyComment[]) {
         if (!typeGuard.formatted.legacyComment(item)) return false;
       }
       return true;
     },
   },
   legacy: {
-    rawApiResponses: (i: unknown): i is rawApiResponse[] => {
+    rawApiResponses: (i: unknown): i is RawApiResponse[] => {
       if (typeof i !== "object") return false;
-      for (const itemWrapper of i as rawApiResponse[]) {
+      for (const itemWrapper of i as RawApiResponse[]) {
         for (const key of Object.keys(itemWrapper)) {
           const item = itemWrapper[key];
           if (!item) continue;
@@ -87,14 +87,14 @@ const typeGuard = {
       }
       return true;
     },
-    apiChat: (i: unknown): i is apiChat =>
+    apiChat: (i: unknown): i is ApiChat =>
       typeof i === "object" &&
-      objectVerify(i as apiChat, ["content", "date", "no", "thread", "vpos"]),
-    apiGlobalNumRes: (i: unknown): i is apiGlobalNumRes =>
+      objectVerify(i as ApiChat, ["content", "date", "no", "thread", "vpos"]),
+    apiGlobalNumRes: (i: unknown): i is ApiGlobalNumRes =>
       objectVerify(i, ["num_res", "thread"]),
-    apiLeaf: (i: unknown): i is apiLeaf => objectVerify(i, ["count", "thread"]),
-    apiPing: (i: unknown): i is apiPing => objectVerify(i, ["content"]),
-    apiThread: (i: unknown): i is apiThread =>
+    apiLeaf: (i: unknown): i is ApiLeaf => objectVerify(i, ["count", "thread"]),
+    apiPing: (i: unknown): i is ApiPing => objectVerify(i, ["content"]),
+    apiThread: (i: unknown): i is ApiThread =>
       objectVerify(i, [
         "resultcode",
         "revision",
@@ -131,18 +131,18 @@ const typeGuard = {
     },
   },
   owner: {
-    comment: (i: unknown): i is ownerComment =>
+    comment: (i: unknown): i is OwnerComment =>
       objectVerify(i, ["time", "command", "comment"]),
-    comments: (i: unknown): i is ownerComment[] => {
+    comments: (i: unknown): i is OwnerComment[] => {
       if (typeof i !== "object") return false;
-      for (const item of i as ownerComment[]) {
+      for (const item of i as OwnerComment[]) {
         if (!typeGuard.owner.comment(item)) return false;
       }
       return true;
     },
   },
   v1: {
-    comment: (i: unknown): i is v1Comment =>
+    comment: (i: unknown): i is V1Comment =>
       objectVerify(i, [
         "id",
         "no",
@@ -158,17 +158,17 @@ const typeGuard = {
         "source",
         "isMyPost",
       ]),
-    thread: (i: unknown): i is v1Thread => {
+    thread: (i: unknown): i is V1Thread => {
       if (!objectVerify(i, ["id", "fork", "commentCount", "comments"]))
         return false;
-      for (const value of (i as v1Thread).comments) {
+      for (const value of (i as V1Thread).comments) {
         if (!typeGuard.v1.comment(value)) return false;
       }
       return true;
     },
-    threads: (i: unknown): i is v1Thread[] => {
+    threads: (i: unknown): i is V1Thread[] => {
       if (typeof i !== "object") return false;
-      for (const item of i as v1Thread[]) {
+      for (const item of i as V1Thread[]) {
         if (!typeGuard.v1.thread(item)) return false;
       }
       return true;
@@ -177,28 +177,28 @@ const typeGuard = {
 
   nicoScript: {
     range: {
-      target: (i: unknown): i is nicoScriptReverseTarget =>
+      target: (i: unknown): i is NicoScriptReverseTarget =>
         typeof i === "string" && !!i.match(/^(?:\u6295?\u30b3\u30e1|\u5168)$/),
     },
     replace: {
-      range: (i: unknown): i is nicoScriptReplaceRange =>
+      range: (i: unknown): i is NicoScriptReplaceRange =>
         typeof i === "string" && !!i.match(/^[\u5358\u5168]$/),
-      target: (i: unknown): i is nicoScriptReplaceTarget =>
+      target: (i: unknown): i is NicoScriptReplaceTarget =>
         typeof i === "string" &&
         !!i.match(
           /^(?:\u30b3\u30e1|\u6295\u30b3\u30e1|\u5168|\u542b\u3080|\u542b\u307e\u306a\u3044)$/
         ),
-      condition: (i: unknown): i is nicoScriptReplaceCondition =>
+      condition: (i: unknown): i is NicoScriptReplaceCondition =>
         typeof i === "string" &&
         !!i.match(/^(?:\u90e8\u5206\u4e00\u81f4|\u5b8c\u5168\u4e00\u81f4)$/),
     },
   },
   comment: {
-    font: (i: unknown): i is commentFont =>
+    font: (i: unknown): i is CommentFont =>
       typeof i === "string" && !!i.match(/^(?:gothic|mincho|defont)$/),
-    loc: (i: unknown): i is commentLoc =>
+    loc: (i: unknown): i is CommentLoc =>
       typeof i === "string" && !!i.match(/^(?:ue|naka|shita)$/),
-    size: (i: unknown): i is commentSize =>
+    size: (i: unknown): i is CommentSize =>
       typeof i === "string" && !!i.match(/^(?:big|medium|small)$/),
     command: {
       key: (i: unknown): i is "full" | "ender" | "_live" | "invisible" =>

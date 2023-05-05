@@ -1,6 +1,6 @@
 import type { IComment } from "@/@types/";
 
-type formattedCommentWithFont = {
+export type FormattedCommentWithFont = {
   id: number;
   vpos: number;
   date: number;
@@ -10,10 +10,10 @@ type formattedCommentWithFont = {
   mail: string[];
   user_id: number;
   layer: number;
-  loc: commentLoc;
-  size: commentSize;
+  loc: CommentLoc;
+  size: CommentSize;
   fontSize: number;
-  font: commentFont;
+  font: CommentFont;
   color: string;
   strokeColor?: string;
   wakuColor?: string;
@@ -22,100 +22,101 @@ type formattedCommentWithFont = {
   _live: boolean;
   long: number;
   invisible: boolean;
-  content: commentContentItem[];
+  content: CommentContentItem[];
   flash: boolean;
   lineCount: number;
   lineOffset: number;
 };
-type formattedCommentWithSize = formattedCommentWithFont & {
+export type FormattedCommentWithSize = FormattedCommentWithFont & {
   height: number;
   width: number;
   lineHeight: number;
   resized: boolean;
   resizedX: boolean;
   resizedY: boolean;
-  content: commentMeasuredContentItem[];
+  content: CommentMeasuredContentItem[];
   charSize: number;
 };
-type parsedComment = formattedCommentWithSize & {
-  posY: number;
-  image?: HTMLCanvasElement | boolean;
-};
-type commentContentItem = {
+export type CommentContentItem = {
   content: string;
   slicedContent: string[];
-  font?: commentFlashFont;
+  font?: CommentFlashFont;
   width?: number[];
 };
-type commentMeasuredContentItem = commentContentItem & {
+export type CommentMeasuredContentItem = CommentContentItem & {
   width: number[];
 };
-type commentContentIndex = {
+export type CommentContentIndex = {
   index: number;
   font: "gothic" | "gulim" | "simsunStrong" | "simsunWeak";
 };
-type commentFont = "defont" | "mincho" | "gothic" | "gulim" | "simsun";
-type commentFlashFont = "defont" | "gulim" | "simsun";
-type commentSize = "big" | "medium" | "small";
-type commentLoc = "ue" | "naka" | "shita";
-type collision = { [key in collisionPos]: collisionItem };
-type Timeline = { [key: number]: IComment[] };
-type collisionPos = "ue" | "shita" | "right" | "left";
-type collisionItem = { [p: number]: IComment[] };
-type nicoScript = {
-  reverse: nicoScriptReverse[];
-  ban: nicoScriptBan[];
-  default: nicoScriptDefault[];
-  replace: nicoScriptReplace[];
-  seekDisable: nicoScriptSeekDisable[];
-  jump: nicoScriptJump[];
+export type CommentFont = "defont" | "mincho" | "gothic" | "gulim" | "simsun";
+export type CommentFlashFont = "defont" | "gulim" | "simsun";
+export type CommentSize = "big" | "medium" | "small";
+export type CommentLoc = "ue" | "naka" | "shita";
+export type Collision = { [key in CollisionPos]: CollisionItem };
+export type Timeline = { [key: number]: IComment[] };
+export type CollisionPos = "ue" | "shita" | "right" | "left";
+export type CollisionItem = { [p: number]: IComment[] };
+export type NicoScript = {
+  reverse: NicoScriptReverse[];
+  ban: NicoScriptBan[];
+  default: NicoScriptDefault[];
+  replace: NicoScriptReplace[];
+  seekDisable: NicoScriptSeekDisable[];
+  jump: NicoScriptJump[];
 };
-type nicoScriptSeekDisable = {
+type NicoScriptSeekDisable = {
   start: number;
   end: number;
 };
-type nicoScriptJump = {
+type NicoScriptJump = {
   start: number;
   end?: number;
   to: string;
   message?: string;
 };
-type nicoScriptReverse = {
-  target: nicoScriptReverseTarget;
+type NicoScriptReverse = {
+  target: NicoScriptReverseTarget;
   start: number;
   end: number;
 };
-type nicoScriptReverseTarget = "コメ" | "投コメ" | "全";
-type nicoScriptReplace = {
+export type NicoScriptReverseTarget = "コメ" | "投コメ" | "全";
+export type NicoScriptReplace = {
   start: number;
   long: number | undefined;
   keyword: string;
   replace: string;
-  range: nicoScriptReplaceRange;
-  target: nicoScriptReplaceTarget;
-  condition: nicoScriptReplaceCondition;
+  range: NicoScriptReplaceRange;
+  target: NicoScriptReplaceTarget;
+  condition: NicoScriptReplaceCondition;
   color: string | undefined;
-  size: commentSize | undefined;
-  font: commentFont | undefined;
-  loc: commentLoc | undefined;
+  size: CommentSize | undefined;
+  font: CommentFont | undefined;
+  loc: CommentLoc | undefined;
   no: number;
 };
-type nicoScriptReplaceRange = "単" | "全";
-type nicoScriptReplaceTarget = "コメ" | "投コメ" | "全" | "含まない" | "含む";
-type nicoScriptReplaceCondition = "完全一致" | "部分一致";
-type nicoScriptBan = {
+export type NicoScriptReplaceRange = "単" | "全";
+export type NicoScriptReplaceTarget =
+  | "コメ"
+  | "投コメ"
+  | "全"
+  | "含まない"
+  | "含む";
+export type NicoScriptReplaceCondition = "完全一致" | "部分一致";
+type NicoScriptBan = {
   start: number;
   end: number;
 };
-type nicoScriptDefault = {
+type NicoScriptDefault = {
   start: number;
   long: number | undefined;
   color: string | undefined;
-  size: commentSize | undefined;
-  font: commentFont | undefined;
-  loc: commentLoc | undefined;
+  size: CommentSize | undefined;
+  font: CommentFont | undefined;
+  loc: CommentLoc | undefined;
 };
-type measureTextResult = {
+export type MeasureTextResult = {
   width: number;
   height: number;
   resized: boolean;
@@ -123,17 +124,17 @@ type measureTextResult = {
   resizedY: boolean;
   fontSize: number;
   lineHeight: number;
-  content: commentMeasuredContentItem[];
+  content: CommentMeasuredContentItem[];
   charSize: number;
 };
-type parsedCommand = {
-  loc: commentLoc | undefined;
-  size: commentSize | undefined;
+export type ParsedCommand = {
+  loc: CommentLoc | undefined;
+  size: CommentSize | undefined;
   fontSize: number | undefined;
   color: string | undefined;
   strokeColor?: string;
   wakuColor?: string;
-  font: commentFont | undefined;
+  font: CommentFont | undefined;
   full: boolean;
   ender: boolean;
   _live: boolean;
@@ -141,16 +142,16 @@ type parsedCommand = {
   long: number | undefined;
 };
 
-type measureTextInput = {
-  content: commentContentItem[];
+export type MeasureTextInput = {
+  content: CommentContentItem[];
   resized?: boolean;
   ender: boolean;
-  size: commentSize;
+  size: CommentSize;
   fontSize: number;
   resizedY?: boolean;
   resizedX?: boolean;
-  font: commentFont;
-  loc: commentLoc;
+  font: CommentFont;
+  loc: CommentLoc;
   full: boolean;
   flash: boolean;
   lineCount: number;
@@ -158,12 +159,12 @@ type measureTextInput = {
   charSize?: number;
 };
 
-type measureInput = {
-  font: commentFont;
-  content: commentContentItem[];
+export type MeasureInput = {
+  font: CommentFont;
+  content: CommentContentItem[];
   lineHeight: number;
   charSize: number;
   lineCount: number;
 };
 
-type valueOf<T> = T[keyof T];
+export type ValueOf<T> = T[keyof T];

@@ -1,12 +1,12 @@
 import type {
-  formattedComment,
-  formattedCommentWithSize,
+  FormattedComment,
+  FormattedCommentWithSize,
   IComment,
 } from "@/@types/";
 import {
-  formattedCommentWithFont,
-  measureTextInput,
-  measureTextResult,
+  FormattedCommentWithFont,
+  MeasureTextInput,
+  MeasureTextResult,
 } from "@/@types/";
 import { imageCache } from "@/contexts";
 import { config } from "@/definition/config";
@@ -19,7 +19,7 @@ import { getPosX, isBanActive, isReverseActive, parseFont } from "@/utils";
 class BaseComment implements IComment {
   protected readonly context: CanvasRenderingContext2D;
   protected readonly cacheKey: string;
-  public comment: formattedCommentWithSize;
+  public comment: FormattedCommentWithSize;
   public posY: number;
   public readonly pluginName: string = "BaseComment";
   public image?: HTMLCanvasElement | null;
@@ -29,7 +29,7 @@ class BaseComment implements IComment {
    * @param comment 処理対象のコメント
    * @param context 描画対象のcanvasのcontext
    */
-  constructor(comment: formattedComment, context: CanvasRenderingContext2D) {
+  constructor(comment: FormattedComment, context: CanvasRenderingContext2D) {
     this.context = context;
     this.posY = 0;
     comment.content = comment.content.replace(/\t/g, "\u2003\u2003");
@@ -76,8 +76,8 @@ class BaseComment implements IComment {
    * @returns 描画サイズを含むコメント
    */
   protected getCommentSize(
-    parsedData: formattedCommentWithFont
-  ): formattedCommentWithSize {
+    parsedData: FormattedCommentWithFont
+  ): FormattedCommentWithSize {
     console.error("getCommentSize method is not implemented", parsedData);
     throw new NotImplementedError(this.pluginName, "getCommentSize");
   }
@@ -88,8 +88,8 @@ class BaseComment implements IComment {
    * @returns 処理結果
    */
   protected parseCommandAndNicoscript(
-    comment: formattedComment
-  ): formattedCommentWithFont {
+    comment: FormattedComment
+  ): FormattedCommentWithFont {
     console.error(
       "parseCommandAndNicoscript method is not implemented",
       comment
@@ -103,7 +103,7 @@ class BaseComment implements IComment {
    * @param comment - 独自フォーマットのコメントデータ
    * @returns - 描画サイズとリサイズの情報
    */
-  protected measureText(comment: measureTextInput): measureTextResult {
+  protected measureText(comment: MeasureTextInput): MeasureTextResult {
     console.error("measureText method is not implemented", comment);
     throw new NotImplementedError(this.pluginName, "measureText");
   }
@@ -114,8 +114,8 @@ class BaseComment implements IComment {
    * @returns 描画サイズを含むコメント
    */
   protected convertComment(
-    comment: formattedComment
-  ): formattedCommentWithSize {
+    comment: FormattedComment
+  ): FormattedCommentWithSize {
     console.error("convertComment method is not implemented", comment);
     throw new NotImplementedError(this.pluginName, "convertComment");
   }

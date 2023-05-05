@@ -1,16 +1,18 @@
 import type {
-  collision,
-  commentFont,
-  commentLoc,
-  commentSize,
-  formattedComment,
-  formattedCommentWithFont,
-  formattedCommentWithSize,
-  measureTextInput,
-  nicoScriptReplace,
-  parsedCommand,
+  Collision,
+  CollisionItem,
+  CommentFont,
+  CommentLoc,
+  CommentSize,
+  FormattedComment,
+  FormattedCommentWithFont,
+  FormattedCommentWithSize,
+  IComment,
+  MeasureTextInput,
+  NicoScriptReplace,
+  ParsedCommand,
+  Timeline,
 } from "@/@types/";
-import { collisionItem, IComment, Timeline } from "@/@types/";
 import { nicoScripts } from "@/contexts/";
 import { colors } from "@/definition/colors";
 import { config, options } from "@/definition/config";
@@ -19,7 +21,7 @@ import typeGuard from "@/typeGuard";
 import { ArrayPush } from "./array";
 import { getConfig } from "./config";
 
-const isLineBreakResize = (comment: measureTextInput) => {
+const isLineBreakResize = (comment: MeasureTextInput) => {
   return (
     !comment.resized &&
     !comment.ender &&
@@ -32,9 +34,9 @@ const getDefaultCommand = (vpos: number) => {
     (item) => !item.long || item.start + item.long >= vpos
   );
   let color = undefined,
-    size: commentSize | undefined = undefined,
+    size: CommentSize | undefined = undefined,
     font = undefined,
-    loc: commentLoc | undefined = undefined;
+    loc: CommentLoc | undefined = undefined;
   for (const item of nicoScripts.default) {
     if (item.loc) {
       loc = item.loc;
@@ -54,8 +56,8 @@ const getDefaultCommand = (vpos: number) => {
 };
 
 const nicoscriptReplaceIgnoreable = (
-  comment: formattedComment,
-  item: nicoScriptReplace
+  comment: FormattedComment,
+  item: NicoScriptReplace
 ) =>
   ((item.target === "\u30b3\u30e1" ||
     item.target === "\u542b\u307e\u306a\u3044") &&
@@ -68,8 +70,8 @@ const nicoscriptReplaceIgnoreable = (
     comment.content.indexOf(item.keyword) === -1);
 
 const applyNicoScriptReplace = (
-  comment: formattedComment,
-  commands: parsedCommand
+  comment: FormattedComment,
+  commands: ParsedCommand
 ) => {
   nicoScripts.replace = nicoScripts.replace.filter(
     (item) => !item.long || item.start + item.long >= comment.vpos
@@ -89,8 +91,8 @@ const applyNicoScriptReplace = (
 };
 
 const parseCommandAndNicoScript = (
-  comment: formattedComment
-): formattedCommentWithFont => {
+  comment: FormattedComment
+): FormattedCommentWithFont => {
   const isFlash = isFlashComment(comment);
   const commands = parseCommands(comment);
   processNicoscript(comment, commands);
@@ -115,7 +117,7 @@ const parseCommandAndNicoScript = (
     lineOffset: 0,
     ...commands,
     flash: isFlash,
-  } as formattedCommentWithFont;
+  } as FormattedCommentWithFont;
 };
 
 const parseBrackets = (input: string) => {
@@ -153,8 +155,8 @@ const parseBrackets = (input: string) => {
 };
 
 const addNicoscriptReplace = (
-  comment: formattedComment,
-  commands: parsedCommand
+  comment: FormattedComment,
+  commands: ParsedCommand
 ) => {
   //@置換
   const result = parseBrackets(comment.content);
@@ -197,8 +199,8 @@ const sortNicoscriptReplace = () => {
 };
 
 const processNicoscript = (
-  comment: formattedComment,
-  commands: parsedCommand
+  comment: FormattedComment,
+  commands: ParsedCommand
 ) => {
   const nicoscript = comment.content.match(
     /^[@\uff20](\u30c7\u30d5\u30a9\u30eb\u30c8|\u7f6e\u63db|\u9006|\u30b3\u30e1\u30f3\u30c8\u7981\u6b62|\u30b7\u30fc\u30af\u7981\u6b62|\u30b8\u30e3\u30f3\u30d7)(.*)/
@@ -232,8 +234,8 @@ const processNicoscript = (
 };
 
 const processDefaultScript = (
-  comment: formattedComment,
-  commands: parsedCommand
+  comment: FormattedComment,
+  commands: ParsedCommand
 ) => {
   nicoScripts.default.unshift({
     start: comment.vpos,
@@ -247,8 +249,8 @@ const processDefaultScript = (
 };
 
 const processReverseScript = (
-  comment: formattedComment,
-  commands: parsedCommand
+  comment: FormattedComment,
+  commands: ParsedCommand
 ) => {
   const reverse = comment.content.match(
     /^[@\uff20]\u9006(?:\s+)?(\u5168|\u30b3\u30e1|\u6295\u30b3\u30e1)?/
@@ -267,8 +269,8 @@ const processReverseScript = (
 };
 
 const processBanScript = (
-  comment: formattedComment,
-  commands: parsedCommand
+  comment: FormattedComment,
+  commands: ParsedCommand
 ) => {
   if (commands.long === undefined) {
     commands.long = 30;
@@ -280,8 +282,8 @@ const processBanScript = (
 };
 
 const processSeekDisableScript = (
-  comment: formattedComment,
-  commands: parsedCommand
+  comment: FormattedComment,
+  commands: ParsedCommand
 ) => {
   if (commands.long === undefined) {
     commands.long = 30;
@@ -293,8 +295,8 @@ const processSeekDisableScript = (
 };
 
 const processJumpScript = (
-  comment: formattedComment,
-  commands: parsedCommand,
+  comment: FormattedComment,
+  commands: ParsedCommand,
   input: string
 ) => {
   const options = input.match(
@@ -310,10 +312,10 @@ const processJumpScript = (
   });
 };
 
-const parseCommands = (comment: formattedComment): parsedCommand => {
+const parseCommands = (comment: FormattedComment): ParsedCommand => {
   const commands = comment.mail,
     isFlash = isFlashComment(comment);
-  const result: parsedCommand = {
+  const result: ParsedCommand = {
     loc: undefined,
     size: undefined,
     fontSize: undefined,
@@ -337,9 +339,9 @@ const parseCommands = (comment: formattedComment): parsedCommand => {
 };
 
 const parseCommand = (
-  comment: formattedComment,
+  comment: FormattedComment,
   _command: string,
-  result: parsedCommand,
+  result: ParsedCommand,
   isFlash: boolean
 ) => {
   const command = _command.toLowerCase();
@@ -396,7 +398,7 @@ const parseCommand = (
  * @param comment コメントデータ
  * @returns Flash適用対象かどうか
  */
-const isFlashComment = (comment: formattedComment): boolean =>
+const isFlashComment = (comment: FormattedComment): boolean =>
   options.mode === "flash" ||
   (options.mode === "default" &&
     !(
@@ -430,7 +432,7 @@ const isBanActive = (vpos: number): boolean => {
 
 const processFixedComment = (
   comment: IComment,
-  collision: collisionItem,
+  collision: CollisionItem,
   timeline: Timeline
 ) => {
   let posY = 0,
@@ -457,7 +459,7 @@ const processFixedComment = (
 
 const processMovableComment = (
   comment: IComment,
-  collision: collision,
+  collision: Collision,
   timeline: Timeline
 ) => {
   const beforeVpos =
@@ -572,7 +574,7 @@ const getPosY = (
  * @returns x座標
  */
 const getPosX = (
-  comment: formattedCommentWithSize,
+  comment: FormattedCommentWithSize,
   vpos: number,
   isReverse = false
 ): number => {
@@ -598,7 +600,7 @@ const getPosX = (
  * @param size サイズ
  * @returns contextで使えるフォント
  */
-const parseFont = (font: commentFont, size: string | number): string => {
+const parseFont = (font: CommentFont, size: string | number): string => {
   switch (font) {
     case "gulim":
     case "simsun":

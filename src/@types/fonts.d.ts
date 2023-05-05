@@ -1,4 +1,4 @@
-export type platform =
+export type Platform =
   | "win7"
   | "win8_1"
   | "win"
@@ -12,6 +12,6 @@ export type FontItem = {
   offset: number;
   weight: number;
 };
-export type platformFont = {
+export type PlatformFont = {
   [key in HTML5Fonts]: FontItem;
 };

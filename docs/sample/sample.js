@@ -346,6 +346,9 @@ const loadComments = async () => {
       plugins: window.Niwango ? [window.Niwango] : [],
     },
   });
+  const elem = document.createElement("div");
+  elem.id="loaded";
+  document.body.appendChild(elem);
   const background = getById(videos, video).bg;
   backgroundElement.style.background = background || "none";
   if (time>=0) {
@@ -363,9 +366,6 @@ const loadComments = async () => {
   nico.addEventListener("seekDisable", handler);
   nico.addEventListener("seekEnable", handler);
   nico.addEventListener("jump", handler);
-  const elem = document.createElement("div");
-  elem.classList.add("loaded");
-  document.body.appendChild(elem);
 };
 
 const getById = (array, id) => {
@@ -391,6 +391,9 @@ const getVideoItem = () => {
 };
 if (noVideo) {
   void loadComments();
+  const elem = document.createElement("div");
+  elem.id="inited";
+  document.body.appendChild(elem);
 }else{
   window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
 }

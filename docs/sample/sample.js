@@ -191,7 +191,7 @@ const videos = [
 const urlParams = new URLSearchParams(window.location.search);
 let video = Number(urlParams.get("video") || 0),
   noVideo = !!urlParams.get("novideo"),
-  time = Number(urlParams.get("time")||-1),
+  time = Number(urlParams.get("time") || -1),
   player,
   interval = null,
   nico = null,
@@ -263,7 +263,7 @@ const onReady = () => {
   document.title = `${videoItem.title}(${videoItem.nc}) - niconicomments sample`;
   void loadComments();
 };
-if (!noVideo){
+if (!noVideo) {
   controlVideoElement.onchange = (e) => {
     video = e.target.value;
     const videoItem = getVideoItem();
@@ -322,8 +322,8 @@ const updateTime = (e) => {
 };
 
 const updateCanvas = () => {
-  if (noVideo && time>=0){
-    nico.drawCanvas(Math.floor(time*100));
+  if (noVideo && time >= 0) {
+    nico.drawCanvas(Math.floor(time * 100));
     return;
   }
   nico.drawCanvas(Math.floor(player.getCurrentTime() * 100));
@@ -347,11 +347,11 @@ const loadComments = async () => {
     },
   });
   const elem = document.createElement("div");
-  elem.id="loaded";
+  elem.id = "loaded";
   document.body.appendChild(elem);
   const background = getById(videos, video).bg;
   backgroundElement.style.background = background || "none";
-  if (time>=0) {
+  if (time >= 0) {
     player?.seekTo(time, true);
   }
   if (!interval) {
@@ -392,9 +392,9 @@ const getVideoItem = () => {
 if (noVideo) {
   void loadComments();
   const elem = document.createElement("div");
-  elem.id="inited";
+  elem.id = "inited";
   document.body.appendChild(elem);
-}else{
+} else {
   window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
 }
 window.onresize = resize;

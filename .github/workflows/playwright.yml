@@ -1,7 +1,7 @@
 name: Playwright Tests
 on:
   pull_request:
-     branches: [ master ]
+    branches: [master]
 jobs:
   test:
     timeout-minutes: 60
@@ -10,7 +10,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v3
         with:
-          node-version: '20'
+          node-version: "20"
       - name: allow write in work dir
         run: sudo chmod -R 777 .
       - name: Install Dependencies

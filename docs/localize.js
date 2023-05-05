@@ -244,23 +244,23 @@ const localize = {
 <p>この機能を応用すると、Picture in Pictureにもコメントを表示できるようになります</p>`,
   ],
   m_addComments: [
-      `<p>This is a feature to dynamically add comments, mainly for live broadcasts.</p>
+    `<p>This is a feature to dynamically add comments, mainly for live broadcasts.</p>
 <p>Comments added by this feature are placed based on a hit decision, but do not affect the position of subsequent comments that have already been placed.</p>
 <p>Comments may overlap with each other when placed between already generated comments.</p>`,
     `<p>主に生配信向けの、コメントを動的に追加する機能です</p>
 <p>この機能によって追加されたコメントは当たり判定を考慮して配置されますが、すでに配置されているその後のコメントの位置には影響を及ぼしません</p>
-<p>生成済みのコメントの間に配置した場合、コメント同士が重複する場合があります</p>`
+<p>生成済みのコメントの間に配置した場合、コメント同士が重複する場合があります</p>`,
   ],
   m_addEventListener: [
-      `<p>Add an event handler</p>
+    `<p>Add an event handler</p>
 <p>Check the type definition for event details</p>`,
-      `<p>イベントハンドラを追加します</p>
-<p>イベントの詳細は型定義を確認してください</p>`
+    `<p>イベントハンドラを追加します</p>
+<p>イベントの詳細は型定義を確認してください</p>`,
   ],
   m_removeEventListener: [
     `<p>Remove an event handler</p>
 <p>Check the type definition for event details</p>`,
-    `<p>addEventListenerで追加されたイベントハンドラを削除します</p>`
+    `<p>addEventListenerで追加されたイベントハンドラを削除します</p>`,
   ],
   m_drawCanvas: [
     `<p>Draws a comment on the canvas based on vpos(currentTime*100 of the video)</p>
@@ -269,18 +269,22 @@ const localize = {
 <p>vposは<span class="yellow">整数(int)</span>である必要があります</p>`,
   ],
   m_clear: [`<p>Erase Canvas</p>`, `<p>キャンバスを消去します</p>`],
-  c_flash: [`<p>Enforces processing as a Flash version comment when in auto mode</p>
+  c_flash: [
+    `<p>Enforces processing as a Flash version comment when in auto mode</p>
 <p>※This command is ignored except in auto mode</p>
 <p>※If you want to force processing as HTML5 version comments in auto mode, use one of the following commands: defont, mincho, or gothic</p>`,
     `<p>自動モード時にFlash版コメントとしての処理を強制します</p>
 <p>※HTML5モード時は無視されます</p>
-<p>※自動モード時にHTML5版コメントとしての処理を強制させたい場合はdefont、mincho、gothicのいずれかを使用してください</p>`],
-  c_stroke: [`<p>This command allows you to change the color of the comment borders</p>
+<p>※自動モード時にHTML5版コメントとしての処理を強制させたい場合はdefont、mincho、gothicのいずれかを使用してください</p>`,
+  ],
+  c_stroke: [
+    `<p>This command allows you to change the color of the comment borders</p>
 <p>Colors can be specified with the color command or color code</p>
 <p>Color code can also specify transparency</p>`,
     `<p>コメントの縁取りの色を変更することができます</p>
 <p>色の指定は色コマンドまたはカラーコードで行ってください</p>
-<p>カラーコードは透明度も指定可能です</p>`]
+<p>カラーコードは透明度も指定可能です</p>`,
+  ],
 };
 const resources = { en: { translation: {} }, ja: { translation: {} } };
 for (const key in localize) {

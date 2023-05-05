@@ -8,6 +8,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: allow write in work dir
+        run: sudo chmod -R 777 .
       - name: Install Dependencies
         run: yarn install
       - name: Run Playwright tests

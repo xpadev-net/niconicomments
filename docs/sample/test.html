@@ -1,37 +1,37 @@
 <!DOCTYPE html>
 <html lang="ja">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <script type="text/javascript" src="../../dist/bundle.js"></script>
-</head>
-<body id="body">
-<canvas id="canvas" width="1920" height="1080"></canvas>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script type="text/javascript" src="../../dist/bundle.js"></script>
+  </head>
+  <body id="body">
+    <canvas id="canvas" width="1920" height="1080"></canvas>
+  </body>
 </html>
 <script>
-void (async()=>{
-  const canvasElement = document.getElementById("canvas");
-  const urlParams = new URLSearchParams(window.location.search);
-  const video = Number(urlParams.get("video") || 0);
-  const time = Number(urlParams.get("time") || 0);
-  const req = await fetch(`./commentdata/${video}.json`);
-  const res = await req.json();
-  const nico = new NiconiComments(canvasElement, res, {
-    format: "formatted",
-  });
-  nico.drawCanvas(Math.floor(time*100));
-  const elem = document.createElement("div");
-  elem.id = "loaded";
-  document.body.appendChild(elem);
-})();
+  void (async () => {
+    const canvasElement = document.getElementById("canvas");
+    const urlParams = new URLSearchParams(window.location.search);
+    const video = Number(urlParams.get("video") || 0);
+    const time = Number(urlParams.get("time") || 0);
+    const req = await fetch(`./commentdata/${video}.json`);
+    const res = await req.json();
+    const nico = new NiconiComments(canvasElement, res, {
+      format: "formatted",
+    });
+    nico.drawCanvas(Math.floor(time * 100));
+    const elem = document.createElement("div");
+    elem.id = "loaded";
+    document.body.appendChild(elem);
+  })();
 </script>
 <style>
-  *{
+  * {
     margin: 0;
     padding: 0;
   }
-  #canvas{
+  #canvas {
     width: 100vw;
     height: 100vh;
     position: fixed;

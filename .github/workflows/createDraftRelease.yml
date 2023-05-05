@@ -3,9 +3,9 @@ name: draftRelease
 on:
   push:
     branches-ignore:
-      - '**'
+      - "**"
     tags:
-      - 'v*'
+      - "v*"
 jobs:
   build:
     runs-on: ubuntu-latest

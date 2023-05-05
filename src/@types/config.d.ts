@@ -1,35 +1,39 @@
 import type {
-  commentSize,
-  formattedComment,
+  CommentSize,
+  FormattedComment,
   IPluginConstructor,
-  platformFont,
+  PlatformFont,
 } from "@/@types/";
 import { BaseComment } from "@/comments/";
 
-type configItem<T> = T | { html5: T; flash: T };
-type configSizeItem<T> = { big: T; medium: T; small: T };
-type configResizedItem<T> = { default: T; resized: T };
+export type ConfigItem<T> = T | { html5: T; flash: T };
+type ConfigSizeItem<T> = { big: T; medium: T; small: T };
+type ConfigResizedItem<T> = { default: T; resized: T };
 
-type commentStageSize = { width: number; fullWidth: number; height: number };
+export type CommentStageSize = {
+  width: number;
+  fullWidth: number;
+  height: number;
+};
 
-type flashCharList = {
+type FlashCharList = {
   [key in "simsunStrong" | "simsunWeak" | "gulim" | "gothic"]: string;
 };
-type flashMode = "xp" | "vista";
-type flashScriptChar = {
+export type FlashMode = "xp" | "vista";
+export type FlashScriptChar = {
   [key in "super" | "sub"]: string;
 };
-type fontList = {
+type FontList = {
   [key in "gulim" | "simsun"]: string;
 };
-type lineCounts = {
-  [key in "default" | "resized" | "doubleResized"]: configSizeItem<number>;
+type LineCounts = {
+  [key in "default" | "resized" | "doubleResized"]: ConfigSizeItem<number>;
 };
-type typeDoubleResizeMaxWidth = {
+type TypeDoubleResizeMaxWidth = {
   [key in "full" | "normal"]: number;
 };
 
-type BaseConfig = {
+export type BaseConfig = {
   cacheAge: number;
   canvasHeight: number;
   canvasWidth: number;
@@ -37,28 +41,28 @@ type BaseConfig = {
   colors: { [key: string]: string };
   commentDrawPadding: number;
   commentDrawRange: number;
-  commentScale: configItem<number>;
-  commentStageSize: configItem<commentStageSize>;
-  commentYMarginBottom: configSizeItem<number>;
-  commentYOffset: configSizeItem<configResizedItem<number>>;
-  commentYPaddingTop: configResizedItem<number>;
+  commentScale: ConfigItem<number>;
+  CommentStageSize: ConfigItem<CommentStageSize>;
+  commentYMarginBottom: ConfigSizeItem<number>;
+  commentYOffset: ConfigSizeItem<ConfigResizedItem<number>>;
+  commentYPaddingTop: ConfigResizedItem<number>;
   contextFillLiveOpacity: number;
   contextLineWidth: number;
   contextStrokeColor: string;
   contextStrokeInversionColor: string;
   contextStrokeOpacity: number;
-  doubleResizeMaxWidth: configItem<typeDoubleResizeMaxWidth>;
-  flashChar: flashCharList;
-  flashMode: flashMode;
-  flashScriptChar: flashScriptChar;
+  doubleResizeMaxWidth: ConfigItem<TypeDoubleResizeMaxWidth>;
+  flashChar: FlashCharList;
+  FlashMode: FlashMode;
+  FlashScriptChar: FlashScriptChar;
   flashThreshold: number;
-  font: fontList;
-  fonts: platformFont;
-  fontSize: configItem<configSizeItem<configResizedItem<number>>>;
+  font: FontList;
+  fonts: PlatformFont;
+  fontSize: ConfigItem<ConfigSizeItem<ConfigResizedItem<number>>>;
   fpsInterval: number;
   hiResCommentCorrection: number;
-  lineCounts: configItem<lineCounts>;
-  lineHeight: configItem<configSizeItem<configResizedItem<number>>>;
+  lineCounts: ConfigItem<LineCounts>;
+  lineHeight: ConfigItem<ConfigSizeItem<ConfigResizedItem<number>>>;
   minFontSize: number;
   sameCAGap: number;
   sameCAMinScore: number;
@@ -69,11 +73,11 @@ type BaseConfig = {
   plugins: IPluginConstructor[];
   commentPlugins: {
     class: typeof BaseComment;
-    condition: (comment: formattedComment) => boolean;
+    condition: (comment: FormattedComment) => boolean;
   }[];
   commentLimit: number | undefined;
   hideCommentOrder: "asc" | "desc";
-  lineBreakCount: { [key in commentSize]: number };
+  lineBreakCount: { [key in CommentSize]: number };
   nakaCommentSpeedOffset: number;
 };
 

@@ -1,9 +1,9 @@
-import type { commentLoc, formattedCommentWithSize } from "@/@types/";
+import type { CommentLoc, FormattedCommentWithSize } from "@/@types/";
 
 export interface IComment {
-  comment: formattedCommentWithSize;
+  comment: FormattedCommentWithSize;
   invisible: boolean;
-  loc: commentLoc;
+  loc: CommentLoc;
   width: number;
   long: number;
   height: number;

@@ -1,4 +1,3 @@
-import type * as types from "@/@types/";
 import * as comments from "@/comments";
 import * as contexts from "@/contexts";
 import * as colors from "@/definition/colors";
@@ -26,6 +25,5 @@ export {
   eventHandler,
   inputParser,
   typeGuard,
-  types,
   utils,
 };

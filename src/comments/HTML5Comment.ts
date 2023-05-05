@@ -1,13 +1,13 @@
 import type {
-  commentContentItem,
-  commentMeasuredContentItem,
-  formattedComment,
-  formattedCommentWithFont,
-  formattedCommentWithSize,
+  CommentContentItem,
+  CommentMeasuredContentItem,
+  FormattedComment,
+  FormattedCommentWithFont,
+  FormattedCommentWithSize,
   HTML5Fonts,
-  measureInput,
-  measureTextInput,
-  measureTextResult,
+  MeasureInput,
+  MeasureTextInput,
+  MeasureTextResult,
 } from "@/@types/";
 import { config, options } from "@/definition/config";
 import {
@@ -26,19 +26,19 @@ import { BaseComment } from "./BaseComment";
 
 class HTML5Comment extends BaseComment {
   override readonly pluginName: string = "HTML5Comment";
-  constructor(comment: formattedComment, context: CanvasRenderingContext2D) {
+  constructor(comment: FormattedComment, context: CanvasRenderingContext2D) {
     super(comment, context);
     this.posY = 0;
   }
 
-  override convertComment(comment: formattedComment): formattedCommentWithSize {
+  override convertComment(comment: FormattedComment): FormattedCommentWithSize {
     return this.getCommentSize(this.parseCommandAndNicoscript(comment));
   }
   override getCommentSize(
-    parsedData: formattedCommentWithFont
-  ): formattedCommentWithSize {
+    parsedData: FormattedCommentWithFont
+  ): FormattedCommentWithSize {
     this.context.font = parseFont(parsedData.font, parsedData.fontSize);
-    const size = parsedData as formattedCommentWithSize;
+    const size = parsedData as FormattedCommentWithSize;
     if (parsedData.invisible) {
       size.height = 0;
       size.width = 0;
@@ -70,10 +70,10 @@ class HTML5Comment extends BaseComment {
   }
 
   override parseCommandAndNicoscript(
-    comment: formattedComment
-  ): formattedCommentWithFont {
+    comment: FormattedComment
+  ): FormattedCommentWithFont {
     const data = parseCommandAndNicoScript(comment);
-    const content: commentContentItem[] = [];
+    const content: CommentContentItem[] = [];
     content.push({
       content: comment.content,
       slicedContent: comment.content.split("\n"),
@@ -87,10 +87,10 @@ class HTML5Comment extends BaseComment {
       content,
       lineCount,
       lineOffset,
-    } as formattedCommentWithFont;
+    } as FormattedCommentWithFont;
   }
 
-  override measureText(comment: measureTextInput): measureTextResult {
+  override measureText(comment: MeasureTextInput): MeasureTextResult {
     const scale = getConfig(config.commentScale, false);
     const configFontSize = getConfig(config.fontSize, false),
       lineHeight = getLineHeight(comment.size, false),
@@ -121,54 +121,54 @@ class HTML5Comment extends BaseComment {
       resized: !!comment.resized,
       fontSize: comment.fontSize,
       lineHeight: comment.lineHeight || 0,
-      content: comment.content as commentMeasuredContentItem[],
+      content: comment.content as CommentMeasuredContentItem[],
       resizedX: !!comment.resizedX,
       resizedY: !!comment.resizedY,
       charSize: comment.charSize || 0,
     };
   }
 
-  private _measureComment(comment: measureTextInput) {
-    const widthLimit = getConfig(config.commentStageSize, false)[
+  private _measureComment(comment: MeasureTextInput) {
+    const widthLimit = getConfig(config.CommentStageSize, false)[
       comment.full ? "fullWidth" : "width"
     ];
-    const measureResult = measure(comment as measureInput, this.context);
+    const measureResult = measure(comment as MeasureInput, this.context);
     if (comment.loc !== "naka" && measureResult.width > widthLimit) {
       return this._processResizeX(comment, measureResult.width);
     }
     return measureResult;
   }
 
-  private _processResizeX(comment: measureTextInput, width: number) {
-    const widthLimit = getConfig(config.commentStageSize, false)[
+  private _processResizeX(comment: MeasureTextInput, width: number) {
+    const widthLimit = getConfig(config.CommentStageSize, false)[
       comment.full ? "fullWidth" : "width"
     ];
     const lineHeight = getLineHeight(comment.size, false);
     const charSize = getCharSize(comment.size, false);
     const scale = widthLimit / width;
     comment.resizedX = true;
-    let _comment: measureTextInput = { ...comment };
+    let _comment: MeasureTextInput = { ...comment };
     _comment.charSize = (_comment.charSize || 0) * scale;
     _comment.lineHeight = (_comment.lineHeight || 0) * scale;
     _comment.fontSize = _comment.charSize * 0.8;
-    let result = measure(_comment as measureInput, this.context);
+    let result = measure(_comment as MeasureInput, this.context);
     if (result.width > widthLimit) {
       while (result.width >= widthLimit) {
         const originalCharSize = _comment.charSize;
         _comment.charSize -= 1;
         _comment.lineHeight *= _comment.charSize / originalCharSize;
         _comment.fontSize = _comment.charSize * 0.8;
-        result = measure(_comment as measureInput, this.context);
+        result = measure(_comment as MeasureInput, this.context);
       }
     } else {
-      let lastComment: measureTextInput = { ..._comment };
+      let lastComment: MeasureTextInput = { ..._comment };
       while (result.width < widthLimit) {
         lastComment = { ..._comment };
         const originalCharSize = _comment.charSize;
         _comment.charSize += 1;
         _comment.lineHeight *= _comment.charSize / originalCharSize;
         _comment.fontSize = _comment.charSize * 0.8;
-        result = measure(_comment as measureInput, this.context);
+        result = measure(_comment as MeasureInput, this.context);
       }
       _comment = lastComment;
     }
@@ -181,7 +181,7 @@ class HTML5Comment extends BaseComment {
       comment.lineHeight = _comment.lineHeight;
     }
     comment.fontSize = (comment.charSize || 0) * 0.8;
-    return measure(comment as measureInput, this.context);
+    return measure(comment as MeasureInput, this.context);
   }
 
   override _drawCollision(posX: number, posY: number, showCollision: boolean) {

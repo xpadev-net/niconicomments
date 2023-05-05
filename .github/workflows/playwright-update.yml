@@ -1,4 +1,4 @@
-on: [ workflow_dispatch ]
+on: [workflow_dispatch]
 
 name: Update Playwright Screenshots
 
@@ -7,10 +7,10 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: '20'
+          node-version: "20"
       - name: allow write in work dir
         run: sudo chmod -R 777 .
       - name: Install Dependencies

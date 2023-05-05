@@ -1,13 +1,13 @@
 import type {
   CommentEventHandlerMap,
   CommentEventMap,
-  valueOf,
+  ValueOf,
 } from "@/@types/";
 import { nicoScripts } from "@/contexts/";
 
 let handlerList: {
   eventName: keyof CommentEventHandlerMap;
-  handler: valueOf<CommentEventHandlerMap>;
+  handler: ValueOf<CommentEventHandlerMap>;
 }[] = [];
 
 const handlerCounts: { [key in keyof CommentEventHandlerMap]: number } = {

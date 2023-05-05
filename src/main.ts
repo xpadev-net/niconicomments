@@ -1,11 +1,11 @@
 import type {
-  collision,
-  collisionItem,
-  collisionPos,
+  Collision,
+  CollisionItem,
+  CollisionPos,
   CommentEventHandlerMap,
-  formattedComment,
+  FormattedComment,
   IComment,
-  inputFormat,
+  InputFormat,
   Options,
   Timeline,
 } from "@/@types/";
@@ -52,7 +52,7 @@ class NiconiComments {
   public video: HTMLVideoElement | undefined;
   private lastVpos: number;
   private readonly canvas: HTMLCanvasElement;
-  private readonly collision: collision;
+  private readonly collision: Collision;
   private readonly context: CanvasRenderingContext2D;
   private readonly timeline: Timeline;
   static typeGuard = typeGuard;
@@ -71,7 +71,7 @@ class NiconiComments {
    */
   constructor(
     canvas: HTMLCanvasElement,
-    data: inputFormat,
+    data: InputFormat,
     initOptions: Options = {}
   ) {
     const constructorStart = performance.now();
@@ -124,11 +124,11 @@ class NiconiComments {
 
     this.timeline = {};
     this.collision = (
-      ["ue", "shita", "right", "left"] as collisionPos[]
+      ["ue", "shita", "right", "left"] as CollisionPos[]
     ).reduce((pv, value) => {
-      pv[value] = [] as collisionItem;
+      pv[value] = [] as CollisionItem;
       return pv;
-    }, {} as collision);
+    }, {} as Collision);
     this.lastVpos = -1;
     this.preRendering(parsedData);
 
@@ -139,7 +139,7 @@ class NiconiComments {
    * 事前に当たり判定を考慮してコメントの描画場所を決定する
    * @param rawData コメントデータ
    */
-  private preRendering(rawData: formattedComment[]) {
+  private preRendering(rawData: FormattedComment[]) {
     const preRenderingStart = performance.now();
     if (options.keepCA) {
       rawData = changeCALayer(rawData);
@@ -204,7 +204,7 @@ class NiconiComments {
    * ※すでに存在するコメントの位置はvposに関係なく更新されません
    * @param rawComments コメントデータ
    */
-  public addComments(...rawComments: formattedComment[]) {
+  public addComments(...rawComments: FormattedComment[]) {
     for (const plugin of plugins) {
       plugin.addComments(rawComments);
     }
@@ -418,3 +418,4 @@ const logger = (msg: string) => {
 };
 
 export default NiconiComments;
+export type * from "@/@types";

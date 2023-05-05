@@ -1,14 +1,14 @@
-import type { commentContentIndex, commentFlashFont } from "@/@types";
+import type { CommentContentIndex, CommentFlashFont } from "@/@types";
 import { config } from "@/definition/config";
 
-const getFlashFontIndex = (part: string): commentContentIndex[] => {
+const getFlashFontIndex = (part: string): CommentContentIndex[] => {
   const regex = {
     simsunStrong: new RegExp(config.flashChar.simsunStrong),
     simsunWeak: new RegExp(config.flashChar.simsunWeak),
     gulim: new RegExp(config.flashChar.gulim),
     gothic: new RegExp(config.flashChar.gothic),
   };
-  const index: commentContentIndex[] = [];
+  const index: CommentContentIndex[] = [];
   let match;
   if ((match = regex.simsunStrong.exec(part)) !== null) {
     index.push({ font: "simsunStrong", index: match.index });
@@ -25,10 +25,10 @@ const getFlashFontIndex = (part: string): commentContentIndex[] => {
   return index;
 };
 
-const getFlashFontName = (font: string): commentFlashFont => {
+const getFlashFontName = (font: string): CommentFlashFont => {
   if (font.match("^simsun.+")) return "simsun";
   if (font === "gothic") return "defont";
-  return font as commentFlashFont;
+  return font as CommentFlashFont;
 };
 
 export { getFlashFontIndex, getFlashFontName };

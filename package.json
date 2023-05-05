@@ -17,9 +17,8 @@
     "lint": "npm run eslint&&npm run check-types",
     "lint:fix": "npm run format&&npm run eslint:fix&&npm run check-types",
     "prepare": "husky install",
-    "test": "playwright test",
-    "test-server": "lite-server",
-    "regression": "reg-suit run"
+    "test": "docker-compose run --rm pw",
+    "test-server": "lite-server"
   },
   "repository": {
     "type": "git",

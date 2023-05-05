@@ -1,7 +1,7 @@
-name: Playwright Tests
-on:
-  pull_request:
-     branches: [ master ]
+on: [ workflow_dispatch ]
+
+name: Update Playwright Screenshots
+
 jobs:
   test:
     timeout-minutes: 60
@@ -21,10 +21,14 @@ jobs:
           yarn playwright install-deps
           yarn playwright install firefox
       - name: Run Playwright tests
-        run: yarn playwright test
-      - uses: actions/upload-artifact@v2
-        if: always()
-        with:
-          name: test-results
-          path: test-results/
-          retention-days: 30
+        run: yarn playwright test --update-snapshots
+      - name: Create new Branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.email "github-actions@xpadev.net"
+          git config user.name "github-actions"
+          git checkout -b develop
+          git add .
+          git commit -m "update: playwright screenshots" -n
+          git push origin develop

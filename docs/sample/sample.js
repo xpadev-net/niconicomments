@@ -366,6 +366,9 @@ const loadComments = async () => {
   nico.addEventListener("seekDisable", handler);
   nico.addEventListener("seekEnable", handler);
   nico.addEventListener("jump", handler);
+  const elem = document.createElement("div");
+  elem.classList.add("loaded");
+  document.body.appendChild(elem);
 };
 
 const getById = (array, id) => {

@@ -35,9 +35,9 @@ test("22(ヨワイボクラハウタウ)", async ({ page }) => {
 
 const compare = async (page: Page, video: number, time: number) => {
   await page.goto(
-    `http://localhost:3000/docs/sample/index.html?novideo=1&time=${time}&video=${video}`,
-    { waitUntil: "networkidle" }
+    `http://localhost:3000/docs/sample/index.html?novideo=1&time=${time}&video=${video}`
   );
+  await page.waitForSelector("div.loaded", { state: "attached" });
   await expect(page).toHaveScreenshot(`${video}-${time}.png`);
   expect(await page.screenshot({ fullPage: true })).toMatchSnapshot(
     `${video}-${time}.png`,

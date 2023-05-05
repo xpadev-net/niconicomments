@@ -263,51 +263,52 @@ const onReady = () => {
   document.title = `${videoItem.title}(${videoItem.nc}) - niconicomments sample`;
   void loadComments();
 };
-
-controlVideoElement.onchange = (e) => {
-  video = e.target.value;
-  const videoItem = getVideoItem();
-  player?.loadVideoById({
-    videoId: videoItem.yt,
-    suggestedQuality: "large",
-  });
-  void loadComments();
-  urlParams.set("video", video);
-  document.title = `${videoItem.title}(${videoItem.nc}) - niconicomments sample`;
-  history.pushState(
-    "",
-    "",
-    `${window.location.pathname}?${urlParams.toString()}`
-  );
-};
-controlShowFPSElement.onchange = (e) => {
-  nico.showFPS = showFPS = e.target.checked;
-};
-controlShowCollisionElement.onchange = (e) => {
-  nico.showCollision = showCollision = e.target.checked;
-};
-controlShowCommentCountElement.onchange = (e) => {
-  nico.showCommentCount = showCommentCount = e.target.checked;
-};
-controlModeElement.onchange = (e) => {
-  mode = e.target.value;
-  void loadComments();
-};
-controlKeepCAElement.onchange = (e) => {
-  keepCA = e.target.checked;
-  void loadComments();
-};
-controlDebugElement.onchange = (e) => {
-  debug = e.target.checked;
-  void loadComments();
-};
-controlScaleElement.onchange = (e) => {
-  scale = e.target.value;
-  void loadComments();
-};
-controlToggleElement.onclick = () => {
-  controlWrapper.classList.toggle("close");
-};
+if (!noVideo){
+  controlVideoElement.onchange = (e) => {
+    video = e.target.value;
+    const videoItem = getVideoItem();
+    player?.loadVideoById({
+      videoId: videoItem.yt,
+      suggestedQuality: "large",
+    });
+    void loadComments();
+    urlParams.set("video", video);
+    document.title = `${videoItem.title}(${videoItem.nc}) - niconicomments sample`;
+    history.pushState(
+      "",
+      "",
+      `${window.location.pathname}?${urlParams.toString()}`
+    );
+  };
+  controlShowFPSElement.onchange = (e) => {
+    nico.showFPS = showFPS = e.target.checked;
+  };
+  controlShowCollisionElement.onchange = (e) => {
+    nico.showCollision = showCollision = e.target.checked;
+  };
+  controlShowCommentCountElement.onchange = (e) => {
+    nico.showCommentCount = showCommentCount = e.target.checked;
+  };
+  controlModeElement.onchange = (e) => {
+    mode = e.target.value;
+    void loadComments();
+  };
+  controlKeepCAElement.onchange = (e) => {
+    keepCA = e.target.checked;
+    void loadComments();
+  };
+  controlDebugElement.onchange = (e) => {
+    debug = e.target.checked;
+    void loadComments();
+  };
+  controlScaleElement.onchange = (e) => {
+    scale = e.target.value;
+    void loadComments();
+  };
+  controlToggleElement.onclick = () => {
+    controlWrapper.classList.toggle("close");
+  };
+}
 
 const updateTime = (e) => {
   if (e === 1) {

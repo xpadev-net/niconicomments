@@ -8,12 +8,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '20'
       - name: allow write in work dir
         run: sudo chmod -R 777 .
       - name: Install Dependencies
-        run: yarn install
+        run: |
+          npm -g install yarn
+          yarn install
+          yarn playwright install-deps
+          yarn playwright install firefox
       - name: Run Playwright tests
-        run: yarn test
+        run: yarn playwright test
       - uses: actions/upload-artifact@v2
         if: always()
         with:

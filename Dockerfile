@@ -15,7 +15,7 @@ USER $PWUSER
 WORKDIR /home/$PWUSER/app
 RUN sudo chown -R $PWUSER:$PWUSER /home/$PWUSER/app
 COPY --chown=$PWUSER:$PWUSER . .
-RUN yarn install
+RUN yarn install playwright
 RUN yarn playwright install firefox
 
 # ENTRYPOINT ["node", "./sample.js"]

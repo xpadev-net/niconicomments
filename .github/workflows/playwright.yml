@@ -8,6 +8,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Install Dependencies
+        run: yarn install
       - name: Run Playwright tests
         run: yarn test
       - uses: actions/upload-artifact@v2

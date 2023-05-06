@@ -8,5 +8,6 @@ export * from "./format.owner";
 export * from "./format.v1";
 export * from "./IComment";
 export * from "./IPlugins";
+export * from "./node-canvas";
 export * from "./options";
 export * from "./types";

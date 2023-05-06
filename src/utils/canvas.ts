@@ -5,7 +5,7 @@ import { isNode } from "@/utils/node";
 
 const generateCanvas = (): Canvas => {
   if (isNode) {
-    const { createCanvas } = require("canvas") as {
+    const { createCanvas } = require("@napi-rs/canvas") as {
       createCanvas: (width: number, height: number) => Canvas;
     };
     return createCanvas(1920, 1080);

@@ -3,6 +3,11 @@ import { CommentContentItem } from "@/@types";
 import { config } from "@/definition/config";
 import { nativeSort } from "@/utils/sort";
 
+/**
+ * コメントの内容からフォント情報を取得する
+ * @param part コメントの内容
+ * @returns フォント情報
+ */
 const getFlashFontIndex = (part: string): CommentContentIndex[] => {
   const regex = {
     simsunStrong: new RegExp(config.flashChar.simsunStrong),
@@ -27,12 +32,22 @@ const getFlashFontIndex = (part: string): CommentContentIndex[] => {
   return index;
 };
 
+/**
+ * フォント名を取得する
+ * @param font フォント
+ * @returns フォント名
+ */
 const getFlashFontName = (font: string): CommentFlashFont => {
   if (font.match("^simsun.+")) return "simsun";
   if (font === "gothic") return "defont";
   return font as CommentFlashFont;
 };
 
+/**
+ * コメントの内容をパースする
+ * @param content コメントの内容
+ * @returns パースしたコメントの内容
+ */
 const parseContent = (content: string) => {
   const results: CommentContentItem[] = [];
   const lines = (content.match(/\n|[^\n]+/g) || []).map((val) =>
@@ -57,6 +72,11 @@ const parseContent = (content: string) => {
   return results;
 };
 
+/**
+ * 1行分のコメントの内容をパースする
+ * @param line 1行分のコメントの内容
+ * @returns パースしたコメントの内容
+ */
 const parseLine = (line: string[]) => {
   const lineContent: CommentContentItem[] = [];
   for (const part of line) {
@@ -69,6 +89,11 @@ const parseLine = (line: string[]) => {
   return lineContent;
 };
 
+/**
+ * 全角文字の部分をパースする
+ * @param part 全角文字の部分
+ * @param lineContent 1行分のコメントの内容
+ */
 const parseFullWidthPart = (
   part: string,
   lineContent: CommentContentItem[]
@@ -87,6 +112,12 @@ const parseFullWidthPart = (
   }
 };
 
+/**
+ * 複数のフォントが含まれる全角文字の部分をパースする
+ * @param part 全角文字の部分
+ * @param index フォントのインデックス
+ * @param lineContent 1行分のコメントの内容
+ */
 const parseMultiFontFullWidthPart = (
   part: string,
   index: CommentContentIndex[],

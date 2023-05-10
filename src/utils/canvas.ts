@@ -3,6 +3,10 @@ import { CanvasRenderingContext2DError } from "@/errors";
 import typeGuard from "@/typeGuard";
 import { isNode } from "@/utils/node";
 
+/**
+ * 環境に応じたCanvasを生成する
+ * @returns 生成されたキャンバス
+ */
 const generateCanvas = (): Canvas => {
   if (isNode) {
     const { createCanvas } = require("@napi-rs/canvas") as {
@@ -13,6 +17,11 @@ const generateCanvas = (): Canvas => {
   return document.createElement("canvas");
 };
 
+/**
+ * 環境に応じたContextを取得する
+ * @param canvas 対象のキャンバス
+ * @returns 取得されたContext
+ */
 const getContext = (canvas: Canvas): Context2D => {
   if (typeGuard.canvas.nodeCanvas(canvas)) {
     return canvas.getContext("2d");
@@ -22,6 +31,13 @@ const getContext = (canvas: Canvas): Context2D => {
   return context;
 };
 
+/**
+ * 環境に応じて画像を描画する
+ * @param targetContext 描画対象のContext
+ * @param sourceImage 描画する画像
+ * @param x 描画するx座標
+ * @param y 描画するy座標
+ */
 const drawImage = (
   targetContext: Context2D,
   sourceImage: Canvas,

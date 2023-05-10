@@ -5,6 +5,9 @@ import { updateConfig } from "@/definition/config";
 import { fonts } from "@/definition/fonts";
 import { isFlashComment } from "@/utils/comment";
 
+/**
+ * コンフィグを初期化する
+ */
 const initConfig = () => {
   const platform: Platform = (function (ua) {
     if (ua.match(/windows nt 6\.[12]/i)) return "win7";

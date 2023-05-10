@@ -1,5 +1,10 @@
 import { FontItem } from "@/@types";
 
+/**
+ * フォントを構築する
+ * @param fonts フォントの配列
+ * @returns フォントの文字列
+ */
 const build = (fonts: FontItem[]): FontItem => {
   return fonts.reduce(
     (pv, val, index) => {

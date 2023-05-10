@@ -18,6 +18,11 @@ const handlerCounts: { [key in keyof CommentEventHandlerMap]: number } = {
   jump: 0,
 };
 
+/**
+ * イベントハンドラを登録する
+ * @param eventName イベント名
+ * @param handler イベントハンドラ
+ */
 const registerHandler = <K extends keyof CommentEventHandlerMap>(
   eventName: K,
   handler: CommentEventHandlerMap[K]
@@ -26,6 +31,11 @@ const registerHandler = <K extends keyof CommentEventHandlerMap>(
   updateEventHandlerCounts();
 };
 
+/**
+ * イベントハンドラを削除する
+ * @param eventName イベント名
+ * @param handler イベントハンドラ
+ */
 const removeHandler = <K extends keyof CommentEventHandlerMap>(
   eventName: K,
   handler: CommentEventHandlerMap[K]
@@ -36,6 +46,9 @@ const removeHandler = <K extends keyof CommentEventHandlerMap>(
   updateEventHandlerCounts();
 };
 
+/**
+ * イベントハンドラの登録数を更新する
+ */
 const updateEventHandlerCounts = () => {
   for (const key_ of Object.keys(handlerCounts)) {
     const key = key_ as keyof CommentEventHandlerMap;
@@ -45,12 +58,22 @@ const updateEventHandlerCounts = () => {
   }
 };
 
+/**
+ * イベントを実行する
+ * @param vpos 現在のvpos
+ * @param lastVpos 前回のvpos
+ */
 const triggerHandler = (vpos: number, lastVpos: number) => {
   processCommentDisableScript(vpos, lastVpos);
   processSeekDisableScript(vpos, lastVpos);
   processJumpScript(vpos, lastVpos);
 };
 
+/**
+ * コメント禁止コマンドを処理する
+ * @param vpos 現在のvpos
+ * @param lastVpos 前回のvpos
+ */
 const processCommentDisableScript = (vpos: number, lastVpos: number) => {
   if (handlerCounts.commentDisable < 1 && handlerCounts.commentEnable < 1)
     return;
@@ -73,6 +96,11 @@ const processCommentDisableScript = (vpos: number, lastVpos: number) => {
   }
 };
 
+/**
+ * シーク禁止コマンドを処理する
+ * @param vpos 現在のvpos
+ * @param lastVpos 前回のvpos
+ */
 const processSeekDisableScript = (vpos: number, lastVpos: number) => {
   if (handlerCounts.seekDisable < 1 && handlerCounts.seekEnable < 1) return;
   for (const range of nicoScripts.seekDisable) {
@@ -94,6 +122,11 @@ const processSeekDisableScript = (vpos: number, lastVpos: number) => {
   }
 };
 
+/**
+ * ジャンプコマンドを処理する
+ * @param vpos 現在のvpos
+ * @param lastVpos 前回のvpos
+ */
 const processJumpScript = (vpos: number, lastVpos: number) => {
   if (handlerCounts.jump < 1) return;
   for (const range of nicoScripts.jump) {
@@ -112,6 +145,11 @@ const processJumpScript = (vpos: number, lastVpos: number) => {
   }
 };
 
+/**
+ * 特定のイベントに紐付けられたイベントハンドラを実行する
+ * @param eventName イベント名
+ * @param event イベントのデータ
+ */
 const executeEvents = <K extends keyof CommentEventMap>(
   eventName: K,
   event: CommentEventMap[K]

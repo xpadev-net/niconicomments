@@ -13,6 +13,7 @@ import type {
   ParsedCommand,
   Timeline,
 } from "@/@types/";
+import { DefaultCommand } from "@/@types/comment";
 import { nicoScripts } from "@/contexts/";
 import { colors } from "@/definition/colors";
 import { config, options } from "@/definition/config";
@@ -21,6 +22,11 @@ import typeGuard from "@/typeGuard";
 import { ArrayPush } from "./array";
 import { getConfig } from "./config";
 
+/**
+ * 改行リサイズが発生するか
+ * @param comment 判定対象のコメント
+ * @returns 改行リサイズが発生するか
+ */
 const isLineBreakResize = (comment: MeasureTextInput) => {
   return (
     !comment.resized &&
@@ -29,7 +35,12 @@ const isLineBreakResize = (comment: MeasureTextInput) => {
   );
 };
 
-const getDefaultCommand = (vpos: number) => {
+/**
+ * コメントの初期設定を取得する
+ * @param vpos 現在のvpos
+ * @returns コメントの初期設定
+ */
+const getDefaultCommand = (vpos: number): DefaultCommand => {
   nicoScripts.default = nicoScripts.default.filter(
     (item) => !item.long || item.start + item.long >= vpos
   );
@@ -55,6 +66,12 @@ const getDefaultCommand = (vpos: number) => {
   return { color, size, font, loc };
 };
 
+/**
+ * コメントが@置換の処理対象かどうかを判定する
+ * @param comment 判定対象のコメント
+ * @param item @置換
+ * @returns コメントが@置換の処理対象かどうか
+ */
 const nicoscriptReplaceIgnoreable = (
   comment: FormattedComment,
   item: NicoScriptReplace
@@ -69,6 +86,11 @@ const nicoscriptReplaceIgnoreable = (
   (item.condition === "\u90e8\u5206\u4e00\u81f4" &&
     comment.content.indexOf(item.keyword) === -1);
 
+/**
+ * 置換コマンドを適用する
+ * @param comment 対象のコメント
+ * @param commands 対象のコマンド
+ */
 const applyNicoScriptReplace = (
   comment: FormattedComment,
   commands: ParsedCommand
@@ -90,6 +112,11 @@ const applyNicoScriptReplace = (
   }
 };
 
+/**
+ * コメントのコマンドとニコスクリプトをパースする
+ * @param comment 対象のコメント
+ * @returns パース後のコメント
+ */
 const parseCommandAndNicoScript = (
   comment: FormattedComment
 ): FormattedCommentWithFont => {
@@ -120,6 +147,11 @@ const parseCommandAndNicoScript = (
   } as FormattedCommentWithFont;
 };
 
+/**
+ * 文字列のブラケットをパースする
+ * @param input 入力文字列
+ * @returns パース後の文字列
+ */
 const parseBrackets = (input: string) => {
   const content = input.split(""),
     result = [];
@@ -154,6 +186,11 @@ const parseBrackets = (input: string) => {
   return result;
 };
 
+/**
+ * 置換コマンドを追加する
+ * @param comment 対象のコメント
+ * @param commands 対象のコマンド
+ */
 const addNicoscriptReplace = (
   comment: FormattedComment,
   commands: ParsedCommand
@@ -188,6 +225,9 @@ const addNicoscriptReplace = (
   sortNicoscriptReplace();
 };
 
+/**
+ * 置換コマンドをvpos順にソートする
+ */
 const sortNicoscriptReplace = () => {
   nicoScripts.replace.sort((a, b) => {
     if (a.start < b.start) return -1;
@@ -198,6 +238,11 @@ const sortNicoscriptReplace = () => {
   });
 };
 
+/**
+ * ニコスクリプトを処理する
+ * @param comment 対象のコメント
+ * @param commands 対象のコマンド
+ */
 const processNicoscript = (
   comment: FormattedComment,
   commands: ParsedCommand
@@ -233,6 +278,11 @@ const processNicoscript = (
   }
 };
 
+/**
+ * デフォルトコマンドを処理する
+ * @param comment 対象のコメント
+ * @param commands 対象のコマンド
+ */
 const processDefaultScript = (
   comment: FormattedComment,
   commands: ParsedCommand
@@ -248,6 +298,11 @@ const processDefaultScript = (
   });
 };
 
+/**
+ * 逆コマンドを処理する
+ * @param comment 対象のコメント
+ * @param commands 対象のコマンド
+ */
 const processReverseScript = (
   comment: FormattedComment,
   commands: ParsedCommand
@@ -268,6 +323,11 @@ const processReverseScript = (
   });
 };
 
+/**
+ * コメント禁止コマンドを処理する
+ * @param comment 対象のコメント
+ * @param commands 対象のコマンド
+ */
 const processBanScript = (
   comment: FormattedComment,
   commands: ParsedCommand
@@ -281,6 +341,11 @@ const processBanScript = (
   });
 };
 
+/**
+ * シーク禁止コマンドを処理する
+ * @param comment 対象のコメント
+ * @param commands 対象のコマンド
+ */
 const processSeekDisableScript = (
   comment: FormattedComment,
   commands: ParsedCommand
@@ -294,6 +359,12 @@ const processSeekDisableScript = (
   });
 };
 
+/**
+ * ジャンプコマンドを処理する
+ * @param comment 対象のコメント
+ * @param commands 対象のコマンド
+ * @param input 対象のコメント本文
+ */
 const processJumpScript = (
   comment: FormattedComment,
   commands: ParsedCommand,
@@ -312,6 +383,11 @@ const processJumpScript = (
   });
 };
 
+/**
+ * コマンドをパースする
+ * @param comment 対象のコメント
+ * @returns パースしたコマンド
+ */
 const parseCommands = (comment: FormattedComment): ParsedCommand => {
   const commands = comment.mail,
     isFlash = isFlashComment(comment);
@@ -338,6 +414,13 @@ const parseCommands = (comment: FormattedComment): ParsedCommand => {
   return result;
 };
 
+/**
+ * コマンドをパースする
+ * @param comment 対象のコメント
+ * @param _command 対象のコマンド
+ * @param result パースしたコマンド
+ * @param isFlash Flashコメントかどうか
+ */
 const parseCommand = (
   comment: FormattedComment,
   _command: string,
@@ -387,6 +470,11 @@ const parseCommand = (
   }
 };
 
+/**
+ * 正規表現の結果から色を取得する
+ * @param match 正規表現の結果
+ * @returns 色
+ */
 const getColor = (match: RegExpMatchArray | null) => {
   if (!match) return;
   const value = match[1];
@@ -414,6 +502,12 @@ const isFlashComment = (comment: FormattedComment): boolean =>
     (comment.date < config.flashThreshold ||
       comment.mail.includes("nico:flash")));
 
+/**
+ * コメントが逆コマンド適用対象かを返す
+ * @param vpos コメントのvpos
+ * @param isOwner コメントが投稿者コメントかどうか
+ * @returns 逆コマンド適用対象かどうか
+ */
 const isReverseActive = (vpos: number, isOwner: boolean): boolean => {
   for (const range of nicoScripts.reverse) {
     if (
@@ -428,6 +522,11 @@ const isReverseActive = (vpos: number, isOwner: boolean): boolean => {
   return false;
 };
 
+/**
+ * コメントがコメント禁止コマンド適用対象かを返す
+ * @param vpos コメントのvpos
+ * @returns コメント禁止コマンド適用対象かどうか
+ */
 const isBanActive = (vpos: number): boolean => {
   for (const range of nicoScripts.ban) {
     if (range.start < vpos && vpos < range.end) return true;
@@ -435,6 +534,12 @@ const isBanActive = (vpos: number): boolean => {
   return false;
 };
 
+/**
+ * 固定コメントを処理する
+ * @param comment 固定コメント
+ * @param collision コメントの衝突判定用配列
+ * @param timeline コメントのタイムライン
+ */
 const processFixedComment = (
   comment: IComment,
   collision: CollisionItem,
@@ -462,6 +567,12 @@ const processFixedComment = (
   comment.posY = posY;
 };
 
+/**
+ * nakaコメントを処理する
+ * @param comment nakaコメント
+ * @param collision コメントの衝突判定用配列
+ * @param timeline コメントのタイムライン
+ */
 const processMovableComment = (
   comment: IComment,
   collision: Collision,

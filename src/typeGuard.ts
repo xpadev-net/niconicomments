@@ -26,8 +26,25 @@ import type {
 import { colors } from "@/definition/colors";
 import { isNode } from "@/utils/node";
 
+/**
+ * 入力がBooleanかどうかを返す
+ * @param i 入力
+ * @returns 入力がBooleanかどうか
+ */
 const isBoolean = (i: unknown): i is boolean => typeof i === "boolean";
+
+/**
+ * 入力がNumberかどうかを返す
+ * @param i 入力
+ * @returns 入力がNumberかどうか
+ */
 const isNumber = (i: unknown): i is number => typeof i === "number";
+
+/**
+ * 入力がObjectかどうかを返す
+ * @param i 入力
+ * @returns 入力がObjectかどうか
+ */
 const isObject = (i: unknown): i is object => typeof i === "object";
 
 const typeGuard = {
@@ -265,6 +282,12 @@ const typeGuard = {
   },
 };
 
+/**
+ * オブジェクトのプロパティを確認する
+ * @param item 確認するオブジェクト
+ * @param keys 確認するプロパティ
+ * @returns 要求したプロパティが全て存在するかどうか
+ */
 const objectVerify = (item: unknown, keys: string[]): boolean => {
   if (typeof item !== "object" || !item) return false;
   for (const key of keys) {
@@ -272,6 +295,13 @@ const objectVerify = (item: unknown, keys: string[]): boolean => {
   }
   return true;
 };
+
+/**
+ * Elementのプロパティを確認する
+ * @param item 確認するElement
+ * @param keys 確認するプロパティ
+ * @returns 要求したプロパティが全て存在するかどうか
+ */
 const typeAttributeVerify = (item: unknown, keys: string[]): boolean => {
   if (typeof item !== "object" || !item) return false;
   for (const key of keys) {

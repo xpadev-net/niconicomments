@@ -345,31 +345,23 @@ const parseCommand = (
   isFlash: boolean
 ) => {
   const command = _command.toLowerCase();
-  let match = command.match(/^[@\uff20]([0-9.]+)/);
-  if (match && match[1]) {
-    result.long = Number(match[1]);
+  const long = command.match(/^[@\uff20]([0-9.]+)/);
+  if (long) {
+    result.long = Number(long[1]);
     return;
   }
-  match = command.match(/^nico:stroke:(.+)$/);
-  if (result.strokeColor === undefined && match) {
-    if (typeGuard.comment.color(match[1])) {
-      result.strokeColor = colors[match[1]];
-    } else if (typeGuard.comment.colorCodeAllowAlpha(match[1])) {
-      result.strokeColor = match[1].slice(1);
-    }
+  const strokeColor = getColor(command.match(/^nico:stroke:(.+)$/));
+  if (strokeColor) {
+    result.strokeColor ??= strokeColor;
     return;
   }
-  match = command.match(/^nico:waku:(.+)$/);
-  if (result.wakuColor === undefined && match) {
-    if (typeGuard.comment.color(match[1])) {
-      result.wakuColor = colors[match[1]];
-    } else if (typeGuard.comment.colorCodeAllowAlpha(match[1])) {
-      result.wakuColor = match[1].slice(1);
-    }
+  const rectColor = getColor(command.match(/^nico:waku:(.+)$/));
+  if (rectColor) {
+    result.wakuColor ??= rectColor;
     return;
   }
-  if (result.loc === undefined && typeGuard.comment.loc(command)) {
-    result.loc = command;
+  if (typeGuard.comment.loc(command)) {
+    result.loc ??= command;
     return;
   }
   if (result.size === undefined && typeGuard.comment.size(command)) {
@@ -377,20 +369,33 @@ const parseCommand = (
     result.fontSize = getConfig(config.fontSize, isFlash)[command].default;
     return;
   }
-  if (result.color === undefined && config.colors[command]) {
-    result.color = config.colors[command];
+  if (config.colors[command]) {
+    result.color ??= config.colors[command];
     return;
   }
-  match = command.match(/^#(?:[0-9a-z]{3}|[0-9a-z]{6})$/);
-  if (result.color === undefined && match && match[0] && comment.premium) {
-    result.color = match[0].toUpperCase();
+  const colorCode = command.match(/^#(?:[0-9a-z]{3}|[0-9a-z]{6})$/);
+  if (colorCode && comment.premium) {
+    result.color ??= colorCode[0].toUpperCase();
     return;
   }
-  if (result.font === undefined && typeGuard.comment.font(command)) {
-    result.font = command;
-  } else if (typeGuard.comment.command.key(command)) {
+  if (typeGuard.comment.font(command)) {
+    result.font ??= command;
+    return;
+  }
+  if (typeGuard.comment.command.key(command)) {
     result[command] = true;
   }
+};
+
+const getColor = (match: RegExpMatchArray | null) => {
+  if (!match) return;
+  const value = match[1];
+  if (typeGuard.comment.color(value)) {
+    return colors[value];
+  } else if (typeGuard.comment.colorCodeAllowAlpha(value)) {
+    return value.slice(1);
+  }
+  return;
 };
 
 /**

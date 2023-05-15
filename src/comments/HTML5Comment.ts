@@ -46,7 +46,6 @@ class HTML5Comment extends BaseComment {
       size.width = 0;
       size.lineHeight = 0;
       size.fontSize = 0;
-      size.content = [];
       size.resized = false;
       size.resizedX = false;
       size.resizedY = false;

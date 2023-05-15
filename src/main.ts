@@ -112,7 +112,6 @@ class NiconiComments {
     }
 
     const parsedData = convert2formattedComment(data, formatType);
-    setPlugins(config.plugins.map((val) => new val(canvas, parsedData)));
     this.video = options.video || undefined;
     this.showCollision = options.showCollision;
     this.showFPS = options.showFPS;
@@ -141,13 +140,14 @@ class NiconiComments {
     if (options.keepCA) {
       rawData = changeCALayer(rawData);
     }
-    this.getCommentPos(
-      rawData.reduce((pv, val) => {
-        pv.push(createCommentInstance(val, this.context));
-        return pv;
-      }, [] as IComment[])
-    );
+    const instances = rawData.reduce((pv, val) => {
+      pv.push(createCommentInstance(val, this.context));
+      return pv;
+    }, [] as IComment[]);
+    this.getCommentPos(instances);
     this.sortComment();
+
+    setPlugins(config.plugins.map((val) => new val(this.canvas, instances)));
     logger(`preRendering complete: ${performance.now() - preRenderingStart}ms`);
   }
 
@@ -202,13 +202,13 @@ class NiconiComments {
    * @param rawComments コメントデータ
    */
   public addComments(...rawComments: FormattedComment[]) {
-    for (const plugin of plugins) {
-      plugin.addComments(rawComments);
-    }
     const comments = rawComments.reduce((pv, val) => {
       pv.push(createCommentInstance(val, this.context));
       return pv;
     }, [] as IComment[]);
+    for (const plugin of plugins) {
+      plugin.addComments(comments);
+    }
     for (const comment of comments) {
       if (comment.invisible) continue;
       if (comment.loc === "naka") {

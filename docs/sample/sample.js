@@ -161,6 +161,12 @@ const videos = [
         title:
           "【読込激重】魔法少女まどか☆マギカ完結版OPをコメントでry【元動画２】",
       },
+      {
+        id: 25,
+        nc: "sm13485376",
+        title:
+          "Nicocococococo! 【オリジナルコメント】",
+      },
     ],
   },
   {

@@ -164,8 +164,7 @@ const videos = [
       {
         id: 25,
         nc: "sm13485376",
-        title:
-          "Nicocococococo! 【オリジナルコメント】",
+        title: "Nicocococococo! 【オリジナルコメント】",
       },
     ],
   },
@@ -227,7 +226,7 @@ const canvasElement = document.getElementById("canvas");
 /** @type {HTMLDivElement} */
 const backgroundElement = document.getElementById("background");
 
-const onYouTubeIframeAPIReady = async() => {
+const onYouTubeIframeAPIReady = async () => {
   for (const group of videos) {
     const groupElement = document.createElement("optgroup");
     groupElement.label = group.title;
@@ -249,7 +248,7 @@ const onYouTubeIframeAPIReady = async() => {
   await loadComments();
 };
 if (!noVideo) {
-  controlVideoElement.onchange = async(e) => {
+  controlVideoElement.onchange = async (e) => {
     video = e.target.value;
     const videoItem = getVideoItem();
     await loadVideo();
@@ -292,7 +291,7 @@ if (!noVideo) {
   };
 }
 
-const updateTime = (currentTime,paused) => {
+const updateTime = (currentTime, paused) => {
   if (!paused) {
     videoMicroSec = {
       currentTime: currentTime,
@@ -307,8 +306,13 @@ const updateCanvas = () => {
   if (!nico) return;
   if (!videoMicroSec) {
     nico.drawCanvas(Math.floor(currentTime * 100));
-  }else{
-    nico.drawCanvas(Math.floor((performance.now() - videoMicroSec.microsec) / 10 + videoMicroSec.currentTime * 100));
+  } else {
+    nico.drawCanvas(
+      Math.floor(
+        (performance.now() - videoMicroSec.microsec) / 10 +
+          videoMicroSec.currentTime * 100
+      )
+    );
   }
   requestAnimationFrame(updateCanvas);
 };
@@ -369,47 +373,49 @@ const resize = () => {
   }%)`;
 };
 
-const loadVideo = async() => {
+const loadVideo = async () => {
   const videoItem = getVideoItem();
   currentTime = 0;
   isPaused = true;
   videoMicroSec = false;
   nico = undefined;
-  if (videoItem.yt){
+  if (videoItem.yt) {
     await loadYTVideo(videoItem.yt);
-  }else{
-    await loadNicoVideo(videoItem._nc??videoItem.nc);
+  } else {
+    await loadNicoVideo(videoItem._nc ?? videoItem.nc);
   }
-}
+};
 
 const loadNicoVideo = (nicoId) => {
   player?.destroy();
   player = undefined;
-  document.getElementById("player").innerHTML = `<iframe src="https://embed.nicovideo.jp/watch/${nicoId}?jsapi=1&playerId=a" id="nico-iframe" width="1920" height="1080"></iframe>`;
+  document.getElementById(
+    "player"
+  ).innerHTML = `<iframe src="https://embed.nicovideo.jp/watch/${nicoId}?jsapi=1&playerId=a" id="nico-iframe" width="1920" height="1080"></iframe>`;
   nicoIframe = document.getElementById("nico-iframe");
-  return new Promise((resolve, reject)=>{
+  return new Promise((resolve, reject) => {
     const messageHandler = (e) => {
-      if (e.origin !== 'https://embed.nicovideo.jp') return;
-      if (e.data.eventName === "loadComplete"){
+      if (e.origin !== "https://embed.nicovideo.jp") return;
+      if (e.data.eventName === "loadComplete") {
         resolve();
-      }else{
+      } else {
         reject();
       }
       window.removeEventListener("message", messageHandler);
-    }
+    };
     window.addEventListener("message", messageHandler);
-  })
-}
+  });
+};
 
 const loadYTVideo = (ytId) => {
-  if (player){
+  if (player) {
     player?.loadVideoById({
       videoId: ytId,
       suggestedQuality: "large",
     });
     return;
   }
-  return new Promise((resolve)=>{
+  return new Promise((resolve) => {
     player = new YT.Player("player", {
       height: "360",
       width: "640",
@@ -417,36 +423,39 @@ const loadYTVideo = (ytId) => {
       events: {
         onReady: resolve,
         onStateChange: (e) => {
-          console.log(e)
+          console.log(e);
           currentTime = player.getCurrentTime();
-          updateTime(currentTime,e.data!==1);
+          updateTime(currentTime, e.data !== 1);
         },
       },
     });
-  })
-}
+  });
+};
 
 const seekTo = (time) => {
-  if (player){
+  if (player) {
     player.seekTo(time, true);
-  }else {
-    nicoIframe?.contentWindow.postMessage({
-      eventName: 'seek',
-      data: {
-        time: time
+  } else {
+    nicoIframe?.contentWindow.postMessage(
+      {
+        eventName: "seek",
+        data: {
+          time: time,
+        },
+        sourceConnectorType: 1,
+        playerId: "a",
       },
-      sourceConnectorType: 1,
-      playerId: "a"
-    },"https://embed.nicovideo.jp");
+      "https://embed.nicovideo.jp"
+    );
   }
-}
+};
 
 window.addEventListener("message", (e) => {
-  if (e.origin !== 'https://embed.nicovideo.jp') return;
-  if (e.data.eventName === "playerMetadataChange"){
-    currentTime = e.data.data.currentTime/1000;
+  if (e.origin !== "https://embed.nicovideo.jp") return;
+  if (e.data.eventName === "playerMetadataChange") {
+    currentTime = e.data.data.currentTime / 1000;
     updateTime(currentTime, isPaused);
-  }else if(e.data.eventName === "playerStatusChange"){
+  } else if (e.data.eventName === "playerStatusChange") {
     isPaused = e.data.data.playerStatus !== 2;
     videoMicroSec = false;
   }

@@ -8,6 +8,7 @@ import type {
   FormattedComment,
   IComment,
   InputFormat,
+  IPlugin,
   Options,
   Timeline,
 } from "@/@types/";
@@ -147,7 +148,16 @@ class NiconiComments {
     this.getCommentPos(instances);
     this.sortComment();
 
-    setPlugins(config.plugins.map((val) => new val(this.canvas, instances)));
+    const plugins: IPlugin[] = [];
+    for (const plugin of config.plugins) {
+      try {
+        plugins.push(new plugin(this.canvas, instances));
+      } catch (e) {
+        console.error("Failed to init plugin");
+      }
+    }
+
+    setPlugins(plugins);
     logger(`preRendering complete: ${performance.now() - preRenderingStart}ms`);
   }
 
@@ -207,7 +217,11 @@ class NiconiComments {
       return pv;
     }, [] as IComment[]);
     for (const plugin of plugins) {
-      plugin.addComments(comments);
+      try {
+        plugin.addComments(comments);
+      } catch (e) {
+        console.error("Failed to add comments");
+      }
     }
     for (const comment of comments) {
       if (comment.invisible) continue;
@@ -252,7 +266,11 @@ class NiconiComments {
     this._drawCollision(vpos);
     this._drawComments(timelineRange, vpos);
     for (const plugin of plugins) {
-      plugin.draw(vpos);
+      try {
+        plugin.draw(vpos);
+      } catch (e) {
+        console.error(`Failed to draw comments`);
+      }
     }
     this._drawFPS(drawCanvasStart);
     this._drawCommentCount(timelineRange?.length);

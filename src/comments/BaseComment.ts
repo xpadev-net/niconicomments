@@ -7,6 +7,7 @@ import type {
   IComment,
   MeasureTextInput,
   MeasureTextResult,
+  ParseContentResult,
 } from "@/@types/";
 import { imageCache } from "@/contexts";
 import { config } from "@/definition/config";
@@ -19,7 +20,7 @@ import { drawImage, generateCanvas, getContext } from "@/utils/canvas";
  */
 class BaseComment implements IComment {
   protected readonly context: Context2D;
-  protected readonly cacheKey: string;
+  protected cacheKey: string;
   public comment: FormattedCommentWithSize;
   public posY: number;
   public readonly pluginName: string = "BaseComment";
@@ -70,6 +71,12 @@ class BaseComment implements IComment {
   get mail() {
     return this.comment.mail;
   }
+  get content() {
+    return this.comment.rawContent;
+  }
+  set content(_: string) {
+    throw new NotImplementedError(this.pluginName, "set: content");
+  }
 
   /**
    * コメントの描画サイズを計算する
@@ -96,6 +103,16 @@ class BaseComment implements IComment {
       comment
     );
     throw new NotImplementedError(this.pluginName, "parseCommandAndNicoscript");
+  }
+
+  /**
+   * コメントの本文をパースする
+   * @param comment 処理対象のコメント本文
+   * @returns 処理結果
+   */
+  protected parseContent(comment: string): ParseContentResult {
+    console.error("parseContent method is not implemented", comment);
+    throw new NotImplementedError(this.pluginName, "parseContent");
   }
 
   /**

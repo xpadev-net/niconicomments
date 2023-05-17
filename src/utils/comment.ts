@@ -5,11 +5,11 @@ import type {
   CommentLoc,
   CommentSize,
   FormattedComment,
-  FormattedCommentWithFont,
   FormattedCommentWithSize,
   IComment,
   MeasureTextInput,
   NicoScriptReplace,
+  ParseCommandAndNicoScriptResult,
   ParsedCommand,
   Timeline,
 } from "@/@types/";
@@ -119,32 +119,28 @@ const applyNicoScriptReplace = (
  */
 const parseCommandAndNicoScript = (
   comment: FormattedComment
-): FormattedCommentWithFont => {
+): ParseCommandAndNicoScriptResult => {
   const isFlash = isFlashComment(comment);
   const commands = parseCommands(comment);
   processNicoscript(comment, commands);
   const defaultCommand = getDefaultCommand(comment.vpos);
   applyNicoScriptReplace(comment, commands);
-  commands.size ||= defaultCommand.size || "medium";
-  commands.loc ||= defaultCommand.loc || "naka";
-  commands.color ||= defaultCommand.color || "#FFFFFF";
-  commands.font ||= defaultCommand.font || "defont";
-  commands.fontSize = getConfig(config.fontSize, isFlash)[
-    commands.size
-  ].default;
-  if (!commands.long) {
-    commands.long = 300;
-  } else {
-    commands.long = Math.floor(Number(commands.long) * 100);
-  }
+  const size = commands.size || defaultCommand.size || "medium";
   return {
-    ...comment,
-    content: [],
-    lineCount: 0,
-    lineOffset: 0,
-    ...commands,
+    size: size,
+    loc: commands.loc || defaultCommand.loc || "naka",
+    color: commands.color || defaultCommand.color || "#FFFFFF",
+    font: commands.font || defaultCommand.font || "defont",
+    fontSize: getConfig(config.fontSize, isFlash)[size].default,
+    long: commands.long ? Math.floor(Number(commands.long) * 100) : 300,
     flash: isFlash,
-  } as FormattedCommentWithFont;
+    full: commands.full,
+    ender: commands.ender,
+    _live: commands._live,
+    invisible: commands.invisible,
+    strokeColor: commands.strokeColor,
+    wakuColor: commands.wakuColor,
+  };
 };
 
 /**

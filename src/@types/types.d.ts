@@ -23,6 +23,7 @@ export type FormattedCommentWithFont = {
   long: number;
   invisible: boolean;
   content: CommentContentItem[];
+  rawContent: string;
   flash: boolean;
   lineCount: number;
   lineOffset: number;
@@ -36,6 +37,26 @@ export type FormattedCommentWithSize = FormattedCommentWithFont & {
   resizedY: boolean;
   content: CommentMeasuredContentItem[];
   charSize: number;
+};
+export type ParseContentResult = {
+  content: CommentContentItem[];
+  lineCount: number;
+  lineOffset: number;
+};
+export type ParseCommandAndNicoScriptResult = {
+  flash: boolean;
+  loc: CommentLoc;
+  size: CommentSize;
+  fontSize: number;
+  color: string;
+  strokeColor?: string;
+  wakuColor?: string;
+  font: CommentFont;
+  full: boolean;
+  ender: boolean;
+  _live: boolean;
+  invisible: boolean;
+  long: number;
 };
 export type CommentContentItem = {
   content: string;

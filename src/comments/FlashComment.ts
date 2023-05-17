@@ -34,6 +34,26 @@ class FlashComment extends BaseComment {
     this.posY ??= 0;
   }
 
+  override set content(input: string) {
+    const { content, lineCount, lineOffset } = this.parseContent(input);
+    const comment: FormattedCommentWithFont = {
+      ...this.comment,
+      rawContent: input,
+      content,
+      lineCount,
+      lineOffset,
+    };
+    const val = content[0];
+    if (val && val.font) {
+      comment.font = val.font;
+    }
+    this.comment = this.getCommentSize(comment);
+    this.cacheKey =
+      JSON.stringify(this.comment.content) +
+      `@@${this.pluginName}@@` +
+      [...this.comment.mail].sort().join(",");
+  }
+
   override convertComment(comment: FormattedComment): FormattedCommentWithSize {
     this.scale = 1;
     this.scaleX = 1;
@@ -84,28 +104,40 @@ class FlashComment extends BaseComment {
     comment: FormattedComment
   ): FormattedCommentWithFont {
     const data = parseCommandAndNicoScript(comment);
-    const content: CommentContentItem[] = parseContent(comment.content);
+    const { content, lineCount, lineOffset } = this.parseContent(
+      comment.content
+    );
     const val = content[0];
     if (val && val.font) {
       data.font = val.font;
     }
-    const lineCount = content.reduce((pv, val) => {
-      return pv + (val.content.match(/\n/g)?.length || 0);
-    }, 1);
-    const lineOffset =
-      (comment.content.match(new RegExp(config.FlashScriptChar.super, "g"))
-        ?.length || 0) *
-        -1 *
-        config.scriptCharOffset +
-      (comment.content.match(new RegExp(config.FlashScriptChar.sub, "g"))
-        ?.length || 0) *
-        config.scriptCharOffset;
     return {
+      ...comment,
+      rawContent: comment.content,
       ...data,
       content,
       lineCount,
       lineOffset,
-    } as FormattedCommentWithFont;
+    };
+  }
+
+  override parseContent(input: string) {
+    const content: CommentContentItem[] = parseContent(input);
+    const lineCount = content.reduce((pv, val) => {
+      return pv + (val.content.match(/\n/g)?.length || 0);
+    }, 1);
+    const lineOffset =
+      (input.match(new RegExp(config.FlashScriptChar.super, "g"))?.length ||
+        0) *
+        -1 *
+        config.scriptCharOffset +
+      (input.match(new RegExp(config.FlashScriptChar.sub, "g"))?.length || 0) *
+        config.scriptCharOffset;
+    return {
+      content,
+      lineCount,
+      lineOffset,
+    };
   }
 
   override measureText(comment: MeasureTextInput): MeasureTextResult {

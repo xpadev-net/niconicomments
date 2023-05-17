@@ -33,6 +33,22 @@ class HTML5Comment extends BaseComment {
     this.posY = 0;
   }
 
+  override set content(input: string) {
+    const { content, lineCount, lineOffset } = this.parseContent(input);
+    const comment: FormattedCommentWithFont = {
+      ...this.comment,
+      rawContent: input,
+      content,
+      lineCount,
+      lineOffset,
+    };
+    this.comment = this.getCommentSize(comment);
+    this.cacheKey =
+      JSON.stringify(this.comment.content) +
+      `@@${this.pluginName}@@` +
+      [...this.comment.mail].sort().join(",");
+  }
+
   override convertComment(comment: FormattedComment): FormattedCommentWithSize {
     return this.getCommentSize(this.parseCommandAndNicoscript(comment));
   }
@@ -74,21 +90,34 @@ class HTML5Comment extends BaseComment {
     comment: FormattedComment
   ): FormattedCommentWithFont {
     const data = parseCommandAndNicoScript(comment);
+    const { content, lineCount, lineOffset } = this.parseContent(
+      comment.content
+    );
+    return {
+      ...comment,
+      rawContent: comment.content,
+      ...data,
+      content,
+      lineCount,
+      lineOffset,
+    };
+  }
+
+  override parseContent(input: string) {
     const content: CommentContentItem[] = [];
     content.push({
-      content: comment.content,
-      slicedContent: comment.content.split("\n"),
+      content: input,
+      slicedContent: input.split("\n"),
     });
     const lineCount = content.reduce((pv, val) => {
       return pv + (val.content.match(/\n/g)?.length || 0);
     }, 1);
     const lineOffset = 0;
     return {
-      ...data,
       content,
       lineCount,
       lineOffset,
-    } as FormattedCommentWithFont;
+    };
   }
 
   override measureText(comment: MeasureTextInput): MeasureTextResult {

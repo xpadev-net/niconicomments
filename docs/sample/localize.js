@@ -23,6 +23,7 @@ const localize = {
   ],
   debug_ca: ["fixed template", "各固定テンプレ"],
   operation_check: ["for operation check", "動作確認用"],
+  script_art: ["script art", "スクリプトアート"],
 };
 const resources = { en: { translation: {} }, ja: { translation: {} } };
 for (const key in localize) {

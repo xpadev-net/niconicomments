@@ -208,7 +208,6 @@ let video = Number(urlParams.get("video") || 0),
   time = Number(urlParams.get("time") || -1),
   player,
   nicoIframe,
-  interval = null,
   nico = null,
   mode = "default",
   showFPS = false,
@@ -363,10 +362,7 @@ const loadComments = async () => {
   if (time >= 0) {
     seekTo(time);
   }
-  if (!interval) {
-    updateCanvas();
-    interval = 1;
-  }
+  updateCanvas();
   const handler = (e) => {
     console.log(e);
   };

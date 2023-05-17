@@ -13,6 +13,7 @@ export interface IComment {
   owner: boolean;
   layer: number;
   mail: string[];
+  content: string;
   image?: Canvas | null;
   draw: (vpos: number, showCollision: boolean, isDebug: boolean) => void;
 }

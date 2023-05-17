@@ -33,6 +33,9 @@ class HTML5Comment extends BaseComment {
     this.posY = 0;
   }
 
+  override get content() {
+    return this.comment.rawContent;
+  }
   override set content(input: string) {
     const { content, lineCount, lineOffset } = this.parseContent(input);
     const comment: FormattedCommentWithFont = {
@@ -47,6 +50,7 @@ class HTML5Comment extends BaseComment {
       JSON.stringify(this.comment.content) +
       `@@${this.pluginName}@@` +
       [...this.comment.mail].sort().join(",");
+    delete this.image;
   }
 
   override convertComment(comment: FormattedComment): FormattedCommentWithSize {

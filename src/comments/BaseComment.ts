@@ -72,7 +72,7 @@ class BaseComment implements IComment {
     return this.comment.mail;
   }
   get content() {
-    return this.comment.rawContent;
+    throw new NotImplementedError(this.pluginName, "set: content");
   }
   set content(_: string) {
     throw new NotImplementedError(this.pluginName, "set: content");

@@ -218,7 +218,8 @@ let video = Number(urlParams.get("video") || 0),
   debug = false,
   scale = 1,
   currentTime = 0,
-  isPaused = true;
+  isPaused = true,
+  interval = null;
 /** @type {HTMLDivElement} */
 const controlWrapper = document.getElementById("control");
 /** @type {HTMLSelectElement} */
@@ -335,7 +336,6 @@ const updateCanvas = () => {
       )
     );
   }
-  requestAnimationFrame(updateCanvas);
 };
 
 const loadComments = async () => {
@@ -362,7 +362,9 @@ const loadComments = async () => {
   if (time >= 0) {
     seekTo(time);
   }
-  updateCanvas();
+  if (!interval){
+    interval = setInterval(updateCanvas, 1);
+  }
   const handler = (e) => {
     console.log(e);
   };

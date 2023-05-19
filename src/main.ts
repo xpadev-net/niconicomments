@@ -250,6 +250,7 @@ class NiconiComments {
     const timelineRange = this.timeline[vpos];
     if (
       !forceRendering &&
+      plugins.length === 0 &&
       timelineRange?.filter((item) => item.loc === "naka").length === 0 &&
       this.timeline[this.lastVpos]?.filter((item) => item.loc === "naka")
         ?.length === 0

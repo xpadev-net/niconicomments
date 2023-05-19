@@ -1,3 +1,6 @@
+/**
+ * ニコニコ動画上の色コマンドとカラーコードの対応
+ */
 const colors = {
   white: "#FFFFFF",
   red: "#FF0000",

@@ -29,5 +29,6 @@ module.exports = {
     "simple-import-sort/exports": "error",
     "@typescript-eslint/typedef": "error",
     "jsdoc/require-returns-check": "off",
+    "@typescript-eslint/no-var-requires": "off",
   },
 };

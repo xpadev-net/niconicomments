@@ -1,35 +1,37 @@
 import type {
+  Canvas,
+  Context2D,
   FormattedComment,
+  FormattedCommentWithFont,
   FormattedCommentWithSize,
   IComment,
-} from "@/@types/";
-import {
-  FormattedCommentWithFont,
   MeasureTextInput,
   MeasureTextResult,
+  ParseContentResult,
 } from "@/@types/";
 import { imageCache } from "@/contexts";
 import { config } from "@/definition/config";
-import { CanvasRenderingContext2DError, NotImplementedError } from "@/errors/";
+import { NotImplementedError } from "@/errors/";
 import { getPosX, isBanActive, isReverseActive, parseFont } from "@/utils";
+import { drawImage, generateCanvas, getContext } from "@/utils/canvas";
 
 /**
  * コメントの描画を行うクラスの基底クラス
  */
 class BaseComment implements IComment {
-  protected readonly context: CanvasRenderingContext2D;
-  protected readonly cacheKey: string;
+  protected readonly context: Context2D;
+  protected cacheKey: string;
   public comment: FormattedCommentWithSize;
   public posY: number;
   public readonly pluginName: string = "BaseComment";
-  public image?: HTMLCanvasElement | null;
+  public image?: Canvas | null;
 
   /**
    * コンストラクタ
    * @param comment 処理対象のコメント
    * @param context 描画対象のcanvasのcontext
    */
-  constructor(comment: FormattedComment, context: CanvasRenderingContext2D) {
+  constructor(comment: FormattedComment, context: Context2D) {
     this.context = context;
     this.posY = 0;
     comment.content = comment.content.replace(/\t/g, "\u2003\u2003");
@@ -69,6 +71,12 @@ class BaseComment implements IComment {
   get mail() {
     return this.comment.mail;
   }
+  get content() {
+    throw new NotImplementedError(this.pluginName, "set: content");
+  }
+  set content(_: string) {
+    throw new NotImplementedError(this.pluginName, "set: content");
+  }
 
   /**
    * コメントの描画サイズを計算する
@@ -95,6 +103,16 @@ class BaseComment implements IComment {
       comment
     );
     throw new NotImplementedError(this.pluginName, "parseCommandAndNicoscript");
+  }
+
+  /**
+   * コメントの本文をパースする
+   * @param comment 処理対象のコメント本文
+   * @returns 処理結果
+   */
+  protected parseContent(comment: string): ParseContentResult {
+    console.error("parseContent method is not implemented", comment);
+    throw new NotImplementedError(this.pluginName, "parseContent");
   }
 
   /**
@@ -155,7 +173,7 @@ class BaseComment implements IComment {
       } else {
         this.context.globalAlpha = 1;
       }
-      this.context.drawImage(this.image, posX, posY);
+      drawImage(this.context, this.image, posX, posY);
     }
   }
 
@@ -214,7 +232,7 @@ class BaseComment implements IComment {
    * コメントの画像を生成する
    * @returns 生成した画像
    */
-  protected getTextImage(): HTMLCanvasElement | null {
+  protected getTextImage(): Canvas | null {
     if (
       this.comment.invisible ||
       (this.comment.lineCount === 1 && this.comment.width === 0) ||
@@ -225,11 +243,11 @@ class BaseComment implements IComment {
     const cache = imageCache[this.cacheKey];
     if (cache) {
       this.image = cache.image;
-      window.setTimeout(() => {
+      setTimeout(() => {
         delete this.image;
       }, this.comment.long * 10 + config.cacheAge);
       clearTimeout(cache.timeout);
-      cache.timeout = window.setTimeout(() => {
+      cache.timeout = setTimeout(() => {
         delete imageCache[this.cacheKey];
       }, this.comment.long * 10 + config.cacheAge);
       return cache.image;
@@ -243,7 +261,7 @@ class BaseComment implements IComment {
   /**
    * コメントの画像を実際に生成する
    */
-  protected _generateTextImage(): HTMLCanvasElement {
+  protected _generateTextImage(): Canvas {
     console.error("_generateTextImage method is not implemented");
     throw new NotImplementedError(this.pluginName, "_generateTextImage");
   }
@@ -252,13 +270,13 @@ class BaseComment implements IComment {
    * 画像をキャッシュする
    * @param image キャッシュ対象の画像
    */
-  protected _cacheImage(image: HTMLCanvasElement) {
+  protected _cacheImage(image: Canvas) {
     this.image = image;
-    window.setTimeout(() => {
+    setTimeout(() => {
       delete this.image;
     }, this.comment.long * 10 + config.cacheAge);
     imageCache[this.cacheKey] = {
-      timeout: window.setTimeout(() => {
+      timeout: setTimeout(() => {
         delete imageCache[this.cacheKey];
       }, this.comment.long * 10 + config.cacheAge),
       image,
@@ -270,12 +288,11 @@ class BaseComment implements IComment {
    * @returns 生成したCanvas
    */
   protected createCanvas(): {
-    image: HTMLCanvasElement;
-    context: CanvasRenderingContext2D;
+    image: Canvas;
+    context: Context2D;
   } {
-    const image = document.createElement("canvas");
-    const context = image.getContext("2d");
-    if (!context) throw new CanvasRenderingContext2DError();
+    const image = generateCanvas();
+    const context = getContext(image);
     return {
       image,
       context,

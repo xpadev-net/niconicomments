@@ -1,4 +1,4 @@
-import type { CommentSize, MeasureInput } from "@/@types";
+import type { CommentSize, Context2D, MeasureInput } from "@/@types";
 import { config } from "@/definition/config";
 
 import { parseFont } from "./comment";
@@ -30,13 +30,26 @@ const getLineHeight = (
   }
   return (CommentStageSize.height - lineHeight) / (defaultLineCount - 1);
 };
+
+/**
+ * 各サイズのフォントサイズを返す
+ * @param fontSize コメントサイズ
+ * @param isFlash Flashかどうか
+ * @returns フォントサイズ
+ */
 const getCharSize = (fontSize: CommentSize, isFlash: boolean): number => {
   const lineCounts = getConfig(config.lineCounts, isFlash),
     CommentStageSize = getConfig(config.CommentStageSize, isFlash);
   return CommentStageSize.height / lineCounts.doubleResized[fontSize];
 };
 
-const measure = (comment: MeasureInput, context: CanvasRenderingContext2D) => {
+/**
+ * コメントのサイズを計測する
+ * @param comment コメント
+ * @param context 計測対象のCanvasコンテキスト
+ * @returns 計測結果
+ */
+const measure = (comment: MeasureInput, context: Context2D) => {
   const width = measureWidth(comment, context);
   return {
     ...width,
@@ -44,10 +57,13 @@ const measure = (comment: MeasureInput, context: CanvasRenderingContext2D) => {
   };
 };
 
-const measureWidth = (
-  comment: MeasureInput,
-  context: CanvasRenderingContext2D
-) => {
+/**
+ * コメントの幅を計測する
+ * @param comment コメント
+ * @param context 計測対象のCanvasコンテキスト
+ * @returns 計測結果
+ */
+const measureWidth = (comment: MeasureInput, context: Context2D) => {
   const { fontSize, scale } = getFontSizeAndScale(comment.charSize),
     lineWidth = [],
     itemWidth = [];
@@ -76,6 +92,11 @@ const measureWidth = (
   };
 };
 
+/**
+ * フォントサイズとスケールを返す
+ * @param charSize 文字サイズ
+ * @returns フォントサイズとスケール
+ */
 const getFontSizeAndScale = (charSize: number) => {
   charSize *= 0.8;
   if (charSize < config.minFontSize) {

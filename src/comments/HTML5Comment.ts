@@ -1,6 +1,8 @@
 import type {
+  Canvas,
   CommentContentItem,
   CommentMeasuredContentItem,
+  Context2D,
   FormattedComment,
   FormattedCommentWithFont,
   FormattedCommentWithSize,
@@ -26,9 +28,29 @@ import { BaseComment } from "./BaseComment";
 
 class HTML5Comment extends BaseComment {
   override readonly pluginName: string = "HTML5Comment";
-  constructor(comment: FormattedComment, context: CanvasRenderingContext2D) {
+  constructor(comment: FormattedComment, context: Context2D) {
     super(comment, context);
     this.posY = 0;
+  }
+
+  override get content() {
+    return this.comment.rawContent;
+  }
+  override set content(input: string) {
+    const { content, lineCount, lineOffset } = this.parseContent(input);
+    const comment: FormattedCommentWithFont = {
+      ...this.comment,
+      rawContent: input,
+      content,
+      lineCount,
+      lineOffset,
+    };
+    this.comment = this.getCommentSize(comment);
+    this.cacheKey =
+      JSON.stringify(this.comment.content) +
+      `@@${this.pluginName}@@` +
+      [...this.comment.mail].sort().join(",");
+    delete this.image;
   }
 
   override convertComment(comment: FormattedComment): FormattedCommentWithSize {
@@ -44,7 +66,6 @@ class HTML5Comment extends BaseComment {
       size.width = 0;
       size.lineHeight = 0;
       size.fontSize = 0;
-      size.content = [];
       size.resized = false;
       size.resizedX = false;
       size.resizedY = false;
@@ -73,21 +94,34 @@ class HTML5Comment extends BaseComment {
     comment: FormattedComment
   ): FormattedCommentWithFont {
     const data = parseCommandAndNicoScript(comment);
+    const { content, lineCount, lineOffset } = this.parseContent(
+      comment.content
+    );
+    return {
+      ...comment,
+      rawContent: comment.content,
+      ...data,
+      content,
+      lineCount,
+      lineOffset,
+    };
+  }
+
+  override parseContent(input: string) {
     const content: CommentContentItem[] = [];
     content.push({
-      content: comment.content,
-      slicedContent: comment.content.split("\n"),
+      content: input,
+      slicedContent: input.split("\n"),
     });
     const lineCount = content.reduce((pv, val) => {
       return pv + (val.content.match(/\n/g)?.length || 0);
     }, 1);
     const lineOffset = 0;
     return {
-      ...data,
       content,
       lineCount,
       lineOffset,
-    } as FormattedCommentWithFont;
+    };
   }
 
   override measureText(comment: MeasureTextInput): MeasureTextResult {
@@ -213,7 +247,7 @@ class HTML5Comment extends BaseComment {
     }
   }
 
-  override _generateTextImage(): HTMLCanvasElement {
+  override _generateTextImage(): Canvas {
     const { fontSize, scale } = getFontSizeAndScale(this.comment.charSize);
     const paddingTop =
       (10 - scale * 10) *

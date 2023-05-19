@@ -52,6 +52,11 @@ const hex2rgba = (hex: string) => {
   });
 };
 
+/**
+ * コメントの枠色を取得する
+ * @param comment コメント
+ * @returns 枠色
+ */
 const getStrokeColor = (comment: FormattedCommentWithSize) => {
   if (comment.strokeColor) {
     const length = comment.strokeColor.length;

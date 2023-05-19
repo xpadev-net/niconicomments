@@ -5,28 +5,24 @@ const videos = [
       {
         id: 0,
         nc: "sm9",
-        yt: "PumFnlu9EIY",
         title: "新・豪血寺一族 -煩悩解放 - レッツゴー！陰陽師",
         scale: 75,
       },
       {
         id: 1,
         nc: "sm9",
-        yt: "PumFnlu9EIY",
         title: i18next.t("sm9_2"),
         scale: 75,
       },
       {
         id: 2,
         nc: "sm2959233",
-        yt: "pv2IzP2CyRs",
         title: "ニコニコ動画流星群",
         scale: 75,
       },
       {
         id: 3,
         nc: "sm2959233",
-        yt: "pv2IzP2CyRs",
         title: i18next.t("sm2959233_2"),
         scale: 75,
       },
@@ -38,28 +34,24 @@ const videos = [
       {
         id: 4,
         nc: "sm21172249",
-        yt: "8NBcQgEpkbk",
         title: "アンインストール　Arrange.ver【コメント職人】@2018/10/1",
         bg: "black",
       },
       {
         id: 20,
         nc: "sm21172249",
-        yt: "8NBcQgEpkbk",
         title: "アンインストール　Arrange.ver【コメント職人】@2022/06/22",
         bg: "black",
       },
       {
         id: 5,
         nc: "sm34968071",
-        yt: "8NBcQgEpkbk",
         title: "投コメ アンインストール",
         bg: "black",
       },
       {
         id: 11,
         nc: "sm40491399",
-        yt: "8mdkdg7vrXg",
         title: "【コマテ】アンインストール　Full.ver",
         bg: "black",
       },
@@ -86,7 +78,6 @@ const videos = [
       {
         id: 9,
         nc: "sm38551701",
-        yt: "m8cdPwNZShM",
         title: "【Babo】うっせぇわ　踊ってみた【オリジナル振付】",
       },
       {
@@ -104,7 +95,6 @@ const videos = [
       {
         id: 13,
         nc: "sm39927524",
-        yt: "6doKKoHQmTI",
         title: "【明日ちゃんのセーラー服】OPで歌詞コメントアート",
       },
       {
@@ -137,14 +127,12 @@ const videos = [
       {
         id: 18,
         nc: "sm40563674",
-        yt: "m2M2piEMWAE",
         title: "コメントでけものフレンズのキャラを作ってみた",
         bg: "white",
       },
       {
         id: 19,
         nc: "sm500873",
-        yt: "RsO2eD3V_wY",
         title: i18next.t("sm500873"),
         scale: 75,
       },
@@ -157,24 +145,50 @@ const videos = [
       {
         id: 22,
         nc: "sm20778311",
-        yt: "3UdXw4PIHeg",
         title: "【MAD】文学少女　ヨワイボクラハウタウ@2013/07/11",
       },
+    ],
+  },
+  {
+    title: i18next.t("script_art"),
+    items: [
       {
         id: 23,
         nc: "nm14999484",
-        yt: "cq_iM5gDzpQ",
+        _nc: "sm15050039",
         title:
           "【読込激重】魔法少女まどか☆マギカ完結版OPをコメントでry【元動画１】",
       },
       {
         id: 24,
         nc: "nm14999567",
-        yt: "cq_iM5gDzpQ",
+        _nc: "sm15050039",
         title:
           "【読込激重】魔法少女まどか☆マギカ完結版OPをコメントでry【元動画２】",
       },
-    ],
+      {
+        id: 25,
+        nc: "sm13485376",
+        title: "Nicocococococo! 【オリジナルコメント】",
+      },
+      {
+        id: 26,
+        nc: "sm36006715",
+        _nc: "sm37156104",
+        title: "【ニワン語歌詞】アンインストール【打ってみた件】",
+      },
+      {
+        id: 27,
+        nc: "sm37156063",
+        _nc: "sm37156104",
+        title: "【ニワン語歌詞】アンインストール【打ってみた件】コマテ動画その2",
+      },
+      {
+        id: 28,
+        nc: "sm37156104",
+        title: "【ニワン語歌詞】アンインストール【打ってみた件】コマテ動画その3",
+      }
+    ]
   },
   {
     title: i18next.t("debug"),
@@ -193,7 +207,7 @@ let video = Number(urlParams.get("video") || 0),
   noVideo = !!urlParams.get("novideo"),
   time = Number(urlParams.get("time") || -1),
   player,
-  interval = null,
+  nicoIframe,
   nico = null,
   mode = "default",
   showFPS = false,
@@ -202,7 +216,10 @@ let video = Number(urlParams.get("video") || 0),
   videoMicroSec = false,
   keepCA = false,
   debug = false,
-  scale = 1;
+  scale = 1,
+  currentTime = 0,
+  isPaused = true,
+  interval = null;
 /** @type {HTMLDivElement} */
 const controlWrapper = document.getElementById("control");
 /** @type {HTMLSelectElement} */
@@ -231,7 +248,7 @@ const canvasElement = document.getElementById("canvas");
 /** @type {HTMLDivElement} */
 const backgroundElement = document.getElementById("background");
 
-const onYouTubeIframeAPIReady = () => {
+const onYouTubeIframeAPIReady = async () => {
   for (const group of videos) {
     const groupElement = document.createElement("optgroup");
     groupElement.label = group.title;
@@ -246,32 +263,18 @@ const onYouTubeIframeAPIReady = () => {
     }
     controlVideoElement.appendChild(groupElement);
   }
-  player = new YT.Player("player", {
-    height: "360",
-    width: "640",
-    videoId: getById(videos, video).yt,
-    events: {
-      onReady: onReady,
-      onStateChange: updateTime,
-    },
-  });
-};
-
-const onReady = () => {
+  await loadVideo();
   controlWrapper.style.display = "flex";
   const videoItem = getVideoItem();
   document.title = `${videoItem.title}(${videoItem.nc}) - niconicomments sample`;
-  void loadComments();
+  await loadComments();
 };
 if (!noVideo) {
-  controlVideoElement.onchange = (e) => {
+  controlVideoElement.onchange = async (e) => {
     video = e.target.value;
     const videoItem = getVideoItem();
-    player?.loadVideoById({
-      videoId: videoItem.yt,
-      suggestedQuality: "large",
-    });
-    void loadComments();
+    await loadVideo();
+    await loadComments();
     urlParams.set("video", video);
     document.title = `${videoItem.title}(${videoItem.nc}) - niconicomments sample`;
     history.pushState(
@@ -310,10 +313,10 @@ if (!noVideo) {
   };
 }
 
-const updateTime = (e) => {
-  if (e === 1) {
+const updateTime = (currentTime, paused) => {
+  if (!paused) {
     videoMicroSec = {
-      currentTime: player.getCurrentTime(),
+      currentTime: currentTime,
       microsec: performance.now(),
     };
   } else {
@@ -322,12 +325,17 @@ const updateTime = (e) => {
 };
 
 const updateCanvas = () => {
-  if (noVideo && time >= 0) {
-    nico.drawCanvas(Math.floor(time * 100));
-    return;
+  if (!nico) return;
+  if (!videoMicroSec) {
+    nico.drawCanvas(Math.floor(currentTime * 100));
+  } else {
+    nico.drawCanvas(
+      Math.floor(
+        (performance.now() - videoMicroSec.microsec) / 10 +
+          videoMicroSec.currentTime * 100
+      )
+    );
   }
-  nico.drawCanvas(Math.floor(player.getCurrentTime() * 100));
-  requestAnimationFrame(updateCanvas);
 };
 
 const loadComments = async () => {
@@ -352,11 +360,10 @@ const loadComments = async () => {
   const background = getById(videos, video).bg;
   backgroundElement.style.background = background || "none";
   if (time >= 0) {
-    player?.seekTo(time, true);
+    seekTo(time);
   }
-  if (!interval) {
-    updateCanvas();
-    interval = 1;
+  if (!interval){
+    interval = setInterval(updateCanvas, 1);
   }
   const handler = (e) => {
     console.log(e);
@@ -385,6 +392,94 @@ const resize = () => {
     Math.min(height, width) * 100
   }%)`;
 };
+
+const loadVideo = async () => {
+  const videoItem = getVideoItem();
+  currentTime = 0;
+  isPaused = true;
+  videoMicroSec = false;
+  nico = undefined;
+  if (videoItem.yt) {
+    await loadYTVideo(videoItem.yt);
+  } else {
+    await loadNicoVideo(videoItem._nc ?? videoItem.nc);
+  }
+};
+
+const loadNicoVideo = (nicoId) => {
+  player?.destroy();
+  player = undefined;
+  document.getElementById(
+    "player"
+  ).innerHTML = `<iframe src="https://embed.nicovideo.jp/watch/${nicoId}?jsapi=1&playerId=a" id="nico-iframe" width="1920" height="1080"></iframe>`;
+  nicoIframe = document.getElementById("nico-iframe");
+  return new Promise((resolve, reject) => {
+    const messageHandler = (e) => {
+      if (e.origin !== "https://embed.nicovideo.jp") return;
+      if (e.data.eventName === "loadComplete") {
+        resolve();
+      } else {
+        reject();
+      }
+      window.removeEventListener("message", messageHandler);
+    };
+    window.addEventListener("message", messageHandler);
+  });
+};
+
+const loadYTVideo = (ytId) => {
+  if (player) {
+    player?.loadVideoById({
+      videoId: ytId,
+      suggestedQuality: "large",
+    });
+    return;
+  }
+  return new Promise((resolve) => {
+    player = new YT.Player("player", {
+      height: "360",
+      width: "640",
+      videoId: ytId,
+      events: {
+        onReady: resolve,
+        onStateChange: (e) => {
+          console.log(e);
+          currentTime = player.getCurrentTime();
+          updateTime(currentTime, e.data !== 1);
+        },
+      },
+    });
+  });
+};
+
+const seekTo = (time) => {
+  if (player) {
+    player.seekTo(time, true);
+  } else {
+    nicoIframe?.contentWindow.postMessage(
+      {
+        eventName: "seek",
+        data: {
+          time: time,
+        },
+        sourceConnectorType: 1,
+        playerId: "a",
+      },
+      "https://embed.nicovideo.jp"
+    );
+  }
+};
+
+window.addEventListener("message", (e) => {
+  if (e.origin !== "https://embed.nicovideo.jp") return;
+  if (e.data.eventName === "playerMetadataChange") {
+    currentTime = e.data.data.currentTime / 1000;
+    updateTime(currentTime, isPaused);
+  } else if (e.data.eventName === "playerStatusChange") {
+    isPaused = e.data.data.playerStatus !== 2;
+    videoMicroSec = false;
+  }
+});
 
 const getVideoItem = () => {
   return getById(videos, video);

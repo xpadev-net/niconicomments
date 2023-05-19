@@ -1,3 +1,6 @@
+/**
+ * BaseCommentなどを継承しているプラグインで必要な関数を実装していない場合などに発生するエラー
+ */
 class NotImplementedError extends Error {
   pluginName: string;
   methodName: string;

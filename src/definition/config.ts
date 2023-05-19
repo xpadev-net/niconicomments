@@ -1,5 +1,10 @@
 import type { BaseConfig, BaseOptions } from "@/@types/";
 let defaultConfig: BaseConfig;
+
+/**
+ * 設定を更新する
+ * @param config 更新後の設定
+ */
 const updateConfig = (config: BaseConfig) => {
   defaultConfig = config;
 };
@@ -25,8 +30,22 @@ const defaultOptions: BaseOptions = {
 
 let config: BaseConfig;
 let options: BaseOptions;
-const setConfig = (value: BaseConfig) => (config = value);
-const setOptions = (value: BaseOptions) => (options = value);
+
+/**
+ * 設定を更新する
+ * @param value 更新後の設定
+ */
+const setConfig = (value: BaseConfig) => {
+  config = value;
+};
+
+/**
+ * 設定を更新する
+ * @param value 更新後の設定
+ */
+const setOptions = (value: BaseOptions) => {
+  options = value;
+};
 export {
   config,
   defaultConfig,

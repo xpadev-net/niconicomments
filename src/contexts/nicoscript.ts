@@ -8,6 +8,10 @@ let nicoScripts: NicoScript = {
   seekDisable: [],
   jump: [],
 };
+
+/**
+ * ニコスクリプトの設定をリセットする
+ */
 const resetNicoScripts = () => {
   nicoScripts = {
     reverse: [],

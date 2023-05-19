@@ -1,6 +1,8 @@
 import type {
+  Canvas,
   CommentContentItem,
   CommentMeasuredContentItem,
+  Context2D,
   FormattedComment,
   FormattedCommentWithFont,
   FormattedCommentWithSize,
@@ -10,12 +12,10 @@ import type {
 import { config, options } from "@/definition/config";
 import {
   getConfig,
-  getFlashFontIndex,
-  getFlashFontName,
   getStrokeColor,
   isLineBreakResize,
-  nativeSort,
   parseCommandAndNicoScript,
+  parseContent,
   parseFont,
 } from "@/utils";
 
@@ -26,12 +26,36 @@ class FlashComment extends BaseComment {
   private scale: number;
   private scaleX: number;
   override readonly pluginName: string = "FlashComment";
-  constructor(comment: FormattedComment, context: CanvasRenderingContext2D) {
+  constructor(comment: FormattedComment, context: Context2D) {
     super(comment, context);
     this.scale ??= 1;
     this.scaleX ??= 1;
     this._globalScale ??= getConfig(config.commentScale, true);
     this.posY ??= 0;
+  }
+
+  override get content() {
+    return this.comment.rawContent;
+  }
+  override set content(input: string) {
+    const { content, lineCount, lineOffset } = this.parseContent(input);
+    const comment: FormattedCommentWithFont = {
+      ...this.comment,
+      rawContent: input,
+      content,
+      lineCount,
+      lineOffset,
+    };
+    const val = content[0];
+    if (val && val.font) {
+      comment.font = val.font;
+    }
+    this.comment = this.getCommentSize(comment);
+    this.cacheKey =
+      JSON.stringify(this.comment.content) +
+      `@@${this.pluginName}@@` +
+      [...this.comment.mail].sort().join(",");
+    delete this.image;
   }
 
   override convertComment(comment: FormattedComment): FormattedCommentWithSize {
@@ -57,7 +81,6 @@ class FlashComment extends BaseComment {
       size.width = 0;
       size.lineHeight = 0;
       size.fontSize = 0;
-      size.content = [];
       size.resized = false;
       size.resizedX = false;
       size.resizedY = false;
@@ -85,127 +108,47 @@ class FlashComment extends BaseComment {
     comment: FormattedComment
   ): FormattedCommentWithFont {
     const data = parseCommandAndNicoScript(comment);
-    const content: CommentContentItem[] = [];
-    const parts = (comment.content.match(/\n|[^\n]+/g) || []).map((val) =>
-      Array.from(val.match(/[ -~｡-ﾟ]+|[^ -~｡-ﾟ]+/g) || [])
+    const { content, lineCount, lineOffset } = this.parseContent(
+      comment.content
     );
-    for (const line of parts) {
-      const lineContent: CommentContentItem[] = [];
-      for (const part of line) {
-        if (part.match(/[ -~｡-ﾟ]+/g) !== null) {
-          lineContent.push({ content: part, slicedContent: part.split("\n") });
-          continue;
-        }
-        const index = getFlashFontIndex(part);
-        if (index.length === 0) {
-          lineContent.push({ content: part, slicedContent: part.split("\n") });
-        } else if (index.length === 1 && index[0]) {
-          lineContent.push({
-            content: part,
-            slicedContent: part.split("\n"),
-            font: getFlashFontName(index[0].font),
-          });
-        } else {
-          index.sort(nativeSort((val) => val.index));
-          if (config.FlashMode === "xp") {
-            let offset = 0;
-            for (let i = 1, n = index.length; i < n; i++) {
-              const currentVal = index[i],
-                lastVal = index[i - 1];
-              if (currentVal === undefined || lastVal === undefined) continue;
-              const content = part.slice(offset, currentVal.index);
-              lineContent.push({
-                content: content,
-                slicedContent: content.split("\n"),
-                font: getFlashFontName(lastVal.font),
-              });
-              offset = currentVal.index;
-            }
-            const val = index[index.length - 1];
-            if (val) {
-              const content = part.slice(offset);
-              lineContent.push({
-                content: content,
-                slicedContent: content.split("\n"),
-                font: getFlashFontName(val.font),
-              });
-            }
-          } else {
-            const firstVal = index[0],
-              secondVal = index[1];
-            if (!firstVal || !secondVal) {
-              lineContent.push({
-                content: part,
-                slicedContent: part.split("\n"),
-              });
-              continue;
-            }
-            if (firstVal.font !== "gothic") {
-              lineContent.push({
-                content: part,
-                slicedContent: part.split("\n"),
-                font: getFlashFontName(firstVal.font),
-              });
-            } else {
-              const firstContent = part.slice(0, secondVal.index);
-              const secondContent = part.slice(secondVal.index);
-              lineContent.push({
-                content: firstContent,
-                slicedContent: firstContent.split("\n"),
-                font: getFlashFontName(firstVal.font),
-              });
-              lineContent.push({
-                content: secondContent,
-                slicedContent: secondContent.split("\n"),
-                font: getFlashFontName(secondVal.font),
-              });
-            }
-          }
-        }
-      }
-      const firstContent = lineContent[0];
-      if (firstContent && firstContent.font) {
-        content.push(
-          ...lineContent.map((val) => {
-            if (!val.font) {
-              val.font = firstContent.font;
-            }
-            return val;
-          })
-        );
-      } else {
-        content.push(...lineContent);
-      }
-    }
     const val = content[0];
     if (val && val.font) {
       data.font = val.font;
     }
-    const lineCount = content.reduce((pv, val) => {
-      return pv + (val.content.match(/\n/g)?.length || 0);
-    }, 1);
-    const lineOffset =
-      (comment.content.match(new RegExp(config.FlashScriptChar.super, "g"))
-        ?.length || 0) *
-        -1 *
-        config.scriptCharOffset +
-      (comment.content.match(new RegExp(config.FlashScriptChar.sub, "g"))
-        ?.length || 0) *
-        config.scriptCharOffset;
     return {
+      ...comment,
+      rawContent: comment.content,
       ...data,
       content,
       lineCount,
       lineOffset,
-    } as FormattedCommentWithFont;
+    };
+  }
+
+  override parseContent(input: string) {
+    const content: CommentContentItem[] = parseContent(input);
+    const lineCount = content.reduce((pv, val) => {
+      return pv + (val.content.match(/\n/g)?.length || 0);
+    }, 1);
+    const lineOffset =
+      (input.match(new RegExp(config.FlashScriptChar.super, "g"))?.length ||
+        0) *
+        -1 *
+        config.scriptCharOffset +
+      (input.match(new RegExp(config.FlashScriptChar.sub, "g"))?.length || 0) *
+        config.scriptCharOffset;
+    return {
+      content,
+      lineCount,
+      lineOffset,
+    };
   }
 
   override measureText(comment: MeasureTextInput): MeasureTextResult {
     const configLineHeight = getConfig(config.lineHeight, true),
       configFontSize = getConfig(config.fontSize, true);
     const lineCount = comment.lineCount;
-    if (!comment.lineHeight)
-      comment.lineHeight = configLineHeight[comment.size].default;
+    comment.lineHeight ??= configLineHeight[comment.size].default;
     if (isLineBreakResize(comment)) {
       comment.fontSize = configFontSize[comment.size].resized;
       comment.lineHeight = configLineHeight[comment.size].resized;
@@ -213,37 +156,7 @@ class FlashComment extends BaseComment {
       comment.resizedY = true;
       this.context.font = parseFont(comment.font, comment.fontSize);
     }
-    const width_arr = [],
-      spacedWidth_arr = [];
-    let currentWidth = 0,
-      spacedWidth = 0;
-    for (const item of comment.content) {
-      const lines = item.content.split("\n");
-      const widths = [];
-
-      this.context.font = parseFont(
-        item.font || comment.font,
-        comment.fontSize
-      );
-      for (let i = 0, n = lines.length; i < n; i++) {
-        const value = lines[i];
-        if (value === undefined) continue;
-        const measure = this.context.measureText(value);
-        currentWidth += measure.width;
-        spacedWidth +=
-          measure.width + Math.max(value.length - 1, 0) * config.letterSpacing;
-        widths.push(measure.width);
-        if (i < lines.length - 1) {
-          width_arr.push(currentWidth);
-          spacedWidth_arr.push(spacedWidth);
-          spacedWidth = 0;
-          currentWidth = 0;
-        }
-      }
-      width_arr.push(currentWidth);
-      spacedWidth_arr.push(spacedWidth);
-      item.width = widths;
-    }
+    const { width_arr, spacedWidth_arr } = this._measureContent(comment);
     const leadLine = (function () {
       let max = 0,
         index = -1;
@@ -289,6 +202,41 @@ class FlashComment extends BaseComment {
     };
   }
 
+  private _measureContent(comment: MeasureTextInput) {
+    const width_arr: number[] = [],
+      spacedWidth_arr: number[] = [];
+    let currentWidth = 0,
+      spacedWidth = 0;
+    for (const item of comment.content) {
+      const lines = item.content.split("\n");
+      const widths: number[] = [];
+
+      this.context.font = parseFont(
+        item.font || comment.font,
+        comment.fontSize
+      );
+      for (let i = 0, n = lines.length; i < n; i++) {
+        const value = lines[i];
+        if (value === undefined) continue;
+        const measure = this.context.measureText(value);
+        currentWidth += measure.width;
+        spacedWidth +=
+          measure.width + Math.max(value.length - 1, 0) * config.letterSpacing;
+        widths.push(measure.width);
+        if (i < lines.length - 1) {
+          width_arr.push(currentWidth);
+          spacedWidth_arr.push(spacedWidth);
+          spacedWidth = 0;
+          currentWidth = 0;
+        }
+      }
+      width_arr.push(currentWidth);
+      spacedWidth_arr.push(spacedWidth);
+      item.width = widths;
+    }
+    return { width_arr, spacedWidth_arr };
+  }
+
   override _drawCollision(posX: number, posY: number, showCollision: boolean) {
     if (showCollision) {
       this.context.strokeStyle = "rgba(255,0,255,1)";
@@ -321,7 +269,7 @@ class FlashComment extends BaseComment {
     }
   }
 
-  override _generateTextImage(): HTMLCanvasElement {
+  override _generateTextImage(): Canvas {
     const { image, context } = this.createCanvas();
     image.width = this.comment.width;
     image.height = this.comment.height;
@@ -347,9 +295,10 @@ class FlashComment extends BaseComment {
       leftOffset = 0,
       lineCount = 0;
     for (const item of this.comment.content) {
-      if (lastFont !== (item.font || this.comment.font)) {
-        lastFont = item.font || this.comment.font;
-        context.font = parseFont(lastFont, this.comment.fontSize);
+      const font = item.font || this.comment.font;
+      if (lastFont !== font) {
+        lastFont = font;
+        context.font = parseFont(font, this.comment.fontSize);
       }
       const lines = item.slicedContent;
       for (let j = 0, n = lines.length; j < n; j++) {
@@ -364,9 +313,9 @@ class FlashComment extends BaseComment {
         if (j < n - 1) {
           leftOffset = 0;
           lineCount += 1;
-        } else {
-          leftOffset += item.width[j] || 0;
+          continue;
         }
+        leftOffset += item.width[j] || 0;
       }
     }
     return image;

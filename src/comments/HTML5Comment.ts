@@ -59,6 +59,7 @@ class HTML5Comment extends BaseComment {
   override getCommentSize(
     parsedData: FormattedCommentWithFont
   ): FormattedCommentWithSize {
+    this.context.save();
     this.context.font = parseFont(parsedData.font, parsedData.fontSize);
     const size = parsedData as FormattedCommentWithSize;
     if (parsedData.invisible) {
@@ -70,6 +71,7 @@ class HTML5Comment extends BaseComment {
       size.resizedX = false;
       size.resizedY = false;
       size.charSize = 0;
+      this.context.restore();
       return size;
     }
     const measure = this.measureText(parsedData);
@@ -87,6 +89,7 @@ class HTML5Comment extends BaseComment {
     size.resizedX = measure.resizedX;
     size.resizedY = measure.resizedY;
     size.charSize = measure.charSize;
+    this.context.restore();
     return size;
   }
 
@@ -220,6 +223,7 @@ class HTML5Comment extends BaseComment {
 
   override _drawCollision(posX: number, posY: number, showCollision: boolean) {
     if (showCollision) {
+      this.context.save();
       const scale = getConfig(config.commentScale, false);
       this.context.strokeStyle = "rgba(0,255,255,1)";
       this.context.strokeRect(
@@ -244,6 +248,7 @@ class HTML5Comment extends BaseComment {
           this.comment.fontSize * -1 * scale
         );
       }
+      this.context.restore();
     }
   }
 

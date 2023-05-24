@@ -85,9 +85,6 @@ class NiconiComments {
     resetNicoScripts();
     this.canvas = canvas;
     this.context = getContext(canvas);
-    this.context.strokeStyle = `rgba(${hex2rgb(config.contextStrokeColor).join(
-      ","
-    )},${config.contextStrokeOpacity})`;
     this.context.textAlign = "start";
     this.context.textBaseline = "alphabetic";
     this.context.lineWidth = config.contextLineWidth;
@@ -335,6 +332,7 @@ class NiconiComments {
    */
   private _drawCollision(vpos: number) {
     if (this.showCollision) {
+      this.context.save();
       const leftCollision = this.collision.left[vpos],
         rightCollision = this.collision.right[vpos];
       this.context.fillStyle = "red";
@@ -358,6 +356,7 @@ class NiconiComments {
           );
         }
       }
+      this.context.restore();
     }
   }
 
@@ -367,6 +366,7 @@ class NiconiComments {
    */
   private _drawFPS(drawCanvasStart: number) {
     if (this.showFPS) {
+      this.context.save();
       this.context.font = parseFont("defont", 60);
       this.context.fillStyle = "#00FF00";
       this.context.strokeStyle = `rgba(${hex2rgb(
@@ -376,6 +376,7 @@ class NiconiComments {
       const fps = Math.floor(1000 / (drawTime === 0 ? 1 : drawTime));
       this.context.strokeText(`FPS:${fps}(${drawTime}ms)`, 100, 100);
       this.context.fillText(`FPS:${fps}(${drawTime}ms)`, 100, 100);
+      this.context.restore();
     }
   }
 
@@ -385,6 +386,7 @@ class NiconiComments {
    */
   private _drawCommentCount(count?: number | undefined) {
     if (this.showCommentCount) {
+      this.context.save();
       this.context.font = parseFont("defont", 60);
       this.context.fillStyle = "#00FF00";
       this.context.strokeStyle = `rgba(${hex2rgb(
@@ -392,6 +394,7 @@ class NiconiComments {
       ).join(",")},${config.contextStrokeOpacity})`;
       this.context.strokeText(`Count:${count || 0}`, 100, 200);
       this.context.fillText(`Count:${count || 0}`, 100, 200);
+      this.context.restore();
     }
   }
 

@@ -168,12 +168,14 @@ class BaseComment implements IComment {
       this.image = this.getTextImage();
     }
     if (this.image) {
+      this.context.save();
       if (this.comment._live) {
         this.context.globalAlpha = config.contextFillLiveOpacity;
       } else {
         this.context.globalAlpha = 1;
       }
       drawImage(this.context, this.image, posX, posY);
+      this.context.restore();
     }
   }
 
@@ -184,6 +186,7 @@ class BaseComment implements IComment {
    */
   protected _drawRectColor(posX: number, posY: number) {
     if (this.comment.wakuColor) {
+      this.context.save();
       this.context.strokeStyle = this.comment.wakuColor;
       this.context.strokeRect(
         posX,
@@ -191,6 +194,7 @@ class BaseComment implements IComment {
         this.comment.width,
         this.comment.height
       );
+      this.context.restore();
     }
   }
 
@@ -202,6 +206,7 @@ class BaseComment implements IComment {
    */
   protected _drawDebugInfo(posX: number, posY: number, debug: boolean) {
     if (debug) {
+      this.context.save();
       const font = this.context.font;
       const fillStyle = this.context.fillStyle;
       this.context.font = parseFont("defont", 30);
@@ -209,6 +214,7 @@ class BaseComment implements IComment {
       this.context.fillText(this.comment.mail.join(","), posX, posY + 30);
       this.context.font = font;
       this.context.fillStyle = fillStyle;
+      this.context.restore();
     }
   }
 

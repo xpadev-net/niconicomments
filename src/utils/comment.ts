@@ -154,7 +154,7 @@ const parseBrackets = (input: string) => {
   let quote = "",
     last_i = "",
     string = "";
-  for (const i of content.slice(4)) {
+  for (const i of content) {
     if (i.match(/["'\u300c]/) && quote === "") {
       //["'「]
       quote = i;
@@ -192,7 +192,7 @@ const addNicoscriptReplace = (
   commands: ParsedCommand
 ) => {
   //@置換
-  const result = parseBrackets(comment.content);
+  const result = parseBrackets(comment.content.slice(4));
   if (
     result[0] === undefined ||
     (result[2] !== undefined &&

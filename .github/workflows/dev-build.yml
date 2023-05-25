@@ -21,8 +21,6 @@ jobs:
         run: |
           npm i -g pnpm
           pnpm install
-      - name: update .gitignore
-        run: sed -i -e '/\/dist/d' .gitignore
       - name: generate dev build
         run: pnpm build
       - name: copy bundled files
@@ -36,5 +34,5 @@ jobs:
           git fetch --all
           git checkout typedoc
           git add .
-          git commit -m "auto generate" -n
+          git commit -m "dev-build" -n
           git push -f origin typedoc

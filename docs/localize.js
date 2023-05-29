@@ -1,6 +1,6 @@
 const localize = {
   for_user: [
-    `<h2>For users who use this library for domestic use in Japan</h2>
+    `<h3>For users who use this library for domestic use in Japan</h3>
 <p>This library may infringe on Dwango's patents depending on how it is used</p>
 <p>Please carefully review the following applicable patents and case law before using this library with caution.</p>
 <p><a href='https://www.j-platpat.inpit.go.jp/c1800/PU/JP-2006-333851/7294651F33633E1EBF3DEC66FAE0ECAD878D19E1829C378FC81D26BBD0A4263B/10/en'>JP,2006-333851</a></p>
@@ -8,13 +8,9 @@ const localize = {
 <p><a href='https://www.j-platpat.inpit.go.jp/c1800/PU/JP-6526304/D8AF77CFB92D96C785FEECBD690C53E2F9023F1739E7A5BBDAB588E2ECAC5316/15/en'>JP,2018-202475</a></p>
 <p><a href='https://www.courts.go.jp/app/files/hanrei_jp/073/088073_hanrei.pdf'>2018: Case No. Heisei 28 (wa) 38565, Patent Infringement Injunction, etc. Patent Right Civil Litigation</a></p>
 <p><a href='https://www.courts.go.jp/app/files/hanrei_jp/418/091418_hanrei.pdf'>2022: Heisei 30 (ne) 10077 Appeal for Patent Infringement Injunction, etc. Patent Right Civil Litigation</a></p>`,
-    `<h2>[重要]このライブラリを使用される方へ</h2>
-<p>ニコニコ運営が画面にコメントを流すアドオンを特許侵害だと騒ぎ立てて潰して回っているようです</p>
-<p>このライブラリ本体は描画部分のみのため特許侵害に当たるとは考えていませんが、ニコニコ動画運営(とその近辺の人)に叩かれる可能性があります</p>
-<p>(すでに一部OSSに被害が出ています)</p>
-<p>また、このライブラリを使用するかどうかに関わらず、リアルタイムでコメントを取得、画面を描画、コメントの投稿という一連の流れを実装した場合、ニコニコの特許を侵害する可能性があります</p>
-<p>詳しくはこちら<a href="https://github.com/xpadev-net/niconicomments/blob/master/ABOUT_PATENT.md">ニコニコが保有する特許について</a>を参照してください</p>
-<p>※当ライブラリを削除する予定は一切ありません</p>`,
+    `<h3>このライブラリを使用される方へ</h3>
+<p>このライブラリを使用するかどうかに関わらず、リアルタイムでコメントを取得、画面を描画、コメントの投稿という一連の流れを実装した場合、ニコニコの特許を侵害する可能性があります</p>
+<p>詳しくはこちら<a href="https://github.com/xpadev-net/niconicomments/blob/master/ABOUT_PATENT.md">ニコニコが保有する特許について</a>を参照してください</p>`,
   ],
   about_desc: [
     "Comment rendering library that is somewhat compatible with the official Nico Nico Douga player",

@@ -23,8 +23,6 @@ jobs:
           pnpm install
       - name: generate dev build
         run: pnpm build
-      - name: copy bundled files
-        run: cp ./dist/bundle.js ./docs/
       - name: Create new commit
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -33,6 +31,7 @@ jobs:
           git config user.name "github-actions"
           git fetch --all
           git checkout typedoc
+          cp ./dist/bundle.js ./docs/
           git add .
           git commit -m "dev-build" -n
           git push -f origin typedoc

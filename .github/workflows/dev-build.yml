@@ -31,7 +31,7 @@ jobs:
           git config user.name "github-actions"
           git fetch --all
           git checkout typedoc
-          cp ./dist/bundle.js ./docs/
+          cp -f ./dist/bundle.js ./docs/
           git add .
           git commit -m "dev-build" -n
           git push -f origin typedoc

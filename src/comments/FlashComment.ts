@@ -74,6 +74,7 @@ class FlashComment extends BaseComment {
   override getCommentSize(
     parsedData: FormattedCommentWithFont
   ): FormattedCommentWithSize {
+    this.context.save();
     this.context.font = parseFont(parsedData.font, parsedData.fontSize);
     const size = parsedData as FormattedCommentWithSize;
     if (parsedData.invisible) {
@@ -85,6 +86,7 @@ class FlashComment extends BaseComment {
       size.resizedX = false;
       size.resizedY = false;
       size.charSize = 0;
+      this.context.restore();
       return size;
     }
     const measure = this.measureText(parsedData);
@@ -101,6 +103,7 @@ class FlashComment extends BaseComment {
     size.resizedX = measure.resizedX;
     size.resizedY = measure.resizedY;
     size.charSize = measure.charSize;
+    this.context.restore();
     return size;
   }
 
@@ -239,6 +242,7 @@ class FlashComment extends BaseComment {
 
   override _drawCollision(posX: number, posY: number, showCollision: boolean) {
     if (showCollision) {
+      this.context.save();
       this.context.strokeStyle = "rgba(255,0,255,1)";
       this.context.strokeRect(
         posX,
@@ -266,6 +270,7 @@ class FlashComment extends BaseComment {
             (this.comment.layer === -1 ? options.scale : 1)
         );
       }
+      this.context.restore();
     }
   }
 

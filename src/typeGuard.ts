@@ -4,19 +4,15 @@ import type {
   ApiLeaf,
   ApiPing,
   ApiThread,
-  Canvas,
   CommentFont,
   CommentLoc,
   CommentSize,
-  Context2D,
   FormattedComment,
   FormattedLegacyComment,
   NicoScriptReplaceCondition,
   NicoScriptReplaceRange,
   NicoScriptReplaceTarget,
   NicoScriptReverseTarget,
-  NodeCanvas,
-  NodeContext,
   Options,
   OwnerComment,
   RawApiResponse,
@@ -24,7 +20,6 @@ import type {
   V1Thread,
 } from "@/@types/";
 import { colors } from "@/definition/colors";
-import { isNode } from "@/utils/node";
 
 /**
  * 入力がBooleanかどうかを返す
@@ -275,10 +270,6 @@ const typeGuard = {
       }
       return true;
     },
-  },
-  canvas: {
-    nodeCanvas: (_: Canvas): _ is NodeCanvas => isNode,
-    nodeContext: (_: Context2D): _ is NodeContext => isNode,
   },
 };
 

@@ -187,6 +187,13 @@ const videos = [
         id: 28,
         nc: "sm37156104",
         title: "【ニワン語歌詞】アンインストール【打ってみた件】コマテ動画その3",
+      },
+      {
+        id: 29,
+        nc: "nm10561034",
+        _nc: "sm29843635",
+        bg: "black",
+        title: "【投コメ歌詞】けいおん!!OP GO!GO!MANIAC【TV size】"
       }
     ]
   },

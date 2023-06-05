@@ -280,7 +280,7 @@ class NiconiComments {
    * 背景動画が設定されている場合に描画する
    */
   private _drawVideo() {
-    if (this.video && !typeGuard.canvas.nodeContext(this.context)) {
+    if (this.video) {
       let scale;
       const height = this.canvas.height / this.video.videoHeight,
         width = this.canvas.width / this.video.videoWidth;

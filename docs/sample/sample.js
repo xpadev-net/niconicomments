@@ -157,14 +157,14 @@ const videos = [
         nc: "nm14999484",
         _nc: "sm15050039",
         title:
-          "【読込激重】魔法少女まどか☆マギカ完結版OPをコメントでry【元動画１】",
+            "【読込激重】魔法少女まどか☆マギカ完結版OPをコメントでry【元動画１】",
       },
       {
         id: 24,
         nc: "nm14999567",
         _nc: "sm15050039",
         title:
-          "【読込激重】魔法少女まどか☆マギカ完結版OPをコメントでry【元動画２】",
+            "【読込激重】魔法少女まどか☆マギカ完結版OPをコメントでry【元動画２】",
       },
       {
         id: 25,
@@ -211,22 +211,22 @@ const videos = [
 ];
 const urlParams = new URLSearchParams(window.location.search);
 let video = Number(urlParams.get("video") || 0),
-  noVideo = !!urlParams.get("novideo"),
-  time = Number(urlParams.get("time") || -1),
-  player,
-  nicoIframe,
-  nico = null,
-  mode = "default",
-  showFPS = false,
-  showCollision = false,
-  showCommentCount = false,
-  videoMicroSec = false,
-  keepCA = false,
-  debug = false,
-  scale = 1,
-  currentTime = 0,
-  isPaused = true,
-  interval = null;
+    noVideo = !!urlParams.get("novideo"),
+    time = Number(urlParams.get("time") || -1),
+    player,
+    nicoIframe,
+    nico = null,
+    mode = "default",
+    showFPS = false,
+    showCollision = false,
+    showCommentCount = false,
+    videoMicroSec = false,
+    keepCA = false,
+    debug = false,
+    scale = 1,
+    currentTime = 0,
+    isPaused = true,
+    interval = null;
 /** @type {HTMLDivElement} */
 const controlWrapper = document.getElementById("control");
 /** @type {HTMLSelectElement} */
@@ -237,7 +237,7 @@ const controlShowFPSElement = document.getElementById("show-fps");
 const controlShowCollisionElement = document.getElementById("show-collision");
 /** @type {HTMLInputElement} */
 const controlShowCommentCountElement =
-  document.getElementById("show-comment-count");
+    document.getElementById("show-comment-count");
 /** @type {HTMLInputElement} */
 const controlModeElement = document.getElementById("mode");
 /** @type {HTMLInputElement} */
@@ -285,9 +285,9 @@ if (!noVideo) {
     urlParams.set("video", video);
     document.title = `${videoItem.title}(${videoItem.nc}) - niconicomments sample`;
     history.pushState(
-      "",
-      "",
-      `${window.location.pathname}?${urlParams.toString()}`
+        "",
+        "",
+        `${window.location.pathname}?${urlParams.toString()}`
     );
   };
   controlShowFPSElement.onchange = (e) => {
@@ -337,10 +337,10 @@ const updateCanvas = () => {
     nico.drawCanvas(Math.floor(currentTime * 100));
   } else {
     nico.drawCanvas(
-      Math.floor(
-        (performance.now() - videoMicroSec.microsec) / 10 +
-          videoMicroSec.currentTime * 100
-      )
+        Math.floor(
+            (performance.now() - videoMicroSec.microsec) / 10 +
+            videoMicroSec.currentTime * 100
+        )
     );
   }
 };
@@ -358,7 +358,7 @@ const loadComments = async () => {
     debug: debug,
     scale: Number(scale),
     config: {
-      plugins: window.Niwango ? [window.Niwango] : [],
+      plugins: window.PluginNiwango ? [window.PluginNiwango(window.Niwango)] : [],
     },
   });
   const elem = document.createElement("div");
@@ -394,9 +394,9 @@ const getById = (array, id) => {
 };
 const resize = () => {
   const width = document.body.clientWidth / 1920,
-    height = document.body.clientHeight / 1080;
+      height = document.body.clientHeight / 1080;
   container.style.transform = `translate(-50%,-50%) scale(${
-    Math.min(height, width) * 100
+      Math.min(height, width) * 100
   }%)`;
 };
 
@@ -417,7 +417,7 @@ const loadNicoVideo = (nicoId) => {
   player?.destroy();
   player = undefined;
   document.getElementById(
-    "player"
+      "player"
   ).innerHTML = `<iframe src="https://embed.nicovideo.jp/watch/${nicoId}?jsapi=1&playerId=a" id="nico-iframe" width="1920" height="1080"></iframe>`;
   nicoIframe = document.getElementById("nico-iframe");
   return new Promise((resolve, reject) => {
@@ -464,15 +464,15 @@ const seekTo = (time) => {
     player.seekTo(time, true);
   } else {
     nicoIframe?.contentWindow.postMessage(
-      {
-        eventName: "seek",
-        data: {
-          time: time,
+        {
+          eventName: "seek",
+          data: {
+            time: time,
+          },
+          sourceConnectorType: 1,
+          playerId: "a",
         },
-        sourceConnectorType: 1,
-        playerId: "a",
-      },
-      "https://embed.nicovideo.jp"
+        "https://embed.nicovideo.jp"
     );
   }
 };

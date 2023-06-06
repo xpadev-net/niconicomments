@@ -1,101 +1,102 @@
 <!DOCTYPE html>
 <html lang="ja">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title></title>
-    <script src="https://cdn.jsdelivr.net/npm/i18next@22.0.5/dist/umd/i18next.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/i18next-browser-languagedetector@7.0.1/dist/umd/i18nextBrowserLanguageDetector.min.js"></script>
-    <script type="text/javascript" src="../../dist/bundle.js"></script>
-    <script
-      type="text/javascript"
-      src="../../../niwango/dist/bundle.js"
-    ></script>
-    <link rel="stylesheet" href="./sample.css" />
-  </head>
-  <body id="body">
-    <div class="wrapper">
-      <div id="container">
-        <div class="playerContainer">
-          <div id="player"></div>
-        </div>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title></title>
+  <script src="https://cdn.jsdelivr.net/npm/i18next@22.0.5/dist/umd/i18next.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/i18next-browser-languagedetector@7.0.1/dist/umd/i18nextBrowserLanguageDetector.min.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@xpadev-net/niconicomments@latest/dist/bundle.min.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@xpadev-net/niconicomments-plugin-niwango@latest/dist/bundle.min.js"></script>
+  <script
+          type="text/javascript"
+          src="https://cdn.jsdelivr.net/gh/xpadev-net/niwango.js@dev-build/dist/bundle.js"
+  ></script>
+  <link rel="stylesheet" href="./sample.css" />
+</head>
+<body id="body">
+<div class="wrapper">
+  <div id="container">
+    <div class="playerContainer">
+      <div id="player"></div>
+    </div>
 
-        <div id="background"></div>
-        <canvas id="canvas" width="1920" height="1080"></canvas>
-      </div>
-    </div>
-    <div id="control-wrapper">
-      <div id="control" style="display: none">
-        <label>
-          <span data-i18n="movie"></span>
-          <select name="video" id="control-video" autocomplete="off"></select>
-        </label>
-        <label>
-          <span data-i18n="mode"></span>
-          <select name="mode" id="mode">
-            <option value="default" data-i18n="auto"></option>
-            <option value="flash">Flash</option>
-            <option value="html5">HTML5</option>
-          </select>
-        </label>
-        <label>
-          <span data-i18n="scale"></span>
-          <input
-            type="number"
-            name="scale"
-            id="scale"
-            autocomplete="off"
-            value="1"
-          />
-        </label>
-        <label>
-          <input
-            type="checkbox"
-            name="show-fps"
-            id="show-fps"
-            autocomplete="off"
-          />
-          <span data-i18n="showFPS"></span>
-        </label>
-        <label>
-          <input
-            type="checkbox"
-            name="show-collision"
-            id="show-collision"
-            autocomplete="off"
-          />
-          <span data-i18n="showCollision"></span>
-        </label>
-        <label>
-          <input
-            type="checkbox"
-            name="show-comment-count"
-            id="show-comment-count"
-            autocomplete="off"
-          />
-          <span data-i18n="showCommentCount"></span>
-        </label>
-        <label>
-          <input
-            type="checkbox"
-            name="keep-ca"
-            id="keep-ca"
-            autocomplete="off"
-          />
-          <span data-i18n="keepCA"></span>
-        </label>
-        <label>
-          <input type="checkbox" name="debug" id="debug" autocomplete="off" />
-          <span data-i18n="debug"></span>
-        </label>
-        <div id="toggle"><p>&lt;</p></div>
-      </div>
-    </div>
-  </body>
+    <div id="background"></div>
+    <canvas id="canvas" width="1920" height="1080"></canvas>
+  </div>
+</div>
+<div id="control-wrapper">
+  <div id="control" style="display: none">
+    <label>
+      <span data-i18n="movie"></span>
+      <select name="video" id="control-video" autocomplete="off"></select>
+    </label>
+    <label>
+      <span data-i18n="mode"></span>
+      <select name="mode" id="mode">
+        <option value="default" data-i18n="auto"></option>
+        <option value="flash">Flash</option>
+        <option value="html5">HTML5</option>
+      </select>
+    </label>
+    <label>
+      <span data-i18n="scale"></span>
+      <input
+              type="number"
+              name="scale"
+              id="scale"
+              autocomplete="off"
+              value="1"
+      />
+    </label>
+    <label>
+      <input
+              type="checkbox"
+              name="show-fps"
+              id="show-fps"
+              autocomplete="off"
+      />
+      <span data-i18n="showFPS"></span>
+    </label>
+    <label>
+      <input
+              type="checkbox"
+              name="show-collision"
+              id="show-collision"
+              autocomplete="off"
+      />
+      <span data-i18n="showCollision"></span>
+    </label>
+    <label>
+      <input
+              type="checkbox"
+              name="show-comment-count"
+              id="show-comment-count"
+              autocomplete="off"
+      />
+      <span data-i18n="showCommentCount"></span>
+    </label>
+    <label>
+      <input
+              type="checkbox"
+              name="keep-ca"
+              id="keep-ca"
+              autocomplete="off"
+      />
+      <span data-i18n="keepCA"></span>
+    </label>
+    <label>
+      <input type="checkbox" name="debug" id="debug" autocomplete="off" />
+      <span data-i18n="debug"></span>
+    </label>
+    <div id="toggle"><p>&lt;</p></div>
+  </div>
+</div>
+</body>
 </html>
 <script src="./localize.js"></script>
 <script src="./sample.js"></script>
 <script
-  type="text/javascript"
-  src="https://www.youtube.com/iframe_api"
+        type="text/javascript"
+        src="https://www.youtube.com/iframe_api"
 ></script>

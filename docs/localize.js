@@ -281,6 +281,14 @@ const localize = {
 <p>色の指定は色コマンドまたはカラーコードで行ってください</p>
 <p>カラーコードは透明度も指定可能です</p>`,
   ],
+  c_waku: [
+    `<p>You can control the display of frames per comment.</p>
+<p>Colors can be specified with the color command or color code</p>
+<p>Color code can also specify transparency</p>`,
+    `<p>コメント単位で枠の表示を制御できます</p>
+<p>色の指定は色コマンドまたはカラーコードで行ってください</p>
+<p>カラーコードは透明度も指定可能です</p>`
+  ]
 };
 const resources = { en: { translation: {} }, ja: { translation: {} } };
 for (const key in localize) {

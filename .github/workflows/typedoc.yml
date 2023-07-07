@@ -31,8 +31,8 @@ jobs:
       # Runs a single command using the runners shell
       - name: init
         run: |
-          npm i -g yarn
-          yarn install
+          npm i -g pnpm
+          pnpm install
 
       # Runs a set of commands using the runners shell
       - name: clear output dir
@@ -44,7 +44,9 @@ jobs:
           sed --in-place --expression='s/..\/..\/dist\/bundle.js/https:\/\/cdn.jsdelivr.net\/npm\/@xpadev-net\/niconicomments@latest\/dist\/bundle.min.js/' docs/sample/index.html
           sed --in-place --expression='s/..\/..\/..\/niwango\/dist\/bundle.js/https:\/\/cdn.jsdelivr.net\/gh\/xpadev-net\/niwango.js@dev-build\/dist\/bundle.js/' docs/sample/index.html
       - name: generate typedoc
-        run: yarn typedoc
+        run: pnpm typedoc
+      - name: generate dev build
+        run: pnpm build
 
       - name: Create new Branch
         env:
@@ -53,6 +55,7 @@ jobs:
           git config user.email "github-actions@xpadev.net"
           git config user.name "github-actions"
           git checkout -b typedoc
+          cp -f ./dist/bundle.js ./docs/
           git add .
           git commit -m "auto generate" -n
           git push -f origin typedoc

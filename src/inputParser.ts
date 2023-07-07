@@ -169,7 +169,7 @@ const fromLegacyOwner = (data: string): FormattedComment[] => {
     }
     const tmpParam: FormattedComment = {
       id: i,
-      vpos: Number(commentData[0]),
+      vpos: Number(commentData[0]) * 100,
       content: commentData[2] || "",
       date: i,
       date_usec: 0,

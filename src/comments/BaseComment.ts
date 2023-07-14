@@ -152,6 +152,7 @@ class BaseComment implements IComment {
       this.comment.loc === "shita"
         ? config.canvasHeight - this.posY - this.comment.height
         : this.posY;
+    this._drawBackgroundColor(posX, posY);
     this._draw(posX, posY);
     this._drawRectColor(posX, posY);
     this._drawCollision(posX, posY, showCollision);
@@ -189,6 +190,25 @@ class BaseComment implements IComment {
       this.context.save();
       this.context.strokeStyle = this.comment.wakuColor;
       this.context.strokeRect(
+        posX,
+        posY,
+        this.comment.width,
+        this.comment.height
+      );
+      this.context.restore();
+    }
+  }
+
+  /**
+   * コメントの背景を描画する
+   * @param posX 描画位置
+   * @param posY 描画位置
+   */
+  protected _drawBackgroundColor(posX: number, posY: number) {
+    if (this.comment.fillColor) {
+      this.context.save();
+      this.context.fillStyle = this.comment.fillColor;
+      this.context.fillRect(
         posX,
         posY,
         this.comment.width,

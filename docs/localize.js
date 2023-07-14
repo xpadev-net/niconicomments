@@ -288,6 +288,14 @@ const localize = {
     `<p>コメント単位で枠の表示を制御できます</p>
 <p>色の指定は色コマンドまたはカラーコードで行ってください</p>
 <p>カラーコードは透明度も指定可能です</p>`
+  ],
+  c_fill: [
+    `<p>You can control the background color per comment.</p>
+<p>Colors can be specified with the color command or color code</p>
+<p>Color code can also specify transparency</p>`,
+    `<p>コメント単位で背景色の表示を制御できます</p>
+<p>色の指定は色コマンドまたはカラーコードで行ってください</p>
+<p>カラーコードは透明度も指定可能です</p>`
   ]
 };
 const resources = { en: { translation: {} }, ja: { translation: {} } };

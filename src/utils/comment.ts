@@ -140,6 +140,7 @@ const parseCommandAndNicoScript = (
     invisible: commands.invisible,
     strokeColor: commands.strokeColor,
     wakuColor: commands.wakuColor,
+    fillColor: commands.fillColor,
   };
 };
 
@@ -437,6 +438,11 @@ const parseCommand = (
   const rectColor = getColor(command.match(/^nico:waku:(.+)$/));
   if (rectColor) {
     result.wakuColor ??= rectColor;
+    return;
+  }
+  const fillColor = getColor(command.match(/^nico:fill:(.+)$/));
+  if (fillColor) {
+    result.fillColor ??= fillColor;
     return;
   }
   if (typeGuard.comment.loc(command)) {

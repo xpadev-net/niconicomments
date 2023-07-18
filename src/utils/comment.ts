@@ -483,7 +483,7 @@ const getColor = (match: RegExpMatchArray | null) => {
   if (typeGuard.comment.color(value)) {
     return colors[value];
   } else if (typeGuard.comment.colorCodeAllowAlpha(value)) {
-    return value.slice(1);
+    return value;
   }
   return;
 };

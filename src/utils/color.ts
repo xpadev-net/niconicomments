@@ -59,13 +59,12 @@ const hex2rgba = (hex: string) => {
  */
 const getStrokeColor = (comment: FormattedCommentWithSize) => {
   if (comment.strokeColor) {
-    const length = comment.strokeColor.length;
+    const color = comment.strokeColor.slice(1);
+    const length = color.length;
     if (length === 3 || length === 6) {
-      return `rgba(${hex2rgb(comment.strokeColor).join(",")},${
-        config.contextStrokeOpacity
-      })`;
+      return `rgba(${hex2rgb(color).join(",")},${config.contextStrokeOpacity})`;
     } else if (length === 4 || length === 8) {
-      return `rgba(${hex2rgba(comment.strokeColor).join(",")})`;
+      return `rgba(${hex2rgba(color).join(",")})`;
     }
   }
   return `rgba(${hex2rgb(

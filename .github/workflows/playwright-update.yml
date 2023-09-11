@@ -22,7 +22,7 @@ jobs:
           pnpm playwright install firefox
       - name: Run Playwright tests
         run: pnpm playwright test --update-snapshots
-      - name: Create new Branch
+      - name: Create commit
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |

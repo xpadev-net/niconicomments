@@ -9,6 +9,9 @@ import type {
   CommentSize,
   FormattedComment,
   FormattedLegacyComment,
+  HTML5Fonts,
+  MeasureInput,
+  MultiConfigItem,
   NicoScriptReplaceCondition,
   NicoScriptReplaceRange,
   NicoScriptReplaceTarget,
@@ -19,6 +22,7 @@ import type {
   V1Comment,
   V1Thread,
 } from "@/@types/";
+import { CommentMeasuredContentItem } from "@/@types/";
 import { colors } from "@/definition/colors";
 
 /**
@@ -128,7 +132,7 @@ const typeGuard = {
       return false;
     if (!(i as XMLDocument).documentElement.children) return false;
     for (const element of Array.from(
-      (i as XMLDocument).documentElement.children
+      (i as XMLDocument).documentElement.children,
     )) {
       if (!element || element.nodeName !== "chat") continue;
       if (!typeAttributeVerify(element, ["vpos", "date"])) return false;
@@ -203,7 +207,7 @@ const typeGuard = {
       target: (i: unknown): i is NicoScriptReplaceTarget =>
         typeof i === "string" &&
         !!i.match(
-          /^(?:\u30b3\u30e1|\u6295\u30b3\u30e1|\u5168|\u542b\u3080|\u542b\u307e\u306a\u3044)$/
+          /^(?:\u30b3\u30e1|\u6295\u30b3\u30e1|\u5168|\u542b\u3080|\u542b\u307e\u306a\u3044)$/,
         ),
       condition: (i: unknown): i is NicoScriptReplaceCondition =>
         typeof i === "string" &&
@@ -248,7 +252,7 @@ const typeGuard = {
         format: (i: unknown) =>
           typeof i === "string" &&
           !!i.match(
-            /^(XMLDocument|niconicome|formatted|legacy|legacyOwner|owner|v1|default|empty)$/
+            /^(XMLDocument|niconicome|formatted|legacy|legacyOwner|owner|v1|default|empty)$/,
           ),
         video: (i: unknown) =>
           typeof i === "object" && (i as HTMLVideoElement).nodeName === "VIDEO",
@@ -257,19 +261,40 @@ const typeGuard = {
         if (
           (item as { [key: string]: unknown })[key] !== undefined &&
           !(keys[key] as (i: unknown) => boolean)(
-            (item as { [key: string]: unknown })[key]
+            (item as { [key: string]: unknown })[key],
           )
         ) {
           console.warn(
             `[Incorrect input] var: initOptions, key: ${key}, value: ${
               (item as { [key: string]: unknown })[key]
-            }`
+            }`,
           );
           return false;
         }
       }
       return true;
     },
+  },
+  internal: {
+    CommentMeasuredContentItem: (i: unknown): i is CommentMeasuredContentItem =>
+      objectVerify(i, ["content", "slicedContent", "width"]),
+    CommentMeasuredContentItemArray: (
+      i: unknown,
+    ): i is CommentMeasuredContentItem[] =>
+      Array.isArray(i) &&
+      i.every(typeGuard.internal.CommentMeasuredContentItem),
+    MultiConfigItem: <T>(i: unknown): i is MultiConfigItem<T> =>
+      typeof i === "object" && objectVerify(i, ["html5", "flash"]),
+    HTML5Fonts: (i: unknown): i is HTML5Fonts =>
+      i === "defont" || i === "mincho" || i === "gothic",
+    MeasureInput: (i: unknown): i is MeasureInput =>
+      objectVerify(i, [
+        "font",
+        "content",
+        "lineHeight",
+        "charSize",
+        "lineCount",
+      ]),
   },
 };
 

@@ -1,5 +1,5 @@
 import type { CommentContentIndex, CommentFlashFont } from "@/@types";
-import { CommentContentItem } from "@/@types";
+import { CommentContentItem, CommentFlashFontParsed } from "@/@types";
 import { config } from "@/definition/config";
 import { nativeSort } from "@/utils/sort";
 
@@ -37,10 +37,10 @@ const getFlashFontIndex = (part: string): CommentContentIndex[] => {
  * @param font フォント
  * @returns フォント名
  */
-const getFlashFontName = (font: string): CommentFlashFont => {
-  if (font.match("^simsun.+")) return "simsun";
+const getFlashFontName = (font: CommentFlashFontParsed): CommentFlashFont => {
+  if (font === "simsunStrong" || font === "simsunWeak") return "simsun";
   if (font === "gothic") return "defont";
-  return font as CommentFlashFont;
+  return font;
 };
 
 /**
@@ -51,7 +51,7 @@ const getFlashFontName = (font: string): CommentFlashFont => {
 const parseContent = (content: string) => {
   const results: CommentContentItem[] = [];
   const lines = (content.match(/\n|[^\n]+/g) || []).map((val) =>
-    Array.from(val.match(/[ -~｡-ﾟ]+|[^ -~｡-ﾟ]+/g) || [])
+    Array.from(val.match(/[ -~｡-ﾟ]+|[^ -~｡-ﾟ]+/g) || []),
   );
   for (const line of lines) {
     const lineContent = parseLine(line);
@@ -63,7 +63,7 @@ const parseContent = (content: string) => {
             val.font = firstContent.font;
           }
           return val;
-        })
+        }),
       );
     } else {
       results.push(...lineContent);
@@ -96,7 +96,7 @@ const parseLine = (line: string[]) => {
  */
 const parseFullWidthPart = (
   part: string,
-  lineContent: CommentContentItem[]
+  lineContent: CommentContentItem[],
 ) => {
   const index = getFlashFontIndex(part);
   if (index.length === 0) {
@@ -121,7 +121,7 @@ const parseFullWidthPart = (
 const parseMultiFontFullWidthPart = (
   part: string,
   index: CommentContentIndex[],
-  lineContent: CommentContentItem[]
+  lineContent: CommentContentItem[],
 ) => {
   index.sort(nativeSort((val) => val.index));
   if (config.FlashMode === "xp") {

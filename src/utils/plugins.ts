@@ -10,7 +10,7 @@ import { config } from "@/definition/config";
  */
 const createCommentInstance = (
   comment: FormattedComment,
-  context: Context2D
+  context: Context2D,
 ) => {
   for (const plugin of config.commentPlugins) {
     if (plugin.condition(comment)) {

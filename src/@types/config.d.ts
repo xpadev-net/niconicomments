@@ -6,7 +6,8 @@ import type {
 } from "@/@types/";
 import { BaseComment } from "@/comments/";
 
-export type ConfigItem<T> = T | { html5: T; flash: T };
+export type ConfigItem<T> = T | MultiConfigItem<T>;
+export type MultiConfigItem<T> = { html5: T; flash: T };
 type ConfigSizeItem<T> = { big: T; medium: T; small: T };
 type ConfigResizedItem<T> = { default: T; resized: T };
 

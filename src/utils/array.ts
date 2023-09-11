@@ -9,7 +9,7 @@ import type { IComment } from "@/@types";
 const ArrayPush = (
   array: { [key: number]: IComment[] },
   key: string | number,
-  push: IComment
+  push: IComment,
 ) => {
   if (!array) {
     array = {};

@@ -1,14 +1,12 @@
 import type {
   Canvas,
   Collision,
-  CollisionItem,
-  CollisionPos,
   CommentEventHandlerMap,
   Context2D,
   FormattedComment,
   IComment,
   InputFormat,
-  IPlugin,
+  IPluginList,
   Options,
   Timeline,
 } from "@/@types/";
@@ -41,7 +39,7 @@ import {
   processFixedComment,
   processMovableComment,
 } from "@/utils";
-import { getContext } from "@/utils/canvas";
+import { generateCanvas, getContext } from "@/utils/canvas";
 import { createCommentInstance } from "@/utils/plugins";
 
 import * as internal from "./internal";
@@ -93,7 +91,7 @@ class NiconiComments {
     //Deprecated Warning
     if (options.formatted) {
       console.warn(
-        "Deprecated: options.formatted is no longer recommended. Please use options.format. https://xpadev-net.github.io/niconicomments/#p_format"
+        "Deprecated: options.formatted is no longer recommended. Please use options.format. https://xpadev-net.github.io/niconicomments/#p_format",
       );
     }
     if (formatType === "default") {
@@ -102,7 +100,7 @@ class NiconiComments {
 
     if (options.useLegacy) {
       console.warn(
-        "Deprecated: options.useLegacy is no longer recommended. Please use options.mode. https://xpadev-net.github.io/niconicomments/#p_mode"
+        "Deprecated: options.useLegacy is no longer recommended. Please use options.mode. https://xpadev-net.github.io/niconicomments/#p_mode",
       );
     }
     if (options.mode === "default" && options.useLegacy) {
@@ -117,12 +115,12 @@ class NiconiComments {
     this.enableLegacyPiP = options.enableLegacyPiP;
 
     this.timeline = {};
-    this.collision = (
-      ["ue", "shita", "right", "left"] as CollisionPos[]
-    ).reduce((pv, value) => {
-      pv[value] = [] as CollisionItem;
-      return pv;
-    }, {} as Collision);
+    this.collision = {
+      ue: [],
+      shita: [],
+      left: [],
+      right: [],
+    };
     this.lastVpos = -1;
     this.preRendering(parsedData);
 
@@ -138,17 +136,21 @@ class NiconiComments {
     if (options.keepCA) {
       rawData = changeCALayer(rawData);
     }
-    const instances = rawData.reduce((pv, val) => {
+    const instances = rawData.reduce<IComment[]>((pv, val) => {
       pv.push(createCommentInstance(val, this.context));
       return pv;
-    }, [] as IComment[]);
+    }, []);
     this.getCommentPos(instances);
     this.sortComment();
 
-    const plugins: IPlugin[] = [];
+    const plugins: IPluginList = [];
     for (const plugin of config.plugins) {
       try {
-        plugins.push(new plugin(this.canvas, instances));
+        const canvas = generateCanvas();
+        plugins.push({
+          canvas,
+          instance: new plugin(canvas, instances),
+        });
       } catch (e) {
         console.error("Failed to init plugin");
       }
@@ -172,12 +174,12 @@ class NiconiComments {
         processFixedComment(
           comment,
           this.collision[comment.loc],
-          this.timeline
+          this.timeline,
         );
       }
     }
     logger(
-      `getCommentPos complete: ${performance.now() - getCommentPosStart}ms`
+      `getCommentPos complete: ${performance.now() - getCommentPosStart}ms`,
     );
   }
 
@@ -209,13 +211,13 @@ class NiconiComments {
    * @param rawComments コメントデータ
    */
   public addComments(...rawComments: FormattedComment[]) {
-    const comments = rawComments.reduce((pv, val) => {
+    const comments = rawComments.reduce<IComment[]>((pv, val) => {
       pv.push(createCommentInstance(val, this.context));
       return pv;
-    }, [] as IComment[]);
+    }, []);
     for (const plugin of plugins) {
       try {
-        plugin.addComments(comments);
+        plugin.instance.addComments(comments);
       } catch (e) {
         console.error("Failed to add comments");
       }
@@ -228,7 +230,7 @@ class NiconiComments {
         processFixedComment(
           comment,
           this.collision[comment.loc],
-          this.timeline
+          this.timeline,
         );
       }
     }
@@ -265,7 +267,8 @@ class NiconiComments {
     this._drawComments(timelineRange, vpos);
     for (const plugin of plugins) {
       try {
-        plugin.draw(vpos);
+        plugin.instance.draw(vpos);
+        this.context.drawImage(plugin.canvas, 0, 0);
       } catch (e) {
         console.error(`Failed to draw comments`);
       }
@@ -296,7 +299,7 @@ class NiconiComments {
         offsetX,
         offsetY,
         this.video.videoWidth * scale,
-        this.video.videoHeight * scale
+        this.video.videoHeight * scale,
       );
     }
   }
@@ -342,7 +345,7 @@ class NiconiComments {
             config.collisionRange.left,
             comment.posY,
             config.contextLineWidth,
-            comment.height
+            comment.height,
           );
         }
       }
@@ -352,7 +355,7 @@ class NiconiComments {
             config.collisionRange.right,
             comment.posY,
             config.contextLineWidth * -1,
-            comment.height
+            comment.height,
           );
         }
       }
@@ -370,7 +373,7 @@ class NiconiComments {
       this.context.font = parseFont("defont", 60);
       this.context.fillStyle = "#00FF00";
       this.context.strokeStyle = `rgba(${hex2rgb(
-        config.contextStrokeColor
+        config.contextStrokeColor,
       ).join(",")},${config.contextStrokeOpacity})`;
       const drawTime = Math.floor(performance.now() - drawCanvasStart);
       const fps = Math.floor(1000 / (drawTime === 0 ? 1 : drawTime));
@@ -390,7 +393,7 @@ class NiconiComments {
       this.context.font = parseFont("defont", 60);
       this.context.fillStyle = "#00FF00";
       this.context.strokeStyle = `rgba(${hex2rgb(
-        config.contextStrokeColor
+        config.contextStrokeColor,
       ).join(",")},${config.contextStrokeOpacity})`;
       this.context.strokeText(`Count:${count || 0}`, 100, 200);
       this.context.fillText(`Count:${count || 0}`, 100, 200);
@@ -406,7 +409,7 @@ class NiconiComments {
    */
   public addEventListener<K extends keyof CommentEventHandlerMap>(
     eventName: K,
-    handler: CommentEventHandlerMap[K]
+    handler: CommentEventHandlerMap[K],
   ) {
     registerHandler(eventName, handler);
   }
@@ -419,7 +422,7 @@ class NiconiComments {
    */
   public removeEventListener<K extends keyof CommentEventHandlerMap>(
     eventName: K,
-    handler: CommentEventHandlerMap[K]
+    handler: CommentEventHandlerMap[K],
   ) {
     removeHandler(eventName, handler);
   }

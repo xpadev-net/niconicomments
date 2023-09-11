@@ -25,7 +25,7 @@ const handlerCounts: { [key in keyof CommentEventHandlerMap]: number } = {
  */
 const registerHandler = <K extends keyof CommentEventHandlerMap>(
   eventName: K,
-  handler: CommentEventHandlerMap[K]
+  handler: CommentEventHandlerMap[K],
 ) => {
   handlerList.push({ eventName, handler });
   updateEventHandlerCounts();
@@ -38,10 +38,10 @@ const registerHandler = <K extends keyof CommentEventHandlerMap>(
  */
 const removeHandler = <K extends keyof CommentEventHandlerMap>(
   eventName: K,
-  handler: CommentEventHandlerMap[K]
+  handler: CommentEventHandlerMap[K],
 ) => {
   handlerList = handlerList.filter(
-    (item) => item.eventName !== eventName || item.handler !== handler
+    (item) => item.eventName !== eventName || item.handler !== handler,
   );
   updateEventHandlerCounts();
 };
@@ -53,7 +53,7 @@ const updateEventHandlerCounts = () => {
   for (const key_ of Object.keys(handlerCounts)) {
     const key = key_ as keyof CommentEventHandlerMap;
     handlerCounts[key] = handlerList.filter(
-      (item) => item.eventName === key
+      (item) => item.eventName === key,
     ).length;
   }
 };
@@ -152,7 +152,7 @@ const processJumpScript = (vpos: number, lastVpos: number) => {
  */
 const executeEvents = <K extends keyof CommentEventMap>(
   eventName: K,
-  event: CommentEventMap[K]
+  event: CommentEventMap[K],
 ) => {
   for (const item of handlerList) {
     if (eventName !== item.eventName) continue;

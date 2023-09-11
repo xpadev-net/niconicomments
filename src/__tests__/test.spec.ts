@@ -35,7 +35,7 @@ test("22(ヨワイボクラハウタウ)", async ({ page }) => {
 
 const compare = async (page: Page, video: number, time: number) => {
   await page.goto(
-    `http://localhost:3000/docs/sample/test.html?time=${time}&video=${video}`
+    `http://localhost:3000/docs/sample/test.html?time=${time}&video=${video}`,
   );
   await Promise.all([
     page.waitForSelector("div#loaded", { state: "attached" }),
@@ -44,6 +44,6 @@ const compare = async (page: Page, video: number, time: number) => {
   await expect(page).toHaveScreenshot(`${video}-${time}.png`);
   expect(await page.screenshot({ fullPage: true })).toMatchSnapshot(
     `${video}-${time}.png`,
-    { threshold: 0.075 }
+    { threshold: 0.075 },
   );
 };

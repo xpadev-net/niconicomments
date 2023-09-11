@@ -7,7 +7,7 @@ class NotImplementedError extends Error {
   constructor(
     pluginName: string,
     methodName: string,
-    options: { [key: string]: unknown } = {}
+    options: { [key: string]: unknown } = {},
   ) {
     super("NotImplementedError", options);
     this.pluginName = pluginName;

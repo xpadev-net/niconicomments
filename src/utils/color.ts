@@ -17,11 +17,11 @@ const hex2rgb = (hex: string) => {
       hex.slice(2, 3) +
       hex.slice(2, 3);
 
-  return [hex.slice(0, 2), hex.slice(2, 4), hex.slice(4, 6)].map(function (
-    str
-  ) {
-    return parseInt(str, 16);
-  });
+  return [hex.slice(0, 2), hex.slice(2, 4), hex.slice(4, 6)].map(
+    function (str) {
+      return parseInt(str, 16);
+    },
+  );
 };
 /**
  * Hexからrgbaに変換する(_live用)
@@ -70,7 +70,7 @@ const getStrokeColor = (comment: FormattedCommentWithSize) => {
   return `rgba(${hex2rgb(
     comment.color === "#000000"
       ? config.contextStrokeInversionColor
-      : config.contextStrokeColor
+      : config.contextStrokeColor,
   ).join(",")},${config.contextStrokeOpacity})`;
 };
 

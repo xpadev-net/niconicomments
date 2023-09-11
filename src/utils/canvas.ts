@@ -31,7 +31,7 @@ const drawImage = (
   targetContext: Context2D,
   sourceImage: Canvas,
   x: number,
-  y: number
+  y: number,
 ) => {
   targetContext.drawImage(sourceImage, x, y);
 };

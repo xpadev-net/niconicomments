@@ -16,12 +16,12 @@ jobs:
       - name: Install Dependencies
         run: |
           npm -g install yarn
-          yarn install
-          yarn build
-          yarn playwright install-deps
-          yarn playwright install firefox
+          pnpm install
+          pnpm build
+          pnpm playwright install-deps
+          pnpm playwright install firefox
       - name: Run Playwright tests
-        run: yarn playwright test --update-snapshots
+        run: pnpm playwright test --update-snapshots
       - name: Create new Branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

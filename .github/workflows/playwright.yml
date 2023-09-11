@@ -15,13 +15,13 @@ jobs:
         run: sudo chmod -R 777 .
       - name: Install Dependencies
         run: |
-          npm -g install yarn
-          yarn install
-          yarn build
-          yarn playwright install-deps
-          yarn playwright install firefox
+          npm -g install pnpm
+          pnpm install
+          pnpm build
+          pnpm playwright install-deps
+          pnpm playwright install firefox
       - name: Run Playwright tests
-        run: yarn playwright test
+        run: pnpm playwright test
       - uses: actions/upload-artifact@v2
         if: always()
         with:

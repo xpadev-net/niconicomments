@@ -173,6 +173,7 @@ export type ParsedCommand = {
   _live: boolean;
   invisible: boolean;
   long: number | undefined;
+  button: boolean;
 };
 
 export type MeasureTextInput = {

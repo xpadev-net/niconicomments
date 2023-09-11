@@ -245,32 +245,44 @@ const processNicoscript = (
   commands: ParsedCommand,
 ) => {
   const nicoscript = comment.content.match(
-    /^[@\uff20](\u30c7\u30d5\u30a9\u30eb\u30c8|\u7f6e\u63db|\u9006|\u30b3\u30e1\u30f3\u30c8\u7981\u6b62|\u30b7\u30fc\u30af\u7981\u6b62|\u30b8\u30e3\u30f3\u30d7)(.*)/,
-    //^(?:@|＠)(デフォルト|置換|逆|コメント禁止|シーク禁止|ジャンプ)(.*)
+    /^[@\uff20](\u30c7\u30d5\u30a9\u30eb\u30c8|\u7f6e\u63db|\u9006|\u30b3\u30e1\u30f3\u30c8\u7981\u6b62|\u30b7\u30fc\u30af\u7981\u6b62|\u30b8\u30e3\u30f3\u30d7|\u30dc\u30bf\u30f3)(?:\s(.+))?/,
+    //^(?:@|＠)(デフォルト|置換|逆|コメント禁止|シーク禁止|ジャンプ|ボタン)(?:\s(.+))?
   );
-  if (!nicoscript || !comment.owner) return;
+  if (!nicoscript) return;
+  if (nicoscript[1] === "\u30dc\u30bf\u30f3" && nicoscript[2]) {
+    //ボタン
+    processAtButton(commands);
+    return;
+  }
+  if (!comment.owner) return;
   commands.invisible = true;
   if (nicoscript[1] === "\u30c7\u30d5\u30a9\u30eb\u30c8") {
+    //デフォルト
     processDefaultScript(comment, commands);
     return;
   }
   if (nicoscript[1] === "\u9006") {
+    //逆
     processReverseScript(comment, commands);
     return;
   }
   if (nicoscript[1] === "\u30b3\u30e1\u30f3\u30c8\u7981\u6b62") {
+    //コメント禁止
     processBanScript(comment, commands);
     return;
   }
   if (nicoscript[1] === "\u30b7\u30fc\u30af\u7981\u6b62") {
+    //シーク禁止
     processSeekDisableScript(comment, commands);
     return;
   }
   if (nicoscript[1] === "\u30b8\u30e3\u30f3\u30d7" && nicoscript[2]) {
+    //ジャンプ
     processJumpScript(comment, commands, nicoscript[2]);
     return;
   }
   if (nicoscript[1] === "\u7f6e\u63db") {
+    //置換
     addNicoscriptReplace(comment, commands);
   }
 };
@@ -380,6 +392,11 @@ const processJumpScript = (
   });
 };
 
+const processAtButton = (commands: ParsedCommand) => {
+  commands.invisible = false;
+  commands.button = true;
+};
+
 /**
  * コマンドをパースする
  * @param comment 対象のコメント
@@ -401,6 +418,7 @@ const parseCommands = (comment: FormattedComment): ParsedCommand => {
     _live: false,
     invisible: false,
     long: undefined,
+    button: false,
   };
   for (const command of commands) {
     parseCommand(comment, command, result, isFlash);

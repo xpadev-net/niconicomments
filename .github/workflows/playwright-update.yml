@@ -15,7 +15,7 @@ jobs:
         run: sudo chmod -R 777 .
       - name: Install Dependencies
         run: |
-          npm -g install yarn
+          npm -g install pnpm
           pnpm install
           pnpm build
           pnpm playwright install-deps

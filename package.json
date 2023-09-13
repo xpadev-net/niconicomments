@@ -23,7 +23,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/xpadev-net/niconicomments.git"
+    "url": "https://github.com/xpadev-net/niconicomments.git"
   },
   "keywords": [
     "canvas",

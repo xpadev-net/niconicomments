@@ -38,6 +38,8 @@ export type FormattedCommentWithSize = FormattedCommentWithFont & {
   resizedY: boolean;
   content: CommentMeasuredContentItem[];
   charSize: number;
+  scale: number;
+  scaleX: number;
 };
 export type ParseContentResult = {
   content: CommentContentItem[];
@@ -69,9 +71,14 @@ export type CommentContentItem = {
 export type CommentMeasuredContentItem = CommentContentItem & {
   width: number[];
 };
+export type CommentFlashFontParsed =
+  | "gothic"
+  | "gulim"
+  | "simsunStrong"
+  | "simsunWeak";
 export type CommentContentIndex = {
   index: number;
-  font: "gothic" | "gulim" | "simsunStrong" | "simsunWeak";
+  font: CommentFlashFontParsed;
 };
 export type CommentFont = "defont" | "mincho" | "gothic" | "gulim" | "simsun";
 export type CommentFlashFont = "defont" | "gulim" | "simsun";
@@ -149,6 +156,8 @@ export type MeasureTextResult = {
   lineHeight: number;
   content: CommentMeasuredContentItem[];
   charSize: number;
+  scaleX: number;
+  scale: number;
 };
 export type ParsedCommand = {
   loc: CommentLoc | undefined;
@@ -164,6 +173,7 @@ export type ParsedCommand = {
   _live: boolean;
   invisible: boolean;
   long: number | undefined;
+  button: boolean;
 };
 
 export type MeasureTextInput = {
@@ -181,6 +191,7 @@ export type MeasureTextInput = {
   lineCount: number;
   lineHeight?: number;
   charSize?: number;
+  scale: number;
 };
 
 export type MeasureInput = {

@@ -42,7 +42,7 @@ const isLineBreakResize = (comment: MeasureTextInput) => {
  */
 const getDefaultCommand = (vpos: number): DefaultCommand => {
   nicoScripts.default = nicoScripts.default.filter(
-    (item) => !item.long || item.start + item.long >= vpos
+    (item) => !item.long || item.start + item.long >= vpos,
   );
   let color = undefined,
     size: CommentSize | undefined = undefined,
@@ -74,7 +74,7 @@ const getDefaultCommand = (vpos: number): DefaultCommand => {
  */
 const nicoscriptReplaceIgnoreable = (
   comment: FormattedComment,
-  item: NicoScriptReplace
+  item: NicoScriptReplace,
 ) =>
   ((item.target === "\u30b3\u30e1" ||
     item.target === "\u542b\u307e\u306a\u3044") &&
@@ -93,10 +93,10 @@ const nicoscriptReplaceIgnoreable = (
  */
 const applyNicoScriptReplace = (
   comment: FormattedComment,
-  commands: ParsedCommand
+  commands: ParsedCommand,
 ) => {
   nicoScripts.replace = nicoScripts.replace.filter(
-    (item) => !item.long || item.start + item.long >= comment.vpos
+    (item) => !item.long || item.start + item.long >= comment.vpos,
   );
   for (const item of nicoScripts.replace) {
     if (nicoscriptReplaceIgnoreable(comment, item)) continue;
@@ -118,7 +118,7 @@ const applyNicoScriptReplace = (
  * @returns パース後のコメント
  */
 const parseCommandAndNicoScript = (
-  comment: FormattedComment
+  comment: FormattedComment,
 ): ParseCommandAndNicoScriptResult => {
   const isFlash = isFlashComment(comment);
   const commands = parseCommands(comment);
@@ -190,7 +190,7 @@ const parseBrackets = (input: string) => {
  */
 const addNicoscriptReplace = (
   comment: FormattedComment,
-  commands: ParsedCommand
+  commands: ParsedCommand,
 ) => {
   //@置換
   const result = parseBrackets(comment.content.slice(4));
@@ -242,35 +242,47 @@ const sortNicoscriptReplace = () => {
  */
 const processNicoscript = (
   comment: FormattedComment,
-  commands: ParsedCommand
+  commands: ParsedCommand,
 ) => {
   const nicoscript = comment.content.match(
-    /^[@\uff20](\u30c7\u30d5\u30a9\u30eb\u30c8|\u7f6e\u63db|\u9006|\u30b3\u30e1\u30f3\u30c8\u7981\u6b62|\u30b7\u30fc\u30af\u7981\u6b62|\u30b8\u30e3\u30f3\u30d7)(.*)/
-    //^(?:@|＠)(デフォルト|置換|逆|コメント禁止|シーク禁止|ジャンプ)(.*)
+    /^[@\uff20](\u30c7\u30d5\u30a9\u30eb\u30c8|\u7f6e\u63db|\u9006|\u30b3\u30e1\u30f3\u30c8\u7981\u6b62|\u30b7\u30fc\u30af\u7981\u6b62|\u30b8\u30e3\u30f3\u30d7|\u30dc\u30bf\u30f3)(?:\s(.+))?/,
+    //^(?:@|＠)(デフォルト|置換|逆|コメント禁止|シーク禁止|ジャンプ|ボタン)(?:\s(.+))?
   );
-  if (!nicoscript || !comment.owner) return;
+  if (!nicoscript) return;
+  if (nicoscript[1] === "\u30dc\u30bf\u30f3" && nicoscript[2]) {
+    //ボタン
+    processAtButton(commands);
+    return;
+  }
+  if (!comment.owner) return;
   commands.invisible = true;
   if (nicoscript[1] === "\u30c7\u30d5\u30a9\u30eb\u30c8") {
+    //デフォルト
     processDefaultScript(comment, commands);
     return;
   }
   if (nicoscript[1] === "\u9006") {
+    //逆
     processReverseScript(comment, commands);
     return;
   }
   if (nicoscript[1] === "\u30b3\u30e1\u30f3\u30c8\u7981\u6b62") {
+    //コメント禁止
     processBanScript(comment, commands);
     return;
   }
   if (nicoscript[1] === "\u30b7\u30fc\u30af\u7981\u6b62") {
+    //シーク禁止
     processSeekDisableScript(comment, commands);
     return;
   }
   if (nicoscript[1] === "\u30b8\u30e3\u30f3\u30d7" && nicoscript[2]) {
+    //ジャンプ
     processJumpScript(comment, commands, nicoscript[2]);
     return;
   }
   if (nicoscript[1] === "\u7f6e\u63db") {
+    //置換
     addNicoscriptReplace(comment, commands);
   }
 };
@@ -282,7 +294,7 @@ const processNicoscript = (
  */
 const processDefaultScript = (
   comment: FormattedComment,
-  commands: ParsedCommand
+  commands: ParsedCommand,
 ) => {
   nicoScripts.default.unshift({
     start: comment.vpos,
@@ -302,10 +314,10 @@ const processDefaultScript = (
  */
 const processReverseScript = (
   comment: FormattedComment,
-  commands: ParsedCommand
+  commands: ParsedCommand,
 ) => {
   const reverse = comment.content.match(
-    /^[@\uff20]\u9006(?:\s+)?(\u5168|\u30b3\u30e1|\u6295\u30b3\u30e1)?/
+    /^[@\uff20]\u9006(?:\s+)?(\u5168|\u30b3\u30e1|\u6295\u30b3\u30e1)?/,
     //^(?:@|＠)逆(?:\s+)?(全|コメ|投コメ)?
   );
   if (!reverse || !reverse[1] || !typeGuard.nicoScript.range.target(reverse[1]))
@@ -327,7 +339,7 @@ const processReverseScript = (
  */
 const processBanScript = (
   comment: FormattedComment,
-  commands: ParsedCommand
+  commands: ParsedCommand,
 ) => {
   if (commands.long === undefined) {
     commands.long = 30;
@@ -345,7 +357,7 @@ const processBanScript = (
  */
 const processSeekDisableScript = (
   comment: FormattedComment,
-  commands: ParsedCommand
+  commands: ParsedCommand,
 ) => {
   if (commands.long === undefined) {
     commands.long = 30;
@@ -365,10 +377,10 @@ const processSeekDisableScript = (
 const processJumpScript = (
   comment: FormattedComment,
   commands: ParsedCommand,
-  input: string
+  input: string,
 ) => {
   const options = input.match(
-    /\s*((?:sm|so|nm|\uff53\uff4d|\uff53\uff4f|\uff4e\uff4d)?[1-9\uff11-\uff19][0-9\uff11-\uff19]*|#[0-9]+:[0-9]+(?:\.[0-9]+)?)\s+(.*)/
+    /\s*((?:sm|so|nm|\uff53\uff4d|\uff53\uff4f|\uff4e\uff4d)?[1-9\uff11-\uff19][0-9\uff11-\uff19]*|#[0-9]+:[0-9]+(?:\.[0-9]+)?)\s+(.*)/,
     //\s*((?:sm|so|nm|ｓｍ|ｓｏ|ｎｍ)?[1-9１-９][0-9１-９]*|#[0-9]+:[0-9]+(?:\.[0-9]+)?)\s+(.*)
   );
   if (!options || !options[1]) return;
@@ -378,6 +390,11 @@ const processJumpScript = (
     to: options[1],
     message: options[2],
   });
+};
+
+const processAtButton = (commands: ParsedCommand) => {
+  commands.invisible = false;
+  commands.button = true;
 };
 
 /**
@@ -401,6 +418,7 @@ const parseCommands = (comment: FormattedComment): ParsedCommand => {
     _live: false,
     invisible: false,
     long: undefined,
+    button: false,
   };
   for (const command of commands) {
     parseCommand(comment, command, result, isFlash);
@@ -422,7 +440,7 @@ const parseCommand = (
   comment: FormattedComment,
   _command: string,
   result: ParsedCommand,
-  isFlash: boolean
+  isFlash: boolean,
 ) => {
   const command = _command.toLowerCase();
   const long = command.match(/^[@\uff20]([0-9.]+)/);
@@ -545,7 +563,7 @@ const isBanActive = (vpos: number): boolean => {
 const processFixedComment = (
   comment: IComment,
   collision: CollisionItem,
-  timeline: Timeline
+  timeline: Timeline,
 ) => {
   let posY = 0,
     isChanged = true,
@@ -578,7 +596,7 @@ const processFixedComment = (
 const processMovableComment = (
   comment: IComment,
   collision: Collision,
-  timeline: Timeline
+  timeline: Timeline,
 ) => {
   const beforeVpos =
     Math.round(-288 / ((1632 + comment.width) / (comment.long + 125))) - 100;
@@ -649,7 +667,7 @@ const processMovableComment = (
 const getPosY = (
   currentPos: number,
   targetComment: IComment,
-  collision: IComment[] | undefined
+  collision: IComment[] | undefined,
 ): { currentPos: number; isChanged: boolean; isBreak: boolean } => {
   let isChanged = false,
     isBreak = false;
@@ -674,7 +692,7 @@ const getPosY = (
           }
         } else {
           currentPos = Math.floor(
-            Math.random() * (config.canvasHeight - targetComment.height)
+            Math.random() * (config.canvasHeight - targetComment.height),
           );
         }
         isBreak = true;
@@ -694,7 +712,7 @@ const getPosY = (
 const getPosX = (
   comment: FormattedCommentWithSize,
   vpos: number,
-  isReverse = false
+  isReverse = false,
 ): number => {
   if (comment.loc !== "naka") {
     return (config.canvasWidth - comment.width) / 2;

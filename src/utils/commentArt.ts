@@ -28,11 +28,11 @@ const changeCALayer = (rawData: FormattedComment[]): FormattedComment[] => {
   const commentArts = filteredComments.filter(
     (comment) =>
       (userScoreList[comment.user_id] || 0) >= config.sameCAMinScore &&
-      !comment.owner
+      !comment.owner,
   );
   const commentArtsGroupedByUser = groupCommentsByUser(commentArts);
   const commentArtsGroupedByTimes = groupCommentsByTime(
-    commentArtsGroupedByUser
+    commentArtsGroupedByUser,
   );
   updateLayerId(commentArtsGroupedByTimes);
   return filteredComments;
@@ -44,7 +44,7 @@ const changeCALayer = (rawData: FormattedComment[]): FormattedComment[] => {
  * @returns ユーザーIDごとのスコア
  */
 const getUsersScore = (
-  comments: FormattedComment[]
+  comments: FormattedComment[],
 ): { [key: string]: number } => {
   const userScoreList: { [key: number]: number } = {};
   for (const comment of comments) {
@@ -116,11 +116,11 @@ const updateLayerId = (filteredComments: GroupedByTime) => {
  * @returns ユーザーごとにグループ化したコメントデータ
  */
 const groupCommentsByUser = (comments: FormattedComment[]) => {
-  return comments.reduce((users, comment) => {
+  return comments.reduce<GroupedByUser>((users, comment) => {
     const user = getUser(comment.user_id, users);
     user.comments.push(comment);
     return users;
-  }, [] as GroupedByUser);
+  }, []);
 };
 
 /**
@@ -131,7 +131,7 @@ const groupCommentsByUser = (comments: FormattedComment[]) => {
  */
 const getUser = (
   userId: number,
-  users: GroupedByUser
+  users: GroupedByUser,
 ): { comments: FormattedComment[]; userId: number } => {
   const user = users.find((user) => user.userId === userId);
   if (user) return user;
@@ -149,19 +149,19 @@ const getUser = (
  * @returns 時間ごとにグループ化されたコメントデータ
  */
 const groupCommentsByTime = (comments: GroupedByUser) => {
-  return comments.reduce((result, user) => {
+  return comments.reduce<GroupedByTime>((result, user) => {
     result.push({
       userId: user.userId,
-      comments: user.comments.reduce((result, comment) => {
+      comments: user.comments.reduce<GroupedByTimeItem[]>((result, comment) => {
         const time = getTime(comment.date, result);
         time.comments.push(comment);
         time.range.start = Math.min(time.range.start, comment.date);
         time.range.end = Math.max(time.range.end, comment.date);
         return result;
-      }, [] as GroupedByTimeItem[]),
+      }, []),
     });
     return result;
-  }, [] as GroupedByTime);
+  }, []);
 };
 
 /**
@@ -172,12 +172,12 @@ const groupCommentsByTime = (comments: GroupedByUser) => {
  */
 const getTime = (
   time: number,
-  times: GroupedByTimeItem[]
+  times: GroupedByTimeItem[],
 ): GroupedByTimeItem => {
   const timeObj = times.find(
     (timeObj) =>
       timeObj.range.start - config.sameCATimestampRange <= time &&
-      timeObj.range.end + config.sameCATimestampRange >= time
+      timeObj.range.end + config.sameCATimestampRange >= time,
   );
   if (timeObj) return timeObj;
   const obj = {

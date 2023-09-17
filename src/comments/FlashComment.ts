@@ -1,7 +1,6 @@
 import type {
   Canvas,
   CommentContentItem,
-  CommentMeasuredContentItem,
   Context2D,
   FormattedComment,
   FormattedCommentWithFont,
@@ -10,6 +9,8 @@ import type {
   MeasureTextResult,
 } from "@/@types/";
 import { config, options } from "@/definition/config";
+import { TypeGuardError } from "@/errors/TypeGuardError";
+import typeGuard from "@/typeGuard";
 import {
   getConfig,
   getStrokeColor,
@@ -23,15 +24,10 @@ import { BaseComment } from "./BaseComment";
 
 class FlashComment extends BaseComment {
   private _globalScale: number;
-  private scale: number;
-  private scaleX: number;
   override readonly pluginName: string = "FlashComment";
   constructor(comment: FormattedComment, context: Context2D) {
     super(comment, context);
-    this.scale ??= 1;
-    this.scaleX ??= 1;
     this._globalScale ??= getConfig(config.commentScale, true);
-    this.posY ??= 0;
   }
 
   override get content() {
@@ -59,10 +55,7 @@ class FlashComment extends BaseComment {
   }
 
   override convertComment(comment: FormattedComment): FormattedCommentWithSize {
-    this.scale = 1;
-    this.scaleX = 1;
     this._globalScale = getConfig(config.commentScale, true);
-    this.posY = 0;
     return this.getCommentSize(this.parseCommandAndNicoscript(comment));
   }
 
@@ -72,47 +65,54 @@ class FlashComment extends BaseComment {
    * @returns 計算結果
    */
   override getCommentSize(
-    parsedData: FormattedCommentWithFont
+    parsedData: FormattedCommentWithFont,
   ): FormattedCommentWithSize {
+    if (parsedData.invisible) {
+      return {
+        ...parsedData,
+        height: 0,
+        width: 0,
+        lineHeight: 0,
+        fontSize: 0,
+        resized: false,
+        resizedX: false,
+        resizedY: false,
+        charSize: 0,
+        scale: 1,
+        scaleX: 1,
+        content: [],
+      };
+    }
     this.context.save();
     this.context.font = parseFont(parsedData.font, parsedData.fontSize);
-    const size = parsedData as FormattedCommentWithSize;
-    if (parsedData.invisible) {
-      size.height = 0;
-      size.width = 0;
-      size.lineHeight = 0;
-      size.fontSize = 0;
-      size.resized = false;
-      size.resizedX = false;
-      size.resizedY = false;
-      size.charSize = 0;
-      this.context.restore();
-      return size;
-    }
-    const measure = this.measureText(parsedData);
-    if (options.scale !== 1 && size.layer === -1) {
+    const measure = this.measureText({ ...parsedData, scale: 1 });
+    if (options.scale !== 1 && parsedData.layer === -1) {
       measure.height *= options.scale;
       measure.width *= options.scale;
     }
-    size.height = measure.height * this._globalScale;
-    size.width = measure.width * this._globalScale;
-    size.lineHeight = measure.lineHeight;
-    size.fontSize = measure.fontSize;
-    size.content = measure.content;
-    size.resized = measure.resized;
-    size.resizedX = measure.resizedX;
-    size.resizedY = measure.resizedY;
-    size.charSize = measure.charSize;
     this.context.restore();
-    return size;
+    return {
+      ...parsedData,
+      height: measure.height * this._globalScale,
+      width: measure.width * this._globalScale,
+      lineHeight: measure.lineHeight,
+      fontSize: measure.fontSize,
+      resized: measure.resized,
+      resizedX: measure.resizedX,
+      resizedY: measure.resizedY,
+      charSize: measure.charSize,
+      scale: measure.scale,
+      scaleX: measure.scaleX,
+      content: measure.content,
+    };
   }
 
   override parseCommandAndNicoscript(
-    comment: FormattedComment
+    comment: FormattedComment,
   ): FormattedCommentWithFont {
     const data = parseCommandAndNicoScript(comment);
     const { content, lineCount, lineOffset } = this.parseContent(
-      comment.content
+      comment.content,
     );
     const val = content[0];
     if (val && val.font) {
@@ -163,22 +163,21 @@ class FlashComment extends BaseComment {
     const leadLine = (function () {
       let max = 0,
         index = -1;
-      for (let i = 0, l = spacedWidth_arr.length; i < l; i++) {
-        const val = spacedWidth_arr[i];
-        if (val && max < val) {
+      spacedWidth_arr.forEach((val, i) => {
+        if (max < val) {
           max = val;
           index = i;
         }
-      }
+      });
       return { max, index };
     })();
     const width = leadLine.max;
-    this.scaleX = leadLine.max / (width_arr[leadLine.index] || 1);
-    const width_max = width * this.scale;
+    const scaleX = leadLine.max / (width_arr[leadLine.index] ?? 1);
+    const width_max = width * comment.scale;
     const height =
       (comment.fontSize * comment.lineHeight * lineCount +
         config.commentYPaddingTop[comment.resizedY ? "resized" : "default"]) *
-      this.scale;
+      comment.scale;
     if (comment.loc !== "naka") {
       const widthLimit = getConfig(config.CommentStageSize, true)[
         comment.full ? "fullWidth" : "width"
@@ -186,11 +185,14 @@ class FlashComment extends BaseComment {
       if (width_max > widthLimit && !comment.resizedX) {
         comment.fontSize = configFontSize[comment.size].default;
         comment.lineHeight = configLineHeight[comment.size].default;
-        this.scale = widthLimit / width_max;
+        comment.scale = widthLimit / width_max;
         comment.resizedX = true;
         comment.resized = true;
         return this.measureText(comment);
       }
+    }
+    if (!typeGuard.internal.CommentMeasuredContentItemArray(comment.content)) {
+      throw new TypeGuardError();
     }
     return {
       width: width_max,
@@ -199,9 +201,11 @@ class FlashComment extends BaseComment {
       resized: !!comment.resized,
       fontSize: comment.fontSize,
       lineHeight: comment.lineHeight,
-      content: comment.content as CommentMeasuredContentItem[],
+      content: comment.content,
       resizedX: !!comment.resizedX,
       resizedY: !!comment.resizedY,
+      scale: comment.scale,
+      scaleX,
     };
   }
 
@@ -216,7 +220,7 @@ class FlashComment extends BaseComment {
 
       this.context.font = parseFont(
         item.font || comment.font,
-        comment.fontSize
+        comment.fontSize,
       );
       for (let i = 0, n = lines.length; i < n; i++) {
         const value = lines[i];
@@ -248,7 +252,7 @@ class FlashComment extends BaseComment {
         posX,
         posY,
         this.comment.width,
-        this.comment.height
+        this.comment.height,
       );
       for (let i = 0, n = this.comment.lineCount; i < n; i++) {
         const linePosY =
@@ -256,7 +260,7 @@ class FlashComment extends BaseComment {
             config.commentYPaddingTop[
               this.comment.resizedY ? "resized" : "default"
             ]) *
-          this.scale;
+          this.comment.scale;
         this.context.strokeStyle = `rgba(255,255,0,0.25)`;
         this.context.strokeRect(
           posX,
@@ -266,8 +270,8 @@ class FlashComment extends BaseComment {
             this.comment.lineHeight *
             -1 *
             this._globalScale *
-            this.scale *
-            (this.comment.layer === -1 ? options.scale : 1)
+            this.comment.scale *
+            (this.comment.layer === -1 ? options.scale : 1),
         );
       }
       this.context.restore();
@@ -286,9 +290,9 @@ class FlashComment extends BaseComment {
     context.font = parseFont(this.comment.font, this.comment.fontSize);
     const scale =
       this._globalScale *
-      this.scale *
+      this.comment.scale *
       (this.comment.layer === -1 ? options.scale : 1);
-    context.scale(scale * this.scaleX, scale);
+    context.scale(scale * this.comment.scaleX, scale);
     const lineOffset = this.comment.lineOffset;
     const offsetKey = this.comment.resizedY ? "resized" : "default";
     const offsetY =

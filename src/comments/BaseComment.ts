@@ -84,7 +84,7 @@ class BaseComment implements IComment {
    * @returns 描画サイズを含むコメント
    */
   protected getCommentSize(
-    parsedData: FormattedCommentWithFont
+    parsedData: FormattedCommentWithFont,
   ): FormattedCommentWithSize {
     console.error("getCommentSize method is not implemented", parsedData);
     throw new NotImplementedError(this.pluginName, "getCommentSize");
@@ -96,11 +96,11 @@ class BaseComment implements IComment {
    * @returns 処理結果
    */
   protected parseCommandAndNicoscript(
-    comment: FormattedComment
+    comment: FormattedComment,
   ): FormattedCommentWithFont {
     console.error(
       "parseCommandAndNicoscript method is not implemented",
-      comment
+      comment,
     );
     throw new NotImplementedError(this.pluginName, "parseCommandAndNicoscript");
   }
@@ -132,7 +132,7 @@ class BaseComment implements IComment {
    * @returns 描画サイズを含むコメント
    */
   protected convertComment(
-    comment: FormattedComment
+    comment: FormattedComment,
   ): FormattedCommentWithSize {
     console.error("convertComment method is not implemented", comment);
     throw new NotImplementedError(this.pluginName, "convertComment");
@@ -193,7 +193,7 @@ class BaseComment implements IComment {
         posX,
         posY,
         this.comment.width,
-        this.comment.height
+        this.comment.height,
       );
       this.context.restore();
     }
@@ -212,7 +212,7 @@ class BaseComment implements IComment {
         posX,
         posY,
         this.comment.width,
-        this.comment.height
+        this.comment.height,
       );
       this.context.restore();
     }
@@ -249,7 +249,7 @@ class BaseComment implements IComment {
       "_drawCollision method is not implemented",
       posX,
       posY,
-      showCollision
+      showCollision,
     );
     throw new NotImplementedError(this.pluginName, "_drawCollision");
   }
@@ -269,13 +269,19 @@ class BaseComment implements IComment {
     const cache = imageCache[this.cacheKey];
     if (cache) {
       this.image = cache.image;
-      setTimeout(() => {
-        delete this.image;
-      }, this.comment.long * 10 + config.cacheAge);
+      setTimeout(
+        () => {
+          delete this.image;
+        },
+        this.comment.long * 10 + config.cacheAge,
+      );
       clearTimeout(cache.timeout);
-      cache.timeout = setTimeout(() => {
-        delete imageCache[this.cacheKey];
-      }, this.comment.long * 10 + config.cacheAge);
+      cache.timeout = setTimeout(
+        () => {
+          delete imageCache[this.cacheKey];
+        },
+        this.comment.long * 10 + config.cacheAge,
+      );
       return cache.image;
     }
     if (this.image) return this.image;
@@ -298,13 +304,19 @@ class BaseComment implements IComment {
    */
   protected _cacheImage(image: Canvas) {
     this.image = image;
-    setTimeout(() => {
-      delete this.image;
-    }, this.comment.long * 10 + config.cacheAge);
+    setTimeout(
+      () => {
+        delete this.image;
+      },
+      this.comment.long * 10 + config.cacheAge,
+    );
     imageCache[this.cacheKey] = {
-      timeout: setTimeout(() => {
-        delete imageCache[this.cacheKey];
-      }, this.comment.long * 10 + config.cacheAge),
+      timeout: setTimeout(
+        () => {
+          delete imageCache[this.cacheKey];
+        },
+        this.comment.long * 10 + config.cacheAge,
+      ),
       image,
     };
   }

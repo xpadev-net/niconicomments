@@ -1,5 +1,6 @@
 import type { CommentSize, Context2D, MeasureInput } from "@/@types";
 import { config } from "@/definition/config";
+import { TypeGuardError } from "@/errors/TypeGuardError";
 
 import { parseFont } from "./comment";
 import { getConfig } from "./config";
@@ -14,7 +15,7 @@ import { getConfig } from "./config";
 const getLineHeight = (
   fontSize: CommentSize,
   isFlash: boolean,
-  resized = false
+  resized = false,
 ) => {
   const lineCounts = getConfig(config.lineCounts, isFlash),
     CommentStageSize = getConfig(config.CommentStageSize, isFlash),
@@ -74,7 +75,9 @@ const measureWidth = (comment: MeasureInput, context: Context2D) => {
     context.font = parseFont(item.font || comment.font, fontSize);
     const width = [];
     for (let j = 0, n = lines.length; j < n; j++) {
-      const measure = context.measureText(lines[j] as string);
+      const line = lines[j];
+      if (line === undefined) throw new TypeGuardError();
+      const measure = context.measureText(line);
       currentWidth += measure.width;
       width.push(measure.width);
       if (j < lines.length - 1) {

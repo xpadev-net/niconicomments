@@ -17,7 +17,7 @@ import typeGuard from "@/typeGuard";
  */
 const convert2formattedComment = (
   data: unknown,
-  type: InputFormatType
+  type: InputFormatType,
 ): FormattedComment[] => {
   let result: FormattedComment[] = [];
   if (type === "empty" && data === undefined) {
@@ -92,17 +92,18 @@ const fromXMLDocument = (data: XMLDocument): FormattedComment[] => {
  * @returns 変換後のデータ
  */
 const fromFormatted = (
-  data: FormattedComment[] | FormattedLegacyComment[]
+  data: FormattedComment[] | FormattedLegacyComment[],
 ): FormattedComment[] => {
-  const tmpData = data as FormattedComment[];
-  if (!typeGuard.formatted.comments(data)) {
-    for (const item of tmpData) {
-      item.layer = -1;
-      item.user_id = 0;
-      if (!item.date_usec) item.date_usec = 0;
+  return data.map((comment) => {
+    if (typeGuard.formatted.legacyComment(comment)) {
+      return {
+        ...comment,
+        layer: -1,
+        user_id: 0,
+      };
     }
-  }
-  return tmpData;
+    return comment;
+  });
 };
 
 /**
@@ -291,7 +292,7 @@ const sort = (data: FormattedComment[]): FormattedComment[] => {
  */
 const time2vpos = (time_str: string): number => {
   const time = time_str.match(
-    /^(?:(\d+):(\d+)\.(\d+)|(\d+):(\d+)|(\d+)\.(\d+)|(\d+))$/
+    /^(?:(\d+):(\d+)\.(\d+)|(\d+):(\d+)|(\d+)\.(\d+)|(\d+))$/,
   );
   if (time) {
     if (

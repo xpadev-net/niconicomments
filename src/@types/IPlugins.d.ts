@@ -9,3 +9,8 @@ export interface IPlugin {
   draw(vpos: number): void;
   addComments(comments: IComment[]): void;
 }
+
+export type IPluginList = {
+  instance: IPlugin;
+  canvas: HTMLCanvasElement;
+}[];

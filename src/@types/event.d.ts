@@ -19,7 +19,7 @@ export interface CommentDisableEvent extends CommentEventBase {
   type: "commentDisable";
 }
 export type CommentDisableEventHandler = (
-  event: CommentDisableEvent
+  event: CommentDisableEvent,
 ) => unknown;
 
 export interface CommentEnableEvent extends CommentEventBase {

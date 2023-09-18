@@ -136,7 +136,7 @@ class NiconiComments {
     if (options.keepCA) {
       rawData = changeCALayer(rawData);
     }
-    const instances = rawData.reduce<IComment[]>((pv, val) => {
+    let instances = rawData.reduce<IComment[]>((pv, val) => {
       pv.push(createCommentInstance(val, this.context));
       return pv;
     }, []);
@@ -147,10 +147,14 @@ class NiconiComments {
     for (const plugin of config.plugins) {
       try {
         const canvas = generateCanvas();
+        const pluginInstance = new plugin(canvas, instances);
         plugins.push({
           canvas,
-          instance: new plugin(canvas, instances),
+          instance: pluginInstance,
         });
+        if (pluginInstance.transformComments) {
+          instances = pluginInstance.transformComments(instances);
+        }
       } catch (e) {
         console.error("Failed to init plugin");
       }
@@ -217,7 +221,7 @@ class NiconiComments {
     }, []);
     for (const plugin of plugins) {
       try {
-        plugin.instance.addComments(comments);
+        plugin.instance.addComments?.(comments);
       } catch (e) {
         console.error("Failed to add comments");
       }
@@ -267,7 +271,7 @@ class NiconiComments {
     this._drawComments(timelineRange, vpos);
     for (const plugin of plugins) {
       try {
-        plugin.instance.draw(vpos);
+        plugin.instance.draw?.(vpos);
         this.context.drawImage(plugin.canvas, 0, 0);
       } catch (e) {
         console.error(`Failed to draw comments`);

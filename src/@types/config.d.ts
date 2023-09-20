@@ -80,6 +80,7 @@ export type BaseConfig = {
   hideCommentOrder: "asc" | "desc";
   lineBreakCount: { [key in CommentSize]: number };
   nakaCommentSpeedOffset: number;
+  atButtonPadding: number;
 };
 
 export type Config = Partial<BaseConfig>;

@@ -91,6 +91,9 @@ class FlashComment extends BaseComment {
       measure.width *= options.scale;
     }
     this.context.restore();
+    if (parsedData.button) {
+      measure.width += getConfig(config.commentDrawPadding, true) * 2;
+    }
     return {
       ...parsedData,
       height: measure.height * this._globalScale,

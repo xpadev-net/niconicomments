@@ -337,6 +337,10 @@ const initConfig = () => {
      * nakaコメントの速度補正値
      */
     nakaCommentSpeedOffset: 0.95,
+    /**
+     * \@ボタンのボタンに適用する余白
+     */
+    atButtonPadding: 5,
   };
   updateConfig(defaultConfig);
 };

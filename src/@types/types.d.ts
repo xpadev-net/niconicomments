@@ -28,6 +28,7 @@ export type FormattedCommentWithFont = {
   flash: boolean;
   lineCount: number;
   lineOffset: number;
+  button?: ButtonParams;
 };
 export type FormattedCommentWithSize = FormattedCommentWithFont & {
   height: number;
@@ -61,6 +62,7 @@ export type ParseCommandAndNicoScriptResult = {
   _live: boolean;
   invisible: boolean;
   long: number;
+  button?: ButtonParams;
 };
 export type CommentContentGroup = {
   type: "text" | "button";
@@ -165,12 +167,12 @@ export type MeasureTextResult = {
 };
 
 export type ButtonParams = {
-  message: string; //表示するボタンの内容
-  commentMessage: {
+  message: {
     before: string;
     body: string;
     after: string;
-  }; //コメントの内容
+  }; //表示するボタンの内容
+  commentMessage: string; //コメントの内容
   commentMail: string[]; //コメントのコマンド → 未指定時は色のみ継承
   commentVisible: boolean; //コメントを投稿するか
   limit: number; //ボタンの使用上限

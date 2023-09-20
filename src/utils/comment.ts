@@ -141,6 +141,7 @@ const parseCommandAndNicoScript = (
     strokeColor: commands.strokeColor,
     wakuColor: commands.wakuColor,
     fillColor: commands.fillColor,
+    button: commands.button,
   };
 };
 
@@ -396,17 +397,19 @@ const processAtButton = (
   if (args[1] === undefined) return;
   commands.invisible = false;
   const content = RegExp(
-    /^(?:(?<before>.*?)\[)?(?<body>.*)(?:\](?<after>[^\]]*?))?$/su,
-  ).exec(args[2] ?? args[1]) as {
+    /^(?:(?<before>.*?)\[)?(?<body>.*?)(?:\](?<after>[^\]]*?))?$/su,
+  ).exec(args[1]) as {
     groups: { before?: string; body?: string; after?: string };
   };
+  const message = {
+    before: content.groups?.before ?? "",
+    body: content.groups?.body ?? "",
+    after: content.groups?.after ?? "",
+  };
   commands.button = {
-    message: args[1],
-    commentMessage: {
-      before: content.groups?.before ?? "",
-      body: content.groups?.body ?? "",
-      after: content.groups?.after ?? "",
-    },
+    message,
+    commentMessage:
+      args[2] ?? `${message.before}${message.body}${message.after}`,
     commentVisible: args[3] === "\u8868\u793a",
     commentMail: args[4]?.split(",") ?? [],
     limit: Number(args[5] ?? 1),

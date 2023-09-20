@@ -125,12 +125,12 @@ const parseCommandAndNicoScript = (
   processNicoscript(comment, commands);
   const defaultCommand = getDefaultCommand(comment.vpos);
   applyNicoScriptReplace(comment, commands);
-  const size = commands.size || defaultCommand.size || "medium";
+  const size = commands.size ?? defaultCommand.size ?? "medium";
   return {
     size: size,
-    loc: commands.loc || defaultCommand.loc || "naka",
-    color: commands.color || defaultCommand.color || "#FFFFFF",
-    font: commands.font || defaultCommand.font || "defont",
+    loc: commands.loc ?? defaultCommand.loc ?? "naka",
+    color: commands.color ?? defaultCommand.color ?? "#FFFFFF",
+    font: commands.font ?? defaultCommand.font ?? "defont",
     fontSize: getConfig(config.fontSize, isFlash)[size].default,
     long: commands.long ? Math.floor(Number(commands.long) * 100) : 300,
     flash: isFlash,
@@ -156,19 +156,19 @@ const parseBrackets = (input: string) => {
     last_i = "",
     string = "";
   for (const i of content) {
-    if (i.match(/["'\u300c]/) && quote === "") {
+    if (RegExp(/^["'\u300c]$/).exec(i) && quote === "") {
       //["'「]
       quote = i;
-    } else if (i.match(/["']/) && quote === i && last_i !== "\\") {
+    } else if (RegExp(/^["']$/).exec(i) && quote === i && last_i !== "\\") {
       result.push(string.replaceAll("\\n", "\n"));
       quote = "";
       string = "";
-    } else if (i.match(/\u300d/) && quote === "\u300c") {
+    } else if (i === "\u300d" && quote === "\u300c") {
       //」
       result.push(string);
       quote = "";
       string = "";
-    } else if (quote === "" && i.match(/\s+/)) {
+    } else if (quote === "" && RegExp(/^\s+$/).exec(i)) {
       if (string) {
         result.push(string);
         string = "";
@@ -209,10 +209,10 @@ const addNicoscriptReplace = (
     long:
       commands.long === undefined ? undefined : Math.floor(commands.long * 100),
     keyword: result[0],
-    replace: result[1] || "",
-    range: result[2] || "\u5358", //単
-    target: result[3] || "\u30b3\u30e1", //コメ
-    condition: result[4] || "\u90e8\u5206\u4e00\u81f4", //部分一致
+    replace: result[1] ?? "",
+    range: result[2] ?? "\u5358", //単
+    target: result[3] ?? "\u30b3\u30e1", //コメ
+    condition: result[4] ?? "\u90e8\u5206\u4e00\u81f4", //部分一致
     color: commands.color,
     size: commands.size,
     font: commands.font,
@@ -244,10 +244,9 @@ const processNicoscript = (
   comment: FormattedComment,
   commands: ParsedCommand,
 ) => {
-  const nicoscript = comment.content.match(
+  const nicoscript = RegExp(
     /^[@\uff20](\u30c7\u30d5\u30a9\u30eb\u30c8|\u7f6e\u63db|\u9006|\u30b3\u30e1\u30f3\u30c8\u7981\u6b62|\u30b7\u30fc\u30af\u7981\u6b62|\u30b8\u30e3\u30f3\u30d7|\u30dc\u30bf\u30f3)(?:\s(.+))?/,
-    //^(?:@|＠)(デフォルト|置換|逆|コメント禁止|シーク禁止|ジャンプ|ボタン)(?:\s(.+))?
-  );
+  ).exec(comment.content);
   if (!nicoscript) return;
   if (nicoscript[1] === "\u30dc\u30bf\u30f3" && nicoscript[2]) {
     //ボタン
@@ -316,12 +315,10 @@ const processReverseScript = (
   comment: FormattedComment,
   commands: ParsedCommand,
 ) => {
-  const reverse = comment.content.match(
+  const reverse = RegExp(
     /^[@\uff20]\u9006(?:\s+)?(\u5168|\u30b3\u30e1|\u6295\u30b3\u30e1)?/,
-    //^(?:@|＠)逆(?:\s+)?(全|コメ|投コメ)?
-  );
-  if (!reverse || !reverse[1] || !typeGuard.nicoScript.range.target(reverse[1]))
-    return;
+  ).exec(comment.content);
+  if (!reverse?.[1] || !typeGuard.nicoScript.range.target(reverse[1])) return;
   if (commands.long === undefined) {
     commands.long = 30;
   }
@@ -379,11 +376,10 @@ const processJumpScript = (
   commands: ParsedCommand,
   input: string,
 ) => {
-  const options = input.match(
+  const options = RegExp(
     /\s*((?:sm|so|nm|\uff53\uff4d|\uff53\uff4f|\uff4e\uff4d)?[1-9\uff11-\uff19][0-9\uff11-\uff19]*|#[0-9]+:[0-9]+(?:\.[0-9]+)?)\s+(.*)/,
-    //\s*((?:sm|so|nm|ｓｍ|ｓｏ|ｎｍ)?[1-9１-９][0-9１-９]*|#[0-9]+:[0-9]+(?:\.[0-9]+)?)\s+(.*)
-  );
-  if (!options || !options[1]) return;
+  ).exec(input);
+  if (!options?.[1]) return;
   nicoScripts.jump.unshift({
     start: comment.vpos,
     end: commands.long === undefined ? undefined : commands.long * 100,
@@ -399,9 +395,11 @@ const processAtButton = (
   const args = parseBrackets(comment.content);
   if (args[1] === undefined) return;
   commands.invisible = false;
-  const content = (args[2] ?? args[1]).match(
+  const content = RegExp(
     /^(?:(?<before>.*?)\[)?(?<body>.*)(?:\](?<after>[^\]]*?))?$/su,
-  ) as { groups: { before?: string; body?: string; after?: string } };
+  ).exec(args[2] ?? args[1]) as {
+    groups: { before?: string; body?: string; after?: string };
+  };
   commands.button = {
     message: args[1],
     commentMessage: {
@@ -462,22 +460,22 @@ const parseCommand = (
   isFlash: boolean,
 ) => {
   const command = _command.toLowerCase();
-  const long = command.match(/^[@\uff20]([0-9.]+)/);
+  const long = RegExp(/^[@\uff20]([0-9.]+)/).exec(command);
   if (long) {
     result.long = Number(long[1]);
     return;
   }
-  const strokeColor = getColor(command.match(/^nico:stroke:(.+)$/));
+  const strokeColor = getColor(RegExp(/^nico:stroke:(.+)$/).exec(command));
   if (strokeColor) {
     result.strokeColor ??= strokeColor;
     return;
   }
-  const rectColor = getColor(command.match(/^nico:waku:(.+)$/));
+  const rectColor = getColor(RegExp(/^nico:waku:(.+)$/).exec(command));
   if (rectColor) {
     result.wakuColor ??= rectColor;
     return;
   }
-  const fillColor = getColor(command.match(/^nico:fill:(.+)$/));
+  const fillColor = getColor(RegExp(/^nico:fill:(.+)$/).exec(command));
   if (fillColor) {
     result.fillColor ??= fillColor;
     return;
@@ -495,7 +493,7 @@ const parseCommand = (
     result.color ??= config.colors[command];
     return;
   }
-  const colorCode = command.match(/^#(?:[0-9a-z]{3}|[0-9a-z]{6})$/);
+  const colorCode = RegExp(/^#(?:[0-9a-z]{3}|[0-9a-z]{6})$/).exec(command);
   if (colorCode && comment.premium) {
     result.color ??= colorCode[0].toUpperCase();
     return;

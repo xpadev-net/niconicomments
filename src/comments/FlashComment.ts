@@ -43,7 +43,7 @@ class FlashComment extends BaseComment {
       lineOffset,
     };
     const val = content[0];
-    if (val && val.font) {
+    if (val?.font) {
       comment.font = val.font;
     }
     this.comment = this.getCommentSize(comment);
@@ -115,7 +115,7 @@ class FlashComment extends BaseComment {
       comment.content,
     );
     const val = content[0];
-    if (val && val.font) {
+    if (val?.font) {
       data.font = val.font;
     }
     return {
@@ -131,14 +131,14 @@ class FlashComment extends BaseComment {
   override parseContent(input: string) {
     const content: CommentContentItem[] = parseContent(input);
     const lineCount = content.reduce((pv, val) => {
-      return pv + (val.content.match(/\n/g)?.length || 0);
+      return pv + (val.content.match(/\n/g)?.length ?? 0);
     }, 1);
     const lineOffset =
-      (input.match(new RegExp(config.FlashScriptChar.super, "g"))?.length ||
+      (input.match(new RegExp(config.FlashScriptChar.super, "g"))?.length ??
         0) *
         -1 *
         config.scriptCharOffset +
-      (input.match(new RegExp(config.FlashScriptChar.sub, "g"))?.length || 0) *
+      (input.match(new RegExp(config.FlashScriptChar.sub, "g"))?.length ?? 0) *
         config.scriptCharOffset;
     return {
       content,
@@ -219,7 +219,7 @@ class FlashComment extends BaseComment {
       const widths: number[] = [];
 
       this.context.font = parseFont(
-        item.font || comment.font,
+        item.font ?? comment.font,
         comment.fontSize,
       );
       for (let i = 0, n = lines.length; i < n; i++) {
@@ -304,7 +304,7 @@ class FlashComment extends BaseComment {
       leftOffset = 0,
       lineCount = 0;
     for (const item of this.comment.content) {
-      const font = item.font || this.comment.font;
+      const font = item.font ?? this.comment.font;
       if (lastFont !== font) {
         lastFont = font;
         context.font = parseFont(font, this.comment.fontSize);
@@ -324,7 +324,7 @@ class FlashComment extends BaseComment {
           lineCount += 1;
           continue;
         }
-        leftOffset += item.width[j] || 0;
+        leftOffset += item.width[j] ?? 0;
       }
     }
     return image;

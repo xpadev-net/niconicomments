@@ -72,7 +72,7 @@ const measureWidth = (comment: MeasureInput, context: Context2D) => {
   let currentWidth = 0;
   for (const item of comment.content) {
     const lines = item.content.split("\n");
-    context.font = parseFont(item.font || comment.font, fontSize);
+    context.font = parseFont(item.font ?? comment.font, fontSize);
     const width = [];
     for (let j = 0, n = lines.length; j < n; j++) {
       const line = lines[j];

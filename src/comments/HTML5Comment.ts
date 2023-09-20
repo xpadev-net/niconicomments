@@ -124,7 +124,7 @@ class HTML5Comment extends BaseComment {
       slicedContent: input.split("\n"),
     });
     const lineCount = content.reduce((pv, val) => {
-      return pv + (val.content.match(/\n/g)?.length || 0);
+      return pv + (val.content.match(/\n/g)?.length ?? 0);
     }, 1);
     const lineOffset = 0;
     return {

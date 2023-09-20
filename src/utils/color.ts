@@ -7,7 +7,7 @@ import { config } from "@/definition/config";
  * @returns RGB
  */
 const hex2rgb = (hex: string) => {
-  if (hex.slice(0, 1) === "#") hex = hex.slice(1);
+  if (hex.startsWith("#")) hex = hex.slice(1);
   if (hex.length === 3)
     hex =
       hex.slice(0, 1) +
@@ -29,7 +29,7 @@ const hex2rgb = (hex: string) => {
  * @returns RGB
  */
 const hex2rgba = (hex: string) => {
-  if (hex.slice(0, 1) === "#") hex = hex.slice(1);
+  if (hex.startsWith("#")) hex = hex.slice(1);
   if (hex.length === 4)
     hex =
       hex.slice(0, 1) +

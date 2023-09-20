@@ -199,39 +199,44 @@ const typeGuard = {
   nicoScript: {
     range: {
       target: (i: unknown): i is NicoScriptReverseTarget =>
-        typeof i === "string" && !!i.match(/^(?:\u6295?\u30b3\u30e1|\u5168)$/),
+        typeof i === "string" &&
+        !!RegExp(/^(?:\u6295?\u30b3\u30e1|\u5168)$/).exec(i),
     },
     replace: {
       range: (i: unknown): i is NicoScriptReplaceRange =>
-        typeof i === "string" && !!i.match(/^[\u5358\u5168]$/),
+        typeof i === "string" && !!RegExp(/^[\u5358\u5168]$/).exec(i),
       target: (i: unknown): i is NicoScriptReplaceTarget =>
         typeof i === "string" &&
-        !!i.match(
+        !!RegExp(
           /^(?:\u30b3\u30e1|\u6295\u30b3\u30e1|\u5168|\u542b\u3080|\u542b\u307e\u306a\u3044)$/,
-        ),
+        ).exec(i),
       condition: (i: unknown): i is NicoScriptReplaceCondition =>
         typeof i === "string" &&
-        !!i.match(/^(?:\u90e8\u5206\u4e00\u81f4|\u5b8c\u5168\u4e00\u81f4)$/),
+        !!RegExp(
+          /^(?:\u90e8\u5206\u4e00\u81f4|\u5b8c\u5168\u4e00\u81f4)$/,
+        ).exec(i),
     },
   },
   comment: {
     font: (i: unknown): i is CommentFont =>
-      typeof i === "string" && !!i.match(/^(?:gothic|mincho|defont)$/),
+      typeof i === "string" && !!RegExp(/^(?:gothic|mincho|defont)$/).exec(i),
     loc: (i: unknown): i is CommentLoc =>
-      typeof i === "string" && !!i.match(/^(?:ue|naka|shita)$/),
+      typeof i === "string" && !!RegExp(/^(?:ue|naka|shita)$/).exec(i),
     size: (i: unknown): i is CommentSize =>
-      typeof i === "string" && !!i.match(/^(?:big|medium|small)$/),
+      typeof i === "string" && !!RegExp(/^(?:big|medium|small)$/).exec(i),
     command: {
       key: (i: unknown): i is "full" | "ender" | "_live" | "invisible" =>
-        typeof i === "string" && !!i.match(/^(?:full|ender|_live|invisible)$/),
+        typeof i === "string" &&
+        !!RegExp(/^(?:full|ender|_live|invisible)$/).exec(i),
     },
     color: (i: unknown): i is keyof typeof colors =>
       typeof i === "string" && Object.keys(colors).includes(i),
     colorCode: (i: unknown): i is string =>
-      typeof i === "string" && !!i.match(/^#(?:[0-9a-z]{3}|[0-9a-z]{6})$/),
+      typeof i === "string" &&
+      !!RegExp(/^#(?:[0-9a-z]{3}|[0-9a-z]{6})$/).exec(i),
     colorCodeAllowAlpha: (i: unknown): i is string =>
       typeof i === "string" &&
-      !!i.match(/^#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/),
+      !!RegExp(/^#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/).exec(i),
   },
 
   config: {
@@ -251,9 +256,9 @@ const typeGuard = {
         config: isObject,
         format: (i: unknown) =>
           typeof i === "string" &&
-          !!i.match(
+          !!RegExp(
             /^(XMLDocument|niconicome|formatted|legacy|legacyOwner|owner|v1|default|empty)$/,
-          ),
+          ).exec(i),
         video: (i: unknown) =>
           typeof i === "object" && (i as HTMLVideoElement).nodeName === "VIDEO",
       };

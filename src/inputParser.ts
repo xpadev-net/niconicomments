@@ -67,12 +67,12 @@ const fromXMLDocument = (data: XMLDocument): FormattedComment[] => {
       layer: -1,
     };
     if (item.getAttribute("mail")) {
-      tmpParam.mail = item.getAttribute("mail")?.split(/\s+/g) || [];
+      tmpParam.mail = item.getAttribute("mail")?.split(/\s+/g) ?? [];
     }
     if (tmpParam.content.startsWith("/") && tmpParam.owner) {
       tmpParam.mail.push("invisible");
     }
-    const userId = item.getAttribute("user_id") || "";
+    const userId = item.getAttribute("user_id") ?? "";
     const isUserExist = userList.indexOf(userId);
     if (isUserExist === -1) {
       tmpParam.user_id = userList.length;
@@ -171,7 +171,7 @@ const fromLegacyOwner = (data: string): FormattedComment[] => {
     const tmpParam: FormattedComment = {
       id: i,
       vpos: Number(commentData[0]) * 100,
-      content: commentData[2] || "",
+      content: commentData[2] ?? "",
       date: i,
       date_usec: 0,
       owner: true,
@@ -291,9 +291,9 @@ const sort = (data: FormattedComment[]): FormattedComment[] => {
  * @returns vpos
  */
 const time2vpos = (time_str: string): number => {
-  const time = time_str.match(
+  const time = RegExp(
     /^(?:(\d+):(\d+)\.(\d+)|(\d+):(\d+)|(\d+)\.(\d+)|(\d+))$/,
-  );
+  ).exec(time_str);
   if (time) {
     if (
       time[1] !== undefined &&

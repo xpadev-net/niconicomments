@@ -108,7 +108,7 @@ class NiconiComments {
     }
 
     const parsedData = convert2formattedComment(data, formatType);
-    this.video = options.video || undefined;
+    this.video = options.video ?? undefined;
     this.showCollision = options.showCollision;
     this.showFPS = options.showFPS;
     this.showCommentCount = options.showCommentCount;
@@ -260,7 +260,7 @@ class NiconiComments {
     ) {
       const current = timelineRange.filter((item) => item.loc !== "naka"),
         last =
-          this.timeline[this.lastVpos]?.filter((item) => item.loc !== "naka") ||
+          this.timeline[this.lastVpos]?.filter((item) => item.loc !== "naka") ??
           [];
       if (ArrayEqual(current, last)) return false;
     }
@@ -399,8 +399,8 @@ class NiconiComments {
       this.context.strokeStyle = `rgba(${hex2rgb(
         config.contextStrokeColor,
       ).join(",")},${config.contextStrokeOpacity})`;
-      this.context.strokeText(`Count:${count || 0}`, 100, 200);
-      this.context.fillText(`Count:${count || 0}`, 100, 200);
+      this.context.strokeText(`Count:${count ?? 0}`, 100, 200);
+      this.context.fillText(`Count:${count ?? 0}`, 100, 200);
       this.context.restore();
     }
   }

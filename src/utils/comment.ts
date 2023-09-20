@@ -251,7 +251,7 @@ const processNicoscript = (
   if (!nicoscript) return;
   if (nicoscript[1] === "\u30dc\u30bf\u30f3" && nicoscript[2]) {
     //ボタン
-    processAtButton(commands);
+    processAtButton(comment, commands);
     return;
   }
   if (!comment.owner) return;
@@ -392,9 +392,29 @@ const processJumpScript = (
   });
 };
 
-const processAtButton = (commands: ParsedCommand) => {
+const processAtButton = (
+  comment: FormattedComment,
+  commands: ParsedCommand,
+) => {
+  const args = parseBrackets(comment.content);
+  if (args[1] === undefined) return;
   commands.invisible = false;
-  commands.button = true;
+  const content = (args[2] ?? args[1]).match(
+    /^(?:(?<before>.*?)\[)?(?<body>.*)(?:\](?<after>[^\]]*?))?$/su,
+  ) as { groups: { before?: string; body?: string; after?: string } };
+  commands.button = {
+    message: args[1],
+    commentMessage: {
+      before: content.groups?.before ?? "",
+      body: content.groups?.body ?? "",
+      after: content.groups?.after ?? "",
+    },
+    commentVisible: args[3] === "\u8868\u793a",
+    commentMail: args[4]?.split(",") ?? [],
+    limit: Number(args[5] ?? 1),
+    local: comment.mail.includes("local"),
+    hidden: comment.mail.includes("hidden"),
+  };
 };
 
 /**
@@ -418,7 +438,6 @@ const parseCommands = (comment: FormattedComment): ParsedCommand => {
     _live: false,
     invisible: false,
     long: undefined,
-    button: false,
   };
   for (const command of commands) {
     parseCommand(comment, command, result, isFlash);

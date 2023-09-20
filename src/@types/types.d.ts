@@ -62,6 +62,10 @@ export type ParseCommandAndNicoScriptResult = {
   invisible: boolean;
   long: number;
 };
+export type CommentContentGroup = {
+  type: "text" | "button";
+  content: CommentContentItem[];
+};
 export type CommentContentItem = {
   content: string;
   slicedContent: string[];
@@ -159,6 +163,21 @@ export type MeasureTextResult = {
   scaleX: number;
   scale: number;
 };
+
+export type ButtonParams = {
+  message: string; //表示するボタンの内容
+  commentMessage: {
+    before: string;
+    body: string;
+    after: string;
+  }; //コメントの内容
+  commentMail: string[]; //コメントのコマンド → 未指定時は色のみ継承
+  commentVisible: boolean; //コメントを投稿するか
+  limit: number; //ボタンの使用上限
+  local: boolean; //ローカルコメントか
+  hidden: boolean; //通常のコメントのように表示するか
+};
+
 export type ParsedCommand = {
   loc: CommentLoc | undefined;
   size: CommentSize | undefined;
@@ -173,7 +192,7 @@ export type ParsedCommand = {
   _live: boolean;
   invisible: boolean;
   long: number | undefined;
-  button: boolean;
+  button?: ButtonParams;
 };
 
 export type MeasureTextInput = {

@@ -50,13 +50,11 @@ const getFlashFontName = (font: CommentFlashFontParsed): CommentFlashFont => {
  */
 const parseContent = (content: string) => {
   const results: CommentContentItem[] = [];
-  const lines = (content.match(/\n|[^\n]+/g) || []).map((val) =>
-    Array.from(val.match(/[ -~｡-ﾟ]+|[^ -~｡-ﾟ]+/g) || []),
-  );
+  const lines = Array.from(content.match(/\n|[^\n]+/g) ?? []);
   for (const line of lines) {
     const lineContent = parseLine(line);
     const firstContent = lineContent[0];
-    if (firstContent && firstContent.font) {
+    if (firstContent?.font) {
       results.push(
         ...lineContent.map((val) => {
           if (!val.font) {
@@ -77,9 +75,10 @@ const parseContent = (content: string) => {
  * @param line 1行分のコメントの内容
  * @returns パースしたコメントの内容
  */
-const parseLine = (line: string[]) => {
+const parseLine = (line: string) => {
+  const parts = Array.from(line.match(/[ -~｡-ﾟ]+|[^ -~｡-ﾟ]+/g) ?? []);
   const lineContent: CommentContentItem[] = [];
-  for (const part of line) {
+  for (const part of parts) {
     if (part.match(/[ -~｡-ﾟ]+/g) !== null) {
       lineContent.push({ content: part, slicedContent: part.split("\n") });
       continue;

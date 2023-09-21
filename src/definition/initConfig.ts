@@ -341,6 +341,7 @@ const initConfig = () => {
      * \@ボタンのボタンに適用する余白
      */
     atButtonPadding: 5,
+    atButtonRadius: 7,
   };
   updateConfig(defaultConfig);
 };

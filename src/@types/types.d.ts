@@ -71,6 +71,7 @@ export type CommentContentGroup = {
 export type CommentContentItem = {
   content: string;
   slicedContent: string[];
+  isButton?: boolean;
   font?: CommentFlashFont;
   width?: number[];
 };
@@ -197,19 +198,10 @@ export type ParsedCommand = {
   button?: ButtonParams;
 };
 
-export type MeasureTextInput = {
-  content: CommentContentItem[];
+export type MeasureTextInput = FormattedCommentWithFont & {
   resized?: boolean;
-  ender: boolean;
-  size: CommentSize;
-  fontSize: number;
   resizedY?: boolean;
   resizedX?: boolean;
-  font: CommentFont;
-  loc: CommentLoc;
-  full: boolean;
-  flash: boolean;
-  lineCount: number;
   lineHeight?: number;
   charSize?: number;
   scale: number;

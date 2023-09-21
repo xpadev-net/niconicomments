@@ -81,6 +81,7 @@ export type BaseConfig = {
   lineBreakCount: { [key in CommentSize]: number };
   nakaCommentSpeedOffset: number;
   atButtonPadding: number;
+  atButtonRadius: number;
 };
 
 export type Config = Partial<BaseConfig>;

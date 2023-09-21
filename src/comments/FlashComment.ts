@@ -97,7 +97,7 @@ class FlashComment extends BaseComment {
       measure.width *= options.scale;
     }
     this.context.restore();
-    if (parsedData.button) {
+    if (parsedData.button && !parsedData.button.hidden) {
       measure.width += getConfig(config.atButtonPadding, true) * 4;
     }
     return {
@@ -338,33 +338,35 @@ class FlashComment extends BaseComment {
         if (line === undefined) continue;
         const posY = (lineOffset + lineCount + 1) * lineHeight + offsetY;
         const partWidth = item.width[j] ?? 0;
-        if (!isLastButton && item.isButton) {
-          drawLeftBorder(
-            context,
-            leftOffset + atButtonPadding,
-            posY - lineHeight + atButtonPadding,
-            partWidth + atButtonPadding,
-            lineHeight,
-            atButtonRadius,
-          );
-          leftOffset += atButtonPadding * 2;
-        } else if (isLastButton && item.isButton) {
-          drawMiddleBorder(
-            context,
-            leftOffset,
-            posY - lineHeight + atButtonPadding,
-            partWidth,
-            lineHeight,
-          );
-        } else if (isLastButton && !item.isButton) {
-          drawRightBorder(
-            context,
-            leftOffset + atButtonPadding,
-            posY - lineHeight + atButtonPadding,
-            lineHeight,
-            atButtonRadius,
-          );
-          leftOffset += atButtonPadding * 2;
+        if (this.comment.button && !this.comment.button.hidden) {
+          if (!isLastButton && item.isButton) {
+            drawLeftBorder(
+              context,
+              leftOffset + atButtonPadding,
+              posY - lineHeight + atButtonPadding,
+              partWidth + atButtonPadding,
+              lineHeight,
+              atButtonRadius,
+            );
+            leftOffset += atButtonPadding * 2;
+          } else if (isLastButton && item.isButton) {
+            drawMiddleBorder(
+              context,
+              leftOffset,
+              posY - lineHeight + atButtonPadding,
+              partWidth,
+              lineHeight,
+            );
+          } else if (isLastButton && !item.isButton) {
+            drawRightBorder(
+              context,
+              leftOffset + atButtonPadding,
+              posY - lineHeight + atButtonPadding,
+              lineHeight,
+              atButtonRadius,
+            );
+            leftOffset += atButtonPadding * 2;
+          }
         }
         context.strokeText(line, leftOffset, posY);
         context.fillText(line, leftOffset, posY);
@@ -377,7 +379,7 @@ class FlashComment extends BaseComment {
       }
       isLastButton = !!item.isButton;
     }
-    if (isLastButton) {
+    if (this.comment.button && !this.comment.button.hidden && isLastButton) {
       const posY = (lineOffset + lineCount + 1) * lineHeight + offsetY;
       drawRightBorder(
         context,

@@ -1,4 +1,4 @@
-import { ConfigItem } from "@/@types";
+import type { ConfigItem } from "@/@types";
 import typeGuard from "@/typeGuard";
 
 /**

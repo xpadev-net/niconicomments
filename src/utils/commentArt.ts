@@ -1,4 +1,4 @@
-import { FormattedComment } from "@/@types";
+import type { FormattedComment } from "@/@types";
 import { config } from "@/definition/config";
 
 type GroupedByUser = {

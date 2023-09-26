@@ -13,7 +13,7 @@ import type {
   ParsedCommand,
   Timeline,
 } from "@/@types/";
-import { DefaultCommand } from "@/@types/comment";
+import type { DefaultCommand } from "@/@types/comment";
 import { nicoScripts } from "@/contexts/";
 import { colors } from "@/definition/colors";
 import { config, options } from "@/definition/config";

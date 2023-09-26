@@ -1,4 +1,4 @@
-import { Canvas, Context2D } from "@/@types";
+import type { Canvas, Context2D } from "@/@types";
 import { CanvasRenderingContext2DError } from "@/errors";
 
 /**

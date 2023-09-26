@@ -1,4 +1,4 @@
-import { FontItem } from "@/@types";
+import type { FontItem } from "@/@types";
 
 /**
  * フォントを構築する

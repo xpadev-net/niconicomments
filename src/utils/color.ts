@@ -1,4 +1,4 @@
-import { FormattedCommentWithSize } from "@/@types";
+import type { FormattedCommentWithSize } from "@/@types";
 import { config } from "@/definition/config";
 
 /**

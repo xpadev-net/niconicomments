@@ -1,4 +1,4 @@
-import { BaseConfig, Platform } from "@/@types/";
+import type { BaseConfig, Platform } from "@/@types/";
 import { FlashComment } from "@/comments/";
 import { colors } from "@/definition/colors";
 import { updateConfig } from "@/definition/config";

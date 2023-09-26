@@ -4,7 +4,7 @@ import type {
   IPluginConstructor,
   PlatformFont,
 } from "@/@types/";
-import { BaseComment } from "@/comments/";
+import type { BaseComment } from "@/comments/";
 
 export type ConfigItem<T> = T | MultiConfigItem<T>;
 export type MultiConfigItem<T> = { html5: T; flash: T };

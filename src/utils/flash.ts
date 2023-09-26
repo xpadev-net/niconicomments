@@ -1,5 +1,5 @@
 import type { CommentContentIndex, CommentFlashFont } from "@/@types";
-import { CommentContentItem, CommentFlashFontParsed } from "@/@types";
+import type { CommentContentItem, CommentFlashFontParsed } from "@/@types";
 import { config } from "@/definition/config";
 import { nativeSort } from "@/utils/sort";
 

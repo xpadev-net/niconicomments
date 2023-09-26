@@ -14,4 +14,4 @@ services:
     volumes:
       - ./:/home/pwuser/app/
     working_dir: /home/pwuser/app
-    entrypoint: yarn playwright test
+    entrypoint: pnpm playwright test

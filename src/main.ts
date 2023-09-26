@@ -267,8 +267,6 @@ class NiconiComments {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.lastVpos = vpos;
     this._drawVideo();
-    this._drawCollision(vpos);
-    this._drawComments(timelineRange, vpos);
     for (const plugin of plugins) {
       try {
         plugin.instance.draw?.(vpos);
@@ -277,6 +275,8 @@ class NiconiComments {
         console.error(`Failed to draw comments`);
       }
     }
+    this._drawCollision(vpos);
+    this._drawComments(timelineRange, vpos);
     this._drawFPS(drawCanvasStart);
     this._drawCommentCount(timelineRange?.length);
     logger(`drawCanvas complete: ${performance.now() - drawCanvasStart}ms`);

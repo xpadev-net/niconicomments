@@ -9,7 +9,9 @@ import type {
   MeasureTextResult,
   ParseContentResult,
 } from "@/@types/";
+import type { CursorPos } from "@/@types/cursor";
 import { imageCache } from "@/contexts";
+import { isDebug } from "@/contexts/debug";
 import { config } from "@/definition/config";
 import { NotImplementedError } from "@/errors/";
 import { getPosX, isBanActive, isReverseActive, parseFont } from "@/utils";
@@ -25,6 +27,7 @@ class BaseComment implements IComment {
   public posY: number;
   public readonly pluginName: string = "BaseComment";
   public image?: Canvas | null;
+  public buttonImage?: Canvas | null;
 
   /**
    * コンストラクタ
@@ -142,9 +145,9 @@ class BaseComment implements IComment {
    * コメントを描画する
    * @param vpos vpos
    * @param showCollision 当たり判定を表示するか
-   * @param debug デバッグ情報を表示するか
+   * @param cursor カーソルの位置
    */
-  public draw(vpos: number, showCollision: boolean, debug: boolean) {
+  public draw(vpos: number, showCollision: boolean, cursor?: CursorPos) {
     if (isBanActive(vpos)) return;
     const reverse = isReverseActive(vpos, this.comment.owner);
     const posX = getPosX(this.comment, vpos, reverse);
@@ -153,18 +156,19 @@ class BaseComment implements IComment {
         ? config.canvasHeight - this.posY - this.comment.height
         : this.posY;
     this._drawBackgroundColor(posX, posY);
-    this._draw(posX, posY);
+    this._draw(posX, posY, cursor);
     this._drawRectColor(posX, posY);
     this._drawCollision(posX, posY, showCollision);
-    this._drawDebugInfo(posX, posY, debug);
+    this._drawDebugInfo(posX, posY);
   }
 
   /**
    * コメント本体を描画する
    * @param posX 描画位置
    * @param posY 描画位置
+   * @param cursor カーソルの位置
    */
-  protected _draw(posX: number, posY: number) {
+  protected _draw(posX: number, posY: number, cursor?: CursorPos) {
     if (this.image === undefined) {
       this.image = this.getTextImage();
     }
@@ -174,6 +178,10 @@ class BaseComment implements IComment {
         this.context.globalAlpha = config.contextFillLiveOpacity;
       } else {
         this.context.globalAlpha = 1;
+      }
+      if (this.comment.button && !this.comment.button.hidden) {
+        const button = this.getButtonImage(cursor);
+        button && drawImage(this.context, button, posX, posY);
       }
       drawImage(this.context, this.image, posX, posY);
       this.context.restore();
@@ -222,10 +230,9 @@ class BaseComment implements IComment {
    * コメントのメタデータを描画する
    * @param posX 描画位置
    * @param posY 描画位置
-   * @param debug デバッグモードかどうか
    */
-  protected _drawDebugInfo(posX: number, posY: number, debug: boolean) {
-    if (debug) {
+  protected _drawDebugInfo(posX: number, posY: number) {
+    if (isDebug) {
       this.context.save();
       const font = this.context.font;
       const fillStyle = this.context.fillStyle;
@@ -335,6 +342,10 @@ class BaseComment implements IComment {
       image,
       context,
     };
+  }
+
+  protected getButtonImage(_?: CursorPos): Canvas | null {
+    return null;
   }
 }
 

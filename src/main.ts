@@ -10,6 +10,7 @@ import type {
   Options,
   Timeline,
 } from "@/@types/";
+import type { CursorPos } from "@/@types/cursor";
 import { FlashComment } from "@/comments/";
 import {
   plugins,
@@ -17,6 +18,7 @@ import {
   resetNicoScripts,
   setPlugins,
 } from "@/contexts/";
+import { isDebug, setIsDebug } from "@/contexts/debug";
 import {
   config,
   defaultConfig,
@@ -43,8 +45,6 @@ import { generateCanvas, getContext } from "@/utils/canvas";
 import { createCommentInstance } from "@/utils/plugins";
 
 import * as internal from "./internal";
-
-let isDebug = false;
 
 class NiconiComments {
   public enableLegacyPiP: boolean;
@@ -78,7 +78,7 @@ class NiconiComments {
       throw new InvalidOptionError();
     setOptions(Object.assign(defaultOptions, initOptions));
     setConfig(Object.assign(defaultConfig, options.config));
-    isDebug = options.debug;
+    setIsDebug(options.debug);
     resetImageCache();
     resetNicoScripts();
     this.canvas = canvas;
@@ -244,9 +244,14 @@ class NiconiComments {
    * キャンバスを描画する
    * @param vpos 動画の現在位置の100倍 ニコニコから吐き出されるコメントの位置情報は主にこれ
    * @param forceRendering キャッシュを使用せずに再描画を強制するか
+   * @param cursor カーソルの位置
    * @returns 再描画されたか
    */
-  public drawCanvas(vpos: number, forceRendering = false): boolean {
+  public drawCanvas(
+    vpos: number,
+    forceRendering = false,
+    cursor?: CursorPos,
+  ): boolean {
     const drawCanvasStart = performance.now();
     if (this.lastVpos === vpos && !forceRendering) return false;
     triggerHandler(vpos, this.lastVpos);
@@ -276,7 +281,7 @@ class NiconiComments {
       }
     }
     this._drawCollision(vpos);
-    this._drawComments(timelineRange, vpos);
+    this._drawComments(timelineRange, vpos, cursor);
     this._drawFPS(drawCanvasStart);
     this._drawCommentCount(timelineRange?.length);
     logger(`drawCanvas complete: ${performance.now() - drawCanvasStart}ms`);
@@ -312,8 +317,13 @@ class NiconiComments {
    * コメントを描画する
    * @param timelineRange 指定されたvposに存在するコメント
    * @param vpos vpos
+   * @param cursor カーソルの位置
    */
-  private _drawComments(timelineRange: IComment[] | undefined, vpos: number) {
+  private _drawComments(
+    timelineRange: IComment[] | undefined,
+    vpos: number,
+    cursor?: CursorPos,
+  ) {
     if (timelineRange) {
       const targetComment = (() => {
         if (config.commentLimit === undefined) {
@@ -328,7 +338,7 @@ class NiconiComments {
         if (comment.invisible) {
           continue;
         }
-        comment.draw(vpos, this.showCollision, isDebug);
+        comment.draw(vpos, this.showCollision, cursor);
       }
     }
   }

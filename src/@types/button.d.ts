@@ -4,8 +4,6 @@ export type ButtonList = {
   right: ButtonPartRight;
 };
 
-export type ButtonPart = ButtonPartLeft | ButtonPartMiddle | ButtonPartRight;
-
 export type ButtonPartLeft = {
   type: "left";
   left: number;

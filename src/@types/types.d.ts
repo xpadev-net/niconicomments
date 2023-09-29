@@ -1,5 +1,4 @@
-import type { IComment } from "@/@types/";
-import type { ButtonList } from "@/@types/button";
+import type { ButtonList, IComment } from "@/@types/";
 
 export type FormattedCommentWithFont = {
   id: number;

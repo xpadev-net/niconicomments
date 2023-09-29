@@ -3,6 +3,7 @@ import type {
   Collision,
   CommentEventHandlerMap,
   Context2D,
+  CursorPos,
   FormattedComment,
   IComment,
   InputFormat,
@@ -10,7 +11,6 @@ import type {
   Options,
   Timeline,
 } from "@/@types/";
-import type { CursorPos } from "@/@types/cursor";
 import { FlashComment } from "@/comments/";
 import {
   plugins,

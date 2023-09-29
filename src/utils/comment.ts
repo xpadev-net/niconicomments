@@ -4,6 +4,7 @@ import type {
   CommentFont,
   CommentLoc,
   CommentSize,
+  DefaultCommand,
   FormattedComment,
   FormattedCommentWithSize,
   IComment,
@@ -13,7 +14,6 @@ import type {
   ParsedCommand,
   Timeline,
 } from "@/@types/";
-import type { DefaultCommand } from "@/@types/comment";
 import { nicoScripts } from "@/contexts/";
 import { colors } from "@/definition/colors";
 import { config, options } from "@/definition/config";

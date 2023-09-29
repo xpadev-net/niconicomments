@@ -1,4 +1,4 @@
-import type { CommentFont, CommentLoc, CommentSize } from "@/@types/types";
+import type { CommentFont, CommentLoc, CommentSize } from "@/@types/";
 
 export type DefaultCommand = {
   color?: string;

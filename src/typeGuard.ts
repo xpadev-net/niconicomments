@@ -6,6 +6,7 @@ import type {
   ApiThread,
   CommentFont,
   CommentLoc,
+  CommentMeasuredContentItem,
   CommentSize,
   FormattedComment,
   FormattedLegacyComment,
@@ -22,7 +23,6 @@ import type {
   V1Comment,
   V1Thread,
 } from "@/@types/";
-import type { CommentMeasuredContentItem } from "@/@types/";
 import { colors } from "@/definition/colors";
 
 /**

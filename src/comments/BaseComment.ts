@@ -1,6 +1,7 @@
 import type {
   Canvas,
   Context2D,
+  CursorPos,
   FormattedComment,
   FormattedCommentWithFont,
   FormattedCommentWithSize,
@@ -9,7 +10,6 @@ import type {
   MeasureTextResult,
   ParseContentResult,
 } from "@/@types/";
-import type { CursorPos } from "@/@types/cursor";
 import { imageCache } from "@/contexts";
 import { isDebug } from "@/contexts/debug";
 import { config } from "@/definition/config";

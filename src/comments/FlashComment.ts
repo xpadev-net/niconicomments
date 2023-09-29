@@ -1,16 +1,16 @@
 import type {
+  ButtonList,
   ButtonParams,
   Canvas,
   CommentContentItem,
   Context2D,
+  CursorPos,
   FormattedComment,
   FormattedCommentWithFont,
   FormattedCommentWithSize,
   MeasureTextInput,
   MeasureTextResult,
 } from "@/@types/";
-import type { ButtonList } from "@/@types/button";
-import type { CursorPos } from "@/@types/cursor";
 import { config, options } from "@/definition/config";
 import { TypeGuardError } from "@/errors/TypeGuardError";
 import typeGuard from "@/typeGuard";

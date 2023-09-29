@@ -1,7 +1,12 @@
-import type { CommentContentIndex, CommentFlashFont } from "@/@types";
-import type { CommentContentItem, CommentFlashFontParsed } from "@/@types";
-import type { FormattedCommentWithSize } from "@/@types";
-import type { ButtonPartLeft, ButtonPartMiddle } from "@/@types/button";
+import type {
+  ButtonPartLeft,
+  ButtonPartMiddle,
+  CommentContentIndex,
+  CommentContentItem,
+  CommentFlashFont,
+  CommentFlashFontParsed,
+  FormattedCommentWithSize,
+} from "@/@types";
 import { config } from "@/definition/config";
 import { getConfig } from "@/utils/config";
 import { nativeSort } from "@/utils/sort";

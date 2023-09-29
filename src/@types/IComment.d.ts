@@ -1,5 +1,9 @@
-import type { Canvas, CommentLoc, FormattedCommentWithSize } from "@/@types/";
-import type { CursorPos } from "@/@types/cursor";
+import type {
+  Canvas,
+  CommentLoc,
+  CursorPos,
+  FormattedCommentWithSize,
+} from "@/@types/";
 
 export interface IComment {
   comment: FormattedCommentWithSize;

@@ -24,6 +24,10 @@ class BaseComment implements IComment {
   protected readonly context: Context2D;
   protected cacheKey: string;
   public comment: FormattedCommentWithSize;
+  public pos: {
+    x: number;
+    y: number;
+  };
   public posY: number;
   public readonly pluginName: string = "BaseComment";
   public image?: Canvas | null;
@@ -37,6 +41,7 @@ class BaseComment implements IComment {
   constructor(comment: FormattedComment, context: Context2D) {
     this.context = context;
     this.posY = 0;
+    this.pos = { x: 0, y: 0 };
     comment.content = comment.content.replace(/\t/g, "\u2003\u2003");
     this.comment = this.convertComment(comment);
     this.cacheKey =
@@ -155,6 +160,10 @@ class BaseComment implements IComment {
       this.comment.loc === "shita"
         ? config.canvasHeight - this.posY - this.comment.height
         : this.posY;
+    this.pos = {
+      x: posX,
+      y: posY,
+    };
     this._drawBackgroundColor(posX, posY);
     this._draw(posX, posY, cursor);
     this._drawRectColor(posX, posY);
@@ -180,7 +189,7 @@ class BaseComment implements IComment {
         this.context.globalAlpha = 1;
       }
       if (this.comment.button && !this.comment.button.hidden) {
-        const button = this.getButtonImage(cursor);
+        const button = this.getButtonImage(posX, posY, cursor);
         button && drawImage(this.context, button, posX, posY);
       }
       drawImage(this.context, this.image, posX, posY);
@@ -344,8 +353,18 @@ class BaseComment implements IComment {
     };
   }
 
-  protected getButtonImage(_?: CursorPos): Canvas | null {
-    return null;
+  protected getButtonImage(
+    posX: number,
+    posY: number,
+    cursor?: CursorPos,
+  ): Canvas | undefined {
+    console.error(
+      "getButtonImage method is not implemented",
+      posX,
+      posY,
+      cursor,
+    );
+    throw new NotImplementedError(this.pluginName, "getButtonImage");
   }
 }
 

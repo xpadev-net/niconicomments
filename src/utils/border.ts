@@ -7,7 +7,6 @@ const drawLeftBorder = (
   radius: number,
 ) => {
   context.save();
-  context.strokeStyle = "white";
   context.beginPath();
   context.moveTo(left + width, top);
   context.lineTo(left + radius, top);
@@ -27,7 +26,6 @@ const drawMiddleBorder = (
   height: number,
 ) => {
   context.save();
-  context.strokeStyle = "white";
   context.beginPath();
   context.moveTo(left + width, top);
   context.lineTo(left, top);
@@ -45,7 +43,6 @@ const drawRightBorder = (
   radius: number,
 ) => {
   context.save();
-  context.strokeStyle = "white";
   context.beginPath();
   context.moveTo(right - radius, top);
   context.quadraticCurveTo(right, top, right, top + radius);

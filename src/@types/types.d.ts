@@ -1,4 +1,5 @@
 import type { IComment } from "@/@types/";
+import type { ButtonList } from "@/@types/button";
 
 export type FormattedCommentWithFont = {
   id: number;
@@ -41,6 +42,7 @@ export type FormattedCommentWithSize = FormattedCommentWithFont & {
   charSize: number;
   scale: number;
   scaleX: number;
+  buttonObjects?: ButtonList;
 };
 export type ParseContentResult = {
   content: CommentContentItem[];
@@ -63,10 +65,6 @@ export type ParseCommandAndNicoScriptResult = {
   invisible: boolean;
   long: number;
   button?: ButtonParams;
-};
-export type CommentContentGroup = {
-  type: "text" | "button";
-  content: CommentContentItem[];
 };
 export type CommentContentItem = {
   content: string;

@@ -311,6 +311,10 @@ class HTML5Comment extends BaseComment {
     }
     return image;
   }
+
+  override getButtonImage() {
+    return undefined;
+  }
 }
 
 export { HTML5Comment };

@@ -1,7 +1,6 @@
 import type {
   Canvas,
   Context2D,
-  CursorPos,
   FormattedComment,
   FormattedCommentWithFont,
   FormattedCommentWithSize,
@@ -9,6 +8,7 @@ import type {
   MeasureTextInput,
   MeasureTextResult,
   ParseContentResult,
+  Position,
 } from "@/@types/";
 import { imageCache } from "@/contexts";
 import { isDebug } from "@/contexts/debug";
@@ -152,7 +152,7 @@ class BaseComment implements IComment {
    * @param showCollision 当たり判定を表示するか
    * @param cursor カーソルの位置
    */
-  public draw(vpos: number, showCollision: boolean, cursor?: CursorPos) {
+  public draw(vpos: number, showCollision: boolean, cursor?: Position) {
     if (isBanActive(vpos)) return;
     const reverse = isReverseActive(vpos, this.comment.owner);
     const posX = getPosX(this.comment, vpos, reverse);
@@ -177,7 +177,7 @@ class BaseComment implements IComment {
    * @param posY 描画位置
    * @param cursor カーソルの位置
    */
-  protected _draw(posX: number, posY: number, cursor?: CursorPos) {
+  protected _draw(posX: number, posY: number, cursor?: Position) {
     if (this.image === undefined) {
       this.image = this.getTextImage();
     }
@@ -356,7 +356,7 @@ class BaseComment implements IComment {
   protected getButtonImage(
     posX: number,
     posY: number,
-    cursor?: CursorPos,
+    cursor?: Position,
   ): Canvas | undefined {
     console.error(
       "getButtonImage method is not implemented",
@@ -364,6 +364,11 @@ class BaseComment implements IComment {
       posY,
       cursor,
     );
+    throw new NotImplementedError(this.pluginName, "getButtonImage");
+  }
+
+  public isHovered(cursor?: Position, posX?: number, posY?: number): boolean {
+    console.error("isHovered method is not implemented", posX, posY, cursor);
     throw new NotImplementedError(this.pluginName, "getButtonImage");
   }
 }

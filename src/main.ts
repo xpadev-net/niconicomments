@@ -3,7 +3,7 @@ import type {
   Collision,
   CommentEventHandlerMap,
   Context2D,
-  CursorPos,
+  Position,
   FormattedComment,
   IComment,
   InputFormat,
@@ -34,6 +34,7 @@ import convert2formattedComment from "@/inputParser";
 import typeGuard from "@/typeGuard";
 import {
   ArrayEqual,
+  buildAtButtonComment,
   changeCALayer,
   hex2rgb,
   isFlashComment,
@@ -219,6 +220,7 @@ class NiconiComments {
       pv.push(createCommentInstance(val, this.context));
       return pv;
     }, []);
+    console.log(comments);
     for (const plugin of plugins) {
       try {
         plugin.instance.addComments?.(comments);
@@ -250,7 +252,7 @@ class NiconiComments {
   public drawCanvas(
     vpos: number,
     forceRendering = false,
-    cursor?: CursorPos,
+    cursor?: Position,
   ): boolean {
     const drawCanvasStart = performance.now();
     if (this.lastVpos === vpos && !forceRendering) return false;
@@ -322,7 +324,7 @@ class NiconiComments {
   private _drawComments(
     timelineRange: IComment[] | undefined,
     vpos: number,
-    cursor?: CursorPos,
+    cursor?: Position,
   ) {
     if (timelineRange) {
       const targetComment = (() => {
@@ -446,6 +448,24 @@ class NiconiComments {
    */
   public clear() {
     this.context.clearRect(0, 0, config.canvasWidth, config.canvasHeight);
+  }
+
+  /**
+   * \@ボタンの呼び出し用
+   * @param vpos 再生位置
+   * @param pos カーソルの位置
+   */
+  public click(vpos: number, pos: Position) {
+    const _comments = this.timeline[vpos];
+    if (!_comments) return;
+    const comments = [..._comments].reverse();
+    for (const comment of comments) {
+      if (comment.isHovered(pos)) {
+        const newComment = buildAtButtonComment(comment.comment, vpos);
+        if (!newComment) continue;
+        this.addComments(newComment);
+      }
+    }
   }
 }
 

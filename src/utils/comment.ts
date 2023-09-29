@@ -410,7 +410,7 @@ const processAtButton = (
     message,
     commentMessage:
       args[2] ?? `${message.before}${message.body}${message.after}`,
-    commentVisible: args[3] === "\u8868\u793a",
+    commentVisible: args[3] !== "\u975e\u8868\u793a",
     commentMail: args[4]?.split(",") ?? [],
     limit: Number(args[5] ?? 1),
     local: comment.mail.includes("local"),

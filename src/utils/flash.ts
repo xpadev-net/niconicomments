@@ -5,6 +5,7 @@ import type {
   CommentContentItem,
   CommentFlashFont,
   CommentFlashFontParsed,
+  FormattedComment,
   FormattedCommentWithSize,
 } from "@/@types";
 import { config } from "@/definition/config";
@@ -270,4 +271,33 @@ const getButtonParts = (
   return comment;
 };
 
-export { getButtonParts, getFlashFontIndex, getFlashFontName, parseContent };
+const buildAtButtonComment = (
+  comment: FormattedCommentWithSize,
+  vpos: number,
+): FormattedComment | undefined => {
+  if (!comment.button) return;
+  const mail = [...comment.button.commentMail];
+  if (!comment.button.commentVisible) {
+    mail.push("invisible");
+  }
+  return {
+    id: -1,
+    vpos,
+    content: comment.button.commentMessage,
+    date: -1,
+    date_usec: -1,
+    owner: false,
+    premium: true,
+    mail,
+    user_id: -10,
+    layer: -1,
+  };
+};
+
+export {
+  buildAtButtonComment,
+  getButtonParts,
+  getFlashFontIndex,
+  getFlashFontName,
+  parseContent,
+};

@@ -1,15 +1,14 @@
 import type {
-  ButtonList,
   ButtonParams,
   Canvas,
   CommentContentItem,
   Context2D,
-  CursorPos,
   FormattedComment,
   FormattedCommentWithFont,
   FormattedCommentWithSize,
   MeasureTextInput,
   MeasureTextResult,
+  Position,
 } from "@/@types/";
 import { config, options } from "@/definition/config";
 import { TypeGuardError } from "@/errors/TypeGuardError";
@@ -355,7 +354,7 @@ class FlashComment extends BaseComment {
     return image;
   }
 
-  override getButtonImage(posX: number, posY: number, cursor?: CursorPos) {
+  override getButtonImage(posX: number, posY: number, cursor?: Position) {
     if (!this.comment.button || this.comment.button.hidden) return undefined;
     const { image, context } = this._setupCanvas(
       this.buttonImage,
@@ -364,7 +363,7 @@ class FlashComment extends BaseComment {
     const parts = this.comment.buttonObjects;
     if (!parts) return undefined;
     const atButtonRadius = getConfig(config.atButtonRadius, true);
-    const isHover = this._isHovered(posX, posY, parts, cursor);
+    const isHover = this.isHovered(cursor, posX, posY);
     context.save();
     context.strokeStyle = isHover ? this.comment.color : "white";
     drawLeftBorder(
@@ -389,19 +388,15 @@ class FlashComment extends BaseComment {
     return image;
   }
 
-  protected _isHovered(
-    _posX: number,
-    _posY: number,
-    { left, middle, right }: ButtonList,
-    _cursor?: CursorPos,
-  ) {
-    if (!_cursor) return false;
+  override isHovered(_cursor?: Position, _posX?: number, _posY?: number) {
+    if (!_cursor || !this.comment.buttonObjects) return false;
+    const { left, middle, right } = this.comment.buttonObjects;
     const scale =
       this._globalScale *
       this.comment.scale *
       (this.comment.layer === -1 ? options.scale : 1);
-    const posX = _posX / scale;
-    const posY = _posY / scale;
+    const posX = (_posX ?? this.pos.x) / scale;
+    const posY = (_posY ?? this.pos.y) / scale;
     const cursor = {
       x: _cursor.x / scale,
       y: _cursor.y / scale,

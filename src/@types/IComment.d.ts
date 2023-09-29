@@ -1,8 +1,8 @@
 import type {
   Canvas,
   CommentLoc,
-  CursorPos,
   FormattedCommentWithSize,
+  Position,
 } from "@/@types/";
 
 export interface IComment {
@@ -20,5 +20,6 @@ export interface IComment {
   mail: string[];
   content: string;
   image?: Canvas | null;
-  draw: (vpos: number, showCollision: boolean, cursor?: CursorPos) => void;
+  draw: (vpos: number, showCollision: boolean, cursor?: Position) => void;
+  isHovered: (cursor?: Position, posX?: number, posY?: number) => boolean;
 }

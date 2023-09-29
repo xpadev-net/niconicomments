@@ -315,6 +315,9 @@ class HTML5Comment extends BaseComment {
   override getButtonImage() {
     return undefined;
   }
+  override isHovered() {
+    return false;
+  }
 }
 
 export { HTML5Comment };

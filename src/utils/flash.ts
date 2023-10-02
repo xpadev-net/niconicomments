@@ -275,7 +275,8 @@ const buildAtButtonComment = (
   comment: FormattedCommentWithSize,
   vpos: number,
 ): FormattedComment | undefined => {
-  if (!comment.button) return;
+  if (!comment.button || comment.button.limit <= 0) return;
+  comment.button.limit -= 1;
   const mail = [...comment.button.commentMail];
   if (!comment.button.commentVisible) {
     mail.push("invisible");

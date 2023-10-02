@@ -291,6 +291,7 @@ const buildAtButtonComment = (
     mail,
     user_id: -10,
     layer: -1,
+    is_my_post: true,
   };
 };
 

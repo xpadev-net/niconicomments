@@ -60,6 +60,7 @@ const typeGuard = {
         "mail",
         "user_id",
         "layer",
+        "is_my_post",
       ]),
     comments: (i: unknown): i is FormattedComment[] => {
       if (typeof i !== "object") return false;

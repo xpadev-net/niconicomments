@@ -220,12 +220,11 @@ class NiconiComments {
       pv.push(createCommentInstance(val, this.context));
       return pv;
     }, []);
-    console.log(comments);
     for (const plugin of plugins) {
       try {
         plugin.instance.addComments?.(comments);
       } catch (e) {
-        console.error("Failed to add comments");
+        console.error("Failed to add comments", e);
       }
     }
     for (const comment of comments) {
@@ -462,6 +461,7 @@ class NiconiComments {
     for (const comment of comments) {
       if (comment.isHovered(pos)) {
         const newComment = buildAtButtonComment(comment.comment, vpos);
+        console.log(newComment);
         if (!newComment) continue;
         this.addComments(newComment);
       }

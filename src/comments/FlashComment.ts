@@ -320,7 +320,6 @@ class FlashComment extends BaseComment {
       leftOffset = 0,
       lineCount = 0,
       isLastButton = false;
-    console.log(this.comment);
     for (const item of this.comment.content) {
       const font = item.font ?? this.comment.font;
       if (lastFont !== font) {

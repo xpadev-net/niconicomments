@@ -1,4 +1,4 @@
-import type { IComment } from "@/@types/";
+import type { ButtonList, IComment } from "@/@types/";
 
 export type FormattedCommentWithFont = {
   id: number;
@@ -28,6 +28,7 @@ export type FormattedCommentWithFont = {
   flash: boolean;
   lineCount: number;
   lineOffset: number;
+  button?: ButtonParams;
 };
 export type FormattedCommentWithSize = FormattedCommentWithFont & {
   height: number;
@@ -40,6 +41,7 @@ export type FormattedCommentWithSize = FormattedCommentWithFont & {
   charSize: number;
   scale: number;
   scaleX: number;
+  buttonObjects?: ButtonList;
 };
 export type ParseContentResult = {
   content: CommentContentItem[];
@@ -61,10 +63,12 @@ export type ParseCommandAndNicoScriptResult = {
   _live: boolean;
   invisible: boolean;
   long: number;
+  button?: ButtonParams;
 };
 export type CommentContentItem = {
   content: string;
   slicedContent: string[];
+  isButton?: boolean;
   font?: CommentFlashFont;
   width?: number[];
 };
@@ -159,6 +163,21 @@ export type MeasureTextResult = {
   scaleX: number;
   scale: number;
 };
+
+export type ButtonParams = {
+  message: {
+    before: string;
+    body: string;
+    after: string;
+  }; //表示するボタンの内容
+  commentMessage: string; //コメントの内容
+  commentMail: string[]; //コメントのコマンド → 未指定時は色のみ継承
+  commentVisible: boolean; //コメントを投稿するか
+  limit: number; //ボタンの使用上限
+  local: boolean; //ローカルコメントか
+  hidden: boolean; //通常のコメントのように表示するか
+};
+
 export type ParsedCommand = {
   loc: CommentLoc | undefined;
   size: CommentSize | undefined;
@@ -173,22 +192,13 @@ export type ParsedCommand = {
   _live: boolean;
   invisible: boolean;
   long: number | undefined;
-  button: boolean;
+  button?: ButtonParams;
 };
 
-export type MeasureTextInput = {
-  content: CommentContentItem[];
+export type MeasureTextInput = FormattedCommentWithFont & {
   resized?: boolean;
-  ender: boolean;
-  size: CommentSize;
-  fontSize: number;
   resizedY?: boolean;
   resizedX?: boolean;
-  font: CommentFont;
-  loc: CommentLoc;
-  full: boolean;
-  flash: boolean;
-  lineCount: number;
   lineHeight?: number;
   charSize?: number;
   scale: number;

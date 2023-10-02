@@ -8,8 +8,10 @@ import type {
   MeasureTextInput,
   MeasureTextResult,
   ParseContentResult,
+  Position,
 } from "@/@types/";
 import { imageCache } from "@/contexts";
+import { isDebug } from "@/contexts/debug";
 import { config } from "@/definition/config";
 import { NotImplementedError } from "@/errors/";
 import { getPosX, isBanActive, isReverseActive, parseFont } from "@/utils";
@@ -22,9 +24,14 @@ class BaseComment implements IComment {
   protected readonly context: Context2D;
   protected cacheKey: string;
   public comment: FormattedCommentWithSize;
+  public pos: {
+    x: number;
+    y: number;
+  };
   public posY: number;
   public readonly pluginName: string = "BaseComment";
   public image?: Canvas | null;
+  public buttonImage?: Canvas | null;
 
   /**
    * コンストラクタ
@@ -34,6 +41,7 @@ class BaseComment implements IComment {
   constructor(comment: FormattedComment, context: Context2D) {
     this.context = context;
     this.posY = 0;
+    this.pos = { x: 0, y: 0 };
     comment.content = comment.content.replace(/\t/g, "\u2003\u2003");
     this.comment = this.convertComment(comment);
     this.cacheKey =
@@ -142,9 +150,9 @@ class BaseComment implements IComment {
    * コメントを描画する
    * @param vpos vpos
    * @param showCollision 当たり判定を表示するか
-   * @param debug デバッグ情報を表示するか
+   * @param cursor カーソルの位置
    */
-  public draw(vpos: number, showCollision: boolean, debug: boolean) {
+  public draw(vpos: number, showCollision: boolean, cursor?: Position) {
     if (isBanActive(vpos)) return;
     const reverse = isReverseActive(vpos, this.comment.owner);
     const posX = getPosX(this.comment, vpos, reverse);
@@ -152,19 +160,24 @@ class BaseComment implements IComment {
       this.comment.loc === "shita"
         ? config.canvasHeight - this.posY - this.comment.height
         : this.posY;
+    this.pos = {
+      x: posX,
+      y: posY,
+    };
     this._drawBackgroundColor(posX, posY);
-    this._draw(posX, posY);
+    this._draw(posX, posY, cursor);
     this._drawRectColor(posX, posY);
     this._drawCollision(posX, posY, showCollision);
-    this._drawDebugInfo(posX, posY, debug);
+    this._drawDebugInfo(posX, posY);
   }
 
   /**
    * コメント本体を描画する
    * @param posX 描画位置
    * @param posY 描画位置
+   * @param cursor カーソルの位置
    */
-  protected _draw(posX: number, posY: number) {
+  protected _draw(posX: number, posY: number, cursor?: Position) {
     if (this.image === undefined) {
       this.image = this.getTextImage();
     }
@@ -174,6 +187,10 @@ class BaseComment implements IComment {
         this.context.globalAlpha = config.contextFillLiveOpacity;
       } else {
         this.context.globalAlpha = 1;
+      }
+      if (this.comment.button && !this.comment.button.hidden) {
+        const button = this.getButtonImage(posX, posY, cursor);
+        button && drawImage(this.context, button, posX, posY);
       }
       drawImage(this.context, this.image, posX, posY);
       this.context.restore();
@@ -222,10 +239,9 @@ class BaseComment implements IComment {
    * コメントのメタデータを描画する
    * @param posX 描画位置
    * @param posY 描画位置
-   * @param debug デバッグモードかどうか
    */
-  protected _drawDebugInfo(posX: number, posY: number, debug: boolean) {
-    if (debug) {
+  protected _drawDebugInfo(posX: number, posY: number) {
+    if (isDebug) {
       this.context.save();
       const font = this.context.font;
       const fillStyle = this.context.fillStyle;
@@ -335,6 +351,25 @@ class BaseComment implements IComment {
       image,
       context,
     };
+  }
+
+  protected getButtonImage(
+    posX: number,
+    posY: number,
+    cursor?: Position,
+  ): Canvas | undefined {
+    console.error(
+      "getButtonImage method is not implemented",
+      posX,
+      posY,
+      cursor,
+    );
+    throw new NotImplementedError(this.pluginName, "getButtonImage");
+  }
+
+  public isHovered(cursor?: Position, posX?: number, posY?: number): boolean {
+    console.error("isHovered method is not implemented", posX, posY, cursor);
+    throw new NotImplementedError(this.pluginName, "getButtonImage");
   }
 }
 

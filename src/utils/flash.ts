@@ -1,6 +1,15 @@
-import type { CommentContentIndex, CommentFlashFont } from "@/@types";
-import { CommentContentItem, CommentFlashFontParsed } from "@/@types";
+import type {
+  ButtonPartLeft,
+  ButtonPartMiddle,
+  CommentContentIndex,
+  CommentContentItem,
+  CommentFlashFont,
+  CommentFlashFontParsed,
+  FormattedComment,
+  FormattedCommentWithSize,
+} from "@/@types";
 import { config } from "@/definition/config";
+import { getConfig } from "@/utils/config";
 import { nativeSort } from "@/utils/sort";
 
 /**
@@ -50,13 +59,11 @@ const getFlashFontName = (font: CommentFlashFontParsed): CommentFlashFont => {
  */
 const parseContent = (content: string) => {
   const results: CommentContentItem[] = [];
-  const lines = (content.match(/\n|[^\n]+/g) || []).map((val) =>
-    Array.from(val.match(/[ -~｡-ﾟ]+|[^ -~｡-ﾟ]+/g) || []),
-  );
+  const lines = Array.from(content.match(/\n|[^\n]+/g) ?? []);
   for (const line of lines) {
     const lineContent = parseLine(line);
     const firstContent = lineContent[0];
-    if (firstContent && firstContent.font) {
+    if (firstContent?.font) {
       results.push(
         ...lineContent.map((val) => {
           if (!val.font) {
@@ -77,9 +84,10 @@ const parseContent = (content: string) => {
  * @param line 1行分のコメントの内容
  * @returns パースしたコメントの内容
  */
-const parseLine = (line: string[]) => {
+const parseLine = (line: string) => {
+  const parts = Array.from(line.match(/[ -~｡-ﾟ]+|[^ -~｡-ﾟ]+/g) ?? []);
   const lineContent: CommentContentItem[] = [];
-  for (const part of line) {
+  for (const part of parts) {
     if (part.match(/[ -~｡-ﾟ]+/g) !== null) {
       lineContent.push({ content: part, slicedContent: part.split("\n") });
       continue;
@@ -180,4 +188,118 @@ const parseMultiFontFullWidthPart = (
   });
 };
 
-export { getFlashFontIndex, getFlashFontName, parseContent };
+const getButtonParts = (
+  comment: FormattedCommentWithSize,
+): FormattedCommentWithSize => {
+  let leftParts: ButtonPartLeft | undefined = undefined;
+  const parts: ButtonPartMiddle[] = [];
+  const atButtonPadding = getConfig(config.atButtonPadding, true);
+  const lineOffset = comment.lineOffset;
+  const lineHeight = comment.fontSize * comment.lineHeight;
+  const offsetKey = comment.resizedY ? "resized" : "default";
+  const offsetY =
+    config.commentYPaddingTop[offsetKey] +
+    comment.fontSize *
+      comment.lineHeight *
+      config.commentYOffset[comment.size][offsetKey];
+  let leftOffset = 0,
+    lineCount = 0,
+    isLastButton = false;
+  for (const item of comment.content) {
+    const lines = item.slicedContent;
+    for (let j = 0, n = lines.length; j < n; j++) {
+      const line = lines[j];
+      if (line === undefined) continue;
+      const posY = (lineOffset + lineCount + 1) * lineHeight + offsetY;
+      const partWidth = item.width[j] ?? 0;
+      if (comment.button && !comment.button.hidden) {
+        if (!isLastButton && item.isButton) {
+          leftParts = {
+            type: "left",
+            left: leftOffset + atButtonPadding,
+            top: posY - lineHeight + atButtonPadding,
+            width: partWidth + atButtonPadding,
+            height: lineHeight,
+          };
+          leftOffset += atButtonPadding * 2;
+        } else if (isLastButton && item.isButton) {
+          parts.push({
+            type: "middle",
+            left: leftOffset,
+            top: posY - lineHeight + atButtonPadding,
+            width: partWidth,
+            height: lineHeight,
+          });
+        } else if (isLastButton && !item.isButton) {
+          if (leftParts) {
+            comment.buttonObjects = {
+              left: leftParts,
+              middle: parts,
+              right: {
+                type: "right",
+                right: leftOffset + atButtonPadding,
+                top: posY - lineHeight + atButtonPadding,
+                height: lineHeight,
+              },
+            };
+          }
+          return comment;
+        }
+      }
+      if (j < n - 1) {
+        leftOffset = 0;
+        lineCount += 1;
+        continue;
+      }
+      leftOffset += partWidth;
+    }
+    isLastButton = !!item.isButton;
+  }
+  if (comment.button && !comment.button.hidden && isLastButton && leftParts) {
+    const posY = (lineOffset + lineCount + 1) * lineHeight + offsetY;
+    comment.buttonObjects = {
+      left: leftParts,
+      middle: parts,
+      right: {
+        type: "right",
+        right: leftOffset + atButtonPadding,
+        top: posY - lineHeight + atButtonPadding,
+        height: lineHeight,
+      },
+    };
+  }
+  return comment;
+};
+
+const buildAtButtonComment = (
+  comment: FormattedCommentWithSize,
+  vpos: number,
+): FormattedComment | undefined => {
+  if (!comment.button || comment.button.limit <= 0) return;
+  comment.button.limit -= 1;
+  const mail = [...comment.button.commentMail];
+  if (!comment.button.commentVisible) {
+    mail.push("invisible");
+  }
+  return {
+    id: -1,
+    vpos,
+    content: comment.button.commentMessage,
+    date: -1,
+    date_usec: -1,
+    owner: false,
+    premium: true,
+    mail,
+    user_id: -10,
+    layer: -1,
+    is_my_post: true,
+  };
+};
+
+export {
+  buildAtButtonComment,
+  getButtonParts,
+  getFlashFontIndex,
+  getFlashFontName,
+  parseContent,
+};

@@ -4,7 +4,7 @@ import type {
   IPluginConstructor,
   PlatformFont,
 } from "@/@types/";
-import { BaseComment } from "@/comments/";
+import type { BaseComment } from "@/comments/";
 
 export type ConfigItem<T> = T | MultiConfigItem<T>;
 export type MultiConfigItem<T> = { html5: T; flash: T };
@@ -80,6 +80,8 @@ export type BaseConfig = {
   hideCommentOrder: "asc" | "desc";
   lineBreakCount: { [key in CommentSize]: number };
   nakaCommentSpeedOffset: number;
+  atButtonPadding: number;
+  atButtonRadius: number;
 };
 
 export type Config = Partial<BaseConfig>;

@@ -1,4 +1,4 @@
-import { Context2D, FormattedComment } from "@/@types";
+import type { Context2D, FormattedComment } from "@/@types";
 import { HTML5Comment } from "@/comments";
 import { config } from "@/definition/config";
 

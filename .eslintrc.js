@@ -22,13 +22,13 @@ module.exports = {
   rules: {
     "@typescript-eslint/restrict-template-expressions": "off",
     "@typescript-eslint/unbound-method": "off",
+    "@typescript-eslint/consistent-type-imports": "error",
     "@typescript-eslint/no-unused-vars": "error",
     "no-unused-vars": "off",
     "no-control-regex": "off",
     "simple-import-sort/imports": "error",
     "simple-import-sort/exports": "error",
     "@typescript-eslint/typedef": "error",
-    "jsdoc/require-returns-check": "off",
-    "@typescript-eslint/no-var-requires": "off",
+    "jsdoc/require-returns-check": "off"
   },
 };

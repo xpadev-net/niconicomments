@@ -1,4 +1,5 @@
-import { expect, Page, test } from "@playwright/test";
+import type { Page } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 test("0(レッツゴー陰陽師)", async ({ page }) => {
   await compare(page, 0, 20);

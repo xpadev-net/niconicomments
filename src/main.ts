@@ -3,6 +3,7 @@ import type {
   Collision,
   CommentEventHandlerMap,
   Context2D,
+  Position,
   FormattedComment,
   IComment,
   InputFormat,
@@ -17,6 +18,7 @@ import {
   resetNicoScripts,
   setPlugins,
 } from "@/contexts/";
+import { isDebug, setIsDebug } from "@/contexts/debug";
 import {
   config,
   defaultConfig,
@@ -32,6 +34,7 @@ import convert2formattedComment from "@/inputParser";
 import typeGuard from "@/typeGuard";
 import {
   ArrayEqual,
+  buildAtButtonComment,
   changeCALayer,
   hex2rgb,
   isFlashComment,
@@ -43,8 +46,6 @@ import { generateCanvas, getContext } from "@/utils/canvas";
 import { createCommentInstance } from "@/utils/plugins";
 
 import * as internal from "./internal";
-
-let isDebug = false;
 
 class NiconiComments {
   public enableLegacyPiP: boolean;
@@ -78,7 +79,7 @@ class NiconiComments {
       throw new InvalidOptionError();
     setOptions(Object.assign(defaultOptions, initOptions));
     setConfig(Object.assign(defaultConfig, options.config));
-    isDebug = options.debug;
+    setIsDebug(options.debug);
     resetImageCache();
     resetNicoScripts();
     this.canvas = canvas;
@@ -108,7 +109,7 @@ class NiconiComments {
     }
 
     const parsedData = convert2formattedComment(data, formatType);
-    this.video = options.video || undefined;
+    this.video = options.video ?? undefined;
     this.showCollision = options.showCollision;
     this.showFPS = options.showFPS;
     this.showCommentCount = options.showCommentCount;
@@ -136,7 +137,7 @@ class NiconiComments {
     if (options.keepCA) {
       rawData = changeCALayer(rawData);
     }
-    const instances = rawData.reduce<IComment[]>((pv, val) => {
+    let instances = rawData.reduce<IComment[]>((pv, val) => {
       pv.push(createCommentInstance(val, this.context));
       return pv;
     }, []);
@@ -147,10 +148,14 @@ class NiconiComments {
     for (const plugin of config.plugins) {
       try {
         const canvas = generateCanvas();
+        const pluginInstance = new plugin(canvas, instances);
         plugins.push({
           canvas,
-          instance: new plugin(canvas, instances),
+          instance: pluginInstance,
         });
+        if (pluginInstance.transformComments) {
+          instances = pluginInstance.transformComments(instances);
+        }
       } catch (e) {
         console.error("Failed to init plugin");
       }
@@ -215,9 +220,10 @@ class NiconiComments {
       pv.push(createCommentInstance(val, this.context));
       return pv;
     }, []);
+    console.log(comments);
     for (const plugin of plugins) {
       try {
-        plugin.instance.addComments(comments);
+        plugin.instance.addComments?.(comments);
       } catch (e) {
         console.error("Failed to add comments");
       }
@@ -240,9 +246,14 @@ class NiconiComments {
    * キャンバスを描画する
    * @param vpos 動画の現在位置の100倍 ニコニコから吐き出されるコメントの位置情報は主にこれ
    * @param forceRendering キャッシュを使用せずに再描画を強制するか
+   * @param cursor カーソルの位置
    * @returns 再描画されたか
    */
-  public drawCanvas(vpos: number, forceRendering = false): boolean {
+  public drawCanvas(
+    vpos: number,
+    forceRendering = false,
+    cursor?: Position,
+  ): boolean {
     const drawCanvasStart = performance.now();
     if (this.lastVpos === vpos && !forceRendering) return false;
     triggerHandler(vpos, this.lastVpos);
@@ -256,23 +267,23 @@ class NiconiComments {
     ) {
       const current = timelineRange.filter((item) => item.loc !== "naka"),
         last =
-          this.timeline[this.lastVpos]?.filter((item) => item.loc !== "naka") ||
+          this.timeline[this.lastVpos]?.filter((item) => item.loc !== "naka") ??
           [];
       if (ArrayEqual(current, last)) return false;
     }
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.lastVpos = vpos;
     this._drawVideo();
-    this._drawCollision(vpos);
-    this._drawComments(timelineRange, vpos);
     for (const plugin of plugins) {
       try {
-        plugin.instance.draw(vpos);
+        plugin.instance.draw?.(vpos);
         this.context.drawImage(plugin.canvas, 0, 0);
       } catch (e) {
         console.error(`Failed to draw comments`);
       }
     }
+    this._drawCollision(vpos);
+    this._drawComments(timelineRange, vpos, cursor);
     this._drawFPS(drawCanvasStart);
     this._drawCommentCount(timelineRange?.length);
     logger(`drawCanvas complete: ${performance.now() - drawCanvasStart}ms`);
@@ -308,8 +319,13 @@ class NiconiComments {
    * コメントを描画する
    * @param timelineRange 指定されたvposに存在するコメント
    * @param vpos vpos
+   * @param cursor カーソルの位置
    */
-  private _drawComments(timelineRange: IComment[] | undefined, vpos: number) {
+  private _drawComments(
+    timelineRange: IComment[] | undefined,
+    vpos: number,
+    cursor?: Position,
+  ) {
     if (timelineRange) {
       const targetComment = (() => {
         if (config.commentLimit === undefined) {
@@ -324,7 +340,7 @@ class NiconiComments {
         if (comment.invisible) {
           continue;
         }
-        comment.draw(vpos, this.showCollision, isDebug);
+        comment.draw(vpos, this.showCollision, cursor);
       }
     }
   }
@@ -395,8 +411,8 @@ class NiconiComments {
       this.context.strokeStyle = `rgba(${hex2rgb(
         config.contextStrokeColor,
       ).join(",")},${config.contextStrokeOpacity})`;
-      this.context.strokeText(`Count:${count || 0}`, 100, 200);
-      this.context.fillText(`Count:${count || 0}`, 100, 200);
+      this.context.strokeText(`Count:${count ?? 0}`, 100, 200);
+      this.context.fillText(`Count:${count ?? 0}`, 100, 200);
       this.context.restore();
     }
   }
@@ -432,6 +448,24 @@ class NiconiComments {
    */
   public clear() {
     this.context.clearRect(0, 0, config.canvasWidth, config.canvasHeight);
+  }
+
+  /**
+   * \@ボタンの呼び出し用
+   * @param vpos 再生位置
+   * @param pos カーソルの位置
+   */
+  public click(vpos: number, pos: Position) {
+    const _comments = this.timeline[vpos];
+    if (!_comments) return;
+    const comments = [..._comments].reverse();
+    for (const comment of comments) {
+      if (comment.isHovered(pos)) {
+        const newComment = buildAtButtonComment(comment.comment, vpos);
+        if (!newComment) continue;
+        this.addComments(newComment);
+      }
+    }
   }
 }
 

@@ -1,4 +1,5 @@
 import type {
+  ButtonParams,
   Canvas,
   CommentContentItem,
   Context2D,
@@ -7,11 +8,13 @@ import type {
   FormattedCommentWithSize,
   MeasureTextInput,
   MeasureTextResult,
+  Position,
 } from "@/@types/";
 import { config, options } from "@/definition/config";
 import { TypeGuardError } from "@/errors/TypeGuardError";
 import typeGuard from "@/typeGuard";
 import {
+  getButtonParts,
   getConfig,
   getStrokeColor,
   isLineBreakResize,
@@ -19,15 +22,25 @@ import {
   parseContent,
   parseFont,
 } from "@/utils";
+import {
+  drawLeftBorder,
+  drawMiddleBorder,
+  drawRightBorder,
+} from "@/utils/border";
 
 import { BaseComment } from "./BaseComment";
 
 class FlashComment extends BaseComment {
   private _globalScale: number;
   override readonly pluginName: string = "FlashComment";
+  override buttonImage: Canvas;
+  protected buttonContext: Context2D;
   constructor(comment: FormattedComment, context: Context2D) {
     super(comment, context);
     this._globalScale ??= getConfig(config.commentScale, true);
+    const button = this.createCanvas();
+    this.buttonImage = button.image;
+    this.buttonContext = button.context;
   }
 
   override get content() {
@@ -43,7 +56,7 @@ class FlashComment extends BaseComment {
       lineOffset,
     };
     const val = content[0];
-    if (val && val.font) {
+    if (val?.font) {
       comment.font = val.font;
     }
     this.comment = this.getCommentSize(comment);
@@ -56,7 +69,9 @@ class FlashComment extends BaseComment {
 
   override convertComment(comment: FormattedComment): FormattedCommentWithSize {
     this._globalScale = getConfig(config.commentScale, true);
-    return this.getCommentSize(this.parseCommandAndNicoscript(comment));
+    return getButtonParts(
+      this.getCommentSize(this.parseCommandAndNicoscript(comment)),
+    );
   }
 
   /**
@@ -91,6 +106,9 @@ class FlashComment extends BaseComment {
       measure.width *= options.scale;
     }
     this.context.restore();
+    if (parsedData.button && !parsedData.button.hidden) {
+      measure.width += getConfig(config.atButtonPadding, true) * 4;
+    }
     return {
       ...parsedData,
       height: measure.height * this._globalScale,
@@ -113,9 +131,10 @@ class FlashComment extends BaseComment {
     const data = parseCommandAndNicoScript(comment);
     const { content, lineCount, lineOffset } = this.parseContent(
       comment.content,
+      data.button,
     );
     const val = content[0];
-    if (val && val.font) {
+    if (val?.font) {
       data.font = val.font;
     }
     return {
@@ -128,17 +147,24 @@ class FlashComment extends BaseComment {
     };
   }
 
-  override parseContent(input: string) {
-    const content: CommentContentItem[] = parseContent(input);
-    const lineCount = content.reduce((pv, val) => {
-      return pv + (val.content.match(/\n/g)?.length || 0);
-    }, 1);
+  override parseContent(input: string, button?: ButtonParams) {
+    const content: CommentContentItem[] = button
+      ? [
+          ...parseContent(button.message.before),
+          ...parseContent(button.message.body).map((val) => {
+            val.isButton = true;
+            return val;
+          }),
+          ...parseContent(button.message.after),
+        ]
+      : parseContent(input);
+    const lineCount = (input.match(/\n/g)?.length ?? 0) + 1;
     const lineOffset =
-      (input.match(new RegExp(config.FlashScriptChar.super, "g"))?.length ||
+      (input.match(new RegExp(config.FlashScriptChar.super, "g"))?.length ??
         0) *
         -1 *
         config.scriptCharOffset +
-      (input.match(new RegExp(config.FlashScriptChar.sub, "g"))?.length || 0) *
+      (input.match(new RegExp(config.FlashScriptChar.sub, "g"))?.length ?? 0) *
         config.scriptCharOffset;
     return {
       content,
@@ -219,7 +245,7 @@ class FlashComment extends BaseComment {
       const widths: number[] = [];
 
       this.context.font = parseFont(
-        item.font || comment.font,
+        item.font ?? comment.font,
         comment.fontSize,
       );
       for (let i = 0, n = lines.length; i < n; i++) {
@@ -280,8 +306,135 @@ class FlashComment extends BaseComment {
 
   override _generateTextImage(): Canvas {
     const { image, context } = this.createCanvas();
+    this._setupCanvas(image, context);
+    const atButtonPadding = getConfig(config.atButtonPadding, true);
+    const lineOffset = this.comment.lineOffset;
+    const lineHeight = this.comment.fontSize * this.comment.lineHeight;
+    const offsetKey = this.comment.resizedY ? "resized" : "default";
+    const offsetY =
+      config.commentYPaddingTop[offsetKey] +
+      this.comment.fontSize *
+        this.comment.lineHeight *
+        config.commentYOffset[this.comment.size][offsetKey];
+    let lastFont = this.comment.font,
+      leftOffset = 0,
+      lineCount = 0,
+      isLastButton = false;
+    console.log(this.comment);
+    for (const item of this.comment.content) {
+      const font = item.font ?? this.comment.font;
+      if (lastFont !== font) {
+        lastFont = font;
+        context.font = parseFont(font, this.comment.fontSize);
+      }
+      const lines = item.slicedContent;
+      for (let j = 0, n = lines.length; j < n; j++) {
+        const line = lines[j];
+        if (line === undefined) continue;
+        const posY = (lineOffset + lineCount + 1) * lineHeight + offsetY;
+        const partWidth = item.width[j] ?? 0;
+        if (this.comment.button && !this.comment.button.hidden) {
+          if (!isLastButton && item.isButton) {
+            leftOffset += atButtonPadding * 2;
+          } else if (isLastButton && !item.isButton) {
+            leftOffset += atButtonPadding * 2;
+          }
+        }
+        context.strokeText(line, leftOffset, posY);
+        context.fillText(line, leftOffset, posY);
+        if (j < n - 1) {
+          leftOffset = 0;
+          lineCount += 1;
+          continue;
+        }
+        leftOffset += partWidth;
+      }
+      isLastButton = !!item.isButton;
+    }
+    return image;
+  }
+
+  override getButtonImage(posX: number, posY: number, cursor?: Position) {
+    if (!this.comment.button || this.comment.button.hidden) return undefined;
+    const { image, context } = this._setupCanvas(
+      this.buttonImage,
+      this.buttonContext,
+    );
+    const parts = this.comment.buttonObjects;
+    if (!parts) return undefined;
+    const atButtonRadius = getConfig(config.atButtonRadius, true);
+    const isHover = this.isHovered(cursor, posX, posY);
+    context.save();
+    context.strokeStyle = isHover ? this.comment.color : "white";
+    drawLeftBorder(
+      context,
+      parts.left.left,
+      parts.left.top,
+      parts.left.width,
+      parts.left.height,
+      atButtonRadius,
+    );
+    for (const part of parts.middle) {
+      drawMiddleBorder(context, part.left, part.top, part.width, part.height);
+    }
+    drawRightBorder(
+      context,
+      parts.right.right,
+      parts.right.top,
+      parts.right.height,
+      atButtonRadius,
+    );
+    context.restore();
+    return image;
+  }
+
+  override isHovered(_cursor?: Position, _posX?: number, _posY?: number) {
+    if (!_cursor || !this.comment.buttonObjects) return false;
+    const { left, middle, right } = this.comment.buttonObjects;
+    const scale =
+      this._globalScale *
+      this.comment.scale *
+      (this.comment.layer === -1 ? options.scale : 1);
+    const posX = (_posX ?? this.pos.x) / scale;
+    const posY = (_posY ?? this.pos.y) / scale;
+    const cursor = {
+      x: _cursor.x / scale,
+      y: _cursor.y / scale,
+    };
+    if (
+      cursor.x < posX ||
+      posX + this.comment.width < cursor.x ||
+      cursor.y < posY + left.top ||
+      posY + right.top + right.height < cursor.y
+    ) {
+      return false;
+    }
+    const atButtonPadding = getConfig(config.atButtonPadding, true);
+    const between = (val: number, min: number, max: number) => {
+      return min < val && val < max;
+    };
+    for (const part of [left, ...middle]) {
+      if (
+        between(cursor.x, posX + part.left, posX + part.left + part.width) &&
+        between(cursor.y, posY + part.top, posY + part.top + part.height)
+      ) {
+        return true;
+      }
+    }
+    return (
+      between(
+        cursor.x,
+        posX + right.right - atButtonPadding,
+        posX + right.right + atButtonPadding * 2,
+      ) && between(cursor.y, posY + right.top, posY + right.top + right.height)
+    );
+  }
+
+  protected _setupCanvas(image: Canvas, context: Context2D) {
+    const atButtonPadding = getConfig(config.atButtonPadding, true);
     image.width = this.comment.width;
-    image.height = this.comment.height;
+    image.height =
+      this.comment.height + (this.comment.button ? atButtonPadding * 2 : 0);
     context.strokeStyle = getStrokeColor(this.comment);
     context.fillStyle = this.comment.color;
     context.textAlign = "start";
@@ -293,41 +446,7 @@ class FlashComment extends BaseComment {
       this.comment.scale *
       (this.comment.layer === -1 ? options.scale : 1);
     context.scale(scale * this.comment.scaleX, scale);
-    const lineOffset = this.comment.lineOffset;
-    const offsetKey = this.comment.resizedY ? "resized" : "default";
-    const offsetY =
-      config.commentYPaddingTop[offsetKey] +
-      this.comment.fontSize *
-        this.comment.lineHeight *
-        config.commentYOffset[this.comment.size][offsetKey];
-    let lastFont = this.comment.font,
-      leftOffset = 0,
-      lineCount = 0;
-    for (const item of this.comment.content) {
-      const font = item.font || this.comment.font;
-      if (lastFont !== font) {
-        lastFont = font;
-        context.font = parseFont(font, this.comment.fontSize);
-      }
-      const lines = item.slicedContent;
-      for (let j = 0, n = lines.length; j < n; j++) {
-        const line = lines[j];
-        if (line === undefined) continue;
-        const posY =
-          (lineOffset + lineCount + 1) *
-            (this.comment.fontSize * this.comment.lineHeight) +
-          offsetY;
-        context.strokeText(line, leftOffset, posY);
-        context.fillText(line, leftOffset, posY);
-        if (j < n - 1) {
-          leftOffset = 0;
-          lineCount += 1;
-          continue;
-        }
-        leftOffset += item.width[j] || 0;
-      }
-    }
-    return image;
+    return { image, context };
   }
 }
 

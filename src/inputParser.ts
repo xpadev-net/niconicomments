@@ -65,14 +65,15 @@ const fromXMLDocument = (data: XMLDocument): FormattedComment[] => {
       mail: [],
       user_id: -1,
       layer: -1,
+      is_my_post: false,
     };
     if (item.getAttribute("mail")) {
-      tmpParam.mail = item.getAttribute("mail")?.split(/\s+/g) || [];
+      tmpParam.mail = item.getAttribute("mail")?.split(/\s+/g) ?? [];
     }
     if (tmpParam.content.startsWith("/") && tmpParam.owner) {
       tmpParam.mail.push("invisible");
     }
-    const userId = item.getAttribute("user_id") || "";
+    const userId = item.getAttribute("user_id") ?? "";
     const isUserExist = userList.indexOf(userId);
     if (isUserExist === -1) {
       tmpParam.user_id = userList.length;
@@ -95,11 +96,12 @@ const fromFormatted = (
   data: FormattedComment[] | FormattedLegacyComment[],
 ): FormattedComment[] => {
   return data.map((comment) => {
-    if (typeGuard.formatted.legacyComment(comment)) {
+    if (!typeGuard.formatted.comment(comment)) {
       return {
         ...comment,
         layer: -1,
         user_id: 0,
+        is_my_post: false,
       };
     }
     return comment;
@@ -129,6 +131,7 @@ const fromLegacy = (data: RawApiResponse[]): FormattedComment[] => {
         mail: [],
         user_id: -1,
         layer: -1,
+        is_my_post: false,
       };
       if (value.mail) {
         tmpParam.mail = value.mail.split(/\s+/g);
@@ -171,7 +174,7 @@ const fromLegacyOwner = (data: string): FormattedComment[] => {
     const tmpParam: FormattedComment = {
       id: i,
       vpos: Number(commentData[0]) * 100,
-      content: commentData[2] || "",
+      content: commentData[2] ?? "",
       date: i,
       date_usec: 0,
       owner: true,
@@ -179,6 +182,7 @@ const fromLegacyOwner = (data: string): FormattedComment[] => {
       mail: [],
       user_id: -1,
       layer: -1,
+      is_my_post: false,
     };
     if (commentData[1]) {
       tmpParam.mail = commentData[1].split(/[\s+]/g);
@@ -212,6 +216,7 @@ const fromOwner = (data: OwnerComment[]): FormattedComment[] => {
       mail: [],
       user_id: -1,
       layer: -1,
+      is_my_post: false,
     };
     if (value.command) {
       tmpParam.mail = value.command.split(/\s+/g);
@@ -248,6 +253,7 @@ const fromV1 = (data: V1Thread[]): FormattedComment[] => {
         mail: value.commands,
         user_id: -1,
         layer: -1,
+        is_my_post: value.isMyPost,
       };
       if (tmpParam.content.startsWith("/") && tmpParam.owner) {
         tmpParam.mail.push("invisible");
@@ -291,9 +297,9 @@ const sort = (data: FormattedComment[]): FormattedComment[] => {
  * @returns vpos
  */
 const time2vpos = (time_str: string): number => {
-  const time = time_str.match(
+  const time = RegExp(
     /^(?:(\d+):(\d+)\.(\d+)|(\d+):(\d+)|(\d+)\.(\d+)|(\d+))$/,
-  );
+  ).exec(time_str);
   if (time) {
     if (
       time[1] !== undefined &&

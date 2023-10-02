@@ -9,6 +9,7 @@ export type FormattedComment = {
   mail: string[];
   user_id: number;
   layer: number;
+  is_my_post: boolean;
 };
 export type FormattedLegacyComment = {
   id: number;

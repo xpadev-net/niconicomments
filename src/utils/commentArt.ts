@@ -1,4 +1,4 @@
-import { FormattedComment } from "@/@types";
+import type { FormattedComment } from "@/@types";
 import { config } from "@/definition/config";
 
 type GroupedByUser = {
@@ -27,7 +27,7 @@ const changeCALayer = (rawData: FormattedComment[]): FormattedComment[] => {
   const filteredComments = removeDuplicateCommentArt(rawData);
   const commentArts = filteredComments.filter(
     (comment) =>
-      (userScoreList[comment.user_id] || 0) >= config.sameCAMinScore &&
+      (userScoreList[comment.user_id] ?? 0) >= config.sameCAMinScore &&
       !comment.owner,
   );
   const commentArtsGroupedByUser = groupCommentsByUser(commentArts);
@@ -58,7 +58,7 @@ const getUsersScore = (
     ) {
       userScoreList[comment.user_id] += 5;
     }
-    const lineCount = (comment.content.match(/\r\n|\n|\r/g) || []).length;
+    const lineCount = (comment.content.match(/\r\n|\n|\r/g) ?? []).length;
     if (lineCount > 2) {
       userScoreList[comment.user_id] += lineCount / 2;
     }
@@ -76,7 +76,7 @@ const removeDuplicateCommentArt = (comments: FormattedComment[]) => {
   return comments.filter((comment) => {
     const key = `${comment.content}@@${[...comment.mail]
         .sort()
-        .filter((e) => !e.match(/@[\d.]+|184|device:.+|patissier|ca/))
+        .filter((e) => !RegExp(/@[\d.]+|184|device:.+|patissier|ca/).exec(e))
         .join("")}`,
       lastComment = index[key];
     if (lastComment === undefined) {

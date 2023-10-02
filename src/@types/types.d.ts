@@ -28,6 +28,7 @@ export type FormattedCommentWithFont = {
   flash: boolean;
   lineCount: number;
   lineOffset: number;
+  is_my_post: boolean;
   button?: ButtonParams;
 };
 export type FormattedCommentWithSize = FormattedCommentWithFont & {

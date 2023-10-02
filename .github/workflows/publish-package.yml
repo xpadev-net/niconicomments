@@ -3,6 +3,7 @@ name: publish package
 on:
   release:
     types: [published]
+  workflow_dispatch:
 
 jobs:
   release:
@@ -17,6 +18,10 @@ jobs:
           registry-url: https://registry.npmjs.org
           always-auth: true
           scope: '@xpadev-net'
+      - name: Install dependencies
+        run: |
+          npm -g install pnpm
+          pnpm install
       - name: Publish package
         run: npm publish
         env:

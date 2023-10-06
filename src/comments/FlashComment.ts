@@ -393,6 +393,7 @@ class FlashComment extends BaseComment {
     const scale =
       this._globalScale *
       this.comment.scale *
+      this.comment.scaleX *
       (this.comment.layer === -1 ? options.scale : 1);
     const posX = (_posX ?? this.pos.x) / scale;
     const posY = (_posY ?? this.pos.y) / scale;

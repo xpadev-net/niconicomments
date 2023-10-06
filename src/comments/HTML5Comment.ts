@@ -282,7 +282,7 @@ class HTML5Comment extends BaseComment {
     context.fillStyle = this.comment.color;
     context.textAlign = "start";
     context.textBaseline = "alphabetic";
-    context.lineWidth = config.contextLineWidth;
+    context.lineWidth = getConfig(config.contextLineWidth, false);
     context.font = parseFont(this.comment.font, fontSize);
     const drawScale =
       getConfig(config.commentScale, false) *

@@ -45,7 +45,10 @@ const initConfig = () => {
     /**
      * 縁取り線の太さ
      */
-    contextLineWidth: 2.8,
+    contextLineWidth: {
+      html5: 2.8,
+      flash: 4,
+    },
 
     /**
      * コメントのリサイズ

@@ -3,12 +3,12 @@ import type {
   Collision,
   CommentEventHandlerMap,
   Context2D,
-  Position,
   FormattedComment,
   IComment,
   InputFormat,
   IPluginList,
   Options,
+  Position,
   Timeline,
 } from "@/@types/";
 import { FlashComment } from "@/comments/";
@@ -36,6 +36,7 @@ import {
   ArrayEqual,
   buildAtButtonComment,
   changeCALayer,
+  getConfig,
   hex2rgb,
   isFlashComment,
   parseFont,
@@ -86,7 +87,7 @@ class NiconiComments {
     this.context = getContext(canvas);
     this.context.textAlign = "start";
     this.context.textBaseline = "alphabetic";
-    this.context.lineWidth = config.contextLineWidth;
+    this.context.lineWidth = getConfig(config.contextLineWidth, false);
     let formatType = options.format;
 
     //Deprecated Warning
@@ -359,7 +360,7 @@ class NiconiComments {
           this.context.fillRect(
             config.collisionRange.left,
             comment.posY,
-            config.contextLineWidth,
+            getConfig(config.contextLineWidth, comment.flash),
             comment.height,
           );
         }
@@ -369,7 +370,7 @@ class NiconiComments {
           this.context.fillRect(
             config.collisionRange.right,
             comment.posY,
-            config.contextLineWidth * -1,
+            getConfig(config.contextLineWidth, comment.flash) * -1,
             comment.height,
           );
         }

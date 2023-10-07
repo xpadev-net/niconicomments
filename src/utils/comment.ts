@@ -245,7 +245,7 @@ const processNicoscript = (
   comment: FormattedComment,
   commands: ParsedCommand,
 ) => {
-  const nicoscript = RegExp(/^[@\uff20](.*)(?:\s(.+))?/).exec(comment.content);
+  const nicoscript = RegExp(/^[@\uff20](\S+)(?:\s(.+))?/).exec(comment.content);
   if (!nicoscript) return;
   if (nicoscript[1] === "\u30dc\u30bf\u30f3" && nicoscript[2]) {
     //ボタン

@@ -48,7 +48,7 @@ export type BaseConfig = {
   commentYOffset: ConfigSizeItem<ConfigResizedItem<number>>;
   commentYPaddingTop: ConfigResizedItem<number>;
   contextFillLiveOpacity: number;
-  contextLineWidth: number;
+  contextLineWidth: ConfigItem<number>;
   contextStrokeColor: string;
   contextStrokeInversionColor: string;
   contextStrokeOpacity: number;

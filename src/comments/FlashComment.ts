@@ -63,7 +63,7 @@ class FlashComment extends BaseComment {
     this.cacheKey =
       JSON.stringify(this.comment.content) +
       `@@${this.pluginName}@@` +
-      [...this.comment.mail].sort().join(",");
+      [...this.comment.mail].sort((a, b) => a.localeCompare(b)).join(",");
     delete this.image;
   }
 
@@ -320,7 +320,6 @@ class FlashComment extends BaseComment {
       leftOffset = 0,
       lineCount = 0,
       isLastButton = false;
-    console.log(this.comment);
     for (const item of this.comment.content) {
       const font = item.font ?? this.comment.font;
       if (lastFont !== font) {
@@ -328,21 +327,25 @@ class FlashComment extends BaseComment {
         context.font = parseFont(font, this.comment.fontSize);
       }
       const lines = item.slicedContent;
-      for (let j = 0, n = lines.length; j < n; j++) {
-        const line = lines[j];
+      for (
+        let lineIndex = 0, lineLength = lines.length;
+        lineIndex < lineLength;
+        lineIndex++
+      ) {
+        const line = lines[lineIndex];
         if (line === undefined) continue;
         const posY = (lineOffset + lineCount + 1) * lineHeight + offsetY;
-        const partWidth = item.width[j] ?? 0;
-        if (this.comment.button && !this.comment.button.hidden) {
-          if (!isLastButton && item.isButton) {
-            leftOffset += atButtonPadding * 2;
-          } else if (isLastButton && !item.isButton) {
-            leftOffset += atButtonPadding * 2;
-          }
+        const partWidth = item.width[lineIndex] ?? 0;
+        if (
+          this.comment.button &&
+          !this.comment.button.hidden &&
+          ((!isLastButton && item.isButton) || (isLastButton && !item.isButton))
+        ) {
+          leftOffset += atButtonPadding * 2;
         }
         context.strokeText(line, leftOffset, posY);
         context.fillText(line, leftOffset, posY);
-        if (j < n - 1) {
+        if (lineIndex < lineLength - 1) {
           leftOffset = 0;
           lineCount += 1;
           continue;
@@ -365,7 +368,12 @@ class FlashComment extends BaseComment {
     const atButtonRadius = getConfig(config.atButtonRadius, true);
     const isHover = this.isHovered(cursor, posX, posY);
     context.save();
-    context.strokeStyle = isHover ? this.comment.color : "white";
+    context.strokeStyle =
+      this.comment.button.limit < 1
+        ? "#777777"
+        : isHover
+        ? this.comment.color
+        : "white";
     drawLeftBorder(
       context,
       parts.left.left,
@@ -394,6 +402,7 @@ class FlashComment extends BaseComment {
     const scale =
       this._globalScale *
       this.comment.scale *
+      this.comment.scaleX *
       (this.comment.layer === -1 ? options.scale : 1);
     const posX = (_posX ?? this.pos.x) / scale;
     const posY = (_posY ?? this.pos.y) / scale;
@@ -425,7 +434,7 @@ class FlashComment extends BaseComment {
       between(
         cursor.x,
         posX + right.right - atButtonPadding,
-        posX + right.right + atButtonPadding * 2,
+        posX + right.right + getConfig(config.contextLineWidth, true) / 2,
       ) && between(cursor.y, posY + right.top, posY + right.top + right.height)
     );
   }
@@ -439,7 +448,7 @@ class FlashComment extends BaseComment {
     context.fillStyle = this.comment.color;
     context.textAlign = "start";
     context.textBaseline = "alphabetic";
-    context.lineWidth = 4;
+    context.lineWidth = getConfig(config.contextLineWidth, true);
     context.font = parseFont(this.comment.font, this.comment.fontSize);
     const scale =
       this._globalScale *

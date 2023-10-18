@@ -273,21 +273,21 @@ class HTML5Comment extends BaseComment {
     const paddingTop =
       (10 - scale * 10) *
       ((this.comment.lineCount + 1) / config.hiResCommentCorrection);
+    const drawScale =
+      getConfig(config.commentScale, false) *
+      scale *
+      (this.comment.layer === -1 ? options.scale : 1);
     const { image, context } = this.createCanvas();
     image.width = this.comment.width + 2 * 2 * this.comment.charSize;
     image.height =
       this.comment.height +
-      ((paddingTop + 1) * this.comment.lineHeight) / scale;
+      (((paddingTop + 1) * this.comment.lineHeight) / scale) * drawScale;
     context.strokeStyle = getStrokeColor(this.comment);
     context.fillStyle = this.comment.color;
     context.textAlign = "start";
     context.textBaseline = "alphabetic";
     context.lineWidth = getConfig(config.contextLineWidth, false);
     context.font = parseFont(this.comment.font, fontSize);
-    const drawScale =
-      getConfig(config.commentScale, false) *
-      scale *
-      (this.comment.layer === -1 ? options.scale : 1);
     context.scale(drawScale, drawScale);
     let lineCount = 0;
     if (!typeGuard.internal.HTML5Fonts(this.comment.font))

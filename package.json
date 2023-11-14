@@ -72,6 +72,7 @@
     "tslib": "^2.6.2",
     "typedoc": "^0.25.2",
     "typedoc-plugin-missing-exports": "^2.1.0",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "valibot": "^0.20.1"
   }
 }

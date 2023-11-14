@@ -1,3 +1,16 @@
+import type { Output } from "valibot";
+import {
+  array,
+  boolean,
+  intersect,
+  literal,
+  number,
+  object,
+  optional,
+  string,
+  union,
+} from "valibot";
+
 import type { ButtonList, IComment } from "@/@types/";
 
 export type FormattedCommentWithFont = {
@@ -66,16 +79,40 @@ export type ParseCommandAndNicoScriptResult = {
   long: number;
   button?: ButtonParams;
 };
-export type CommentContentItem = {
-  content: string;
-  slicedContent: string[];
-  isButton?: boolean;
-  font?: CommentFlashFont;
-  width?: number[];
-};
-export type CommentMeasuredContentItem = CommentContentItem & {
-  width: number[];
-};
+
+export const ZCommentFont = union([
+  literal("defont"),
+  literal("mincho"),
+  literal("gothic"),
+  literal("gulim"),
+  literal("simsun"),
+]);
+export type CommentFont = Output<typeof ZCommentFont>;
+
+export const ZCommentFlashFont = union([
+  literal("defont"),
+  literal("gulim"),
+  literal("simsun"),
+]);
+export type CommentFlashFont = Output<typeof ZCommentFlashFont>;
+
+export const ZCommentContentItem = object({
+  content: string(),
+  slicedContent: array(string()),
+  isButton: optional(boolean()),
+  font: optional(ZCommentFlashFont),
+  width: optional(array(number())),
+});
+export type CommentContentItem = Output<typeof ZCommentContentItem>;
+export const ZCommentMeasuredContentItem = intersect([
+  ZCommentContentItem,
+  object({
+    width: array(number()),
+  }),
+]);
+export type CommentMeasuredContentItem = Output<
+  typeof ZCommentMeasuredContentItem
+>;
 export type CommentFlashFontParsed =
   | "gothic"
   | "gulim"
@@ -85,10 +122,18 @@ export type CommentContentIndex = {
   index: number;
   font: CommentFlashFontParsed;
 };
-export type CommentFont = "defont" | "mincho" | "gothic" | "gulim" | "simsun";
-export type CommentFlashFont = "defont" | "gulim" | "simsun";
-export type CommentSize = "big" | "medium" | "small";
-export type CommentLoc = "ue" | "naka" | "shita";
+export const ZCommentSize = union([
+  literal("big"),
+  literal("medium"),
+  literal("small"),
+]);
+export type CommentSize = Output<typeof ZCommentSize>;
+export const ZCommentLoc = union([
+  literal("ue"),
+  literal("naka"),
+  literal("shita"),
+]);
+export type CommentLoc = Output<typeof ZCommentLoc>;
 export type Collision = { [key in CollisionPos]: CollisionItem };
 export type Timeline = { [key: number]: IComment[] };
 export type CollisionPos = "ue" | "shita" | "right" | "left";
@@ -205,12 +250,13 @@ export type MeasureTextInput = FormattedCommentWithFont & {
   scale: number;
 };
 
-export type MeasureInput = {
-  font: CommentFont;
-  content: CommentContentItem[];
-  lineHeight: number;
-  charSize: number;
-  lineCount: number;
-};
+export const ZMeasureInput = object({
+  font: ZCommentFont,
+  content: array(ZCommentContentItem),
+  lineHeight: number(),
+  charSize: number(),
+  lineCount: number(),
+});
+export type MeasureInput = Output<typeof ZMeasureInput>;
 
 export type ValueOf<T> = T[keyof T];

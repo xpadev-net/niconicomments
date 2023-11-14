@@ -1,3 +1,5 @@
+import { array, parse, safeParse, ValiError } from "valibot";
+
 import type {
   FormattedComment,
   FormattedLegacyComment,
@@ -5,6 +7,14 @@ import type {
   OwnerComment,
   RawApiResponse,
   V1Thread,
+} from "@/@types/";
+import {
+  ZApiChat,
+  ZFormattedComment,
+  ZFormattedLegacyComment,
+  ZOwnerComment,
+  ZRawApiResponse,
+  ZV1Thread,
 } from "@/@types/";
 import { InvalidFormatError } from "@/errors/";
 import typeGuard from "@/typeGuard";
@@ -20,25 +30,32 @@ const convert2formattedComment = (
   type: InputFormatType,
 ): FormattedComment[] => {
   let result: FormattedComment[] = [];
-  if (type === "empty" && data === undefined) {
-    return [];
-  } else if (
-    (type === "XMLDocument" || type === "niconicome") &&
-    typeGuard.xmlDocument(data)
-  ) {
-    result = fromXMLDocument(data);
-  } else if (type === "formatted" && typeGuard.formatted.legacyComments(data)) {
-    result = fromFormatted(data);
-  } else if (type === "legacy" && typeGuard.legacy.rawApiResponses(data)) {
-    result = fromLegacy(data);
-  } else if (type === "legacyOwner" && typeGuard.legacyOwner.comments(data)) {
-    result = fromLegacyOwner(data);
-  } else if (type === "owner" && typeGuard.owner.comments(data)) {
-    result = fromOwner(data);
-  } else if (type === "v1" && typeGuard.v1.threads(data)) {
-    result = fromV1(data);
-  } else {
-    throw new InvalidFormatError();
+  try {
+    if (type === "empty" && data === undefined) {
+      return [];
+    } else if (
+      (type === "XMLDocument" || type === "niconicome") &&
+      typeGuard.xmlDocument(data)
+    ) {
+      result = fromXMLDocument(data);
+    } else if (type === "formatted") {
+      result = fromFormatted(parse(array(ZFormattedLegacyComment), data));
+    } else if (type === "legacy") {
+      result = fromLegacy(parse(array(ZRawApiResponse), data));
+    } else if (type === "legacyOwner") {
+      if (!typeGuard.legacyOwner.comments(data)) throw new InvalidFormatError();
+      result = fromLegacyOwner(data);
+    } else if (type === "owner") {
+      result = fromOwner(parse(array(ZOwnerComment), data));
+    } else if (type === "v1") {
+      result = fromV1(parse(array(ZV1Thread), data));
+    } else {
+      throw new InvalidFormatError();
+    }
+  } catch (e) {
+    if (e instanceof ValiError) {
+      console.log(e.issues);
+    }
   }
   return sort(result);
 };
@@ -95,16 +112,17 @@ const fromXMLDocument = (data: XMLDocument): FormattedComment[] => {
 const fromFormatted = (
   data: FormattedComment[] | FormattedLegacyComment[],
 ): FormattedComment[] => {
-  return data.map((comment) => {
-    if (!typeGuard.formatted.comment(comment)) {
+  return data.map((_comment) => {
+    const comment = safeParse(ZFormattedComment, _comment);
+    if (!comment.success) {
       return {
-        ...comment,
+        ..._comment,
         layer: -1,
         user_id: 0,
         is_my_post: false,
       };
     }
-    return comment;
+    return comment.output;
   });
 };
 
@@ -116,9 +134,10 @@ const fromFormatted = (
 const fromLegacy = (data: RawApiResponse[]): FormattedComment[] => {
   const data_: FormattedComment[] = [],
     userList: string[] = [];
-  for (const val of data) {
-    if (!typeGuard.legacy.apiChat(val.chat)) continue;
-    const value = val.chat;
+  for (const _val of data) {
+    const val = safeParse(ZApiChat, _val.chat);
+    if (!val.success) continue;
+    const value = val.output;
     if (value.deleted !== 1) {
       const tmpParam: FormattedComment = {
         id: value.no,

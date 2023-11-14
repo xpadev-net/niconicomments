@@ -1,3 +1,5 @@
+import { is } from "valibot";
+
 import type {
   Collision,
   CollisionItem,
@@ -14,6 +16,7 @@ import type {
   ParsedCommand,
   Timeline,
 } from "@/@types/";
+import { ZCommentFont, ZCommentLoc, ZCommentSize } from "@/@types/";
 import { nicoScripts } from "@/contexts/";
 import { colors } from "@/definition/colors";
 import { config, options } from "@/definition/config";
@@ -481,11 +484,11 @@ const parseCommand = (
     result.fillColor ??= fillColor;
     return;
   }
-  if (typeGuard.comment.loc(command)) {
+  if (is(ZCommentLoc, command)) {
     result.loc ??= command;
     return;
   }
-  if (result.size === undefined && typeGuard.comment.size(command)) {
+  if (result.size === undefined && is(ZCommentSize, command)) {
     result.size = command;
     result.fontSize = getConfig(config.fontSize, isFlash)[command].default;
     return;
@@ -499,7 +502,7 @@ const parseCommand = (
     result.color ??= colorCode[0].toUpperCase();
     return;
   }
-  if (typeGuard.comment.font(command)) {
+  if (is(ZCommentFont, command)) {
     result.font ??= command;
     return;
   }

@@ -70,7 +70,7 @@
     "rollup-plugin-dts": "^6.1.0",
     "rollup-plugin-typescript-paths": "^1.4.0",
     "tslib": "^2.6.2",
-    "typedoc": "^0.25.2",
+    "typedoc": "^0.25.3",
     "typedoc-plugin-missing-exports": "^2.1.0",
     "typescript": "^5.2.2",
     "valibot": "^0.20.1"

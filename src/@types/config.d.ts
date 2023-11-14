@@ -39,6 +39,7 @@ export type BaseConfig = {
   canvasHeight: number;
   canvasWidth: number;
   collisionRange: { [key in "left" | "right"]: number };
+  collisionPadding: number;
   colors: { [key: string]: string };
   commentDrawPadding: number;
   commentDrawRange: number;

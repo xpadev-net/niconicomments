@@ -183,6 +183,10 @@ const initConfig = () => {
       right: 1685,
     },
     /**
+     * コメント間の横の余白
+     */
+    collisionPadding: 10,
+    /**
      * 同一CAと判定する投下経過時間の最大値(秒)
      */
     sameCARange: 3600,

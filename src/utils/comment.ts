@@ -623,11 +623,9 @@ const processMovableComment = (
       return (comment.height - config.canvasHeight) / -2;
     }
     let posY = 0;
-    let isChanged = true,
-      count = 0;
-    while (isChanged && count < 10) {
+    let isChanged = true;
+    while (isChanged) {
       isChanged = false;
-      count++;
       for (let j = beforeVpos, n = comment.long + 125; j < n; j++) {
         const vpos = comment.vpos + j;
         const left_pos = getPosX(comment.comment, vpos);
@@ -638,7 +636,7 @@ const processMovableComment = (
         ) {
           const result = getPosY(posY, comment, collision.right[vpos]);
           posY = result.currentPos;
-          isChanged = result.isChanged;
+          isChanged ||= result.isChanged;
           isBreak = result.isBreak;
         }
         if (
@@ -647,7 +645,7 @@ const processMovableComment = (
         ) {
           const result = getPosY(posY, comment, collision.left[vpos]);
           posY = result.currentPos;
-          isChanged = result.isChanged;
+          isChanged ||= result.isChanged;
           isBreak = result.isBreak;
         }
         if (isBreak) return posY;
@@ -660,13 +658,15 @@ const processMovableComment = (
     const left_pos = getPosX(comment.comment, vpos);
     ArrayPush(timeline, vpos, comment);
     if (
-      left_pos + comment.width >= config.collisionRange.right &&
+      left_pos + comment.width + config.collisionPadding >=
+        config.collisionRange.right &&
       left_pos <= config.collisionRange.right
     ) {
       ArrayPush(collision.right, vpos, comment);
     }
     if (
-      left_pos + comment.width >= config.collisionRange.left &&
+      left_pos + comment.width + config.collisionPadding >=
+        config.collisionRange.left &&
       left_pos <= config.collisionRange.left
     ) {
       ArrayPush(collision.left, vpos, comment);
@@ -680,15 +680,16 @@ const processMovableComment = (
  * @param currentPos 現在のy座標
  * @param targetComment 対象コメント
  * @param collision 当たり判定
+ * @param isChanged 位置が変更されたか
  * @returns 現在地、更新されたか、終了すべきか
  */
 const getPosY = (
   currentPos: number,
   targetComment: IComment,
   collision: IComment[] | undefined,
+  isChanged = false,
 ): { currentPos: number; isChanged: boolean; isBreak: boolean } => {
-  let isChanged = false,
-    isBreak = false;
+  let isBreak = false;
   if (!collision) return { currentPos, isChanged, isBreak };
   for (const collisionItem of collision) {
     if (
@@ -716,6 +717,7 @@ const getPosY = (
         isBreak = true;
         break;
       }
+      return getPosY(currentPos, targetComment, collision, true);
     }
   }
   return { currentPos, isChanged, isBreak };

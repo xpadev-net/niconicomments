@@ -10,14 +10,14 @@ import {
 } from "valibot";
 
 export const ZFormattedComment = object({
-  id: number(),
-  vpos: number(),
-  content: string(),
-  date: number(),
+  id: optional(number(), 0),
+  vpos: optional(number(), 0),
+  content: optional(string(), ""),
+  date: optional(number(), 0),
   date_usec: optional(number(), 0),
-  owner: boolean(),
-  premium: boolean(),
-  mail: array(string()),
+  owner: optional(boolean(), false),
+  premium: optional(boolean(), false),
+  mail: optional(array(string()), []),
   user_id: optional(number(), 0),
   layer: optional(number(), -1),
   is_my_post: optional(boolean(), false),

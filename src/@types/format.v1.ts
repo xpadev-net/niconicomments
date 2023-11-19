@@ -5,8 +5,9 @@ import {
   nullable,
   number,
   object,
+  optional,
   string,
-  union,
+  unknown,
 } from "valibot";
 
 export const ZV1Comment = object({
@@ -27,9 +28,9 @@ export const ZV1Comment = object({
 export type V1Comment = Output<typeof ZV1Comment>;
 
 export const ZV1Thread = object({
-  id: union([number(), string()]),
+  id: unknown(),
   fork: string(),
-  commentCount: number(),
+  commentCount: optional(number(), 0),
   comments: array(ZV1Comment),
 });
 export type V1Thread = Output<typeof ZV1Thread>;

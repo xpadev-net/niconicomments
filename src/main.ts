@@ -279,7 +279,7 @@ class NiconiComments {
         plugin.instance.draw?.(vpos);
         this.context.drawImage(plugin.canvas, 0, 0);
       } catch (e) {
-        console.error(`Failed to draw comments`);
+        console.error(`Failed to draw comments`, e);
       }
     }
     this._drawCollision(vpos);
@@ -462,7 +462,6 @@ class NiconiComments {
     for (const comment of comments) {
       if (comment.isHovered(pos)) {
         const newComment = buildAtButtonComment(comment.comment, vpos);
-        console.log(newComment);
         if (!newComment) continue;
         this.addComments(newComment);
       }

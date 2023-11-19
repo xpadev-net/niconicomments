@@ -1,5 +1,13 @@
 import type { Output } from "valibot";
-import { array, boolean, null_, number, object, string, union } from "valibot";
+import {
+  array,
+  boolean,
+  nullable,
+  number,
+  object,
+  string,
+  union,
+} from "valibot";
 
 export const ZV1Comment = object({
   id: string(),
@@ -12,14 +20,14 @@ export const ZV1Comment = object({
   score: number(),
   postedAt: string(),
   nicoruCount: number(),
-  nicoruId: union([string(), null_()]),
+  nicoruId: nullable(string()),
   source: string(),
   isMyPost: boolean(),
 });
 export type V1Comment = Output<typeof ZV1Comment>;
 
 export const ZV1Thread = object({
-  id: number(),
+  id: union([number(), string()]),
   fork: string(),
   commentCount: number(),
   comments: array(ZV1Comment),

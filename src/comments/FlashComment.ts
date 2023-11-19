@@ -368,12 +368,16 @@ class FlashComment extends BaseComment {
     const atButtonRadius = getConfig(config.atButtonRadius, true);
     const isHover = this.isHovered(cursor, posX, posY);
     context.save();
-    context.strokeStyle =
-      this.comment.button.limit < 1
-        ? "#777777"
-        : isHover
-        ? this.comment.color
-        : "white";
+    const getStrokeStyle = () => {
+      if (isHover) {
+        return this.comment.color;
+      }
+      if (this.comment.button && this.comment.button.limit < 1) {
+        return "#777777";
+      }
+      return "white";
+    };
+    context.strokeStyle = getStrokeStyle();
     drawLeftBorder(
       context,
       parts.left.left,

@@ -61,7 +61,7 @@ const initConfig = () => {
     /**
      * 描画範囲(リサイズ前)
      */
-    CommentStageSize: {
+    commentStageSize: {
       html5: {
         width: 512,
         fullWidth: 683,
@@ -232,14 +232,14 @@ const initConfig = () => {
      * vista -> 1又は2種類のみに制限
      * 参考: https://w.atwiki.jp/commentart/pages/44.html
      */
-    FlashMode: "vista",
+    flashMode: "vista",
 
     /**
      * Flash版の上付き・下付き文字
      * super: 上付き sub: 下付き
      * todo: 対象文字を探す
      */
-    FlashScriptChar: {
+    flashScriptChar: {
       super:
         "[\u00aa\u00b2\u00b3\u00b9\u00ba\u02b0\u02b2\u02b3\u02b7\u02b8\u02e1-\u02e3\u0304\u1d2c-\u1d43\u1d45-\u1d61\u1d9b-\u1da1\u1da3-\u1dbf\u2070\u2071\u2074-\u207f\u2c7d]",
       sub: "[\u0320\u1d62-\u1d6a\u2080-\u208e\u2090-\u209c\u2c7c]",

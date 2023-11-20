@@ -53,7 +53,7 @@ export type BaseConfig = {
   commentDrawPadding: number;
   commentDrawRange: number;
   commentScale: ConfigItem<number>;
-  CommentStageSize: ConfigItem<CommentStageSize>;
+  commentStageSize: ConfigItem<CommentStageSize>;
   commentYMarginBottom: ConfigSizeItem<number>;
   commentYOffset: ConfigSizeItem<ConfigResizedItem<number>>;
   commentYPaddingTop: ConfigResizedItem<number>;
@@ -64,8 +64,8 @@ export type BaseConfig = {
   contextStrokeOpacity: number;
   doubleResizeMaxWidth: ConfigItem<TypeDoubleResizeMaxWidth>;
   flashChar: FlashCharList;
-  FlashMode: FlashMode;
-  FlashScriptChar: FlashScriptChar;
+  flashMode: FlashMode;
+  flashScriptChar: FlashScriptChar;
   flashThreshold: number;
   font: FontList;
   fonts: PlatformFont;

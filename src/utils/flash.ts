@@ -132,7 +132,7 @@ const parseMultiFontFullWidthPart = (
   lineContent: CommentContentItem[],
 ) => {
   index.sort(nativeSort((val) => val.index));
-  if (config.FlashMode === "xp") {
+  if (config.flashMode === "xp") {
     let offset = 0;
     for (let i = 1, n = index.length; i < n; i++) {
       const currentVal = index[i],

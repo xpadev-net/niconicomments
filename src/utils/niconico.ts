@@ -18,18 +18,18 @@ const getLineHeight = (
   resized = false,
 ) => {
   const lineCounts = getConfig(config.lineCounts, isFlash),
-    CommentStageSize = getConfig(config.CommentStageSize, isFlash),
-    lineHeight = CommentStageSize.height / lineCounts.doubleResized[fontSize],
+    commentStageSize = getConfig(config.commentStageSize, isFlash),
+    lineHeight = commentStageSize.height / lineCounts.doubleResized[fontSize],
     defaultLineCount = lineCounts.default[fontSize];
   if (resized) {
     const resizedLineCount = lineCounts.resized[fontSize];
     return (
-      (CommentStageSize.height -
+      (commentStageSize.height -
         lineHeight * (defaultLineCount / resizedLineCount)) /
       (resizedLineCount - 1)
     );
   }
-  return (CommentStageSize.height - lineHeight) / (defaultLineCount - 1);
+  return (commentStageSize.height - lineHeight) / (defaultLineCount - 1);
 };
 
 /**
@@ -40,8 +40,8 @@ const getLineHeight = (
  */
 const getCharSize = (fontSize: CommentSize, isFlash: boolean): number => {
   const lineCounts = getConfig(config.lineCounts, isFlash),
-    CommentStageSize = getConfig(config.CommentStageSize, isFlash);
-  return CommentStageSize.height / lineCounts.doubleResized[fontSize];
+    commentStageSize = getConfig(config.commentStageSize, isFlash);
+  return commentStageSize.height / lineCounts.doubleResized[fontSize];
 };
 
 /**

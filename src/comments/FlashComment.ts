@@ -161,11 +161,11 @@ class FlashComment extends BaseComment {
       : parseContent(input);
     const lineCount = (input.match(/\n/g)?.length ?? 0) + 1;
     const lineOffset =
-      (input.match(new RegExp(config.FlashScriptChar.super, "g"))?.length ??
+      (input.match(new RegExp(config.flashScriptChar.super, "g"))?.length ??
         0) *
         -1 *
         config.scriptCharOffset +
-      (input.match(new RegExp(config.FlashScriptChar.sub, "g"))?.length ?? 0) *
+      (input.match(new RegExp(config.flashScriptChar.sub, "g"))?.length ?? 0) *
         config.scriptCharOffset;
     return {
       content,
@@ -178,7 +178,7 @@ class FlashComment extends BaseComment {
     //ref: https://github.com/Saccubus/Saccubus1/blob/master/vhook/src/comment/com_surface.c
     const configLineHeight = getConfig(config.lineHeight, true),
       configFontSize = getConfig(config.fontSize, true)[comment.size],
-      configStageSize = getConfig(config.CommentStageSize, true);
+      configStageSize = getConfig(config.commentStageSize, true);
     comment.lineHeight ??= configLineHeight[comment.size].default;
     if (isLineBreakResize(comment)) {
       comment.resized = true;

@@ -178,7 +178,7 @@ class HTML5Comment extends BaseComment {
   }
 
   private _measureComment(comment: MeasureTextInput) {
-    const widthLimit = getConfig(config.CommentStageSize, false)[
+    const widthLimit = getConfig(config.commentStageSize, false)[
       comment.full ? "fullWidth" : "width"
     ];
     if (!typeGuard.internal.MeasureInput(comment)) throw new TypeGuardError();
@@ -190,7 +190,7 @@ class HTML5Comment extends BaseComment {
   }
 
   private _processResizeX(comment: MeasureTextInput, width: number) {
-    const widthLimit = getConfig(config.CommentStageSize, false)[
+    const widthLimit = getConfig(config.commentStageSize, false)[
       comment.full ? "fullWidth" : "width"
     ];
     const lineHeight = getLineHeight(comment.size, false);

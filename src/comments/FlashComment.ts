@@ -294,8 +294,8 @@ class FlashComment extends BaseComment {
   }
 
   private _measureContent(comment: MeasureTextInput) {
-    const width_arr: number[] = [],
-      spacedWidth_arr: number[] = [];
+    const widthArr: number[] = [],
+      spacedWidthArr: number[] = [];
     let currentWidth = 0,
       spacedWidth = 0;
     for (const item of comment.content) {
@@ -315,20 +315,20 @@ class FlashComment extends BaseComment {
           measure.width + Math.max(value.length - 1, 0) * config.letterSpacing;
         widths.push(measure.width);
         if (i < lines.length - 1) {
-          width_arr.push(currentWidth);
-          spacedWidth_arr.push(spacedWidth);
+          widthArr.push(currentWidth);
+          spacedWidthArr.push(spacedWidth);
           spacedWidth = 0;
           currentWidth = 0;
         }
       }
-      width_arr.push(currentWidth);
-      spacedWidth_arr.push(spacedWidth);
+      widthArr.push(currentWidth);
+      spacedWidthArr.push(spacedWidth);
       item.width = widths;
     }
     const leadLine = (function () {
       let max = 0,
         index = -1;
-      spacedWidth_arr.forEach((val, i) => {
+      spacedWidthArr.forEach((val, i) => {
         if (max < val) {
           max = val;
           index = i;
@@ -336,7 +336,7 @@ class FlashComment extends BaseComment {
       });
       return { max, index };
     })();
-    const scaleX = leadLine.max / (width_arr[leadLine.index] ?? 1);
+    const scaleX = leadLine.max / (widthArr[leadLine.index] ?? 1);
     const width = leadLine.max * comment.scale;
     const height =
       (comment.fontSize * (comment.lineHeight ?? 0) * comment.lineCount +

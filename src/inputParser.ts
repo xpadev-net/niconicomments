@@ -307,10 +307,10 @@ const sort = (data: FormattedComment[]): FormattedComment[] => {
  * @param time_str 分:秒.秒・分:秒・秒.秒・秒
  * @returns vpos
  */
-const time2vpos = (time_str: string): number => {
+const time2vpos = (input: string): number => {
   const time = RegExp(
     /^(?:(\d+):(\d+)\.(\d+)|(\d+):(\d+)|(\d+)\.(\d+)|(\d+))$/,
-  ).exec(time_str);
+  ).exec(input);
   if (time) {
     if (
       time[1] !== undefined &&

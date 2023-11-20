@@ -33,7 +33,7 @@ import { registerHandler, removeHandler, triggerHandler } from "@/eventHandler";
 import convert2formattedComment from "@/inputParser";
 import typeGuard from "@/typeGuard";
 import {
-  ArrayEqual,
+  arrayEqual,
   buildAtButtonComment,
   changeCALayer,
   getConfig,
@@ -269,7 +269,7 @@ class NiconiComments {
         last =
           this.timeline[this.lastVpos]?.filter((item) => item.loc !== "naka") ??
           [];
-      if (ArrayEqual(current, last)) return false;
+      if (arrayEqual(current, last)) return false;
     }
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.lastVpos = vpos;

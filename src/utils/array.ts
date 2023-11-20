@@ -6,7 +6,7 @@ import type { IComment } from "@/@types";
  * @param key 追加対象のキー
  * @param push 追加する値
  */
-const ArrayPush = (
+const arrayPush = (
   array: { [key: number]: IComment[] },
   key: string | number,
   push: IComment,
@@ -25,7 +25,7 @@ const ArrayPush = (
  * @param b ２つ目
  * @returns ２つの配列が等しいか
  */
-const ArrayEqual = (a: unknown[], b: unknown[]) => {
+const arrayEqual = (a: unknown[], b: unknown[]) => {
   if (a.length !== b.length) return false;
   for (let i = 0, n = a.length; i < n; ++i) {
     if (a[i] !== b[i]) return false;
@@ -33,4 +33,4 @@ const ArrayEqual = (a: unknown[], b: unknown[]) => {
   return true;
 };
 
-export { ArrayEqual, ArrayPush };
+export { arrayEqual, arrayPush };

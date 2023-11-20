@@ -22,7 +22,7 @@ import { colors } from "@/definition/colors";
 import { config, options } from "@/definition/config";
 import typeGuard from "@/typeGuard";
 
-import { ArrayPush } from "./array";
+import { arrayPush } from "./array";
 import { getConfig } from "./config";
 
 /**
@@ -157,13 +157,13 @@ const parseBrackets = (input: string) => {
   const content = input.split(""),
     result = [];
   let quote = "",
-    last_i = "",
+    lastChar = "",
     string = "";
   for (const i of content) {
     if (RegExp(/^["'\u300c]$/).exec(i) && quote === "") {
       //["'「]
       quote = i;
-    } else if (RegExp(/^["']$/).exec(i) && quote === i && last_i !== "\\") {
+    } else if (RegExp(/^["']$/).exec(i) && quote === i && lastChar !== "\\") {
       result.push(string.replaceAll("\\n", "\n"));
       quote = "";
       string = "";
@@ -181,7 +181,7 @@ const parseBrackets = (input: string) => {
       string += i;
     }
 
-    last_i = i;
+    lastChar = i;
   }
   result.push(string);
   return result;
@@ -601,9 +601,9 @@ const processFixedComment = (
   }
   for (let j = 0; j < comment.long; j++) {
     const vpos = comment.vpos + j;
-    ArrayPush(timeline, vpos, comment);
+    arrayPush(timeline, vpos, comment);
     if (j > comment.long - 20) continue;
-    ArrayPush(collision, vpos, comment);
+    arrayPush(collision, vpos, comment);
   }
   comment.posY = posY;
 };
@@ -631,11 +631,11 @@ const processMovableComment = (
       isChanged = false;
       for (let j = beforeVpos, n = comment.long + 125; j < n; j++) {
         const vpos = comment.vpos + j;
-        const left_pos = getPosX(comment.comment, vpos);
+        const leftPos = getPosX(comment.comment, vpos);
         let isBreak = false;
         if (
-          left_pos + comment.width >= config.collisionRange.right &&
-          left_pos <= config.collisionRange.right
+          leftPos + comment.width >= config.collisionRange.right &&
+          leftPos <= config.collisionRange.right
         ) {
           const result = getPosY(posY, comment, collision.right[vpos]);
           posY = result.currentPos;
@@ -643,8 +643,8 @@ const processMovableComment = (
           isBreak = result.isBreak;
         }
         if (
-          left_pos + comment.width >= config.collisionRange.left &&
-          left_pos <= config.collisionRange.left
+          leftPos + comment.width >= config.collisionRange.left &&
+          leftPos <= config.collisionRange.left
         ) {
           const result = getPosY(posY, comment, collision.left[vpos]);
           posY = result.currentPos;
@@ -658,21 +658,21 @@ const processMovableComment = (
   })();
   for (let j = beforeVpos, n = comment.long + 125; j < n; j++) {
     const vpos = comment.vpos + j;
-    const left_pos = getPosX(comment.comment, vpos);
-    ArrayPush(timeline, vpos, comment);
+    const leftPos = getPosX(comment.comment, vpos);
+    arrayPush(timeline, vpos, comment);
     if (
-      left_pos + comment.width + config.collisionPadding >=
+      leftPos + comment.width + config.collisionPadding >=
         config.collisionRange.right &&
-      left_pos <= config.collisionRange.right
+      leftPos <= config.collisionRange.right
     ) {
-      ArrayPush(collision.right, vpos, comment);
+      arrayPush(collision.right, vpos, comment);
     }
     if (
-      left_pos + comment.width + config.collisionPadding >=
+      leftPos + comment.width + config.collisionPadding >=
         config.collisionRange.left &&
-      left_pos <= config.collisionRange.left
+      leftPos <= config.collisionRange.left
     ) {
-      ArrayPush(collision.left, vpos, comment);
+      arrayPush(collision.left, vpos, comment);
     }
   }
   comment.posY = posY;

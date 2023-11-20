@@ -92,6 +92,12 @@ export type BaseConfig = {
   nakaCommentSpeedOffset: number;
   atButtonPadding: number;
   atButtonRadius: number;
+  flashDoubleResizeHeights: Partial<
+    ConfigSizeItem<{
+      [key: number]: number;
+    }>
+  >;
+  flashLineBreakScale: ConfigSizeItem<number>;
 };
 
 export type Config = Partial<BaseConfig>;

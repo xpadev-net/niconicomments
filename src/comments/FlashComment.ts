@@ -2,6 +2,7 @@ import type {
   ButtonParams,
   Canvas,
   CommentContentItem,
+  CommentSize,
   Context2D,
   FormattedComment,
   FormattedCommentWithFont,
@@ -174,46 +175,68 @@ class FlashComment extends BaseComment {
   }
 
   override measureText(comment: MeasureTextInput): MeasureTextResult {
+    //ref: https://github.com/Saccubus/Saccubus1/blob/master/vhook/src/comment/com_surface.c
     const configLineHeight = getConfig(config.lineHeight, true),
-      configFontSize = getConfig(config.fontSize, true);
-    const lineCount = comment.lineCount;
+      configFontSize = getConfig(config.fontSize, true)[comment.size],
+      configStageSize = getConfig(config.CommentStageSize, true);
     comment.lineHeight ??= configLineHeight[comment.size].default;
     if (isLineBreakResize(comment)) {
-      comment.fontSize = configFontSize[comment.size].resized;
-      comment.lineHeight = configLineHeight[comment.size].resized;
       comment.resized = true;
       comment.resizedY = true;
+      comment.scale *= config.flashLineBreakScale[comment.size];
       this.context.font = parseFont(comment.font, comment.fontSize);
     }
-    const { width_arr, spacedWidth_arr } = this._measureContent(comment);
-    const leadLine = (function () {
-      let max = 0,
-        index = -1;
-      spacedWidth_arr.forEach((val, i) => {
-        if (max < val) {
-          max = val;
-          index = i;
-        }
-      });
-      return { max, index };
-    })();
-    const width = leadLine.max;
-    const scaleX = leadLine.max / (width_arr[leadLine.index] ?? 1);
-    const width_max = width * comment.scale;
-    const height =
-      (comment.fontSize * comment.lineHeight * lineCount +
-        config.commentYPaddingTop[comment.resizedY ? "resized" : "default"]) *
-      comment.scale;
+    const { scaleX, width, height } = this._measureContent(comment);
     if (comment.loc !== "naka") {
-      const widthLimit = getConfig(config.CommentStageSize, true)[
-        comment.full ? "fullWidth" : "width"
-      ];
-      if (width_max > widthLimit && !comment.resizedX) {
-        comment.fontSize = configFontSize[comment.size].default;
-        comment.lineHeight = configLineHeight[comment.size].default;
-        comment.scale = widthLimit / width_max;
+      const widthLimit = configStageSize[comment.full ? "fullWidth" : "width"];
+      if (
+        this._isDoubleResize(
+          width,
+          widthLimit,
+          comment.size,
+          comment.lineCount,
+          comment.full,
+        ) &&
+        !comment.resizedX &&
+        comment.resizedY
+      ) {
         comment.resizedX = true;
         comment.resized = true;
+
+        const resizedFontSize = Math.round(
+          (widthLimit / width) * configFontSize.default,
+        );
+        const resizeScale =
+          (resizedFontSize + 1) / (configFontSize.default + 1);
+        comment.scale *= resizeScale;
+        const resizedHeight = height * resizeScale;
+        const resizedWidth = width * resizeScale;
+        const targetHeight =
+          config.flashDoubleResizeHeights[comment.size]?.[comment.lineCount];
+        if (targetHeight) {
+          const targetScale = targetHeight / resizedHeight;
+          if (width * targetScale > widthLimit) {
+            comment.scale *= targetScale;
+            console.log(targetHeight, height);
+          }
+        } else if (
+          configStageSize.height < resizedHeight &&
+          resizedHeight < configStageSize.height * 2
+        ) {
+          const scale = configStageSize.height / resizedHeight;
+          const _width = resizedWidth * scale;
+          if (_width > widthLimit && _width > resizedWidth) {
+            comment.scale *= scale;
+          }
+        }
+        return this.measureText(comment);
+      } else if (width > widthLimit && !comment.resizedX) {
+        comment.resizedX = true;
+        comment.resized = true;
+        const resizeScale =
+          (Math.round((widthLimit / width) * configFontSize.default) + 1) /
+          (configFontSize.default + 1);
+        comment.scale *= resizeScale;
         return this.measureText(comment);
       }
     }
@@ -221,7 +244,6 @@ class FlashComment extends BaseComment {
       throw new TypeGuardError();
     }
     return {
-      width: width_max,
       charSize: 0,
       height: height,
       resized: !!comment.resized,
@@ -232,7 +254,43 @@ class FlashComment extends BaseComment {
       resizedY: !!comment.resizedY,
       scale: comment.scale,
       scaleX,
+      width,
     };
+  }
+
+  private _isDoubleResize(
+    width: number,
+    widthLimit: number,
+    size: CommentSize,
+    lineCount: number,
+    isFull: boolean,
+  ) {
+    if (width < widthLimit * 0.9 || widthLimit * 1.1 < width)
+      return width > widthLimit;
+    if (size === "big") {
+      if (
+        8 <= lineCount &&
+        lineCount <= 14 &&
+        !isFull &&
+        widthLimit * 0.99 < width
+      )
+        return true;
+      if (width <= widthLimit) return false;
+      if (16 <= lineCount && width * 0.95 < widthLimit) return true;
+      if (isFull) {
+        if (width * 0.95 < widthLimit) return false;
+        return width > widthLimit;
+      }
+      return true;
+    }
+    if (width <= widthLimit) return false;
+    if (
+      ((size === "medium" && 25 <= lineCount) ||
+        (size === "small" && 38 <= lineCount)) &&
+      width * 0.95 < widthLimit
+    )
+      return false;
+    return widthLimit < width;
   }
 
   private _measureContent(comment: MeasureTextInput) {
@@ -267,7 +325,24 @@ class FlashComment extends BaseComment {
       spacedWidth_arr.push(spacedWidth);
       item.width = widths;
     }
-    return { width_arr, spacedWidth_arr };
+    const leadLine = (function () {
+      let max = 0,
+        index = -1;
+      spacedWidth_arr.forEach((val, i) => {
+        if (max < val) {
+          max = val;
+          index = i;
+        }
+      });
+      return { max, index };
+    })();
+    const scaleX = leadLine.max / (width_arr[leadLine.index] ?? 1);
+    const width = leadLine.max * comment.scale;
+    const height =
+      (comment.fontSize * (comment.lineHeight ?? 0) * comment.lineCount +
+        config.commentYPaddingTop[comment.resizedY ? "resized" : "default"]) *
+      comment.scale;
+    return { scaleX, width, height };
   }
 
   override _drawCollision(posX: number, posY: number, showCollision: boolean) {

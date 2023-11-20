@@ -349,6 +349,22 @@ const initConfig = () => {
      */
     atButtonPadding: 5,
     atButtonRadius: 7,
+    flashDoubleResizeHeights: {
+      big: {
+        9: 392,
+        10: 384,
+        11: 389,
+        12: 388,
+        13: 381,
+        14: 381,
+        15: 384,
+      },
+    },
+    flashLineBreakScale: {
+      small: 0.557,
+      medium: 0.519,
+      big: 0.535,
+    },
   };
   updateConfig(defaultConfig);
 };

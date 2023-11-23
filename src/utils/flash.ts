@@ -89,12 +89,29 @@ const parseLine = (line: string) => {
   const lineContent: CommentContentItem[] = [];
   for (const part of parts) {
     if (part.match(/[ -~｡-ﾟ]+/g) !== null) {
-      lineContent.push({ content: part, slicedContent: part.split("\n") });
+      lineContent.push({
+        type: "text",
+        content: part,
+        slicedContent: part.split("\n"),
+      });
       continue;
     }
     parseFullWidthPart(part, lineContent);
   }
   return lineContent;
+};
+
+const addPartToResult = (
+  lineContent: CommentContentItem[],
+  part: string,
+  font?: CommentFlashFont,
+) => {
+  lineContent.push({
+    type: "text",
+    content: part,
+    slicedContent: part.split("\n"),
+    font,
+  });
 };
 
 /**
@@ -108,13 +125,9 @@ const parseFullWidthPart = (
 ) => {
   const index = getFlashFontIndex(part);
   if (index.length === 0) {
-    lineContent.push({ content: part, slicedContent: part.split("\n") });
+    addPartToResult(lineContent, part);
   } else if (index.length === 1 && index[0]) {
-    lineContent.push({
-      content: part,
-      slicedContent: part.split("\n"),
-      font: getFlashFontName(index[0].font),
-    });
+    addPartToResult(lineContent, part, getFlashFontName(index[0].font));
   } else {
     parseMultiFontFullWidthPart(part, index, lineContent);
   }
@@ -139,53 +152,30 @@ const parseMultiFontFullWidthPart = (
         lastVal = index[i - 1];
       if (currentVal === undefined || lastVal === undefined) continue;
       const content = part.slice(offset, currentVal.index);
-      lineContent.push({
-        content: content,
-        slicedContent: content.split("\n"),
-        font: getFlashFontName(lastVal.font),
-      });
+      addPartToResult(lineContent, content, getFlashFontName(lastVal.font));
       offset = currentVal.index;
     }
     const val = index[index.length - 1];
     if (val) {
       const content = part.slice(offset);
-      lineContent.push({
-        content: content,
-        slicedContent: content.split("\n"),
-        font: getFlashFontName(val.font),
-      });
+      addPartToResult(lineContent, content, getFlashFontName(val.font));
     }
     return;
   }
   const firstVal = index[0],
     secondVal = index[1];
   if (!firstVal || !secondVal) {
-    lineContent.push({
-      content: part,
-      slicedContent: part.split("\n"),
-    });
+    addPartToResult(lineContent, part);
     return;
   }
   if (firstVal.font !== "gothic") {
-    lineContent.push({
-      content: part,
-      slicedContent: part.split("\n"),
-      font: getFlashFontName(firstVal.font),
-    });
+    addPartToResult(lineContent, part, getFlashFontName(firstVal.font));
     return;
   }
   const firstContent = part.slice(0, secondVal.index);
   const secondContent = part.slice(secondVal.index);
-  lineContent.push({
-    content: firstContent,
-    slicedContent: firstContent.split("\n"),
-    font: getFlashFontName(firstVal.font),
-  });
-  lineContent.push({
-    content: secondContent,
-    slicedContent: secondContent.split("\n"),
-    font: getFlashFontName(secondVal.font),
-  });
+  addPartToResult(lineContent, firstContent, getFlashFontName(firstVal.font));
+  addPartToResult(lineContent, secondContent, getFlashFontName(secondVal.font));
 };
 
 const getButtonParts = (

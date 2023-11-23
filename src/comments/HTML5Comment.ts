@@ -120,6 +120,7 @@ class HTML5Comment extends BaseComment {
   override parseContent(input: string) {
     const content: CommentContentItem[] = [];
     content.push({
+      type: "text",
       content: input,
       slicedContent: input.split("\n"),
     });

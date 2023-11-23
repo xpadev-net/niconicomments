@@ -97,6 +97,7 @@ export const ZCommentFlashFont = union([
 export type CommentFlashFont = Output<typeof ZCommentFlashFont>;
 
 export const ZCommentContentItem = object({
+  type: union([literal("text"), literal("spacer")]),
   content: string(),
   slicedContent: array(string()),
   isButton: optional(boolean()),

@@ -223,7 +223,7 @@ const initConfig = () => {
         "[\u01ce\u01d0\u01d2\u01d4\u01d6\u01d8\u01da\u01dc\u0251\u0261\u02ca\u02cb\u2016\u2035\u216a\u216b\u2223\u2236\u2237\u224c\u226e\u226f\u2295\u2483-\u249b\u2504-\u250b\u256d-\u2573\u2581-\u2583\u2585-\u2587\u2589-\u258b\u258d-\u258f\u2594\u2595\u25e2-\u25e5\u2609\u3016\u3017\u301e\u3021-\u3029\u3105-\u3129\u3220-\u3229\u32a3\u33ce\u33d1\u33d2\u33d5\ue758-\ue864\ufa0c\ufa0d\ufe30\ufe31\ufe33-\ufe44\ufe49-\ufe52\ufe54-\ufe57\ufe59-\ufe66\ufe68-\ufe6b]",
       simsunWeak:
         "[\u02c9\u2105\u2109\u2196-\u2199\u220f\u2215\u2248\u2264\u2265\u2299\u2474-\u2482\u250d\u250e\u2511\u2512\u2515\u2516\u2519\u251a\u251e\u251f\u2521\u2522\u2526\u2527\u2529\u252a\u252d\u252e\u2531\u2532\u2535\u2536\u2539\u253a\u253d\u253e\u2540\u2541\u2543-\u254a\u2550-\u256c\u2584\u2588\u258c\u2593]",
-      gothic: "[\u03fb\uff9f]",
+      gothic: "[\u03fb\uff9f\u30fb]",
     },
 
     /**
@@ -364,8 +364,20 @@ const initConfig = () => {
       big: 0.535,
     },
     flashCompatSpacer: {
-      "\u3000": 1,
-      "\u00a0": 0.25,
+      "\u3000": {
+        simsun: 1,
+        defont: 0.65,
+        gulim: 0.95,
+      },
+      "\u00a0": {
+        simsun: 0.25,
+      },
+      "\u0020": {
+        defont: 0.3,
+      },
+      "\u2001": {
+        defont: 1.08,
+      },
     },
   };
   updateConfig(defaultConfig);

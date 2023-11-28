@@ -203,8 +203,7 @@ class FlashComment extends BaseComment {
           scale *= resizeRate;
         }
       } else {
-        comment.fontSize = configFontSize.resized;
-        return this.measureText(comment);
+        scale *= lineBreakScale;
       }
     } else if (comment.loc !== "naka" && width > widthLimit) {
       const resizeRate =

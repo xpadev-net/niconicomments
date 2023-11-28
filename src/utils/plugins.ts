@@ -1,4 +1,5 @@
-import type { Context2D, FormattedComment } from "@/@types";
+import type { FormattedComment } from "@/@types";
+import type { IRenderer } from "@/@types/renderer";
 import { HTML5Comment } from "@/comments";
 import { config } from "@/definition/config";
 
@@ -10,7 +11,7 @@ import { config } from "@/definition/config";
  */
 const createCommentInstance = (
   comment: FormattedComment,
-  context: Context2D,
+  context: IRenderer,
 ) => {
   for (const plugin of config.commentPlugins) {
     if (plugin.condition(comment)) {

@@ -1,8 +1,9 @@
-import type { Canvas, IComment } from "@/@types/";
+import type { IComment } from "@/@types/";
+import type { IRenderer } from "@/@types/renderer";
 
 export interface IPluginConstructor {
   id: string;
-  new (Canvas: Canvas, comments: IComment[]): IPlugin;
+  new (Canvas: IRenderer, comments: IComment[]): IPlugin;
 }
 
 export interface IPlugin {
@@ -13,5 +14,5 @@ export interface IPlugin {
 
 export type IPluginList = {
   instance: IPlugin;
-  canvas: HTMLCanvasElement;
+  canvas: IRenderer;
 }[];

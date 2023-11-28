@@ -1,5 +1,7 @@
+import type { IRenderer } from "@/@types/renderer";
+
 const drawLeftBorder = (
-  context: CanvasRenderingContext2D,
+  context: IRenderer,
   left: number,
   top: number,
   width: number,
@@ -19,7 +21,7 @@ const drawLeftBorder = (
 };
 
 const drawMiddleBorder = (
-  context: CanvasRenderingContext2D,
+  context: IRenderer,
   left: number,
   top: number,
   width: number,
@@ -36,7 +38,7 @@ const drawMiddleBorder = (
 };
 
 const drawRightBorder = (
-  context: CanvasRenderingContext2D,
+  context: IRenderer,
   right: number,
   top: number,
   height: number,

@@ -250,7 +250,7 @@ const initConfig = () => {
      */
     font: {
       gulim: `normal 600 [size]px gulim, ${fonts[platform].gothic.font}, Arial`,
-      simsun: `normal 400 [size]px simsun, ${fonts[platform].mincho.font}, Arial`,
+      simsun: `normal 400 [size]px simsun, batang, "PMingLiU", MingLiU-ExtB, ${fonts[platform].mincho.font}, Arial`,
     },
     /**
      * Flash版コメントの高さを計算するための定数

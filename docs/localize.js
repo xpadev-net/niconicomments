@@ -19,6 +19,8 @@ const localize = {
   about_docs: ["Document: ", "ドキュメント: "],
   about_repo: ["Repository: ", "リポジトリ: "],
   sample: ["sample", "サンプル"],
+  example_canvas: ["Using HTMLCanvasElement", "HTMLCanvasElementを使用した例"],
+  example_canvas_renderer: ["Using CanvasRenderer","CanvasRendererを使用した例"],
   class_main: ["The main body of this library.", "このライブラリの本体です"],
   p_canvas: [
     `<p>Pass a class or object conforming to <a href="./type/interfaces/_types_renderer.IRenderer.html">IRenderer</a> or Canvas Element for comment drawing</p>

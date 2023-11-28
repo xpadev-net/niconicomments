@@ -248,7 +248,7 @@ class FlashComment extends BaseComment {
       )
         return true;
       if (width <= widthLimit) return false;
-      if (16 <= lineCount && width < widthLimit) return true;
+      if (16 <= lineCount && width * 0.95 < widthLimit) return true;
       if (isFull) {
         if (width * 0.95 < widthLimit) return false;
         return width > widthLimit;

@@ -41,9 +41,6 @@ type FontList = {
 type LineCounts = {
   [key in "default" | "resized" | "doubleResized"]: ConfigSizeItem<number>;
 };
-type TypeDoubleResizeMaxWidth = {
-  [key in "full" | "normal"]: number;
-};
 
 export type BaseConfig = {
   cacheAge: number;
@@ -56,7 +53,6 @@ export type BaseConfig = {
   commentDrawRange: number;
   commentScale: ConfigItem<number>;
   commentStageSize: ConfigItem<CommentStageSize>;
-  commentYMarginBottom: ConfigSizeItem<number>;
   commentYOffset: ConfigSizeItem<ConfigResizedItem<number>>;
   commentYPaddingTop: ConfigResizedItem<number>;
   contextFillLiveOpacity: number;
@@ -64,7 +60,6 @@ export type BaseConfig = {
   contextStrokeColor: string;
   contextStrokeInversionColor: string;
   contextStrokeOpacity: number;
-  doubleResizeMaxWidth: ConfigItem<TypeDoubleResizeMaxWidth>;
   flashChar: FlashCharList;
   flashMode: FlashMode;
   flashScriptChar: FlashScriptChar;

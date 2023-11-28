@@ -71,7 +71,7 @@ const parseContent = (content: string) => {
           if (val.type === "spacer") {
             const spacer = config.compatSpacer.flash[val.char];
             if (!spacer) return val;
-            const width = spacer[defaultFont];
+            const width = spacer[val.font];
             if (!width) return val;
             val.charWidth = width;
           }

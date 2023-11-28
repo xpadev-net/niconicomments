@@ -270,26 +270,11 @@ const initConfig = () => {
       },
     },
     /**
-     * Flash版コメントのDR基準用定数
-     */
-    doubleResizeMaxWidth: {
-      full: 1200,
-      normal: 960,
-    },
-    /**
      * Flash版コメントの上空白
      */
     commentYPaddingTop: {
       default: 5,
       resized: 3,
-    },
-    /**
-     * Flash版コメントの下空白
-     */
-    commentYMarginBottom: {
-      small: 0.24,
-      medium: 0.28,
-      big: 0.24,
     },
     /**
      * Flash版コメントの上下補正値
@@ -367,7 +352,7 @@ const initConfig = () => {
       flash: {
         "\u3000": {
           simsun: 0.98,
-          defont: 0.65,
+          defont: 0.645,
           gulim: 0.95,
         },
         "\u00a0": {
@@ -377,7 +362,13 @@ const initConfig = () => {
           defont: 0.3,
         },
         "\u2001": {
-          defont: 1.08,
+          defont: 0.95,
+        },
+        "\u2004": {
+          defont: 1.6,
+        },
+        "\u2007": {
+          defont: 1.6,
         },
       },
       html5: {},

@@ -3,12 +3,46 @@ import { CanvasRenderingContext2DError } from "@/errors";
 
 class CanvasRenderer implements IRenderer {
   public readonly canvas: HTMLCanvasElement;
+  public readonly video?: HTMLVideoElement;
   private readonly context: CanvasRenderingContext2D;
-  constructor(canvas?: HTMLCanvasElement) {
+  constructor(canvas?: HTMLCanvasElement, video?: HTMLVideoElement) {
     this.canvas = canvas ?? document.createElement("canvas");
     const context = this.canvas.getContext("2d");
     if (!context) throw new CanvasRenderingContext2DError();
     this.context = context;
+    this.context.textAlign = "start";
+    this.context.textBaseline = "alphabetic";
+    this.video = video;
+  }
+
+  drawVideo(enableLegacyPip: boolean) {
+    if (this.video) {
+      let scale;
+      const height = this.canvas.height / this.video.videoHeight,
+        width = this.canvas.width / this.video.videoWidth;
+      if (enableLegacyPip ? height > width : height < width) {
+        scale = width;
+      } else {
+        scale = height;
+      }
+      const offsetX = (this.canvas.width - this.video.videoWidth * scale) * 0.5,
+        offsetY = (this.canvas.height - this.video.videoHeight * scale) * 0.5;
+      this.context.drawImage(
+        this.video,
+        offsetX,
+        offsetY,
+        this.video.videoWidth * scale,
+        this.video.videoHeight * scale,
+      );
+    }
+  }
+
+  getFont(): string {
+    return this.context.font;
+  }
+
+  getFillStyle(): string | CanvasGradient | CanvasPattern {
+    return this.context.fillStyle;
   }
 
   setScale(scale: number, arg1?: number) {
@@ -30,10 +64,25 @@ class CanvasRenderer implements IRenderer {
   fillRect(x: number, y: number, width: number, height: number): void {
     this.context.fillRect(x, y, width, height);
   }
+  strokeRect(x: number, y: number, width: number, height: number) {
+    this.context.strokeRect(x, y, width, height);
+  }
+
   fillText(text: string, x: number, y: number): void {
     this.context.fillText(text, x, y);
+  }
+  strokeText(text: string, x: number, y: number) {
     this.context.strokeText(text, x, y);
   }
+
+  quadraticCurveTo(cpx: number, cpy: number, x: number, y: number): void {
+    this.context.quadraticCurveTo(cpx, cpy, x, y);
+  }
+
+  clearRect(x: number, y: number, width: number, height: number): void {
+    this.context.clearRect(x, y, width, height);
+  }
+
   setFont(font: string): void {
     this.context.font = font;
   }
@@ -49,6 +98,15 @@ class CanvasRenderer implements IRenderer {
   setGlobalAlpha(alpha: number): void {
     this.context.globalAlpha = alpha;
   }
+  setSize(width: number, height: number) {
+    this.canvas.width = width;
+    this.canvas.height = height;
+  }
+
+  getSize(): { width: number; height: number } {
+    return { width: this.canvas.width, height: this.canvas.height };
+  }
+
   measureText(text: string): TextMetrics {
     return this.context.measureText(text);
   }

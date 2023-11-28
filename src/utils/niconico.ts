@@ -1,4 +1,5 @@
-import type { CommentSize, Context2D, MeasureInput } from "@/@types";
+import type { CommentSize, MeasureInput } from "@/@types";
+import type { IRenderer } from "@/@types/renderer";
 import { config } from "@/definition/config";
 import { TypeGuardError } from "@/errors/TypeGuardError";
 
@@ -47,11 +48,11 @@ const getCharSize = (fontSize: CommentSize, isFlash: boolean): number => {
 /**
  * コメントのサイズを計測する
  * @param comment コメント
- * @param context 計測対象のCanvasコンテキスト
+ * @param renderer 計測対象のレンダラーインスタンス
  * @returns 計測結果
  */
-const measure = (comment: MeasureInput, context: Context2D) => {
-  const width = measureWidth(comment, context);
+const measure = (comment: MeasureInput, renderer: IRenderer) => {
+  const width = measureWidth(comment, renderer);
   return {
     ...width,
     height: comment.lineHeight * (comment.lineCount - 1) + comment.charSize,
@@ -61,23 +62,23 @@ const measure = (comment: MeasureInput, context: Context2D) => {
 /**
  * コメントの幅を計測する
  * @param comment コメント
- * @param context 計測対象のCanvasコンテキスト
+ * @param renderer 計測対象のレンダラーインスタンス
  * @returns 計測結果
  */
-const measureWidth = (comment: MeasureInput, context: Context2D) => {
+const measureWidth = (comment: MeasureInput, renderer: IRenderer) => {
   const { fontSize, scale } = getFontSizeAndScale(comment.charSize),
     lineWidth = [],
     itemWidth = [];
-  context.font = parseFont(comment.font, fontSize);
+  renderer.setFont(parseFont(comment.font, fontSize));
   let currentWidth = 0;
   for (const item of comment.content) {
     const lines = item.content.split("\n");
-    context.font = parseFont(item.font ?? comment.font, fontSize);
+    renderer.setFont(parseFont(item.font ?? comment.font, fontSize));
     const width = [];
     for (let j = 0, n = lines.length; j < n; j++) {
       const line = lines[j];
       if (line === undefined) throw new TypeGuardError();
-      const measure = context.measureText(line);
+      const measure = renderer.measureText(line);
       currentWidth += measure.width;
       width.push(measure.width);
       if (j < lines.length - 1) {

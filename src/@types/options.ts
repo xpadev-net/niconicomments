@@ -40,7 +40,6 @@ export type BaseOptions = {
   showCommentCount: boolean;
   showFPS: boolean;
   useLegacy: boolean;
-  video: HTMLVideoElement | undefined;
 };
 export type Options = Partial<BaseOptions>;
 

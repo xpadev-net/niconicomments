@@ -223,10 +223,10 @@ const getButtonParts = (
   const lineHeight = comment.fontSize * comment.lineHeight;
   const offsetKey = comment.resizedY ? "resized" : "default";
   const offsetY =
-    config.commentYPaddingTop[offsetKey] +
+    config.flashCommentYPaddingTop[offsetKey] +
     comment.fontSize *
       comment.lineHeight *
-      config.commentYOffset[comment.size][offsetKey];
+      config.flashCommentYOffset[comment.size][offsetKey];
   let leftOffset = 0,
     lineCount = 0,
     isLastButton = false;

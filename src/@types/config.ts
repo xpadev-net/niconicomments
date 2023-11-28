@@ -19,6 +19,7 @@ export const ZMultiConfigItem = (item: BaseSchema) =>
 export type MultiConfigItem<T> = { html5: T; flash: T };
 type ConfigSizeItem<T> = { big: T; medium: T; small: T };
 type ConfigResizedItem<T> = { default: T; resized: T };
+type ConfigFlashFontItem<T> = { gulim: T; simsun: T; defont: T };
 
 export type CommentStageSize = {
   width: number;
@@ -98,7 +99,7 @@ export type BaseConfig = {
     }>
   >;
   flashLineBreakScale: ConfigSizeItem<number>;
-  flashCompatSpacer: { [key: string]: number };
+  flashCompatSpacer: { [key: string]: Partial<ConfigFlashFontItem<number>> };
 };
 
 export type Config = Partial<BaseConfig>;

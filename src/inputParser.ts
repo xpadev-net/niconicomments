@@ -304,7 +304,7 @@ const sort = (data: FormattedComment[]): FormattedComment[] => {
 
 /**
  * 投稿者コメントのエディターは秒数の入力フォーマットに割りと色々対応しているのでvposに変換
- * @param time_str 分:秒.秒・分:秒・秒.秒・秒
+ * @param input 分:秒.秒・分:秒・秒.秒・秒
  * @returns vpos
  */
 const time2vpos = (input: string): number => {

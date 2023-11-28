@@ -390,6 +390,11 @@ const processJumpScript = (
   });
 };
 
+/**
+ * \@ボタンを処理する
+ * @param comment 対象のコメント
+ * @param commands 対象のコマンド
+ */
 const processAtButton = (
   comment: FormattedComment,
   commands: ParsedCommand,

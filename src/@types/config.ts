@@ -98,6 +98,7 @@ export type BaseConfig = {
     }>
   >;
   flashLineBreakScale: ConfigSizeItem<number>;
+  flashCompatSpacer: { [key: string]: number };
 };
 
 export type Config = Partial<BaseConfig>;

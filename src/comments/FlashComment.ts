@@ -299,6 +299,13 @@ class FlashComment extends BaseComment {
     let currentWidth = 0,
       spacedWidth = 0;
     for (const item of comment.content) {
+      if (item.type === "spacer" && item.width) {
+        spacedWidth += (item.width[0] ?? 0) * comment.fontSize;
+        currentWidth += (item.width[0] ?? 0) * comment.fontSize;
+        widthArr.push((item.width[0] ?? 0) * comment.fontSize);
+        spacedWidthArr.push((item.width[0] ?? 0) * comment.fontSize);
+        continue;
+      }
       const lines = item.content.split("\n");
       const widths: number[] = [];
 
@@ -396,6 +403,11 @@ class FlashComment extends BaseComment {
       lineCount = 0,
       isLastButton = false;
     for (const item of this.comment.content) {
+      if (item.type === "spacer") {
+        leftOffset += (item.width?.[0] ?? 0) * this.comment.fontSize;
+        console.log(item.width?.[0] ?? 0, this.comment.fontSize);
+        continue;
+      }
       const font = item.font ?? this.comment.font;
       if (lastFont !== font) {
         lastFont = font;

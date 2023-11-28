@@ -66,9 +66,7 @@ const parseContent = (content: string) => {
     if (firstContent?.font) {
       results.push(
         ...lineContent.map((val) => {
-          if (!val.font) {
-            val.font = firstContent.font;
-          }
+          val.font ??= firstContent.font;
           return val;
         }),
       );
@@ -106,6 +104,27 @@ const addPartToResult = (
   part: string,
   font?: CommentFlashFont,
 ) => {
+  for (const key of Object.keys(config.flashCompatSpacer)) {
+    const spacerWidth = config.flashCompatSpacer[key];
+    if (!spacerWidth) continue;
+    const compatIndex = part.indexOf(key);
+    if (compatIndex >= 0) {
+      addPartToResult(lineContent, part.slice(0, compatIndex), font);
+      let i = compatIndex;
+      for (; i < part.length && part[i] === key; i++) {
+        /* empty */
+      }
+      lineContent.push({
+        type: "spacer",
+        content: part.slice(compatIndex, i),
+        slicedContent: [part.slice(compatIndex, i)],
+        font,
+        width: [(i - compatIndex) * spacerWidth],
+      });
+      addPartToResult(lineContent, part.slice(i), font);
+      return;
+    }
+  }
   lineContent.push({
     type: "text",
     content: part,

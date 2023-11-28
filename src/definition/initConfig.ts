@@ -365,6 +365,9 @@ const initConfig = () => {
       medium: 0.519,
       big: 0.535,
     },
+    flashCompatSpacer: {
+      "\u3000": 1,
+    },
   };
   updateConfig(defaultConfig);
 };

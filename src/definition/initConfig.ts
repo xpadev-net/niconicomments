@@ -367,6 +367,7 @@ const initConfig = () => {
     },
     flashCompatSpacer: {
       "\u3000": 1,
+      "\u00a0": 0.25,
     },
   };
   updateConfig(defaultConfig);

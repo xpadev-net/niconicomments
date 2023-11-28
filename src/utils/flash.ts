@@ -87,11 +87,7 @@ const parseLine = (line: string) => {
   const lineContent: CommentContentItem[] = [];
   for (const part of parts) {
     if (part.match(/[ -~｡-ﾟ]+/g) !== null) {
-      lineContent.push({
-        type: "text",
-        content: part,
-        slicedContent: part.split("\n"),
-      });
+      addPartToResult(lineContent, part);
       continue;
     }
     parseFullWidthPart(part, lineContent);
@@ -110,8 +106,9 @@ const addPartToResult = (
   part: string,
   font?: CommentFlashFont,
 ) => {
+  if (part === "") return;
   for (const key of Object.keys(config.flashCompatSpacer)) {
-    const spacerWidth = config.flashCompatSpacer[key];
+    const spacerWidth = config.flashCompatSpacer[key]?.[font ?? "defont"];
     if (!spacerWidth) continue;
     const compatIndex = part.indexOf(key);
     if (compatIndex >= 0) {

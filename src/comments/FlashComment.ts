@@ -248,7 +248,7 @@ class FlashComment extends BaseComment {
       )
         return true;
       if (width <= widthLimit) return false;
-      if (16 <= lineCount && width * 0.95 < widthLimit) return true;
+      if (16 <= lineCount && width < widthLimit) return true;
       if (isFull) {
         if (width * 0.95 < widthLimit) return false;
         return width > widthLimit;
@@ -272,10 +272,12 @@ class FlashComment extends BaseComment {
       spacedWidth = 0;
     for (const item of comment.content) {
       if (item.type === "spacer" && item.width) {
-        spacedWidth += (item.width[0] ?? 0) * comment.fontSize;
+        spacedWidth +=
+          (item.width[0] ?? 0) * comment.fontSize +
+          Math.max(item.content.length - 1, 0) * config.letterSpacing;
         currentWidth += (item.width[0] ?? 0) * comment.fontSize;
-        widthArr.push((item.width[0] ?? 0) * comment.fontSize);
-        spacedWidthArr.push((item.width[0] ?? 0) * comment.fontSize);
+        widthArr.push(currentWidth);
+        spacedWidthArr.push(spacedWidth);
         continue;
       }
       const lines = item.content.split("\n");
@@ -358,6 +360,7 @@ class FlashComment extends BaseComment {
   }
 
   override _generateTextImage(): IRenderer {
+    console.log(this.comment);
     const renderer = this.renderer.getCanvas();
     this._setupCanvas(renderer);
     const atButtonPadding = getConfig(config.atButtonPadding, true);
@@ -376,7 +379,7 @@ class FlashComment extends BaseComment {
     for (const item of this.comment.content) {
       if (item.type === "spacer") {
         leftOffset += (item.width?.[0] ?? 0) * this.comment.fontSize;
-        console.log(item.width?.[0] ?? 0, this.comment.fontSize);
+        isLastButton = !!item.isButton;
         continue;
       }
       const font = item.font ?? this.comment.font;
@@ -403,12 +406,11 @@ class FlashComment extends BaseComment {
         }
         renderer.strokeText(line, leftOffset, posY);
         renderer.fillText(line, leftOffset, posY);
+        leftOffset += partWidth;
         if (lineIndex < lineLength - 1) {
           leftOffset = 0;
           lineCount += 1;
-          continue;
         }
-        leftOffset += partWidth;
       }
       isLastButton = !!item.isButton;
     }

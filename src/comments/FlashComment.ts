@@ -306,7 +306,6 @@ class FlashComment extends BaseComment {
       spacedWidthArr.push(spacedWidth);
       item.width = widths;
     }
-    console.log(comment.id, widthArr);
     const leadLine = (function () {
       let max = 0,
         index = -1;
@@ -364,7 +363,6 @@ class FlashComment extends BaseComment {
   }
 
   override _generateTextImage(): IRenderer {
-    console.log(this.comment);
     const renderer = this.renderer.getCanvas();
     this._setupCanvas(renderer);
     const atButtonPadding = getConfig(config.atButtonPadding, true);

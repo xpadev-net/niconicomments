@@ -65,12 +65,10 @@ const addHTML5PartToResult = (
   part: string,
   font?: CommentHTML5Font,
 ) => {
-  console.log(part);
   if (part === "") return;
   font ??= "defont";
   for (const key of Object.keys(config.compatSpacer.html5)) {
     const spacerWidth = config.compatSpacer.html5[key]?.[font];
-    console.log("test", key, spacerWidth);
     if (!spacerWidth) continue;
     const compatIndex = part.indexOf(key);
     if (compatIndex >= 0) {

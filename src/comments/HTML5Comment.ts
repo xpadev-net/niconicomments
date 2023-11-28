@@ -123,7 +123,6 @@ class HTML5Comment extends BaseComment {
     addHTML5PartToResult(content, input, font ?? "defont");
     const lineCount = input.split("\n").length;
     const lineOffset = 0;
-    console.log(content);
     return {
       content,
       lineCount,

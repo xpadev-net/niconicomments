@@ -1,6 +1,6 @@
 export interface IRenderer {
-  canvas: HTMLCanvasElement;
-  video?: HTMLVideoElement;
+  readonly canvas: HTMLCanvasElement;
+  readonly video?: HTMLVideoElement;
   drawVideo(enableLegacyPip: boolean): void;
   getFont(): string;
   getFillStyle(): string | CanvasGradient | CanvasPattern;

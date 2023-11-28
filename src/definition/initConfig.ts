@@ -370,6 +370,9 @@ const initConfig = () => {
         "\u2007": {
           defont: 1.6,
         },
+        "\u202a": {
+          defont: 0.59,
+        },
       },
       html5: {},
     },

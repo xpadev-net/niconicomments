@@ -30,6 +30,7 @@ import { initConfig } from "@/definition/initConfig";
 import { InvalidOptionError } from "@/errors/";
 import { registerHandler, removeHandler, triggerHandler } from "@/eventHandler";
 import convert2formattedComment from "@/inputParser";
+import { CanvasRenderer } from "@/renderer";
 import typeGuard from "@/typeGuard";
 import {
   arrayEqual,
@@ -70,7 +71,7 @@ class NiconiComments {
    * @param initOptions 初期化オプション
    */
   constructor(
-    renderer: IRenderer,
+    renderer: IRenderer | HTMLCanvasElement,
     data: InputFormat,
     initOptions: Options = {},
   ) {
@@ -83,6 +84,9 @@ class NiconiComments {
     setIsDebug(options.debug);
     resetImageCache();
     resetNicoScripts();
+    if (renderer instanceof HTMLCanvasElement) {
+      renderer = new CanvasRenderer(renderer, options.video);
+    }
     this.renderer = renderer;
     this.renderer.setLineWidth(getConfig(config.contextLineWidth, false));
     let formatType = options.format;

@@ -25,6 +25,7 @@ const defaultOptions: BaseOptions = {
   showCommentCount: false,
   showFPS: false,
   useLegacy: false,
+  video: undefined,
 };
 
 let config: BaseConfig;

@@ -185,7 +185,7 @@ const initConfig = () => {
     /**
      * コメント間の横の余白
      */
-    collisionPadding: 10,
+    collisionPadding: 5,
     /**
      * 同一CAと判定する投下経過時間の最大値(秒)
      */

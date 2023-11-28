@@ -99,6 +99,12 @@ const parseLine = (line: string) => {
   return lineContent;
 };
 
+/**
+ * スペースの補正を行った上で結果を追加する
+ * @param lineContent 結果格納用の配列
+ * @param part 追加する文字列
+ * @param font フォント
+ */
 const addPartToResult = (
   lineContent: CommentContentItem[],
   part: string,
@@ -197,6 +203,11 @@ const parseMultiFontFullWidthPart = (
   addPartToResult(lineContent, secondContent, getFlashFontName(secondVal.font));
 };
 
+/**
+ * コメントのボタンのパーツを取得する
+ * @param comment コメント
+ * @returns ボタンのデータを追加したコメント
+ */
 const getButtonParts = (
   comment: FormattedCommentWithSize,
 ): FormattedCommentWithSize => {
@@ -280,6 +291,12 @@ const getButtonParts = (
   return comment;
 };
 
+/**
+ * ボタンからのコメントを作成する
+ * @param comment @ボタンのコメント
+ * @param vpos コメントのvpos
+ * @returns 作成したコメント
+ */
 const buildAtButtonComment = (
   comment: FormattedCommentWithSize,
   vpos: number,

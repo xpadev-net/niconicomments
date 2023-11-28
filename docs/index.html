@@ -144,11 +144,20 @@
       </section>
       <section id="example">
         <h2>Example</h2>
+        <h3 data-i18n="example_canvas"></h3>
         <pre><code><span class="orange">const</span> canvas = <span class="blue">document</span>.<span class="yellow">getElementById</span>(<span class="green">&quot;canvas&quot;</span>);
 <span class="orange">const</span> video = <span class="blue">document</span>.<span class="yellow">getElementById</span>(<span class="green">&quot;video&quot;</span>);
 <span class="orange">const</span> req = <span class="orange">await</span> <span class="yellow">fetch</span>(<span class="green">&quot;sample.json&quot;</span>);
 <span class="orange">const</span> res = <span class="orange">await</span> req.<span class="yellow">json</span>();
 <span class="orange">const</span> niconiComments = <span class="orange">new</span> <span class="blue">NiconiComments</span>(canvas, res);
+<span class="red">setInterval</span>(() =&gt; niconiComments.<span class="yellow">drawCanvas</span>(<span class="orange">Math</span>.<span class="red">floor</span>(video.currentTime * <span class="yellow">100</span>)), <span class="yellow">10</span>);</code></pre>
+        <h3 data-i18n="example_canvas_renderer"></h3>
+        <pre><code><span class="orange">const</span> canvas = <span class="blue">document</span>.<span class="yellow">getElementById</span>(<span class="green">&quot;canvas&quot;</span>);
+<span class="orange">const</span> video = <span class="blue">document</span>.<span class="yellow">getElementById</span>(<span class="green">&quot;video&quot;</span>);
+<span class="orange">const</span> req = <span class="orange">await</span> <span class="yellow">fetch</span>(<span class="green">&quot;sample.json&quot;</span>);
+<span class="orange">const</span> res = <span class="orange">await</span> req.<span class="yellow">json</span>();
+<span class="orange">const</span> renderer = <span class="orange">new</span> <span class="blue">NiconiComments</span>.internal.renderer.<span class="yellow">CanvasRenderer</span>(canvas);
+<span class="orange">const</span> niconiComments = <span class="orange">new</span> <span class="blue">NiconiComments</span>(renderer, res);
 <span class="red">setInterval</span>(() =&gt; niconiComments.<span class="yellow">drawCanvas</span>(<span class="orange">Math</span>.<span class="red">floor</span>(video.currentTime * <span class="yellow">100</span>)), <span class="yellow">10</span>);</code></pre>
       </section>
       <section id="patent" data-i18n="for_user"></section>
@@ -156,7 +165,9 @@
         <h2>Class</h2>
         <h4 id="NiconiComments">
           class <span class="red">NiconiComments</span>(canvas<span class="type"
-            >:HTMLCanvasElement</span
+            >:HTMLCanvasElement | <a href="./type/interfaces/_types_renderer.IRenderer.html"
+        >IRenderer</a
+        ></span
           >, data<span class="type"
             >:<a href="./type/types/_types_options.inputFormat.html"
               >inputFormat</a
@@ -172,7 +183,9 @@
           <h3 id="Parameters">Parameters</h3>
           <div class="item">
             <h4 id="p_canvas">
-              canvas<span class="type">:HTMLCanvasElement</span>
+              canvas<span class="type">:HTMLCanvasElement | <a href="./type/interfaces/_types_renderer.IRenderer.html"
+            >IRenderer</a
+            ></span>
             </h4>
             <div class="item" data-i18n="p_canvas"></div>
             <h4 id="p_data">

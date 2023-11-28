@@ -19,12 +19,16 @@ const localize = {
   about_docs: ["Document: ", "ドキュメント: "],
   about_repo: ["Repository: ", "リポジトリ: "],
   sample: ["sample", "サンプル"],
+  example_canvas: ["Using HTMLCanvasElement", "HTMLCanvasElementを使用した例"],
+  example_canvas_renderer: ["Using CanvasRenderer","CanvasRendererを使用した例"],
   class_main: ["The main body of this library.", "このライブラリの本体です"],
   p_canvas: [
-    `<p>Pass a Canvas Element for comment drawing</p>
+    `<p>Pass a class or object conforming to <a href="./type/interfaces/_types_renderer.IRenderer.html">IRenderer</a> or Canvas Element for comment drawing</p>
+<p><a href="./type/classes/renderer_canvas.CanvasRenderer.html">CanvasRender</a> used by default can be used from NiconiComments.internal.renderer.CanvasRenderer</p>
 <p>This library assumes that the canvas size is 1920x1080.</p>
 <p>If the size is incorrectly set, the comment will not be drawn correctly.</p>`,
-    `<p>コメント描画用のキャンバスElementを渡してください</p>
+    `<p>コメント描画用のCanvasElementか、 <a href="./type/interfaces/_types_renderer.IRenderer.html">IRenderer</a> に適合するクラス、オブジェクトなどを渡してください</p>
+<p>デフォルトで使用される <a href="./type/classes/renderer_canvas.CanvasRenderer.html">CanvasRender</a> は NiconiComments.internal.renderer.CanvasRenderer から使用することができます</p>
 <p>このライブラリはキャンバスサイズが1920x1080である前提で描画を行います</p>
 <p>サイズ設定をミスるとコメントが正常に描画されません</p>`,
   ],
@@ -229,11 +233,13 @@ const localize = {
   ],
   p_video: [
     `<p><span class="note">This option is effective immediately</span></p>
+<p><span class="note">If you are using an object or class conforming to IRenderer, set the IRenderer's video property to VideoElement<br/>If you are using CanvasRenderer, pass VideoElement as the second argument</span></p>
 <p>Specifies the video to be drawn in the background.</p>
 <p>If default (<span class="yellow">null</span>), no video is drawn.</p>
 <p>If specified, the specified video is drawn in the background and the comment is drawn on top of it.</p>
 <p>By applying this function, you can also display comments on Picture in Picture.</p>`,
     `<p><span class="note">初期化後も随時設定の変更が可能です</span></p>
+<p><span class="note">IRenderer に適合するオブジェクトまたはクラスを使用している場合は IRenderer の video プロパティに VideoElement をセットしてください<br/>CanvasRenderer を使用している場合は第二引数に VideoElement を渡してください</span></p>
 <p>背景に描画する動画を指定します</p>
 <p>デフォルト(<span class="yellow">null</span>)の場合は描画を行いません</p>
 <p>指定されている場合は、背景に指定された動画を描画し、その上にコメントを描画します</p>

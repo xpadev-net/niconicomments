@@ -1,6 +1,12 @@
 import type { IRenderer } from "@/@types/renderer";
 import { CanvasRenderingContext2DError } from "@/errors";
 
+/**
+ * Canvasを使ったレンダラー
+ * dom/canvas周りのAPIを切り出したもの
+ * @param canvas レンダリング先のCanvas
+ * @param video レンダリングするVideo(任意)
+ */
 class CanvasRenderer implements IRenderer {
   public readonly canvas: HTMLCanvasElement;
   public readonly video?: HTMLVideoElement;

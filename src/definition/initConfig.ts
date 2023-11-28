@@ -363,21 +363,24 @@ const initConfig = () => {
       medium: 0.519,
       big: 0.535,
     },
-    flashCompatSpacer: {
-      "\u3000": {
-        simsun: 1,
-        defont: 0.65,
-        gulim: 0.95,
+    compatSpacer: {
+      flash: {
+        "\u3000": {
+          simsun: 0.98,
+          defont: 0.65,
+          gulim: 0.95,
+        },
+        "\u00a0": {
+          simsun: 0.25,
+        },
+        "\u0020": {
+          defont: 0.3,
+        },
+        "\u2001": {
+          defont: 1.08,
+        },
       },
-      "\u00a0": {
-        simsun: 0.25,
-      },
-      "\u0020": {
-        defont: 0.3,
-      },
-      "\u2001": {
-        defont: 1.08,
-      },
+      html5: {},
     },
   };
   updateConfig(defaultConfig);

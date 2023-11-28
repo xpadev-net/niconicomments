@@ -20,6 +20,7 @@ export type MultiConfigItem<T> = { html5: T; flash: T };
 type ConfigSizeItem<T> = { big: T; medium: T; small: T };
 type ConfigResizedItem<T> = { default: T; resized: T };
 type ConfigFlashFontItem<T> = { gulim: T; simsun: T; defont: T };
+type ConfigHTML5FontItem<T> = { gothic: T; mincho: T; defont: T };
 
 export type CommentStageSize = {
   width: number;
@@ -99,7 +100,14 @@ export type BaseConfig = {
     }>
   >;
   flashLineBreakScale: ConfigSizeItem<number>;
-  flashCompatSpacer: { [key: string]: Partial<ConfigFlashFontItem<number>> };
+  compatSpacer: {
+    flash: {
+      [key: string]: Partial<ConfigFlashFontItem<number>>;
+    };
+    html5: {
+      [key: string]: Partial<ConfigHTML5FontItem<number>>;
+    };
+  };
 };
 
 export type Config = Partial<BaseConfig>;

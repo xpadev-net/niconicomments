@@ -89,6 +89,13 @@ export const ZCommentFont = union([
 ]);
 export type CommentFont = Output<typeof ZCommentFont>;
 
+export const ZCommentHTML5Font = union([
+  literal("defont"),
+  literal("mincho"),
+  literal("gothic"),
+]);
+export type CommentHTML5Font = Output<typeof ZCommentHTML5Font>;
+
 export const ZCommentFlashFont = union([
   literal("defont"),
   literal("gulim"),
@@ -96,20 +103,40 @@ export const ZCommentFlashFont = union([
 ]);
 export type CommentFlashFont = Output<typeof ZCommentFlashFont>;
 
-export const ZCommentContentItem = object({
-  type: union([literal("text"), literal("spacer")]),
+export const ZCommentContentItemSpacer = object({
+  type: literal("spacer"),
+  char: string(),
+  charWidth: number(),
+  isButton: optional(boolean()),
+  font: optional(ZCommentFlashFont),
+  count: number(),
+});
+
+export const ZCommentContentItemText = object({
+  type: literal("text"),
   content: string(),
   slicedContent: array(string()),
   isButton: optional(boolean()),
   font: optional(ZCommentFlashFont),
   width: optional(array(number())),
 });
+export type CommentContentItemText = Output<typeof ZCommentContentItemText>;
+
+export const ZCommentContentItem = union([
+  ZCommentContentItemSpacer,
+  ZCommentContentItemText,
+]);
 export type CommentContentItem = Output<typeof ZCommentContentItem>;
-export const ZCommentMeasuredContentItem = intersect([
+export const ZCommentMeasuredContentItemText = intersect([
   ZCommentContentItem,
   object({
     width: array(number()),
   }),
+]);
+
+export const ZCommentMeasuredContentItem = union([
+  ZCommentMeasuredContentItemText,
+  ZCommentContentItemSpacer,
 ]);
 export type CommentMeasuredContentItem = Output<
   typeof ZCommentMeasuredContentItem

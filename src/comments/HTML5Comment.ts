@@ -46,10 +46,7 @@ class HTML5Comment extends BaseComment {
       lineOffset,
     };
     this.comment = this.getCommentSize(comment);
-    this.cacheKey =
-      JSON.stringify(this.comment.content) +
-      `@@${this.pluginName}@@` +
-      [...this.comment.mail].sort().join(",");
+    this.cacheKey = this.getCacheKey();
     delete this.image;
   }
 

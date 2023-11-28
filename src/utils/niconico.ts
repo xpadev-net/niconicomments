@@ -1,5 +1,9 @@
-import type { CommentHTML5Font, CommentSize, MeasureInput } from "@/@types";
-import type { CommentContentItem } from "@/@types";
+import type {
+  CommentContentItem,
+  CommentHTML5Font,
+  CommentSize,
+  MeasureInput,
+} from "@/@types";
 import type { IRenderer } from "@/@types/renderer";
 import { config } from "@/definition/config";
 import { TypeGuardError } from "@/errors/TypeGuardError";

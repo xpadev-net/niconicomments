@@ -1,6 +1,3 @@
-import type { BaseSchema } from "valibot";
-import { object } from "valibot";
-
 import type {
   CommentSize,
   FormattedComment,
@@ -11,11 +8,6 @@ import type { BaseComment } from "@/comments/";
 
 export type ConfigItem<T> = T | MultiConfigItem<T>;
 
-export const ZMultiConfigItem = (item: BaseSchema) =>
-  object({
-    html5: item,
-    flash: item,
-  });
 export type MultiConfigItem<T> = { html5: T; flash: T };
 type ConfigSizeItem<T> = { big: T; medium: T; small: T };
 type ConfigResizedItem<T> = { default: T; resized: T };

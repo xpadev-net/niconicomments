@@ -57,10 +57,7 @@ class FlashComment extends BaseComment {
       comment.font = val.font;
     }
     this.comment = this.getCommentSize(comment);
-    this.cacheKey =
-      JSON.stringify(this.comment.content) +
-      `@@${this.pluginName}@@` +
-      [...this.comment.mail].sort((a, b) => a.localeCompare(b)).join(",");
+    this.cacheKey = this.getCacheKey();
     delete this.image;
   }
 
@@ -157,11 +154,12 @@ class FlashComment extends BaseComment {
       : parseContent(input);
     const lineCount = (input.match(/\n/g)?.length ?? 0) + 1;
     const lineOffset =
-      (input.match(new RegExp(config.flashScriptChar.super, "g"))?.length ??
-        0) *
+      (RegExp(new RegExp(config.flashScriptChar.super, "g")).exec(input)
+        ?.length ?? 0) *
         -1 *
         config.flashScriptCharOffset +
-      (input.match(new RegExp(config.flashScriptChar.sub, "g"))?.length ?? 0) *
+      (RegExp(new RegExp(config.flashScriptChar.sub, "g")).exec(input)
+        ?.length ?? 0) *
         config.flashScriptCharOffset;
     return {
       content,

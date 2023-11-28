@@ -248,7 +248,7 @@ class FlashComment extends BaseComment {
       )
         return true;
       if (width <= widthLimit) return false;
-      if (16 <= lineCount && width < widthLimit) return true;
+      if (16 <= lineCount && width * 0.95 < widthLimit) return true;
       if (isFull) {
         if (width * 0.95 < widthLimit) return false;
         return width > widthLimit;
@@ -271,11 +271,11 @@ class FlashComment extends BaseComment {
     let currentWidth = 0,
       spacedWidth = 0;
     for (const item of comment.content) {
-      if (item.type === "spacer" && item.width) {
+      if (item.type === "spacer") {
         spacedWidth +=
-          (item.width[0] ?? 0) * comment.fontSize +
-          Math.max(item.content.length - 1, 0) * config.letterSpacing;
-        currentWidth += (item.width[0] ?? 0) * comment.fontSize;
+          item.count * item.charWidth * comment.fontSize +
+          Math.max(item.count - 1, 0) * config.letterSpacing;
+        currentWidth += item.count * item.charWidth * comment.fontSize;
         widthArr.push(currentWidth);
         spacedWidthArr.push(spacedWidth);
         continue;
@@ -305,6 +305,7 @@ class FlashComment extends BaseComment {
       spacedWidthArr.push(spacedWidth);
       item.width = widths;
     }
+    console.log(comment.id, widthArr);
     const leadLine = (function () {
       let max = 0,
         index = -1;
@@ -378,7 +379,7 @@ class FlashComment extends BaseComment {
       isLastButton = false;
     for (const item of this.comment.content) {
       if (item.type === "spacer") {
-        leftOffset += (item.width?.[0] ?? 0) * this.comment.fontSize;
+        leftOffset += item.count * item.charWidth * this.comment.fontSize;
         isLastButton = !!item.isButton;
         continue;
       }

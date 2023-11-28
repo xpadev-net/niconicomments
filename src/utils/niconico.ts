@@ -1,4 +1,5 @@
-import type { CommentSize, MeasureInput } from "@/@types";
+import type { CommentHTML5Font, CommentSize, MeasureInput } from "@/@types";
+import type { CommentContentItem } from "@/@types";
 import type { IRenderer } from "@/@types/renderer";
 import { config } from "@/definition/config";
 import { TypeGuardError } from "@/errors/TypeGuardError";
@@ -59,6 +60,41 @@ const measure = (comment: MeasureInput, renderer: IRenderer) => {
   };
 };
 
+const addHTML5PartToResult = (
+  lineContent: CommentContentItem[],
+  part: string,
+  font?: CommentHTML5Font,
+) => {
+  console.log(part);
+  if (part === "") return;
+  for (const key of Object.keys(config.compatSpacer.html5)) {
+    const spacerWidth = config.compatSpacer.html5[key]?.[font ?? "defont"];
+    console.log("test", key, spacerWidth);
+    if (!spacerWidth) continue;
+    const compatIndex = part.indexOf(key);
+    if (compatIndex >= 0) {
+      addHTML5PartToResult(lineContent, part.slice(0, compatIndex), font);
+      let i = compatIndex;
+      for (; i < part.length && part[i] === key; i++) {
+        /* empty */
+      }
+      lineContent.push({
+        type: "spacer",
+        char: key,
+        charWidth: spacerWidth,
+        count: i - compatIndex,
+      });
+      addHTML5PartToResult(lineContent, part.slice(i), font);
+      return;
+    }
+  }
+  lineContent.push({
+    type: "text",
+    content: part,
+    slicedContent: part.split("\n"),
+  });
+};
+
 /**
  * コメントの幅を計測する
  * @param comment コメント
@@ -67,11 +103,17 @@ const measure = (comment: MeasureInput, renderer: IRenderer) => {
  */
 const measureWidth = (comment: MeasureInput, renderer: IRenderer) => {
   const { fontSize, scale } = getFontSizeAndScale(comment.charSize),
-    lineWidth = [],
-    itemWidth = [];
+    lineWidth: number[] = [],
+    itemWidth: number[][] = [];
   renderer.setFont(parseFont(comment.font, fontSize));
   let currentWidth = 0;
   for (const item of comment.content) {
+    if (item.type === "spacer") {
+      currentWidth += item.count * fontSize * item.charWidth;
+      itemWidth.push([item.count * fontSize * item.charWidth]);
+      lineWidth.push(Math.ceil(currentWidth * scale));
+      continue;
+    }
     const lines = item.content.split("\n");
     renderer.setFont(parseFont(item.font ?? comment.font, fontSize));
     const width = [];
@@ -116,4 +158,10 @@ const getFontSizeAndScale = (charSize: number) => {
   };
 };
 
-export { getCharSize, getFontSizeAndScale, getLineHeight, measure };
+export {
+  addHTML5PartToResult,
+  getCharSize,
+  getFontSizeAndScale,
+  getLineHeight,
+  measure,
+};

@@ -1,8 +1,9 @@
 import type {
-  CommentContentItem,
+  CommentContentItemText,
   FormattedComment,
   FormattedCommentWithFont,
   FormattedCommentWithSize,
+  HTML5Fonts,
   MeasureTextInput,
   MeasureTextResult,
 } from "@/@types/";
@@ -11,6 +12,7 @@ import { config, options } from "@/definition/config";
 import { TypeGuardError } from "@/errors/TypeGuardError";
 import typeGuard from "@/typeGuard";
 import {
+  addHTML5PartToResult,
   getCharSize,
   getConfig,
   getFontSizeAndScale,
@@ -104,6 +106,7 @@ class HTML5Comment extends BaseComment {
     const data = parseCommandAndNicoScript(comment);
     const { content, lineCount, lineOffset } = this.parseContent(
       comment.content,
+      data.font as HTML5Fonts,
     );
     return {
       ...comment,
@@ -115,17 +118,12 @@ class HTML5Comment extends BaseComment {
     };
   }
 
-  override parseContent(input: string) {
-    const content: CommentContentItem[] = [];
-    content.push({
-      type: "text",
-      content: input,
-      slicedContent: input.split("\n"),
-    });
-    const lineCount = content.reduce((pv, val) => {
-      return pv + (val.content.match(/\n/g)?.length ?? 0);
-    }, 1);
+  override parseContent(input: string, font?: HTML5Fonts) {
+    const content: CommentContentItemText[] = [];
+    addHTML5PartToResult(content, input, font ?? "defont");
+    const lineCount = input.split("\n").length;
     const lineOffset = 0;
+    console.log(content);
     return {
       content,
       lineCount,
@@ -154,7 +152,7 @@ class HTML5Comment extends BaseComment {
 
     for (let i = 0, n = comment.content.length; i < n; i++) {
       const item = comment.content[i];
-      if (!item || !itemWidth) continue;
+      if (item?.type !== "text" || !itemWidth) continue;
       item.width = itemWidth[i];
     }
     comment.fontSize = (comment.charSize ?? 0) * 0.8;
@@ -295,6 +293,10 @@ class HTML5Comment extends BaseComment {
       this.comment.lineHeight * -0.16 +
       (config.fonts[this.comment.font]?.offset || 0);
     for (const item of this.comment.content) {
+      if (item?.type === "spacer") {
+        lineCount += item.count * item.charWidth * this.comment.fontSize;
+        continue;
+      }
       const lines = item.slicedContent;
       for (let j = 0, n = lines.length; j < n; j++) {
         const line = lines[j];

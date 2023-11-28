@@ -20,6 +20,7 @@ export type MultiConfigItem<T> = { html5: T; flash: T };
 type ConfigSizeItem<T> = { big: T; medium: T; small: T };
 type ConfigResizedItem<T> = { default: T; resized: T };
 type ConfigFlashFontItem<T> = { gulim: T; simsun: T; defont: T };
+type ConfigHTML5FontItem<T> = { gothic: T; mincho: T; defont: T };
 
 export type CommentStageSize = {
   width: number;
@@ -40,9 +41,6 @@ type FontList = {
 type LineCounts = {
   [key in "default" | "resized" | "doubleResized"]: ConfigSizeItem<number>;
 };
-type TypeDoubleResizeMaxWidth = {
-  [key in "full" | "normal"]: number;
-};
 
 export type BaseConfig = {
   cacheAge: number;
@@ -55,7 +53,6 @@ export type BaseConfig = {
   commentDrawRange: number;
   commentScale: ConfigItem<number>;
   commentStageSize: ConfigItem<CommentStageSize>;
-  commentYMarginBottom: ConfigSizeItem<number>;
   commentYOffset: ConfigSizeItem<ConfigResizedItem<number>>;
   commentYPaddingTop: ConfigResizedItem<number>;
   contextFillLiveOpacity: number;
@@ -63,7 +60,6 @@ export type BaseConfig = {
   contextStrokeColor: string;
   contextStrokeInversionColor: string;
   contextStrokeOpacity: number;
-  doubleResizeMaxWidth: ConfigItem<TypeDoubleResizeMaxWidth>;
   flashChar: FlashCharList;
   flashMode: FlashMode;
   flashScriptChar: FlashScriptChar;
@@ -99,7 +95,14 @@ export type BaseConfig = {
     }>
   >;
   flashLineBreakScale: ConfigSizeItem<number>;
-  flashCompatSpacer: { [key: string]: Partial<ConfigFlashFontItem<number>> };
+  compatSpacer: {
+    flash: {
+      [key: string]: Partial<ConfigFlashFontItem<number>>;
+    };
+    html5: {
+      [key: string]: Partial<ConfigHTML5FontItem<number>>;
+    };
+  };
 };
 
 export type Config = Partial<BaseConfig>;

@@ -63,10 +63,18 @@ const parseContent = (content: string) => {
   for (const line of lines) {
     const lineContent = parseLine(line);
     const firstContent = lineContent[0];
-    if (firstContent?.font) {
+    const defaultFont = firstContent?.font;
+    if (defaultFont) {
       results.push(
         ...lineContent.map((val) => {
-          val.font ??= firstContent.font;
+          val.font ??= defaultFont;
+          if (val.type === "spacer") {
+            const spacer = config.compatSpacer.flash[val.char];
+            if (!spacer) return val;
+            const width = spacer[val.font];
+            if (!width) return val;
+            val.charWidth = width;
+          }
           return val;
         }),
       );
@@ -87,7 +95,7 @@ const parseLine = (line: string) => {
   const lineContent: CommentContentItem[] = [];
   for (const part of parts) {
     if (part.match(/[ -~｡-ﾟ]+/g) !== null) {
-      addPartToResult(lineContent, part);
+      addPartToResult(lineContent, part, "defont");
       continue;
     }
     parseFullWidthPart(part, lineContent);
@@ -107,8 +115,8 @@ const addPartToResult = (
   font?: CommentFlashFont,
 ) => {
   if (part === "") return;
-  for (const key of Object.keys(config.flashCompatSpacer)) {
-    const spacerWidth = config.flashCompatSpacer[key]?.[font ?? "defont"];
+  for (const key of Object.keys(config.compatSpacer.flash)) {
+    const spacerWidth = config.compatSpacer.flash[key]?.[font ?? "defont"];
     if (!spacerWidth) continue;
     const compatIndex = part.indexOf(key);
     if (compatIndex >= 0) {
@@ -119,10 +127,10 @@ const addPartToResult = (
       }
       lineContent.push({
         type: "spacer",
-        content: part.slice(compatIndex, i),
-        slicedContent: [part.slice(compatIndex, i)],
+        char: key,
+        charWidth: spacerWidth,
         font,
-        width: [(i - compatIndex) * spacerWidth],
+        count: i - compatIndex,
       });
       addPartToResult(lineContent, part.slice(i), font);
       return;
@@ -223,6 +231,10 @@ const getButtonParts = (
     lineCount = 0,
     isLastButton = false;
   for (const item of comment.content) {
+    if (item.type === "spacer") {
+      leftOffset += item.count * comment.fontSize * item.charWidth;
+      continue;
+    }
     const lines = item.slicedContent;
     for (let j = 0, n = lines.length; j < n; j++) {
       const line = lines[j];

@@ -175,73 +175,50 @@ class FlashComment extends BaseComment {
     const configLineHeight = getConfig(config.lineHeight, true),
       configFontSize = getConfig(config.fontSize, true)[comment.size],
       configStageSize = getConfig(config.commentStageSize, true);
+    const defaultFontSize = configFontSize.default;
     comment.lineHeight ??= configLineHeight[comment.size].default;
+    const widthLimit = configStageSize[comment.full ? "fullWidth" : "width"];
+    const { scaleX, width, height } = this._measureContent(comment);
+    let scale = 1;
     if (isLineBreakResize(comment)) {
       comment.resized = true;
       comment.resizedY = true;
-      comment.scale *= config.flashLineBreakScale[comment.size];
-      this.renderer.setFont(parseFont(comment.font, comment.fontSize));
-    }
-    const { scaleX, width, height } = this._measureContent(comment);
-    if (comment.loc !== "naka") {
-      const widthLimit = configStageSize[comment.full ? "fullWidth" : "width"];
+      const lineBreakScale = config.flashLineBreakScale[comment.size];
+      const scaledWidth = width * lineBreakScale;
       if (
+        comment.loc !== "naka" &&
         this._isDoubleResize(
-          width,
+          scaledWidth,
           widthLimit,
           comment.size,
           comment.lineCount,
           comment.full,
-        ) &&
-        !comment.resizedX &&
-        comment.resizedY
+        )
       ) {
-        comment.resizedX = true;
-        comment.resized = true;
-
-        const resizedFontSize = Math.round(
-          (widthLimit / width) * configFontSize.default,
-        );
-        const resizeScale =
-          (resizedFontSize + 1) / (configFontSize.default + 1);
-        comment.scale *= resizeScale;
-        const resizedHeight = height * resizeScale;
-        const resizedWidth = width * resizeScale;
-        const targetHeight =
-          config.flashDoubleResizeHeights[comment.size]?.[comment.lineCount];
-        if (targetHeight) {
-          const targetScale = targetHeight / resizedHeight;
-          if (width * targetScale > widthLimit) {
-            comment.scale *= targetScale;
-            console.log(targetHeight, height);
-          }
-        } else if (
-          configStageSize.height < resizedHeight &&
-          resizedHeight < configStageSize.height * 2
-        ) {
-          const scale = configStageSize.height / resizedHeight;
-          const _width = resizedWidth * scale;
-          if (_width > widthLimit && _width > resizedWidth) {
-            comment.scale *= scale;
-          }
+        if (scaledWidth > widthLimit) {
+          const resizedFontSize = Math.round(
+            (widthLimit / scaledWidth) * defaultFontSize,
+          );
+          const resizeRate = (resizedFontSize + 1) / (defaultFontSize + 1);
+          scale *= resizeRate;
         }
-        return this.measureText(comment);
-      } else if (width > widthLimit && !comment.resizedX) {
-        comment.resizedX = true;
-        comment.resized = true;
-        const resizeScale =
-          (Math.round((widthLimit / width) * configFontSize.default) + 1) /
-          (configFontSize.default + 1);
-        comment.scale *= resizeScale;
+      } else {
+        comment.fontSize = configFontSize.resized;
         return this.measureText(comment);
       }
+    } else if (comment.loc !== "naka" && width > widthLimit) {
+      const resizeRate =
+        (Math.round((widthLimit / width) * defaultFontSize) + 1) /
+        (defaultFontSize + 1);
+      scale *= resizeRate;
     }
+    comment.scale = scale;
     if (!typeGuard.internal.CommentMeasuredContentItemArray(comment.content)) {
       throw new TypeGuardError();
     }
     return {
       charSize: 0,
-      height: height,
+      height: height * scale,
       resized: !!comment.resized,
       fontSize: comment.fontSize,
       lineHeight: comment.lineHeight,
@@ -249,8 +226,8 @@ class FlashComment extends BaseComment {
       resizedX: !!comment.resizedX,
       resizedY: !!comment.resizedY,
       scale: comment.scale,
-      scaleX,
-      width,
+      scaleX: scaleX,
+      width: width * scale,
     };
   }
 

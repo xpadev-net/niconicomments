@@ -249,10 +249,8 @@ const initConfig = () => {
      * [size]に数値が入る
      */
     font: {
-      gulim:
-        'normal 600 [size]px gulim, "Microsoft JhengHei UI", Arial, "ＭＳ Ｐゴシック", "MS PGothic", MSPGothic, MS-PGothic',
-      simsun:
-        'normal 400 [size]px simsun, "游明朝体", "游明朝", "Yu Mincho", YuMincho, yumincho, YuMin-Medium',
+      gulim: `normal 600 [size]px gulim, ${fonts[platform].gothic.font}, Arial`,
+      simsun: `normal 400 [size]px simsun, ${fonts[platform].mincho.font}, Arial`,
     },
     /**
      * Flash版コメントの高さを計算するための定数

@@ -19,7 +19,7 @@
     "lint:fix": "npm run format&&npm run eslint:fix&&npm run check-types",
     "prepare": "husky install",
     "test": "docker-compose run --rm pw",
-    "test-server": "lite-server"
+    "test-server": "http-server"
   },
   "repository": {
     "type": "git",
@@ -60,6 +60,7 @@
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-jsdoc": "^46.9.0",
     "eslint-plugin-simple-import-sort": "^10.0.0",
+    "http-server": "^14.1.1",
     "husky": "^8.0.3",
     "lint-staged": "^14.0.1",
     "prettier": "^3.1.0",

@@ -154,12 +154,11 @@ class FlashComment extends BaseComment {
       : parseContent(input);
     const lineCount = (input.match(/\n/g)?.length ?? 0) + 1;
     const lineOffset =
-      (RegExp(new RegExp(config.flashScriptChar.super, "g")).exec(input)
-        ?.length ?? 0) *
+      (input.match(new RegExp(config.flashScriptChar.super, "g"))?.length ??
+        0) *
         -1 *
         config.flashScriptCharOffset +
-      (RegExp(new RegExp(config.flashScriptChar.sub, "g")).exec(input)
-        ?.length ?? 0) *
+      (input.match(new RegExp(config.flashScriptChar.sub, "g"))?.length ?? 0) *
         config.flashScriptCharOffset;
     return {
       content,

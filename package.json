@@ -7,7 +7,7 @@
   "scripts": {
     "build": "npx rimraf dist&&npm run build:ts&&npm run build:dts",
     "build:ts": "rollup -c rollup.config.mjs",
-    "build:dts": "npx copyfiles -u 2 src/@types/*.d.ts dist/dts/@types/&&node ./util/resolve-path-alias.js&&rollup -c rollup.config.dts.mjs",
+    "build:dts": "npx copyfiles -u 2 src/@types/*.d.ts dist/dts/@types/&&node ./util/resolve-path-alias.js&&rollup -c rollup.config.dts.mjs&& npx dts-bundle-generator --external-inlines=valibot -o dist/bundle.d.ts dist/bundle_.d.ts",
     "watch": "rollup -c rollup.config.mjs -w",
     "typedoc": "typedoc --entryPointStrategy Expand --out ./docs/type/ ./src/",
     "prepublishOnly": "npm run build",
@@ -56,6 +56,7 @@
     "@typescript-eslint/eslint-plugin": "^6.13.1",
     "@typescript-eslint/parser": "^6.13.1",
     "copyfiles": "^2.4.1",
+    "dts-bundle-generator": "^9.0.0",
     "eslint": "^8.54.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-jsdoc": "^46.9.0",

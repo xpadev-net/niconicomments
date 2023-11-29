@@ -63,11 +63,17 @@ const parseContent = (content: string) => {
   for (const line of lines) {
     const lineContent = parseLine(line);
     const firstContent = lineContent[0];
-    if (firstContent?.font) {
+    const defaultFont = firstContent?.font;
+    if (defaultFont) {
       results.push(
         ...lineContent.map((val) => {
-          if (!val.font) {
-            val.font = firstContent.font;
+          val.font ??= defaultFont;
+          if (val.type === "spacer") {
+            const spacer = config.compatSpacer.flash[val.char];
+            if (!spacer) return val;
+            const width = spacer[val.font];
+            if (!width) return val;
+            val.charWidth = width;
           }
           return val;
         }),
@@ -89,12 +95,53 @@ const parseLine = (line: string) => {
   const lineContent: CommentContentItem[] = [];
   for (const part of parts) {
     if (part.match(/[ -~｡-ﾟ]+/g) !== null) {
-      lineContent.push({ content: part, slicedContent: part.split("\n") });
+      addPartToResult(lineContent, part, "defont");
       continue;
     }
     parseFullWidthPart(part, lineContent);
   }
   return lineContent;
+};
+
+/**
+ * スペースの補正を行った上で結果を追加する
+ * @param lineContent 結果格納用の配列
+ * @param part 追加する文字列
+ * @param font フォント
+ */
+const addPartToResult = (
+  lineContent: CommentContentItem[],
+  part: string,
+  font?: CommentFlashFont,
+) => {
+  if (part === "") return;
+  for (const key of Object.keys(config.compatSpacer.flash)) {
+    const spacerWidth = config.compatSpacer.flash[key]?.[font ?? "defont"];
+    if (!spacerWidth) continue;
+    const compatIndex = part.indexOf(key);
+    if (compatIndex >= 0) {
+      addPartToResult(lineContent, part.slice(0, compatIndex), font);
+      let i = compatIndex;
+      for (; i < part.length && part[i] === key; i++) {
+        /* empty */
+      }
+      lineContent.push({
+        type: "spacer",
+        char: key,
+        charWidth: spacerWidth,
+        font,
+        count: i - compatIndex,
+      });
+      addPartToResult(lineContent, part.slice(i), font);
+      return;
+    }
+  }
+  lineContent.push({
+    type: "text",
+    content: part,
+    slicedContent: part.split("\n"),
+    font,
+  });
 };
 
 /**
@@ -108,13 +155,9 @@ const parseFullWidthPart = (
 ) => {
   const index = getFlashFontIndex(part);
   if (index.length === 0) {
-    lineContent.push({ content: part, slicedContent: part.split("\n") });
+    addPartToResult(lineContent, part);
   } else if (index.length === 1 && index[0]) {
-    lineContent.push({
-      content: part,
-      slicedContent: part.split("\n"),
-      font: getFlashFontName(index[0].font),
-    });
+    addPartToResult(lineContent, part, getFlashFontName(index[0].font));
   } else {
     parseMultiFontFullWidthPart(part, index, lineContent);
   }
@@ -132,62 +175,44 @@ const parseMultiFontFullWidthPart = (
   lineContent: CommentContentItem[],
 ) => {
   index.sort(nativeSort((val) => val.index));
-  if (config.FlashMode === "xp") {
+  if (config.flashMode === "xp") {
     let offset = 0;
     for (let i = 1, n = index.length; i < n; i++) {
       const currentVal = index[i],
         lastVal = index[i - 1];
       if (currentVal === undefined || lastVal === undefined) continue;
       const content = part.slice(offset, currentVal.index);
-      lineContent.push({
-        content: content,
-        slicedContent: content.split("\n"),
-        font: getFlashFontName(lastVal.font),
-      });
+      addPartToResult(lineContent, content, getFlashFontName(lastVal.font));
       offset = currentVal.index;
     }
     const val = index[index.length - 1];
     if (val) {
       const content = part.slice(offset);
-      lineContent.push({
-        content: content,
-        slicedContent: content.split("\n"),
-        font: getFlashFontName(val.font),
-      });
+      addPartToResult(lineContent, content, getFlashFontName(val.font));
     }
     return;
   }
   const firstVal = index[0],
     secondVal = index[1];
   if (!firstVal || !secondVal) {
-    lineContent.push({
-      content: part,
-      slicedContent: part.split("\n"),
-    });
+    addPartToResult(lineContent, part);
     return;
   }
   if (firstVal.font !== "gothic") {
-    lineContent.push({
-      content: part,
-      slicedContent: part.split("\n"),
-      font: getFlashFontName(firstVal.font),
-    });
+    addPartToResult(lineContent, part, getFlashFontName(firstVal.font));
     return;
   }
   const firstContent = part.slice(0, secondVal.index);
   const secondContent = part.slice(secondVal.index);
-  lineContent.push({
-    content: firstContent,
-    slicedContent: firstContent.split("\n"),
-    font: getFlashFontName(firstVal.font),
-  });
-  lineContent.push({
-    content: secondContent,
-    slicedContent: secondContent.split("\n"),
-    font: getFlashFontName(secondVal.font),
-  });
+  addPartToResult(lineContent, firstContent, getFlashFontName(firstVal.font));
+  addPartToResult(lineContent, secondContent, getFlashFontName(secondVal.font));
 };
 
+/**
+ * コメントのボタンのパーツを取得する
+ * @param comment コメント
+ * @returns ボタンのデータを追加したコメント
+ */
 const getButtonParts = (
   comment: FormattedCommentWithSize,
 ): FormattedCommentWithSize => {
@@ -198,14 +223,18 @@ const getButtonParts = (
   const lineHeight = comment.fontSize * comment.lineHeight;
   const offsetKey = comment.resizedY ? "resized" : "default";
   const offsetY =
-    config.commentYPaddingTop[offsetKey] +
+    config.flashCommentYPaddingTop[offsetKey] +
     comment.fontSize *
       comment.lineHeight *
-      config.commentYOffset[comment.size][offsetKey];
+      config.flashCommentYOffset[comment.size][offsetKey];
   let leftOffset = 0,
     lineCount = 0,
     isLastButton = false;
   for (const item of comment.content) {
+    if (item.type === "spacer") {
+      leftOffset += item.count * comment.fontSize * item.charWidth;
+      continue;
+    }
     const lines = item.slicedContent;
     for (let j = 0, n = lines.length; j < n; j++) {
       const line = lines[j];
@@ -271,6 +300,12 @@ const getButtonParts = (
   return comment;
 };
 
+/**
+ * ボタンからのコメントを作成する
+ * @param comment @ボタンのコメント
+ * @param vpos コメントのvpos
+ * @returns 作成したコメント
+ */
 const buildAtButtonComment = (
   comment: FormattedCommentWithSize,
   vpos: number,

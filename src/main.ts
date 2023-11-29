@@ -1,8 +1,6 @@
 import type {
-  Canvas,
   Collision,
   CommentEventHandlerMap,
-  Context2D,
   FormattedComment,
   IComment,
   InputFormat,
@@ -11,6 +9,7 @@ import type {
   Position,
   Timeline,
 } from "@/@types/";
+import type { IRenderer } from "@/@types/renderer";
 import { FlashComment } from "@/comments/";
 import {
   plugins,
@@ -31,9 +30,10 @@ import { initConfig } from "@/definition/initConfig";
 import { InvalidOptionError } from "@/errors/";
 import { registerHandler, removeHandler, triggerHandler } from "@/eventHandler";
 import convert2formattedComment from "@/inputParser";
+import { CanvasRenderer } from "@/renderer";
 import typeGuard from "@/typeGuard";
 import {
-  ArrayEqual,
+  arrayEqual,
   buildAtButtonComment,
   changeCALayer,
   getConfig,
@@ -43,7 +43,6 @@ import {
   processFixedComment,
   processMovableComment,
 } from "@/utils";
-import { generateCanvas, getContext } from "@/utils/canvas";
 import { createCommentInstance } from "@/utils/plugins";
 
 import * as internal from "./internal";
@@ -53,11 +52,9 @@ class NiconiComments {
   public showCollision: boolean;
   public showFPS: boolean;
   public showCommentCount: boolean;
-  public video: HTMLVideoElement | undefined;
   private lastVpos: number;
-  private readonly canvas: Canvas;
+  private readonly renderer: IRenderer;
   private readonly collision: Collision;
-  private readonly context: Context2D;
   private readonly timeline: Timeline;
   static typeGuard = typeGuard;
   static default = NiconiComments;
@@ -69,11 +66,15 @@ class NiconiComments {
 
   /**
    * NiconiComments Constructor
-   * @param canvas 描画対象のキャンバス
+   * @param renderer 描画対象のキャンバス
    * @param data 描画用のコメント
    * @param initOptions 初期化オプション
    */
-  constructor(canvas: Canvas, data: InputFormat, initOptions: Options = {}) {
+  constructor(
+    renderer: IRenderer | HTMLCanvasElement,
+    data: InputFormat,
+    initOptions: Options = {},
+  ) {
     const constructorStart = performance.now();
     initConfig();
     if (!typeGuard.config.initOptions(initOptions))
@@ -83,11 +84,16 @@ class NiconiComments {
     setIsDebug(options.debug);
     resetImageCache();
     resetNicoScripts();
-    this.canvas = canvas;
-    this.context = getContext(canvas);
-    this.context.textAlign = "start";
-    this.context.textBaseline = "alphabetic";
-    this.context.lineWidth = getConfig(config.contextLineWidth, false);
+    if (renderer instanceof HTMLCanvasElement) {
+      renderer = new CanvasRenderer(renderer, options.video);
+    } else if (options.video) {
+      console.warn(
+        "options.video is ignored because renderer is not HTMLCanvasElement",
+      );
+    }
+
+    this.renderer = renderer;
+    this.renderer.setLineWidth(getConfig(config.contextLineWidth, false));
     let formatType = options.format;
 
     //Deprecated Warning
@@ -110,7 +116,6 @@ class NiconiComments {
     }
 
     const parsedData = convert2formattedComment(data, formatType);
-    this.video = options.video ?? undefined;
     this.showCollision = options.showCollision;
     this.showFPS = options.showFPS;
     this.showCommentCount = options.showCommentCount;
@@ -139,7 +144,7 @@ class NiconiComments {
       rawData = changeCALayer(rawData);
     }
     let instances = rawData.reduce<IComment[]>((pv, val) => {
-      pv.push(createCommentInstance(val, this.context));
+      pv.push(createCommentInstance(val, this.renderer));
       return pv;
     }, []);
     this.getCommentPos(instances);
@@ -148,7 +153,7 @@ class NiconiComments {
     const plugins: IPluginList = [];
     for (const plugin of config.plugins) {
       try {
-        const canvas = generateCanvas();
+        const canvas = this.renderer.getCanvas();
         const pluginInstance = new plugin(canvas, instances);
         plugins.push({
           canvas,
@@ -218,7 +223,7 @@ class NiconiComments {
    */
   public addComments(...rawComments: FormattedComment[]) {
     const comments = rawComments.reduce<IComment[]>((pv, val) => {
-      pv.push(createCommentInstance(val, this.context));
+      pv.push(createCommentInstance(val, this.renderer));
       return pv;
     }, []);
     for (const plugin of plugins) {
@@ -269,17 +274,18 @@ class NiconiComments {
         last =
           this.timeline[this.lastVpos]?.filter((item) => item.loc !== "naka") ??
           [];
-      if (ArrayEqual(current, last)) return false;
+      if (arrayEqual(current, last)) return false;
     }
-    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    const size = this.renderer.getSize();
+    this.renderer.clearRect(0, 0, size.width, size.height);
     this.lastVpos = vpos;
     this._drawVideo();
     for (const plugin of plugins) {
       try {
         plugin.instance.draw?.(vpos);
-        this.context.drawImage(plugin.canvas, 0, 0);
+        this.renderer.drawImage(plugin.canvas, 0, 0);
       } catch (e) {
-        console.error(`Failed to draw comments`);
+        console.error(`Failed to draw comments`, e);
       }
     }
     this._drawCollision(vpos);
@@ -294,25 +300,7 @@ class NiconiComments {
    * 背景動画が設定されている場合に描画する
    */
   private _drawVideo() {
-    if (this.video) {
-      let scale;
-      const height = this.canvas.height / this.video.videoHeight,
-        width = this.canvas.width / this.video.videoWidth;
-      if (this.enableLegacyPiP ? height > width : height < width) {
-        scale = width;
-      } else {
-        scale = height;
-      }
-      const offsetX = (this.canvas.width - this.video.videoWidth * scale) * 0.5,
-        offsetY = (this.canvas.height - this.video.videoHeight * scale) * 0.5;
-      this.context.drawImage(
-        this.video,
-        offsetX,
-        offsetY,
-        this.video.videoWidth * scale,
-        this.video.videoHeight * scale,
-      );
-    }
+    this.renderer.drawVideo(this.enableLegacyPiP);
   }
 
   /**
@@ -351,13 +339,13 @@ class NiconiComments {
    */
   private _drawCollision(vpos: number) {
     if (this.showCollision) {
-      this.context.save();
+      this.renderer.save();
       const leftCollision = this.collision.left[vpos],
         rightCollision = this.collision.right[vpos];
-      this.context.fillStyle = "red";
+      this.renderer.setFillStyle("red");
       if (leftCollision) {
         for (const comment of leftCollision) {
-          this.context.fillRect(
+          this.renderer.fillRect(
             config.collisionRange.left,
             comment.posY,
             getConfig(config.contextLineWidth, comment.flash),
@@ -367,7 +355,7 @@ class NiconiComments {
       }
       if (rightCollision) {
         for (const comment of rightCollision) {
-          this.context.fillRect(
+          this.renderer.fillRect(
             config.collisionRange.right,
             comment.posY,
             getConfig(config.contextLineWidth, comment.flash) * -1,
@@ -375,7 +363,7 @@ class NiconiComments {
           );
         }
       }
-      this.context.restore();
+      this.renderer.restore();
     }
   }
 
@@ -385,17 +373,19 @@ class NiconiComments {
    */
   private _drawFPS(drawCanvasStart: number) {
     if (this.showFPS) {
-      this.context.save();
-      this.context.font = parseFont("defont", 60);
-      this.context.fillStyle = "#00FF00";
-      this.context.strokeStyle = `rgba(${hex2rgb(
-        config.contextStrokeColor,
-      ).join(",")},${config.contextStrokeOpacity})`;
+      this.renderer.save();
+      this.renderer.setFont(parseFont("defont", 60));
+      this.renderer.setFillStyle("#00FF00");
+      this.renderer.setStrokeStyle(
+        `rgba(${hex2rgb(config.contextStrokeColor).join(",")},${
+          config.contextStrokeOpacity
+        })`,
+      );
       const drawTime = Math.floor(performance.now() - drawCanvasStart);
       const fps = Math.floor(1000 / (drawTime === 0 ? 1 : drawTime));
-      this.context.strokeText(`FPS:${fps}(${drawTime}ms)`, 100, 100);
-      this.context.fillText(`FPS:${fps}(${drawTime}ms)`, 100, 100);
-      this.context.restore();
+      this.renderer.strokeText(`FPS:${fps}(${drawTime}ms)`, 100, 100);
+      this.renderer.fillText(`FPS:${fps}(${drawTime}ms)`, 100, 100);
+      this.renderer.restore();
     }
   }
 
@@ -405,15 +395,17 @@ class NiconiComments {
    */
   private _drawCommentCount(count?: number | undefined) {
     if (this.showCommentCount) {
-      this.context.save();
-      this.context.font = parseFont("defont", 60);
-      this.context.fillStyle = "#00FF00";
-      this.context.strokeStyle = `rgba(${hex2rgb(
-        config.contextStrokeColor,
-      ).join(",")},${config.contextStrokeOpacity})`;
-      this.context.strokeText(`Count:${count ?? 0}`, 100, 200);
-      this.context.fillText(`Count:${count ?? 0}`, 100, 200);
-      this.context.restore();
+      this.renderer.save();
+      this.renderer.setFont(parseFont("defont", 60));
+      this.renderer.setFillStyle("#00FF00");
+      this.renderer.setStrokeStyle(
+        `rgba(${hex2rgb(config.contextStrokeColor).join(",")},${
+          config.contextStrokeOpacity
+        })`,
+      );
+      this.renderer.strokeText(`Count:${count ?? 0}`, 100, 200);
+      this.renderer.fillText(`Count:${count ?? 0}`, 100, 200);
+      this.renderer.restore();
     }
   }
 
@@ -447,7 +439,8 @@ class NiconiComments {
    * キャンバスを消去する
    */
   public clear() {
-    this.context.clearRect(0, 0, config.canvasWidth, config.canvasHeight);
+    const size = this.renderer.getSize();
+    this.renderer.clearRect(0, 0, size.width, size.height);
   }
 
   /**
@@ -462,7 +455,6 @@ class NiconiComments {
     for (const comment of comments) {
       if (comment.isHovered(pos)) {
         const newComment = buildAtButtonComment(comment.comment, vpos);
-        console.log(newComment);
         if (!newComment) continue;
         this.addComments(newComment);
       }

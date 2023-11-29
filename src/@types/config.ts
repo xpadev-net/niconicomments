@@ -7,9 +7,12 @@ import type {
 import type { BaseComment } from "@/comments/";
 
 export type ConfigItem<T> = T | MultiConfigItem<T>;
+
 export type MultiConfigItem<T> = { html5: T; flash: T };
 type ConfigSizeItem<T> = { big: T; medium: T; small: T };
 type ConfigResizedItem<T> = { default: T; resized: T };
+type ConfigFlashFontItem<T> = { gulim: T; simsun: T; defont: T };
+type ConfigHTML5FontItem<T> = { gothic: T; mincho: T; defont: T };
 
 export type CommentStageSize = {
   width: number;
@@ -30,47 +33,45 @@ type FontList = {
 type LineCounts = {
   [key in "default" | "resized" | "doubleResized"]: ConfigSizeItem<number>;
 };
-type TypeDoubleResizeMaxWidth = {
-  [key in "full" | "normal"]: number;
-};
 
 export type BaseConfig = {
   cacheAge: number;
   canvasHeight: number;
   canvasWidth: number;
   collisionRange: { [key in "left" | "right"]: number };
+  collisionPadding: number;
   colors: { [key: string]: string };
   commentDrawPadding: number;
   commentDrawRange: number;
   commentScale: ConfigItem<number>;
-  CommentStageSize: ConfigItem<CommentStageSize>;
-  commentYMarginBottom: ConfigSizeItem<number>;
-  commentYOffset: ConfigSizeItem<ConfigResizedItem<number>>;
-  commentYPaddingTop: ConfigResizedItem<number>;
+  commentStageSize: ConfigItem<CommentStageSize>;
+  flashCommentYOffset: ConfigSizeItem<ConfigResizedItem<number>>;
+  flashCommentYPaddingTop: ConfigResizedItem<number>;
   contextFillLiveOpacity: number;
   contextLineWidth: ConfigItem<number>;
   contextStrokeColor: string;
   contextStrokeInversionColor: string;
   contextStrokeOpacity: number;
-  doubleResizeMaxWidth: ConfigItem<TypeDoubleResizeMaxWidth>;
   flashChar: FlashCharList;
-  FlashMode: FlashMode;
-  FlashScriptChar: FlashScriptChar;
+  flashMode: FlashMode;
+  flashScriptChar: FlashScriptChar;
   flashThreshold: number;
-  font: FontList;
-  fonts: PlatformFont;
+  fonts: {
+    flash: FontList;
+    html5: PlatformFont;
+  };
   fontSize: ConfigItem<ConfigSizeItem<ConfigResizedItem<number>>>;
   fpsInterval: number;
-  hiResCommentCorrection: number;
-  lineCounts: ConfigItem<LineCounts>;
+  html5HiResCommentCorrection: number;
+  html5LineCounts: ConfigItem<LineCounts>;
   lineHeight: ConfigItem<ConfigSizeItem<ConfigResizedItem<number>>>;
-  minFontSize: number;
+  html5MinFontSize: number;
   sameCAGap: number;
   sameCAMinScore: number;
   sameCARange: number;
   sameCATimestampRange: number;
-  letterSpacing: number;
-  scriptCharOffset: number;
+  flashLetterSpacing: number;
+  flashScriptCharOffset: number;
   plugins: IPluginConstructor[];
   commentPlugins: {
     class: typeof BaseComment;
@@ -82,6 +83,20 @@ export type BaseConfig = {
   nakaCommentSpeedOffset: number;
   atButtonPadding: number;
   atButtonRadius: number;
+  flashDoubleResizeHeights: Partial<
+    ConfigSizeItem<{
+      [key: number]: number;
+    }>
+  >;
+  flashLineBreakScale: ConfigSizeItem<number>;
+  compatSpacer: {
+    flash: {
+      [key: string]: Partial<ConfigFlashFontItem<number>>;
+    };
+    html5: {
+      [key: string]: Partial<ConfigHTML5FontItem<number>>;
+    };
+  };
 };
 
 export type Config = Partial<BaseConfig>;

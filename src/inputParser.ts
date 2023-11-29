@@ -1,10 +1,18 @@
+import { array, parse, safeParse, ValiError } from "valibot";
+
 import type {
   FormattedComment,
-  FormattedLegacyComment,
   InputFormatType,
   OwnerComment,
   RawApiResponse,
   V1Thread,
+} from "@/@types/";
+import {
+  ZApiChat,
+  ZFormattedComment,
+  ZOwnerComment,
+  ZRawApiResponse,
+  ZV1Thread,
 } from "@/@types/";
 import { InvalidFormatError } from "@/errors/";
 import typeGuard from "@/typeGuard";
@@ -20,27 +28,41 @@ const convert2formattedComment = (
   type: InputFormatType,
 ): FormattedComment[] => {
   let result: FormattedComment[] = [];
+  try {
+    result = parseComments(data, type);
+  } catch (e) {
+    if (e instanceof ValiError) {
+      console.error("", e.issues);
+    }
+  }
+  return sort(result);
+};
+
+const parseComments = (
+  data: unknown,
+  type: InputFormatType,
+): FormattedComment[] => {
   if (type === "empty" && data === undefined) {
     return [];
   } else if (
     (type === "XMLDocument" || type === "niconicome") &&
     typeGuard.xmlDocument(data)
   ) {
-    result = fromXMLDocument(data);
-  } else if (type === "formatted" && typeGuard.formatted.legacyComments(data)) {
-    result = fromFormatted(data);
-  } else if (type === "legacy" && typeGuard.legacy.rawApiResponses(data)) {
-    result = fromLegacy(data);
-  } else if (type === "legacyOwner" && typeGuard.legacyOwner.comments(data)) {
-    result = fromLegacyOwner(data);
-  } else if (type === "owner" && typeGuard.owner.comments(data)) {
-    result = fromOwner(data);
-  } else if (type === "v1" && typeGuard.v1.threads(data)) {
-    result = fromV1(data);
+    return fromXMLDocument(data);
+  } else if (type === "formatted") {
+    return fromFormatted(parse(array(ZFormattedComment), data));
+  } else if (type === "legacy") {
+    return fromLegacy(parse(array(ZRawApiResponse), data));
+  } else if (type === "legacyOwner") {
+    if (!typeGuard.legacyOwner.comments(data)) throw new InvalidFormatError();
+    return fromLegacyOwner(data);
+  } else if (type === "owner") {
+    return fromOwner(parse(array(ZOwnerComment), data));
+  } else if (type === "v1") {
+    return fromV1(parse(array(ZV1Thread), data));
   } else {
     throw new InvalidFormatError();
   }
-  return sort(result);
 };
 
 /**
@@ -92,20 +114,8 @@ const fromXMLDocument = (data: XMLDocument): FormattedComment[] => {
  * @param data formattedからformattedに変換(不足データを追加)
  * @returns 変換後のデータ
  */
-const fromFormatted = (
-  data: FormattedComment[] | FormattedLegacyComment[],
-): FormattedComment[] => {
-  return data.map((comment) => {
-    if (!typeGuard.formatted.comment(comment)) {
-      return {
-        ...comment,
-        layer: -1,
-        user_id: 0,
-        is_my_post: false,
-      };
-    }
-    return comment;
-  });
+const fromFormatted = (data: FormattedComment[]): FormattedComment[] => {
+  return data;
 };
 
 /**
@@ -116,9 +126,10 @@ const fromFormatted = (
 const fromLegacy = (data: RawApiResponse[]): FormattedComment[] => {
   const data_: FormattedComment[] = [],
     userList: string[] = [];
-  for (const val of data) {
-    if (!typeGuard.legacy.apiChat(val.chat)) continue;
-    const value = val.chat;
+  for (const _val of data) {
+    const val = safeParse(ZApiChat, _val.chat);
+    if (!val.success) continue;
+    const value = val.output;
     if (value.deleted !== 1) {
       const tmpParam: FormattedComment = {
         id: value.no,
@@ -293,13 +304,13 @@ const sort = (data: FormattedComment[]): FormattedComment[] => {
 
 /**
  * 投稿者コメントのエディターは秒数の入力フォーマットに割りと色々対応しているのでvposに変換
- * @param time_str 分:秒.秒・分:秒・秒.秒・秒
+ * @param input 分:秒.秒・分:秒・秒.秒・秒
  * @returns vpos
  */
-const time2vpos = (time_str: string): number => {
+const time2vpos = (input: string): number => {
   const time = RegExp(
     /^(?:(\d+):(\d+)\.(\d+)|(\d+):(\d+)|(\d+)\.(\d+)|(\d+))$/,
-  ).exec(time_str);
+  ).exec(input);
   if (time) {
     if (
       time[1] !== undefined &&

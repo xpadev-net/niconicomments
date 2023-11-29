@@ -1,6 +1,4 @@
 import type {
-  Canvas,
-  Context2D,
   FormattedComment,
   FormattedCommentWithFont,
   FormattedCommentWithSize,
@@ -10,18 +8,18 @@ import type {
   ParseContentResult,
   Position,
 } from "@/@types/";
+import type { IRenderer } from "@/@types/renderer";
 import { imageCache } from "@/contexts";
 import { isDebug } from "@/contexts/debug";
 import { config } from "@/definition/config";
 import { NotImplementedError } from "@/errors/";
 import { getPosX, isBanActive, isReverseActive, parseFont } from "@/utils";
-import { drawImage, generateCanvas, getContext } from "@/utils/canvas";
 
 /**
  * コメントの描画を行うクラスの基底クラス
  */
 class BaseComment implements IComment {
-  protected readonly context: Context2D;
+  protected readonly renderer: IRenderer;
   protected cacheKey: string;
   public comment: FormattedCommentWithSize;
   public pos: {
@@ -30,24 +28,21 @@ class BaseComment implements IComment {
   };
   public posY: number;
   public readonly pluginName: string = "BaseComment";
-  public image?: Canvas | null;
-  public buttonImage?: Canvas | null;
+  public image?: IRenderer | null;
+  public buttonImage?: IRenderer | null;
 
   /**
    * コンストラクタ
    * @param comment 処理対象のコメント
-   * @param context 描画対象のcanvasのcontext
+   * @param renderer 描画対象のレンダラークラス
    */
-  constructor(comment: FormattedComment, context: Context2D) {
-    this.context = context;
+  constructor(comment: FormattedComment, renderer: IRenderer) {
+    this.renderer = renderer;
     this.posY = 0;
     this.pos = { x: 0, y: 0 };
     comment.content = comment.content.replace(/\t/g, "\u2003\u2003");
     this.comment = this.convertComment(comment);
-    this.cacheKey =
-      JSON.stringify(this.comment.content) +
-      `@@${this.pluginName}@@` +
-      [...this.comment.mail].sort().join(",");
+    this.cacheKey = this.getCacheKey();
   }
   get invisible() {
     return this.comment.invisible;
@@ -182,18 +177,18 @@ class BaseComment implements IComment {
       this.image = this.getTextImage();
     }
     if (this.image) {
-      this.context.save();
+      this.renderer.save();
       if (this.comment._live) {
-        this.context.globalAlpha = config.contextFillLiveOpacity;
+        this.renderer.setGlobalAlpha(config.contextFillLiveOpacity);
       } else {
-        this.context.globalAlpha = 1;
+        this.renderer.setGlobalAlpha(1);
       }
       if (this.comment.button && !this.comment.button.hidden) {
         const button = this.getButtonImage(posX, posY, cursor);
-        button && drawImage(this.context, button, posX, posY);
+        button && this.renderer.drawImage(button, posX, posY);
       }
-      drawImage(this.context, this.image, posX, posY);
-      this.context.restore();
+      this.renderer.drawImage(this.image, posX, posY);
+      this.renderer.restore();
     }
   }
 
@@ -204,15 +199,15 @@ class BaseComment implements IComment {
    */
   protected _drawRectColor(posX: number, posY: number) {
     if (this.comment.wakuColor) {
-      this.context.save();
-      this.context.strokeStyle = this.comment.wakuColor;
-      this.context.strokeRect(
+      this.renderer.save();
+      this.renderer.setStrokeStyle(this.comment.wakuColor);
+      this.renderer.strokeRect(
         posX,
         posY,
         this.comment.width,
         this.comment.height,
       );
-      this.context.restore();
+      this.renderer.restore();
     }
   }
 
@@ -223,15 +218,15 @@ class BaseComment implements IComment {
    */
   protected _drawBackgroundColor(posX: number, posY: number) {
     if (this.comment.fillColor) {
-      this.context.save();
-      this.context.fillStyle = this.comment.fillColor;
-      this.context.fillRect(
+      this.renderer.save();
+      this.renderer.setFillStyle(this.comment.fillColor);
+      this.renderer.fillRect(
         posX,
         posY,
         this.comment.width,
         this.comment.height,
       );
-      this.context.restore();
+      this.renderer.restore();
     }
   }
 
@@ -242,15 +237,11 @@ class BaseComment implements IComment {
    */
   protected _drawDebugInfo(posX: number, posY: number) {
     if (isDebug) {
-      this.context.save();
-      const font = this.context.font;
-      const fillStyle = this.context.fillStyle;
-      this.context.font = parseFont("defont", 30);
-      this.context.fillStyle = "#ff00ff";
-      this.context.fillText(this.comment.mail.join(","), posX, posY + 30);
-      this.context.font = font;
-      this.context.fillStyle = fillStyle;
-      this.context.restore();
+      this.renderer.save();
+      this.renderer.setFont(parseFont("defont", 30));
+      this.renderer.setFillStyle("#ff00ff");
+      this.renderer.fillText(this.comment.mail.join(","), posX, posY + 30);
+      this.renderer.restore();
     }
   }
 
@@ -274,7 +265,7 @@ class BaseComment implements IComment {
    * コメントの画像を生成する
    * @returns 生成した画像
    */
-  protected getTextImage(): Canvas | null {
+  protected getTextImage(): IRenderer | null {
     if (
       this.comment.invisible ||
       (this.comment.lineCount === 1 && this.comment.width === 0) ||
@@ -309,7 +300,7 @@ class BaseComment implements IComment {
   /**
    * コメントの画像を実際に生成する
    */
-  protected _generateTextImage(): Canvas {
+  protected _generateTextImage(): IRenderer {
     console.error("_generateTextImage method is not implemented");
     throw new NotImplementedError(this.pluginName, "_generateTextImage");
   }
@@ -318,7 +309,7 @@ class BaseComment implements IComment {
    * 画像をキャッシュする
    * @param image キャッシュ対象の画像
    */
-  protected _cacheImage(image: Canvas) {
+  protected _cacheImage(image: IRenderer) {
     this.image = image;
     setTimeout(
       () => {
@@ -337,27 +328,11 @@ class BaseComment implements IComment {
     };
   }
 
-  /**
-   * Canvasを生成する
-   * @returns 生成したCanvas
-   */
-  protected createCanvas(): {
-    image: Canvas;
-    context: Context2D;
-  } {
-    const image = generateCanvas();
-    const context = getContext(image);
-    return {
-      image,
-      context,
-    };
-  }
-
   protected getButtonImage(
     posX: number,
     posY: number,
     cursor?: Position,
-  ): Canvas | undefined {
+  ): IRenderer | undefined {
     console.error(
       "getButtonImage method is not implemented",
       posX,
@@ -370,6 +345,14 @@ class BaseComment implements IComment {
   public isHovered(cursor?: Position, posX?: number, posY?: number): boolean {
     console.error("isHovered method is not implemented", posX, posY, cursor);
     throw new NotImplementedError(this.pluginName, "getButtonImage");
+  }
+
+  protected getCacheKey() {
+    return (
+      JSON.stringify(this.comment.content) +
+      `@@${this.pluginName}@@` +
+      [...this.comment.mail].sort((a, b) => a.localeCompare(b)).join(",")
+    );
   }
 }
 

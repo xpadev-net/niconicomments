@@ -75,7 +75,7 @@ const removeDuplicateCommentArt = (comments: FormattedComment[]) => {
   const index: { [key: string]: FormattedComment } = {};
   return comments.filter((comment) => {
     const key = `${comment.content}@@${[...comment.mail]
-        .sort()
+        .sort((a, b) => a.localeCompare(b))
         .filter((e) => !RegExp(/@[\d.]+|184|device:.+|patissier|ca/).exec(e))
         .join("")}`,
       lastComment = index[key];

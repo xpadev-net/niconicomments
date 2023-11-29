@@ -42,7 +42,7 @@ jobs:
       - name: update sample.html
         run: |
           sed --in-place --expression='s/..\/..\/dist\/bundle.js/https:\/\/cdn.jsdelivr.net\/npm\/@xpadev-net\/niconicomments@latest\/dist\/bundle.min.js/' docs/sample/index.html
-          sed --in-place --expression='s/..\/..\/..\/niwango\/dist\/bundle.js/https:\/\/cdn.jsdelivr.net\/gh\/xpadev-net\/niwango.js@dev-build\/dist\/bundle.js/' docs/sample/index.html
+          sed --in-place --expression='s/..\/..\/..\/niwango\/dist\/bundle.js/https:\/\/xpadev-net.github.io\/niwango.js\/niwango.js/' docs/sample/index.html
       - name: generate typedoc
         run: pnpm typedoc
       - name: generate dev build

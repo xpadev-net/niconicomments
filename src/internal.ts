@@ -7,6 +7,7 @@ import * as initConfig from "@/definition/initConfig";
 import * as errors from "@/errors";
 import * as eventHandler from "@/eventHandler";
 import * as inputParser from "@/inputParser";
+import * as renderer from "@/renderer";
 import * as typeGuard from "@/typeGuard";
 import * as utils from "@/utils";
 
@@ -24,6 +25,7 @@ export {
   errors,
   eventHandler,
   inputParser,
+  renderer,
   typeGuard,
   utils,
 };

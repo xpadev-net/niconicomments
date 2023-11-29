@@ -1,3 +1,5 @@
+import { is } from "valibot";
+
 import type {
   Collision,
   CollisionItem,
@@ -14,12 +16,13 @@ import type {
   ParsedCommand,
   Timeline,
 } from "@/@types/";
+import { ZCommentFont, ZCommentLoc, ZCommentSize } from "@/@types/";
 import { nicoScripts } from "@/contexts/";
 import { colors } from "@/definition/colors";
 import { config, options } from "@/definition/config";
 import typeGuard from "@/typeGuard";
 
-import { ArrayPush } from "./array";
+import { arrayPush } from "./array";
 import { getConfig } from "./config";
 
 /**
@@ -154,13 +157,13 @@ const parseBrackets = (input: string) => {
   const content = input.split(""),
     result = [];
   let quote = "",
-    last_i = "",
+    lastChar = "",
     string = "";
   for (const i of content) {
     if (RegExp(/^["'\u300c]$/).exec(i) && quote === "") {
       //["'「]
       quote = i;
-    } else if (RegExp(/^["']$/).exec(i) && quote === i && last_i !== "\\") {
+    } else if (RegExp(/^["']$/).exec(i) && quote === i && lastChar !== "\\") {
       result.push(string.replaceAll("\\n", "\n"));
       quote = "";
       string = "";
@@ -178,7 +181,7 @@ const parseBrackets = (input: string) => {
       string += i;
     }
 
-    last_i = i;
+    lastChar = i;
   }
   result.push(string);
   return result;
@@ -387,6 +390,11 @@ const processJumpScript = (
   });
 };
 
+/**
+ * \@ボタンを処理する
+ * @param comment 対象のコメント
+ * @param commands 対象のコマンド
+ */
 const processAtButton = (
   comment: FormattedComment,
   commands: ParsedCommand,
@@ -481,11 +489,11 @@ const parseCommand = (
     result.fillColor ??= fillColor;
     return;
   }
-  if (typeGuard.comment.loc(command)) {
+  if (is(ZCommentLoc, command)) {
     result.loc ??= command;
     return;
   }
-  if (result.size === undefined && typeGuard.comment.size(command)) {
+  if (result.size === undefined && is(ZCommentSize, command)) {
     result.size = command;
     result.fontSize = getConfig(config.fontSize, isFlash)[command].default;
     return;
@@ -499,7 +507,7 @@ const parseCommand = (
     result.color ??= colorCode[0].toUpperCase();
     return;
   }
-  if (typeGuard.comment.font(command)) {
+  if (is(ZCommentFont, command)) {
     result.font ??= command;
     return;
   }
@@ -598,9 +606,9 @@ const processFixedComment = (
   }
   for (let j = 0; j < comment.long; j++) {
     const vpos = comment.vpos + j;
-    ArrayPush(timeline, vpos, comment);
+    arrayPush(timeline, vpos, comment);
     if (j > comment.long - 20) continue;
-    ArrayPush(collision, vpos, comment);
+    arrayPush(collision, vpos, comment);
   }
   comment.posY = posY;
 };
@@ -623,31 +631,29 @@ const processMovableComment = (
       return (comment.height - config.canvasHeight) / -2;
     }
     let posY = 0;
-    let isChanged = true,
-      count = 0;
-    while (isChanged && count < 10) {
+    let isChanged = true;
+    while (isChanged) {
       isChanged = false;
-      count++;
       for (let j = beforeVpos, n = comment.long + 125; j < n; j++) {
         const vpos = comment.vpos + j;
-        const left_pos = getPosX(comment.comment, vpos);
+        const leftPos = getPosX(comment.comment, vpos);
         let isBreak = false;
         if (
-          left_pos + comment.width >= config.collisionRange.right &&
-          left_pos <= config.collisionRange.right
+          leftPos + comment.width >= config.collisionRange.right &&
+          leftPos <= config.collisionRange.right
         ) {
           const result = getPosY(posY, comment, collision.right[vpos]);
           posY = result.currentPos;
-          isChanged = result.isChanged;
+          isChanged ||= result.isChanged;
           isBreak = result.isBreak;
         }
         if (
-          left_pos + comment.width >= config.collisionRange.left &&
-          left_pos <= config.collisionRange.left
+          leftPos + comment.width >= config.collisionRange.left &&
+          leftPos <= config.collisionRange.left
         ) {
           const result = getPosY(posY, comment, collision.left[vpos]);
           posY = result.currentPos;
-          isChanged = result.isChanged;
+          isChanged ||= result.isChanged;
           isBreak = result.isBreak;
         }
         if (isBreak) return posY;
@@ -657,19 +663,21 @@ const processMovableComment = (
   })();
   for (let j = beforeVpos, n = comment.long + 125; j < n; j++) {
     const vpos = comment.vpos + j;
-    const left_pos = getPosX(comment.comment, vpos);
-    ArrayPush(timeline, vpos, comment);
+    const leftPos = getPosX(comment.comment, vpos);
+    arrayPush(timeline, vpos, comment);
     if (
-      left_pos + comment.width >= config.collisionRange.right &&
-      left_pos <= config.collisionRange.right
+      leftPos + comment.width + config.collisionPadding >=
+        config.collisionRange.right &&
+      leftPos <= config.collisionRange.right
     ) {
-      ArrayPush(collision.right, vpos, comment);
+      arrayPush(collision.right, vpos, comment);
     }
     if (
-      left_pos + comment.width >= config.collisionRange.left &&
-      left_pos <= config.collisionRange.left
+      leftPos + comment.width + config.collisionPadding >=
+        config.collisionRange.left &&
+      leftPos <= config.collisionRange.left
     ) {
-      ArrayPush(collision.left, vpos, comment);
+      arrayPush(collision.left, vpos, comment);
     }
   }
   comment.posY = posY;
@@ -680,15 +688,16 @@ const processMovableComment = (
  * @param currentPos 現在のy座標
  * @param targetComment 対象コメント
  * @param collision 当たり判定
+ * @param isChanged 位置が変更されたか
  * @returns 現在地、更新されたか、終了すべきか
  */
 const getPosY = (
   currentPos: number,
   targetComment: IComment,
   collision: IComment[] | undefined,
+  isChanged = false,
 ): { currentPos: number; isChanged: boolean; isBreak: boolean } => {
-  let isChanged = false,
-    isBreak = false;
+  let isBreak = false;
   if (!collision) return { currentPos, isChanged, isBreak };
   for (const collisionItem of collision) {
     if (
@@ -716,6 +725,7 @@ const getPosY = (
         isBreak = true;
         break;
       }
+      return getPosY(currentPos, targetComment, collision, true);
     }
   }
   return { currentPos, isChanged, isBreak };
@@ -758,12 +768,12 @@ const parseFont = (font: CommentFont, size: string | number): string => {
   switch (font) {
     case "gulim":
     case "simsun":
-      return config.font[font].replace("[size]", `${size}`);
+      return config.fonts.flash[font].replace("[size]", `${size}`);
     case "gothic":
     case "mincho":
-      return `${config.fonts[font].weight} ${size}px ${config.fonts[font].font}`;
+      return `${config.fonts.html5[font].weight} ${size}px ${config.fonts.html5[font].font}`;
     default:
-      return `${config.fonts.defont.weight} ${size}px ${config.fonts.defont.font}`;
+      return `${config.fonts.html5.defont.weight} ${size}px ${config.fonts.html5.defont.font}`;
   }
 };
 

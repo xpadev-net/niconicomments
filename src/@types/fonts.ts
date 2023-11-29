@@ -1,3 +1,6 @@
+import type { Output } from "valibot";
+import { literal, union } from "valibot";
+
 export type Platform =
   | "win7"
   | "win8_1"
@@ -6,7 +9,12 @@ export type Platform =
   | "mac10_11"
   | "mac"
   | "other";
-export type HTML5Fonts = "gothic" | "mincho" | "defont";
+export const ZHTML5Fonts = union([
+  literal("gothic"),
+  literal("mincho"),
+  literal("defont"),
+]);
+export type HTML5Fonts = Output<typeof ZHTML5Fonts>;
 export type FontItem = {
   font: string;
   offset: number;

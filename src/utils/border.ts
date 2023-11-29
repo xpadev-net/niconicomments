@@ -1,5 +1,16 @@
+import type { IRenderer } from "@/@types/renderer";
+
+/**
+ * ボタンの左端枠を描画する
+ * @param context 描画対象のレンダラークラス
+ * @param left 左端のx座標
+ * @param top 上端のy座標
+ * @param width 幅
+ * @param height 高さ
+ * @param radius 角丸の半径
+ */
 const drawLeftBorder = (
-  context: CanvasRenderingContext2D,
+  context: IRenderer,
   left: number,
   top: number,
   width: number,
@@ -18,8 +29,16 @@ const drawLeftBorder = (
   context.restore();
 };
 
+/**
+ * ボタンの中央枠を描画する
+ * @param context 描画対象のレンダラークラス
+ * @param left 左端のx座標
+ * @param top 上端のy座標
+ * @param width 幅
+ * @param height 高さ
+ */
 const drawMiddleBorder = (
-  context: CanvasRenderingContext2D,
+  context: IRenderer,
   left: number,
   top: number,
   width: number,
@@ -35,8 +54,16 @@ const drawMiddleBorder = (
   context.restore();
 };
 
+/**
+ * ボタンの右端枠を描画する
+ * @param context 描画対象のレンダラークラス
+ * @param right 右端のx座標
+ * @param top 上端のy座標
+ * @param height 高さ
+ * @param radius 角丸の半径
+ */
 const drawRightBorder = (
-  context: CanvasRenderingContext2D,
+  context: IRenderer,
   right: number,
   top: number,
   height: number,

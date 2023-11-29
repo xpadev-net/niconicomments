@@ -1,7 +1,7 @@
-import type { Canvas } from "@/@types";
+import type { IRenderer } from "@/@types/renderer";
 
 let imageCache: {
-  [key: string]: { image: Canvas; timeout: number | NodeJS.Timeout };
+  [key: string]: { image: IRenderer; timeout: number | NodeJS.Timeout };
 } = {};
 
 /**

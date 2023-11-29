@@ -1,8 +1,7 @@
 import type {
   ButtonParams,
-  Canvas,
   CommentContentItem,
-  Context2D,
+  CommentSize,
   FormattedComment,
   FormattedCommentWithFont,
   FormattedCommentWithSize,
@@ -10,6 +9,7 @@ import type {
   MeasureTextResult,
   Position,
 } from "@/@types/";
+import type { IRenderer } from "@/@types/renderer";
 import { config, options } from "@/definition/config";
 import { TypeGuardError } from "@/errors/TypeGuardError";
 import typeGuard from "@/typeGuard";
@@ -33,14 +33,11 @@ import { BaseComment } from "./BaseComment";
 class FlashComment extends BaseComment {
   private _globalScale: number;
   override readonly pluginName: string = "FlashComment";
-  override buttonImage: Canvas;
-  protected buttonContext: Context2D;
-  constructor(comment: FormattedComment, context: Context2D) {
-    super(comment, context);
+  override buttonImage: IRenderer;
+  constructor(comment: FormattedComment, renderer: IRenderer) {
+    super(comment, renderer);
     this._globalScale ??= getConfig(config.commentScale, true);
-    const button = this.createCanvas();
-    this.buttonImage = button.image;
-    this.buttonContext = button.context;
+    this.buttonImage = renderer.getCanvas();
   }
 
   override get content() {
@@ -60,10 +57,7 @@ class FlashComment extends BaseComment {
       comment.font = val.font;
     }
     this.comment = this.getCommentSize(comment);
-    this.cacheKey =
-      JSON.stringify(this.comment.content) +
-      `@@${this.pluginName}@@` +
-      [...this.comment.mail].sort((a, b) => a.localeCompare(b)).join(",");
+    this.cacheKey = this.getCacheKey();
     delete this.image;
   }
 
@@ -98,14 +92,14 @@ class FlashComment extends BaseComment {
         content: [],
       };
     }
-    this.context.save();
-    this.context.font = parseFont(parsedData.font, parsedData.fontSize);
+    this.renderer.save();
+    this.renderer.setFont(parseFont(parsedData.font, parsedData.fontSize));
     const measure = this.measureText({ ...parsedData, scale: 1 });
     if (options.scale !== 1 && parsedData.layer === -1) {
       measure.height *= options.scale;
       measure.width *= options.scale;
     }
-    this.context.restore();
+    this.renderer.restore();
     if (parsedData.button && !parsedData.button.hidden) {
       measure.width += getConfig(config.atButtonPadding, true) * 4;
     }
@@ -160,12 +154,12 @@ class FlashComment extends BaseComment {
       : parseContent(input);
     const lineCount = (input.match(/\n/g)?.length ?? 0) + 1;
     const lineOffset =
-      (input.match(new RegExp(config.FlashScriptChar.super, "g"))?.length ??
+      (input.match(new RegExp(config.flashScriptChar.super, "g"))?.length ??
         0) *
         -1 *
-        config.scriptCharOffset +
-      (input.match(new RegExp(config.FlashScriptChar.sub, "g"))?.length ?? 0) *
-        config.scriptCharOffset;
+        config.flashScriptCharOffset +
+      (input.match(new RegExp(config.flashScriptChar.sub, "g"))?.length ?? 0) *
+        config.flashScriptCharOffset;
     return {
       content,
       lineCount,
@@ -174,56 +168,53 @@ class FlashComment extends BaseComment {
   }
 
   override measureText(comment: MeasureTextInput): MeasureTextResult {
+    //ref: https://github.com/Saccubus/Saccubus1/blob/master/vhook/src/comment/com_surface.c
     const configLineHeight = getConfig(config.lineHeight, true),
-      configFontSize = getConfig(config.fontSize, true);
-    const lineCount = comment.lineCount;
+      configFontSize = getConfig(config.fontSize, true)[comment.size],
+      configStageSize = getConfig(config.commentStageSize, true);
+    const defaultFontSize = configFontSize.default;
     comment.lineHeight ??= configLineHeight[comment.size].default;
+    const widthLimit = configStageSize[comment.full ? "fullWidth" : "width"];
+    const { scaleX, width, height } = this._measureContent(comment);
+    let scale = 1;
     if (isLineBreakResize(comment)) {
-      comment.fontSize = configFontSize[comment.size].resized;
-      comment.lineHeight = configLineHeight[comment.size].resized;
       comment.resized = true;
       comment.resizedY = true;
-      this.context.font = parseFont(comment.font, comment.fontSize);
-    }
-    const { width_arr, spacedWidth_arr } = this._measureContent(comment);
-    const leadLine = (function () {
-      let max = 0,
-        index = -1;
-      spacedWidth_arr.forEach((val, i) => {
-        if (max < val) {
-          max = val;
-          index = i;
+      const lineBreakScale = config.flashLineBreakScale[comment.size];
+      const scaledWidth = width * lineBreakScale;
+      if (
+        comment.loc !== "naka" &&
+        this._isDoubleResize(
+          scaledWidth,
+          widthLimit,
+          comment.size,
+          comment.lineCount,
+          comment.full,
+        )
+      ) {
+        if (scaledWidth > widthLimit) {
+          const resizedFontSize = Math.round(
+            (widthLimit / scaledWidth) * defaultFontSize,
+          );
+          const resizeRate = (resizedFontSize + 1) / (defaultFontSize + 1);
+          scale *= resizeRate;
         }
-      });
-      return { max, index };
-    })();
-    const width = leadLine.max;
-    const scaleX = leadLine.max / (width_arr[leadLine.index] ?? 1);
-    const width_max = width * comment.scale;
-    const height =
-      (comment.fontSize * comment.lineHeight * lineCount +
-        config.commentYPaddingTop[comment.resizedY ? "resized" : "default"]) *
-      comment.scale;
-    if (comment.loc !== "naka") {
-      const widthLimit = getConfig(config.CommentStageSize, true)[
-        comment.full ? "fullWidth" : "width"
-      ];
-      if (width_max > widthLimit && !comment.resizedX) {
-        comment.fontSize = configFontSize[comment.size].default;
-        comment.lineHeight = configLineHeight[comment.size].default;
-        comment.scale = widthLimit / width_max;
-        comment.resizedX = true;
-        comment.resized = true;
-        return this.measureText(comment);
+      } else {
+        scale *= lineBreakScale;
       }
+    } else if (comment.loc !== "naka" && width > widthLimit) {
+      const resizeRate =
+        (Math.round((widthLimit / width) * defaultFontSize) + 1) /
+        (defaultFontSize + 1);
+      scale *= resizeRate;
     }
+    comment.scale = scale;
     if (!typeGuard.internal.CommentMeasuredContentItemArray(comment.content)) {
       throw new TypeGuardError();
     }
     return {
-      width: width_max,
       charSize: 0,
-      height: height,
+      height: height * scale,
       resized: !!comment.resized,
       fontSize: comment.fontSize,
       lineHeight: comment.lineHeight,
@@ -231,50 +222,114 @@ class FlashComment extends BaseComment {
       resizedX: !!comment.resizedX,
       resizedY: !!comment.resizedY,
       scale: comment.scale,
-      scaleX,
+      scaleX: scaleX,
+      width: width * scale,
     };
   }
 
+  private _isDoubleResize(
+    width: number,
+    widthLimit: number,
+    size: CommentSize,
+    lineCount: number,
+    isFull: boolean,
+  ) {
+    if (width < widthLimit * 0.9 || widthLimit * 1.1 < width)
+      return width > widthLimit;
+    if (size === "big") {
+      if (
+        8 <= lineCount &&
+        lineCount <= 14 &&
+        !isFull &&
+        widthLimit * 0.99 < width
+      )
+        return true;
+      if (width <= widthLimit) return false;
+      if (16 <= lineCount && width * 0.95 < widthLimit) return true;
+      if (isFull) {
+        if (width * 0.95 < widthLimit) return false;
+        return width > widthLimit;
+      }
+      return true;
+    }
+    if (width <= widthLimit) return false;
+    if (
+      ((size === "medium" && 25 <= lineCount) ||
+        (size === "small" && 38 <= lineCount)) &&
+      width * 0.95 < widthLimit
+    )
+      return false;
+    return widthLimit < width;
+  }
+
   private _measureContent(comment: MeasureTextInput) {
-    const width_arr: number[] = [],
-      spacedWidth_arr: number[] = [];
+    const widthArr: number[] = [],
+      spacedWidthArr: number[] = [];
     let currentWidth = 0,
       spacedWidth = 0;
     for (const item of comment.content) {
+      if (item.type === "spacer") {
+        spacedWidth +=
+          item.count * item.charWidth * comment.fontSize +
+          Math.max(item.count - 1, 0) * config.flashLetterSpacing;
+        currentWidth += item.count * item.charWidth * comment.fontSize;
+        widthArr.push(currentWidth);
+        spacedWidthArr.push(spacedWidth);
+        continue;
+      }
       const lines = item.content.split("\n");
       const widths: number[] = [];
 
-      this.context.font = parseFont(
-        item.font ?? comment.font,
-        comment.fontSize,
+      this.renderer.setFont(
+        parseFont(item.font ?? comment.font, comment.fontSize),
       );
       for (let i = 0, n = lines.length; i < n; i++) {
         const value = lines[i];
         if (value === undefined) continue;
-        const measure = this.context.measureText(value);
+        const measure = this.renderer.measureText(value);
         currentWidth += measure.width;
         spacedWidth +=
-          measure.width + Math.max(value.length - 1, 0) * config.letterSpacing;
+          measure.width +
+          Math.max(value.length - 1, 0) * config.flashLetterSpacing;
         widths.push(measure.width);
         if (i < lines.length - 1) {
-          width_arr.push(currentWidth);
-          spacedWidth_arr.push(spacedWidth);
+          widthArr.push(currentWidth);
+          spacedWidthArr.push(spacedWidth);
           spacedWidth = 0;
           currentWidth = 0;
         }
       }
-      width_arr.push(currentWidth);
-      spacedWidth_arr.push(spacedWidth);
+      widthArr.push(currentWidth);
+      spacedWidthArr.push(spacedWidth);
       item.width = widths;
     }
-    return { width_arr, spacedWidth_arr };
+    const leadLine = (function () {
+      let max = 0,
+        index = -1;
+      spacedWidthArr.forEach((val, i) => {
+        if (max < val) {
+          max = val;
+          index = i;
+        }
+      });
+      return { max, index };
+    })();
+    const scaleX = leadLine.max / (widthArr[leadLine.index] ?? 1);
+    const width = leadLine.max * comment.scale;
+    const height =
+      (comment.fontSize * (comment.lineHeight ?? 0) * comment.lineCount +
+        config.flashCommentYPaddingTop[
+          comment.resizedY ? "resized" : "default"
+        ]) *
+      comment.scale;
+    return { scaleX, width, height };
   }
 
   override _drawCollision(posX: number, posY: number, showCollision: boolean) {
     if (showCollision) {
-      this.context.save();
-      this.context.strokeStyle = "rgba(255,0,255,1)";
-      this.context.strokeRect(
+      this.renderer.save();
+      this.renderer.setStrokeStyle("rgba(255,0,255,1)");
+      this.renderer.strokeRect(
         posX,
         posY,
         this.comment.width,
@@ -283,12 +338,12 @@ class FlashComment extends BaseComment {
       for (let i = 0, n = this.comment.lineCount; i < n; i++) {
         const linePosY =
           ((i + 1) * (this.comment.fontSize * this.comment.lineHeight) +
-            config.commentYPaddingTop[
+            config.flashCommentYPaddingTop[
               this.comment.resizedY ? "resized" : "default"
             ]) *
           this.comment.scale;
-        this.context.strokeStyle = `rgba(255,255,0,0.25)`;
-        this.context.strokeRect(
+        this.renderer.setStrokeStyle(`rgba(255,255,0,0.25)`);
+        this.renderer.strokeRect(
           posX,
           posY + linePosY * this._globalScale,
           this.comment.width,
@@ -300,31 +355,36 @@ class FlashComment extends BaseComment {
             (this.comment.layer === -1 ? options.scale : 1),
         );
       }
-      this.context.restore();
+      this.renderer.restore();
     }
   }
 
-  override _generateTextImage(): Canvas {
-    const { image, context } = this.createCanvas();
-    this._setupCanvas(image, context);
+  override _generateTextImage(): IRenderer {
+    const renderer = this.renderer.getCanvas();
+    this._setupCanvas(renderer);
     const atButtonPadding = getConfig(config.atButtonPadding, true);
     const lineOffset = this.comment.lineOffset;
     const lineHeight = this.comment.fontSize * this.comment.lineHeight;
     const offsetKey = this.comment.resizedY ? "resized" : "default";
     const offsetY =
-      config.commentYPaddingTop[offsetKey] +
+      config.flashCommentYPaddingTop[offsetKey] +
       this.comment.fontSize *
         this.comment.lineHeight *
-        config.commentYOffset[this.comment.size][offsetKey];
+        config.flashCommentYOffset[this.comment.size][offsetKey];
     let lastFont = this.comment.font,
       leftOffset = 0,
       lineCount = 0,
       isLastButton = false;
     for (const item of this.comment.content) {
+      if (item.type === "spacer") {
+        leftOffset += item.count * item.charWidth * this.comment.fontSize;
+        isLastButton = !!item.isButton;
+        continue;
+      }
       const font = item.font ?? this.comment.font;
       if (lastFont !== font) {
         lastFont = font;
-        context.font = parseFont(font, this.comment.fontSize);
+        renderer.setFont(parseFont(font, this.comment.fontSize));
       }
       const lines = item.slicedContent;
       for (
@@ -343,39 +403,39 @@ class FlashComment extends BaseComment {
         ) {
           leftOffset += atButtonPadding * 2;
         }
-        context.strokeText(line, leftOffset, posY);
-        context.fillText(line, leftOffset, posY);
+        renderer.strokeText(line, leftOffset, posY);
+        renderer.fillText(line, leftOffset, posY);
+        leftOffset += partWidth;
         if (lineIndex < lineLength - 1) {
           leftOffset = 0;
           lineCount += 1;
-          continue;
         }
-        leftOffset += partWidth;
       }
       isLastButton = !!item.isButton;
     }
-    return image;
+    return renderer;
   }
 
   override getButtonImage(posX: number, posY: number, cursor?: Position) {
     if (!this.comment.button || this.comment.button.hidden) return undefined;
-    const { image, context } = this._setupCanvas(
-      this.buttonImage,
-      this.buttonContext,
-    );
+    const { renderer } = this._setupCanvas(this.buttonImage);
     const parts = this.comment.buttonObjects;
     if (!parts) return undefined;
     const atButtonRadius = getConfig(config.atButtonRadius, true);
     const isHover = this.isHovered(cursor, posX, posY);
-    context.save();
-    context.strokeStyle =
-      this.comment.button.limit < 1
-        ? "#777777"
-        : isHover
-        ? this.comment.color
-        : "white";
+    renderer.save();
+    const getStrokeStyle = () => {
+      if (isHover) {
+        return this.comment.color;
+      }
+      if (this.comment.button && this.comment.button.limit < 1) {
+        return "#777777";
+      }
+      return "white";
+    };
+    renderer.setStrokeStyle(getStrokeStyle());
     drawLeftBorder(
-      context,
+      renderer,
       parts.left.left,
       parts.left.top,
       parts.left.width,
@@ -383,17 +443,17 @@ class FlashComment extends BaseComment {
       atButtonRadius,
     );
     for (const part of parts.middle) {
-      drawMiddleBorder(context, part.left, part.top, part.width, part.height);
+      drawMiddleBorder(renderer, part.left, part.top, part.width, part.height);
     }
     drawRightBorder(
-      context,
+      renderer,
       parts.right.right,
       parts.right.top,
       parts.right.height,
       atButtonRadius,
     );
-    context.restore();
-    return image;
+    renderer.restore();
+    return renderer;
   }
 
   override isHovered(_cursor?: Position, _posX?: number, _posY?: number) {
@@ -439,23 +499,22 @@ class FlashComment extends BaseComment {
     );
   }
 
-  protected _setupCanvas(image: Canvas, context: Context2D) {
+  protected _setupCanvas(renderer: IRenderer) {
     const atButtonPadding = getConfig(config.atButtonPadding, true);
-    image.width = this.comment.width;
-    image.height =
-      this.comment.height + (this.comment.button ? atButtonPadding * 2 : 0);
-    context.strokeStyle = getStrokeColor(this.comment);
-    context.fillStyle = this.comment.color;
-    context.textAlign = "start";
-    context.textBaseline = "alphabetic";
-    context.lineWidth = getConfig(config.contextLineWidth, true);
-    context.font = parseFont(this.comment.font, this.comment.fontSize);
+    renderer.setSize(
+      this.comment.width,
+      this.comment.height + (this.comment.button ? atButtonPadding * 2 : 0),
+    );
+    renderer.setStrokeStyle(getStrokeColor(this.comment));
+    renderer.setFillStyle(this.comment.color);
+    renderer.setLineWidth(getConfig(config.contextLineWidth, true));
+    renderer.setFont(parseFont(this.comment.font, this.comment.fontSize));
     const scale =
       this._globalScale *
       this.comment.scale *
       (this.comment.layer === -1 ? options.scale : 1);
-    context.scale(scale * this.comment.scaleX, scale);
-    return { image, context };
+    renderer.setScale(scale * this.comment.scaleX, scale);
+    return { renderer };
   }
 }
 

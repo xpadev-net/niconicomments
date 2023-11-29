@@ -1,15 +1,7 @@
+import { array, custom, is, literal, regex, string, union } from "valibot";
+
 import type {
-  ApiChat,
-  ApiGlobalNumRes,
-  ApiLeaf,
-  ApiPing,
-  ApiThread,
-  CommentFont,
-  CommentLoc,
   CommentMeasuredContentItem,
-  CommentSize,
-  FormattedComment,
-  FormattedLegacyComment,
   HTML5Fonts,
   MeasureInput,
   MultiConfigItem,
@@ -18,10 +10,11 @@ import type {
   NicoScriptReplaceTarget,
   NicoScriptReverseTarget,
   Options,
-  OwnerComment,
-  RawApiResponse,
-  V1Comment,
-  V1Thread,
+} from "@/@types/";
+import {
+  ZCommentMeasuredContentItem,
+  ZHTML5Fonts,
+  ZMeasureInput,
 } from "@/@types/";
 import { colors } from "@/definition/colors";
 
@@ -47,84 +40,6 @@ const isNumber = (i: unknown): i is number => typeof i === "number";
 const isObject = (i: unknown): i is object => typeof i === "object";
 
 const typeGuard = {
-  formatted: {
-    comment: (i: unknown): i is FormattedComment =>
-      objectVerify(i, [
-        "id",
-        "vpos",
-        "content",
-        "date",
-        "date_usec",
-        "owner",
-        "premium",
-        "mail",
-        "user_id",
-        "layer",
-        "is_my_post",
-      ]),
-    comments: (i: unknown): i is FormattedComment[] => {
-      if (typeof i !== "object") return false;
-      for (const item of i as FormattedComment[]) {
-        if (!typeGuard.formatted.comment(item)) return false;
-      }
-      return true;
-    },
-    legacyComment: (i: unknown): i is FormattedLegacyComment =>
-      objectVerify(i, [
-        "id",
-        "vpos",
-        "content",
-        "date",
-        "owner",
-        "premium",
-        "mail",
-      ]),
-    legacyComments: (i: unknown): i is FormattedLegacyComment[] => {
-      if (typeof i !== "object") return false;
-      for (const item of i as FormattedLegacyComment[]) {
-        if (!typeGuard.formatted.legacyComment(item)) return false;
-      }
-      return true;
-    },
-  },
-  legacy: {
-    rawApiResponses: (i: unknown): i is RawApiResponse[] => {
-      if (typeof i !== "object") return false;
-      for (const itemWrapper of i as RawApiResponse[]) {
-        for (const key of Object.keys(itemWrapper)) {
-          const item = itemWrapper[key];
-          if (!item) continue;
-          if (
-            !(
-              typeGuard.legacy.apiChat(item) ||
-              typeGuard.legacy.apiGlobalNumRes(item) ||
-              typeGuard.legacy.apiLeaf(item) ||
-              typeGuard.legacy.apiPing(item) ||
-              typeGuard.legacy.apiThread(item)
-            )
-          ) {
-            return false;
-          }
-        }
-      }
-      return true;
-    },
-    apiChat: (i: unknown): i is ApiChat =>
-      typeof i === "object" &&
-      objectVerify(i as ApiChat, ["content", "date", "no", "thread", "vpos"]),
-    apiGlobalNumRes: (i: unknown): i is ApiGlobalNumRes =>
-      objectVerify(i, ["num_res", "thread"]),
-    apiLeaf: (i: unknown): i is ApiLeaf => objectVerify(i, ["count", "thread"]),
-    apiPing: (i: unknown): i is ApiPing => objectVerify(i, ["content"]),
-    apiThread: (i: unknown): i is ApiThread =>
-      objectVerify(i, [
-        "resultcode",
-        "revision",
-        "server_time",
-        "thread",
-        "ticket",
-      ]),
-  },
   xmlDocument: (i: unknown): i is XMLDocument => {
     if (
       !(i as XMLDocument).documentElement ||
@@ -141,103 +56,70 @@ const typeGuard = {
     return true;
   },
   legacyOwner: {
-    comments: (i: unknown): i is string => {
-      if (typeof i !== "string") return false;
-      const lists = i.split("\n");
-      for (const list of lists) {
-        if (list.split(":").length < 3) {
-          return false;
-        }
-      }
-      return true;
-    },
+    comments: (i: unknown): i is string =>
+      is(
+        string([
+          custom((i) => {
+            const lists = i.split(/\r\n|\r|\n/);
+            for (const list of lists) {
+              if (list.split(":").length < 3) {
+                return false;
+              }
+            }
+            return true;
+          }),
+        ]),
+        i,
+      ),
   },
-  owner: {
-    comment: (i: unknown): i is OwnerComment =>
-      objectVerify(i, ["time", "command", "comment"]),
-    comments: (i: unknown): i is OwnerComment[] => {
-      if (typeof i !== "object") return false;
-      for (const item of i as OwnerComment[]) {
-        if (!typeGuard.owner.comment(item)) return false;
-      }
-      return true;
-    },
-  },
-  v1: {
-    comment: (i: unknown): i is V1Comment =>
-      objectVerify(i, [
-        "id",
-        "no",
-        "vposMs",
-        "body",
-        "commands",
-        "userId",
-        "isPremium",
-        "score",
-        "postedAt",
-        "nicoruCount",
-        "nicoruId",
-        "source",
-        "isMyPost",
-      ]),
-    thread: (i: unknown): i is V1Thread => {
-      if (!objectVerify(i, ["id", "fork", "commentCount", "comments"]))
-        return false;
-      for (const value of (i as V1Thread).comments) {
-        if (!typeGuard.v1.comment(value)) return false;
-      }
-      return true;
-    },
-    threads: (i: unknown): i is V1Thread[] => {
-      if (typeof i !== "object") return false;
-      for (const item of i as V1Thread[]) {
-        if (!typeGuard.v1.thread(item)) return false;
-      }
-      return true;
-    },
-  },
-
   nicoScript: {
     range: {
       target: (i: unknown): i is NicoScriptReverseTarget =>
-        typeof i === "string" &&
-        !!RegExp(/^(?:\u6295?\u30b3\u30e1|\u5168)$/).exec(i),
+        is(string([regex(/^(?:\u6295?\u30b3\u30e1|\u5168)$/)]), i),
     },
     replace: {
       range: (i: unknown): i is NicoScriptReplaceRange =>
-        typeof i === "string" && !!RegExp(/^[\u5358\u5168]$/).exec(i),
+        is(string([regex(/^[\u5358\u5168]$/)]), i),
       target: (i: unknown): i is NicoScriptReplaceTarget =>
-        typeof i === "string" &&
-        !!RegExp(
-          /^(?:\u30b3\u30e1|\u6295\u30b3\u30e1|\u5168|\u542b\u3080|\u542b\u307e\u306a\u3044)$/,
-        ).exec(i),
+        is(
+          string([
+            regex(
+              /^(?:\u30b3\u30e1|\u6295\u30b3\u30e1|\u5168|\u542b\u3080|\u542b\u307e\u306a\u3044)$/,
+            ),
+          ]),
+          i,
+        ),
       condition: (i: unknown): i is NicoScriptReplaceCondition =>
-        typeof i === "string" &&
-        !!RegExp(
-          /^(?:\u90e8\u5206\u4e00\u81f4|\u5b8c\u5168\u4e00\u81f4)$/,
-        ).exec(i),
+        is(
+          string([
+            regex(/^(?:\u90e8\u5206\u4e00\u81f4|\u5b8c\u5168\u4e00\u81f4)$/),
+          ]),
+          i,
+        ),
     },
   },
   comment: {
-    font: (i: unknown): i is CommentFont =>
-      typeof i === "string" && !!RegExp(/^(?:gothic|mincho|defont)$/).exec(i),
-    loc: (i: unknown): i is CommentLoc =>
-      typeof i === "string" && !!RegExp(/^(?:ue|naka|shita)$/).exec(i),
-    size: (i: unknown): i is CommentSize =>
-      typeof i === "string" && !!RegExp(/^(?:big|medium|small)$/).exec(i),
     command: {
       key: (i: unknown): i is "full" | "ender" | "_live" | "invisible" =>
-        typeof i === "string" &&
-        !!RegExp(/^(?:full|ender|_live|invisible)$/).exec(i),
+        is(
+          union([
+            literal("full"),
+            literal("ender"),
+            literal("_live"),
+            literal("invisible"),
+          ]),
+          i,
+        ),
     },
     color: (i: unknown): i is keyof typeof colors =>
-      typeof i === "string" && Object.keys(colors).includes(i),
-    colorCode: (i: unknown): i is string =>
-      typeof i === "string" &&
-      !!RegExp(/^#(?:[0-9a-z]{3}|[0-9a-z]{6})$/).exec(i),
+      is(string([custom((i) => Object.keys(colors).includes(i))]), i),
     colorCodeAllowAlpha: (i: unknown): i is string =>
-      typeof i === "string" &&
-      !!RegExp(/^#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/).exec(i),
+      is(
+        string([
+          regex(/^#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/),
+        ]),
+        i,
+      ),
   },
 
   config: {
@@ -282,25 +164,14 @@ const typeGuard = {
     },
   },
   internal: {
-    CommentMeasuredContentItem: (i: unknown): i is CommentMeasuredContentItem =>
-      objectVerify(i, ["content", "slicedContent", "width"]),
     CommentMeasuredContentItemArray: (
       i: unknown,
     ): i is CommentMeasuredContentItem[] =>
-      Array.isArray(i) &&
-      i.every(typeGuard.internal.CommentMeasuredContentItem),
+      is(array(ZCommentMeasuredContentItem), i),
     MultiConfigItem: <T>(i: unknown): i is MultiConfigItem<T> =>
       typeof i === "object" && objectVerify(i, ["html5", "flash"]),
-    HTML5Fonts: (i: unknown): i is HTML5Fonts =>
-      i === "defont" || i === "mincho" || i === "gothic",
-    MeasureInput: (i: unknown): i is MeasureInput =>
-      objectVerify(i, [
-        "font",
-        "content",
-        "lineHeight",
-        "charSize",
-        "lineCount",
-      ]),
+    HTML5Fonts: (i: unknown): i is HTML5Fonts => is(ZHTML5Fonts, i),
+    MeasureInput: (i: unknown): i is MeasureInput => is(ZMeasureInput, i),
   },
 };
 
@@ -313,7 +184,7 @@ const typeGuard = {
 const objectVerify = (item: unknown, keys: string[]): boolean => {
   if (typeof item !== "object" || !item) return false;
   for (const key of keys) {
-    if (!Object.prototype.hasOwnProperty.call(item, key)) return false;
+    if (!Object.hasOwn(item, key)) return false;
   }
   return true;
 };

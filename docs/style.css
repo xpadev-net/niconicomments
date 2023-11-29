@@ -118,6 +118,8 @@ span.warn::before {
   content: "⚠";
   width: 20px;
   height: 20px;
+  position: absolute;
+  left: 5px;
   text-align: center;
   display: inline-block;
   margin-right: 5px;
@@ -125,10 +127,11 @@ span.warn::before {
 .warn {
   color: #880000;
   background: #ffcccc;
-  padding: 5px;
+  padding: 5px 5px 5px 30px;
   border: solid 1px #ff0000;
   margin: 5px 0;
   display: inline-block;
+  position: relative;
 }
 .warn a {
   color: unset;
@@ -137,6 +140,8 @@ span.note::before {
   content: "i";
   width: 20px;
   height: 20px;
+  position: absolute;
+  left: 5px;
   text-align: center;
   background: #9cdcfe;
   color: #0000ff;
@@ -148,10 +153,11 @@ span.note::before {
 .note {
   color: black;
   background: #cccccc;
-  padding: 5px;
+  padding: 5px 5px 5px 30px;
   border: solid 1px #666666;
   margin: 5px 0;
   display: inline-block;
+  position: relative;
 }
 table {
   border-collapse: collapse;

@@ -276,14 +276,14 @@ class BaseComment implements IComment {
     const cache = imageCache[this.cacheKey];
     if (cache) {
       this.image = cache.image;
-      setTimeout(
+      window.setTimeout(
         () => {
           delete this.image;
         },
         this.comment.long * 10 + config.cacheAge,
       );
       clearTimeout(cache.timeout);
-      cache.timeout = setTimeout(
+      cache.timeout = window.setTimeout(
         () => {
           imageCache[this.cacheKey]?.image.destroy();
           delete imageCache[this.cacheKey];
@@ -312,14 +312,14 @@ class BaseComment implements IComment {
    */
   protected _cacheImage(image: IRenderer) {
     this.image = image;
-    setTimeout(
+    window.setTimeout(
       () => {
         delete this.image;
       },
       this.comment.long * 10 + config.cacheAge,
     );
     imageCache[this.cacheKey] = {
-      timeout: setTimeout(
+      timeout: window.setTimeout(
         () => {
           delete imageCache[this.cacheKey];
         },

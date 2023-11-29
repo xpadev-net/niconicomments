@@ -13,6 +13,6 @@ const __dirname = path.dirname(__filename);
 
 export default {
   input: "./dist/dts/main.d.ts",
-  output: [{ file: "dist/bundle.d.ts", format: "es" }],
+  output: [{ file: "dist/bundle_.d.ts", format: "es" }],
   plugins: [typescriptPaths(), dts()],
 };

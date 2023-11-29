@@ -1,7 +1,7 @@
 import type { IRenderer } from "@/@types/renderer";
 
 let imageCache: {
-  [key: string]: { image: IRenderer; timeout: number | NodeJS.Timeout };
+  [key: string]: { image: IRenderer; timeout: number };
 } = {};
 
 /**

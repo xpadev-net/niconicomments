@@ -1,7 +1,17 @@
 import { array, custom, is, literal, regex, string, union } from "valibot";
 
 import type {
+  ApiChat,
+  ApiGlobalNumRes,
+  ApiLeaf,
+  ApiPing,
+  ApiThread,
+  CommentFont,
+  CommentLoc,
   CommentMeasuredContentItem,
+  CommentSize,
+  FormattedComment,
+  FormattedLegacyComment,
   HTML5Fonts,
   MeasureInput,
   MultiConfigItem,
@@ -10,11 +20,29 @@ import type {
   NicoScriptReplaceTarget,
   NicoScriptReverseTarget,
   Options,
+  OwnerComment,
+  RawApiResponse,
+  V1Comment,
+  V1Thread,
 } from "@/@types/";
 import {
+  ZApiChat,
+  ZApiGlobalNumRes,
+  ZApiLeaf,
+  ZApiPing,
+  ZApiThread,
+  ZCommentFont,
+  ZCommentLoc,
   ZCommentMeasuredContentItem,
+  ZCommentSize,
+  ZFormattedComment,
+  ZFormattedLegacyComment,
   ZHTML5Fonts,
   ZMeasureInput,
+  ZOwnerComment,
+  ZRawApiResponse,
+  ZV1Comment,
+  ZV1Thread,
 } from "@/@types/";
 import { colors } from "@/definition/colors";
 
@@ -40,6 +68,25 @@ const isNumber = (i: unknown): i is number => typeof i === "number";
 const isObject = (i: unknown): i is object => typeof i === "object";
 
 const typeGuard = {
+  formatted: {
+    comment: (i: unknown): i is FormattedComment => is(ZFormattedComment, i),
+    comments: (i: unknown): i is FormattedComment[] =>
+      is(array(ZFormattedComment), i),
+    legacyComment: (i: unknown): i is FormattedLegacyComment =>
+      is(ZFormattedLegacyComment, i),
+    legacyComments: (i: unknown): i is FormattedLegacyComment[] =>
+      is(array(ZFormattedLegacyComment), i),
+  },
+  legacy: {
+    rawApiResponses: (i: unknown): i is RawApiResponse[] =>
+      is(array(ZRawApiResponse), i),
+    apiChat: (i: unknown): i is ApiChat => is(ZApiChat, i),
+    apiGlobalNumRes: (i: unknown): i is ApiGlobalNumRes =>
+      is(ZApiGlobalNumRes, i),
+    apiLeaf: (i: unknown): i is ApiLeaf => is(ZApiLeaf, i),
+    apiPing: (i: unknown): i is ApiPing => is(ZApiPing, i),
+    apiThread: (i: unknown): i is ApiThread => is(ZApiThread, i),
+  },
   xmlDocument: (i: unknown): i is XMLDocument => {
     if (
       !(i as XMLDocument).documentElement ||
@@ -72,6 +119,16 @@ const typeGuard = {
         i,
       ),
   },
+  owner: {
+    comment: (i: unknown): i is OwnerComment => is(ZOwnerComment, i),
+    comments: (i: unknown): i is OwnerComment[] => is(array(ZOwnerComment), i),
+  },
+  v1: {
+    comment: (i: unknown): i is V1Comment => is(ZV1Comment, i),
+    comments: (i: unknown): i is V1Comment[] => is(array(ZV1Comment), i),
+    thread: (i: unknown): i is V1Thread => is(ZV1Thread, i),
+    threads: (i: unknown): i is V1Thread[] => is(array(ZV1Thread), i),
+  },
   nicoScript: {
     range: {
       target: (i: unknown): i is NicoScriptReverseTarget =>
@@ -99,6 +156,9 @@ const typeGuard = {
     },
   },
   comment: {
+    font: (i: unknown): i is CommentFont => is(ZCommentFont, i),
+    loc: (i: unknown): i is CommentLoc => is(ZCommentLoc, i),
+    size: (i: unknown): i is CommentSize => is(ZCommentSize, i),
     command: {
       key: (i: unknown): i is "full" | "ender" | "_live" | "invisible" =>
         is(
@@ -113,6 +173,8 @@ const typeGuard = {
     },
     color: (i: unknown): i is keyof typeof colors =>
       is(string([custom((i) => Object.keys(colors).includes(i))]), i),
+    colorCode: (i: unknown): i is string =>
+      is(string([regex(/^#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6})$/)]), i),
     colorCodeAllowAlpha: (i: unknown): i is string =>
       is(
         string([
@@ -164,6 +226,8 @@ const typeGuard = {
     },
   },
   internal: {
+    CommentMeasuredContentItem: (i: unknown): i is CommentMeasuredContentItem =>
+      is(ZCommentMeasuredContentItem, i),
     CommentMeasuredContentItemArray: (
       i: unknown,
     ): i is CommentMeasuredContentItem[] =>

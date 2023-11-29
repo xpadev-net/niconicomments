@@ -42,10 +42,7 @@ class BaseComment implements IComment {
     this.pos = { x: 0, y: 0 };
     comment.content = comment.content.replace(/\t/g, "\u2003\u2003");
     this.comment = this.convertComment(comment);
-    this.cacheKey =
-      JSON.stringify(this.comment.content) +
-      `@@${this.pluginName}@@` +
-      [...this.comment.mail].sort().join(",");
+    this.cacheKey = this.getCacheKey();
   }
   get invisible() {
     return this.comment.invisible;
@@ -348,6 +345,14 @@ class BaseComment implements IComment {
   public isHovered(cursor?: Position, posX?: number, posY?: number): boolean {
     console.error("isHovered method is not implemented", posX, posY, cursor);
     throw new NotImplementedError(this.pluginName, "getButtonImage");
+  }
+
+  protected getCacheKey() {
+    return (
+      JSON.stringify(this.comment.content) +
+      `@@${this.pluginName}@@` +
+      [...this.comment.mail].sort((a, b) => a.localeCompare(b)).join(",")
+    );
   }
 }
 

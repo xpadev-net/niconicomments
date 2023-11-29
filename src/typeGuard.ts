@@ -184,7 +184,7 @@ const typeGuard = {
 const objectVerify = (item: unknown, keys: string[]): boolean => {
   if (typeof item !== "object" || !item) return false;
   for (const key of keys) {
-    if (!Object.prototype.hasOwnProperty.call(item, key)) return false;
+    if (!Object.hasOwn(item, key)) return false;
   }
   return true;
 };

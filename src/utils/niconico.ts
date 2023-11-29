@@ -1,5 +1,9 @@
-import type { CommentHTML5Font, CommentSize, MeasureInput } from "@/@types";
-import type { CommentContentItem } from "@/@types";
+import type {
+  CommentContentItem,
+  CommentHTML5Font,
+  CommentSize,
+  MeasureInput,
+} from "@/@types";
 import type { IRenderer } from "@/@types/renderer";
 import { config } from "@/definition/config";
 import { TypeGuardError } from "@/errors/TypeGuardError";
@@ -19,7 +23,7 @@ const getLineHeight = (
   isFlash: boolean,
   resized = false,
 ) => {
-  const lineCounts = getConfig(config.lineCounts, isFlash),
+  const lineCounts = getConfig(config.html5LineCounts, isFlash),
     commentStageSize = getConfig(config.commentStageSize, isFlash),
     lineHeight = commentStageSize.height / lineCounts.doubleResized[fontSize],
     defaultLineCount = lineCounts.default[fontSize];
@@ -41,7 +45,7 @@ const getLineHeight = (
  * @returns フォントサイズ
  */
 const getCharSize = (fontSize: CommentSize, isFlash: boolean): number => {
-  const lineCounts = getConfig(config.lineCounts, isFlash),
+  const lineCounts = getConfig(config.html5LineCounts, isFlash),
     commentStageSize = getConfig(config.commentStageSize, isFlash);
   return commentStageSize.height / lineCounts.doubleResized[fontSize];
 };
@@ -65,11 +69,10 @@ const addHTML5PartToResult = (
   part: string,
   font?: CommentHTML5Font,
 ) => {
-  console.log(part);
   if (part === "") return;
+  font ??= "defont";
   for (const key of Object.keys(config.compatSpacer.html5)) {
-    const spacerWidth = config.compatSpacer.html5[key]?.[font ?? "defont"];
-    console.log("test", key, spacerWidth);
+    const spacerWidth = config.compatSpacer.html5[key]?.[font];
     if (!spacerWidth) continue;
     const compatIndex = part.indexOf(key);
     if (compatIndex >= 0) {
@@ -145,11 +148,11 @@ const measureWidth = (comment: MeasureInput, renderer: IRenderer) => {
  */
 const getFontSizeAndScale = (charSize: number) => {
   charSize *= 0.8;
-  if (charSize < config.minFontSize) {
+  if (charSize < config.html5MinFontSize) {
     if (charSize >= 1) charSize = Math.floor(charSize);
     return {
-      scale: charSize / config.minFontSize,
-      fontSize: config.minFontSize,
+      scale: charSize / config.html5MinFontSize,
+      fontSize: config.html5MinFontSize,
     };
   }
   return {

@@ -768,12 +768,12 @@ const parseFont = (font: CommentFont, size: string | number): string => {
   switch (font) {
     case "gulim":
     case "simsun":
-      return config.font[font].replace("[size]", `${size}`);
+      return config.fonts.flash[font].replace("[size]", `${size}`);
     case "gothic":
     case "mincho":
-      return `${config.fonts[font].weight} ${size}px ${config.fonts[font].font}`;
+      return `${config.fonts.html5[font].weight} ${size}px ${config.fonts.html5[font].font}`;
     default:
-      return `${config.fonts.defont.weight} ${size}px ${config.fonts.defont.font}`;
+      return `${config.fonts.html5.defont.weight} ${size}px ${config.fonts.html5.defont.font}`;
   }
 };
 

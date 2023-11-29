@@ -86,12 +86,10 @@ class NiconiComments {
     resetNicoScripts();
     if (renderer instanceof HTMLCanvasElement) {
       renderer = new CanvasRenderer(renderer, options.video);
-    } else {
-      if (options.video) {
-        console.warn(
-          "options.video is ignored because renderer is not HTMLCanvasElement",
-        );
-      }
+    } else if (options.video) {
+      console.warn(
+        "options.video is ignored because renderer is not HTMLCanvasElement",
+      );
     }
 
     this.renderer = renderer;

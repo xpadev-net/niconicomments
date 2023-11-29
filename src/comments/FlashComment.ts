@@ -57,10 +57,7 @@ class FlashComment extends BaseComment {
       comment.font = val.font;
     }
     this.comment = this.getCommentSize(comment);
-    this.cacheKey =
-      JSON.stringify(this.comment.content) +
-      `@@${this.pluginName}@@` +
-      [...this.comment.mail].sort((a, b) => a.localeCompare(b)).join(",");
+    this.cacheKey = this.getCacheKey();
     delete this.image;
   }
 
@@ -160,9 +157,9 @@ class FlashComment extends BaseComment {
       (input.match(new RegExp(config.flashScriptChar.super, "g"))?.length ??
         0) *
         -1 *
-        config.scriptCharOffset +
+        config.flashScriptCharOffset +
       (input.match(new RegExp(config.flashScriptChar.sub, "g"))?.length ?? 0) *
-        config.scriptCharOffset;
+        config.flashScriptCharOffset;
     return {
       content,
       lineCount,
@@ -274,7 +271,7 @@ class FlashComment extends BaseComment {
       if (item.type === "spacer") {
         spacedWidth +=
           item.count * item.charWidth * comment.fontSize +
-          Math.max(item.count - 1, 0) * config.letterSpacing;
+          Math.max(item.count - 1, 0) * config.flashLetterSpacing;
         currentWidth += item.count * item.charWidth * comment.fontSize;
         widthArr.push(currentWidth);
         spacedWidthArr.push(spacedWidth);
@@ -292,7 +289,8 @@ class FlashComment extends BaseComment {
         const measure = this.renderer.measureText(value);
         currentWidth += measure.width;
         spacedWidth +=
-          measure.width + Math.max(value.length - 1, 0) * config.letterSpacing;
+          measure.width +
+          Math.max(value.length - 1, 0) * config.flashLetterSpacing;
         widths.push(measure.width);
         if (i < lines.length - 1) {
           widthArr.push(currentWidth);
@@ -305,7 +303,6 @@ class FlashComment extends BaseComment {
       spacedWidthArr.push(spacedWidth);
       item.width = widths;
     }
-    console.log(comment.id, widthArr);
     const leadLine = (function () {
       let max = 0,
         index = -1;
@@ -321,7 +318,9 @@ class FlashComment extends BaseComment {
     const width = leadLine.max * comment.scale;
     const height =
       (comment.fontSize * (comment.lineHeight ?? 0) * comment.lineCount +
-        config.commentYPaddingTop[comment.resizedY ? "resized" : "default"]) *
+        config.flashCommentYPaddingTop[
+          comment.resizedY ? "resized" : "default"
+        ]) *
       comment.scale;
     return { scaleX, width, height };
   }
@@ -339,7 +338,7 @@ class FlashComment extends BaseComment {
       for (let i = 0, n = this.comment.lineCount; i < n; i++) {
         const linePosY =
           ((i + 1) * (this.comment.fontSize * this.comment.lineHeight) +
-            config.commentYPaddingTop[
+            config.flashCommentYPaddingTop[
               this.comment.resizedY ? "resized" : "default"
             ]) *
           this.comment.scale;
@@ -361,7 +360,6 @@ class FlashComment extends BaseComment {
   }
 
   override _generateTextImage(): IRenderer {
-    console.log(this.comment);
     const renderer = this.renderer.getCanvas();
     this._setupCanvas(renderer);
     const atButtonPadding = getConfig(config.atButtonPadding, true);
@@ -369,10 +367,10 @@ class FlashComment extends BaseComment {
     const lineHeight = this.comment.fontSize * this.comment.lineHeight;
     const offsetKey = this.comment.resizedY ? "resized" : "default";
     const offsetY =
-      config.commentYPaddingTop[offsetKey] +
+      config.flashCommentYPaddingTop[offsetKey] +
       this.comment.fontSize *
         this.comment.lineHeight *
-        config.commentYOffset[this.comment.size][offsetKey];
+        config.flashCommentYOffset[this.comment.size][offsetKey];
     let lastFont = this.comment.font,
       leftOffset = 0,
       lineCount = 0,

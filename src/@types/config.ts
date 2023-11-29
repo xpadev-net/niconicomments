@@ -1,6 +1,3 @@
-import type { BaseSchema } from "valibot";
-import { object } from "valibot";
-
 import type {
   CommentSize,
   FormattedComment,
@@ -11,11 +8,6 @@ import type { BaseComment } from "@/comments/";
 
 export type ConfigItem<T> = T | MultiConfigItem<T>;
 
-export const ZMultiConfigItem = (item: BaseSchema) =>
-  object({
-    html5: item,
-    flash: item,
-  });
 export type MultiConfigItem<T> = { html5: T; flash: T };
 type ConfigSizeItem<T> = { big: T; medium: T; small: T };
 type ConfigResizedItem<T> = { default: T; resized: T };
@@ -53,8 +45,8 @@ export type BaseConfig = {
   commentDrawRange: number;
   commentScale: ConfigItem<number>;
   commentStageSize: ConfigItem<CommentStageSize>;
-  commentYOffset: ConfigSizeItem<ConfigResizedItem<number>>;
-  commentYPaddingTop: ConfigResizedItem<number>;
+  flashCommentYOffset: ConfigSizeItem<ConfigResizedItem<number>>;
+  flashCommentYPaddingTop: ConfigResizedItem<number>;
   contextFillLiveOpacity: number;
   contextLineWidth: ConfigItem<number>;
   contextStrokeColor: string;
@@ -64,20 +56,22 @@ export type BaseConfig = {
   flashMode: FlashMode;
   flashScriptChar: FlashScriptChar;
   flashThreshold: number;
-  font: FontList;
-  fonts: PlatformFont;
+  fonts: {
+    flash: FontList;
+    html5: PlatformFont;
+  };
   fontSize: ConfigItem<ConfigSizeItem<ConfigResizedItem<number>>>;
   fpsInterval: number;
-  hiResCommentCorrection: number;
-  lineCounts: ConfigItem<LineCounts>;
+  html5HiResCommentCorrection: number;
+  html5LineCounts: ConfigItem<LineCounts>;
   lineHeight: ConfigItem<ConfigSizeItem<ConfigResizedItem<number>>>;
-  minFontSize: number;
+  html5MinFontSize: number;
   sameCAGap: number;
   sameCAMinScore: number;
   sameCARange: number;
   sameCATimestampRange: number;
-  letterSpacing: number;
-  scriptCharOffset: number;
+  flashLetterSpacing: number;
+  flashScriptCharOffset: number;
   plugins: IPluginConstructor[];
   commentPlugins: {
     class: typeof BaseComment;

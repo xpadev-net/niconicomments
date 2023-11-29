@@ -111,7 +111,7 @@ const initConfig = () => {
     /**
      * 行高
      */
-    lineCounts: {
+    html5LineCounts: {
       default: {
         big: 8.4,
         medium: 13.1,
@@ -131,20 +131,27 @@ const initConfig = () => {
     /**
      * 高解像度時のズレ補正値 @html5?
      */
-    hiResCommentCorrection: 20,
+    html5HiResCommentCorrection: 20,
     /**
      * 最小フォントサイズ @html5
      * 描画時のフォントサイズはこれ以上小さくならない
      * これ以上縮小する場合はコメントのズレが発生する
      */
-    minFontSize: 10,
-    /**
-     * フォント @html5?
-     */
-    fonts: fonts[platform],
-    /**
-     * end html5
-     */
+    html5MinFontSize: 10,
+    fonts: {
+      /**
+       * フォント @html5?
+       */
+      html5: fonts[platform],
+      /**
+       * 描画に使うフォント
+       * [size]に数値が入る
+       */
+      flash: {
+        gulim: `normal 600 [size]px gulim, ${fonts[platform].gothic.font}, Arial`,
+        simsun: `normal 400 [size]px simsun, batang, "PMingLiU", MingLiU-ExtB, ${fonts[platform].mincho.font}, Arial`,
+      },
+    },
 
     /**
      * fpsを更新する間隔(ms)
@@ -245,14 +252,6 @@ const initConfig = () => {
       sub: "[\u0320\u1d62-\u1d6a\u2080-\u208e\u2090-\u209c\u2c7c]",
     },
     /**
-     * 描画に使うフォント
-     * [size]に数値が入る
-     */
-    font: {
-      gulim: `normal 600 [size]px gulim, ${fonts[platform].gothic.font}, Arial`,
-      simsun: `normal 400 [size]px simsun, batang, "PMingLiU", MingLiU-ExtB, ${fonts[platform].mincho.font}, Arial`,
-    },
-    /**
      * Flash版コメントの高さを計算するための定数
      */
     lineHeight: {
@@ -272,14 +271,14 @@ const initConfig = () => {
     /**
      * Flash版コメントの上空白
      */
-    commentYPaddingTop: {
+    flashCommentYPaddingTop: {
       default: 5,
       resized: 3,
     },
     /**
      * Flash版コメントの上下補正値
      */
-    commentYOffset: {
+    flashCommentYOffset: {
       small: { default: -0.2, resized: -0.2 },
       medium: { default: -0.2, resized: -0.2 },
       big: { default: -0.2, resized: -0.2 },
@@ -287,11 +286,11 @@ const initConfig = () => {
     /**
      * 文字間の空白
      */
-    letterSpacing: 1,
+    flashLetterSpacing: 1,
     /**
      * コメントの上下補正値
      */
-    scriptCharOffset: 0.12,
+    flashScriptCharOffset: 0.12,
     /**
      * コメント描画数の上限
      * undefinedの場合は無制限

@@ -46,10 +46,7 @@ class HTML5Comment extends BaseComment {
       lineOffset,
     };
     this.comment = this.getCommentSize(comment);
-    this.cacheKey =
-      JSON.stringify(this.comment.content) +
-      `@@${this.pluginName}@@` +
-      [...this.comment.mail].sort().join(",");
+    this.cacheKey = this.getCacheKey();
     delete this.image;
   }
 
@@ -123,7 +120,6 @@ class HTML5Comment extends BaseComment {
     addHTML5PartToResult(content, input, font ?? "defont");
     const lineCount = input.split("\n").length;
     const lineOffset = 0;
-    console.log(content);
     return {
       content,
       lineCount,
@@ -251,7 +247,7 @@ class HTML5Comment extends BaseComment {
           (this.comment.lineHeight * (i + 1) +
             (this.comment.charSize - this.comment.lineHeight) / 2 +
             this.comment.lineHeight * -0.16 +
-            (config.fonts[this.comment.font]?.offset || 0)) *
+            (config.fonts.html5[this.comment.font]?.offset || 0)) *
           scale;
         this.renderer.setStrokeStyle("rgba(255,255,0,0.5)");
         this.renderer.strokeRect(
@@ -269,7 +265,7 @@ class HTML5Comment extends BaseComment {
     const { fontSize, scale } = getFontSizeAndScale(this.comment.charSize);
     const paddingTop =
       (10 - scale * 10) *
-      ((this.comment.lineCount + 1) / config.hiResCommentCorrection);
+      ((this.comment.lineCount + 1) / config.html5HiResCommentCorrection);
     const drawScale =
       getConfig(config.commentScale, false) *
       scale *
@@ -291,7 +287,7 @@ class HTML5Comment extends BaseComment {
     const offsetY =
       (this.comment.charSize - this.comment.lineHeight) / 2 +
       this.comment.lineHeight * -0.16 +
-      (config.fonts[this.comment.font]?.offset || 0);
+      (config.fonts.html5[this.comment.font]?.offset || 0);
     for (const item of this.comment.content) {
       if (item?.type === "spacer") {
         lineCount += item.count * item.charWidth * this.comment.fontSize;

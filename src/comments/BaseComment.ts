@@ -285,6 +285,7 @@ class BaseComment implements IComment {
       clearTimeout(cache.timeout);
       cache.timeout = setTimeout(
         () => {
+          imageCache[this.cacheKey]?.image.destroy();
           delete imageCache[this.cacheKey];
         },
         this.comment.long * 10 + config.cacheAge,

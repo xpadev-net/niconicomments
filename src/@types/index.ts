@@ -12,4 +12,5 @@ export * from "./format.v1";
 export * from "./IComment";
 export * from "./IPlugins";
 export * from "./options";
+export * from "./renderer";
 export * from "./types";

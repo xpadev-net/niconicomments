@@ -140,5 +140,9 @@ class CanvasRenderer implements IRenderer {
   getCanvas(): IRenderer {
     return new CanvasRenderer();
   }
+
+  destroy() {
+    //for override
+  }
 }
 export { CanvasRenderer };

@@ -35,8 +35,19 @@ test("22(ヨワイボクラハウタウ)", async ({ page }) => {
 });
 
 const compare = async (page: Page, video: number, time: number) => {
+  await _compare(page, video, time);
+  await _compare(page, video, time, 1280, 720);
+};
+
+const _compare = async (
+  page: Page,
+  video: number,
+  time: number,
+  width = 1920,
+  height = 1080,
+) => {
   await page.goto(
-    `http://localhost:8080/docs/sample/test.html?time=${time}&video=${video}`,
+    `http://localhost:8080/docs/sample/test.html?time=${time}&video=${video}&width=${width}&height=${height}`,
   );
   await Promise.all([
     page.waitForSelector("div#loaded", { state: "attached" }),

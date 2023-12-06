@@ -79,7 +79,7 @@ const fromXMLDocument = (data: XMLDocument): FormattedComment[] => {
     const tmpParam: FormattedComment = {
       id: Number(item.getAttribute("no")) || index++,
       vpos: Number(item.getAttribute("vpos")),
-      content: item.innerHTML,
+      content: item.textContent ?? "",
       date: Number(item.getAttribute("date")) || 0,
       date_usec: Number(item.getAttribute("date_usec")) || 0,
       owner: !item.getAttribute("user_id"),

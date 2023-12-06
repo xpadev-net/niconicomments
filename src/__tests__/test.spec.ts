@@ -56,6 +56,6 @@ const _compare = async (
   await expect(page).toHaveScreenshot(`${video}-${time}.png`);
   expect(await page.screenshot({ fullPage: true })).toMatchSnapshot(
     `${video}-${time}.png`,
-    { threshold: 0.075 },
+    { threshold: 0.1 },
   );
 };

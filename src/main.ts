@@ -282,8 +282,7 @@ class NiconiComments {
           [];
       if (arrayEqual(current, last)) return false;
     }
-    const size = this.renderer.getSize();
-    this.renderer.clearRect(0, 0, size.width, size.height);
+    this.renderer.clearRect(0, 0, config.canvasWidth, config.canvasHeight);
     this.lastVpos = vpos;
     this._drawVideo();
     for (const plugin of plugins) {

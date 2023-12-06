@@ -94,6 +94,12 @@ class NiconiComments {
 
     this.renderer = renderer;
     this.renderer.setLineWidth(getConfig(config.contextLineWidth, false));
+    const rendererSize = this.renderer.getSize();
+    this.renderer.setScale(
+      rendererSize.width / config.canvasWidth,
+      rendererSize.height / config.canvasHeight,
+    );
+
     let formatType = options.format;
 
     //Deprecated Warning

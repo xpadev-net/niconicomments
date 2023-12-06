@@ -15,6 +15,10 @@
     const urlParams = new URLSearchParams(window.location.search);
     const video = Number(urlParams.get("video") || 0);
     const time = Number(urlParams.get("time") || 0);
+    const canvasWidth = Number(urlParams.get("width") || 1920);
+    const canvasHeight = Number(urlParams.get("height") || 1080);
+    canvasElement.width = canvasWidth;
+    canvasElement.height = canvasHeight;
     const req = await fetch(`./commentdata/${video}.json`);
     const res = await req.json();
     const nico = new NiconiComments(canvasElement, res, {

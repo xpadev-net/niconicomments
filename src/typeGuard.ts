@@ -1,4 +1,13 @@
-import { array, custom, is, literal, regex, string, union } from "valibot";
+import {
+  array,
+  custom,
+  is,
+  literal,
+  regex,
+  safeParse,
+  string,
+  union,
+} from "valibot";
 
 import type {
   ApiChat,
@@ -25,6 +34,7 @@ import type {
   V1Comment,
   V1Thread,
 } from "@/@types/";
+import { ZInputFormatType } from "@/@types/";
 import {
   ZApiChat,
   ZApiGlobalNumRes,
@@ -199,11 +209,7 @@ const typeGuard = {
         keepCA: isBoolean,
         scale: isNumber,
         config: isObject,
-        format: (i: unknown) =>
-          typeof i === "string" &&
-          !!RegExp(
-            /^(XMLDocument|niconicome|formatted|legacy|legacyOwner|owner|v1|default|empty)$/,
-          ).exec(i),
+        format: (i) => safeParse(ZInputFormatType, i).success,
         video: (i: unknown) =>
           typeof i === "object" && (i as HTMLVideoElement).nodeName === "VIDEO",
       };

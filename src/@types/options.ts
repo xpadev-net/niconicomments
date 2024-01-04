@@ -1,3 +1,6 @@
+import type { Output } from "valibot";
+import { literal, union } from "valibot";
+
 import type {
   Config,
   FormattedComment,
@@ -6,19 +9,25 @@ import type {
   RawApiResponse,
   V1Thread,
 } from "@/@types/";
+import type { Xml2jsPacket } from "@/@types/format.xml2js";
 
-export type InputFormatType =
-  | "XMLDocument"
-  | "niconicome"
-  | "formatted"
-  | "legacy"
-  | "legacyOwner"
-  | "owner"
-  | "v1"
-  | "empty"
-  | "default";
+export const ZInputFormatType = union([
+  literal("XMLDocument"),
+  literal("niconicome"),
+  literal("xml2js"),
+  literal("formatted"),
+  literal("legacy"),
+  literal("legacyOwner"),
+  literal("owner"),
+  literal("v1"),
+  literal("empty"),
+  literal("default"),
+]);
+export type InputFormatType = Output<typeof ZInputFormatType>;
+
 export type InputFormat =
   | XMLDocument
+  | Xml2jsPacket
   | FormattedComment[]
   | FormattedLegacyComment[]
   | RawApiResponse[]

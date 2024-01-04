@@ -1,10 +1,11 @@
 import {
   array,
   custom,
+  instance,
   is,
   literal,
+  optional,
   regex,
-  safeParse,
   string,
   union,
 } from "valibot";
@@ -34,7 +35,6 @@ import type {
   V1Comment,
   V1Thread,
 } from "@/@types/";
-import { ZInputFormatType } from "@/@types/";
 import {
   ZApiChat,
   ZApiGlobalNumRes,
@@ -48,7 +48,12 @@ import {
   ZFormattedComment,
   ZFormattedLegacyComment,
   ZHTML5Fonts,
+  ZInputFormatType,
   ZMeasureInput,
+  ZNicoScriptReplaceCondition,
+  ZNicoScriptReplaceRange,
+  ZNicoScriptReplaceTarget,
+  ZNicoScriptReverseTarget,
   ZOwnerComment,
   ZRawApiResponse,
   ZV1Comment,
@@ -142,27 +147,15 @@ const typeGuard = {
   nicoScript: {
     range: {
       target: (i: unknown): i is NicoScriptReverseTarget =>
-        is(string([regex(/^(?:\u6295?\u30b3\u30e1|\u5168)$/)]), i),
+        is(ZNicoScriptReverseTarget, i),
     },
     replace: {
       range: (i: unknown): i is NicoScriptReplaceRange =>
-        is(string([regex(/^[\u5358\u5168]$/)]), i),
+        is(ZNicoScriptReplaceRange, i),
       target: (i: unknown): i is NicoScriptReplaceTarget =>
-        is(
-          string([
-            regex(
-              /^(?:\u30b3\u30e1|\u6295\u30b3\u30e1|\u5168|\u542b\u3080|\u542b\u307e\u306a\u3044)$/,
-            ),
-          ]),
-          i,
-        ),
+        is(ZNicoScriptReplaceTarget, i),
       condition: (i: unknown): i is NicoScriptReplaceCondition =>
-        is(
-          string([
-            regex(/^(?:\u90e8\u5206\u4e00\u81f4|\u5b8c\u5168\u4e00\u81f4)$/),
-          ]),
-          i,
-        ),
+        is(ZNicoScriptReplaceCondition, i),
     },
   },
   comment: {
@@ -209,9 +202,8 @@ const typeGuard = {
         keepCA: isBoolean,
         scale: isNumber,
         config: isObject,
-        format: (i) => safeParse(ZInputFormatType, i).success,
-        video: (i: unknown) =>
-          typeof i === "object" && (i as HTMLVideoElement).nodeName === "VIDEO",
+        format: (i) => is(ZInputFormatType, i),
+        video: (i: unknown) => is(optional(instance(HTMLVideoElement)), i),
       };
       for (const key of Object.keys(keys)) {
         if (

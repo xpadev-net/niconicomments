@@ -1,4 +1,4 @@
-import type { IRenderer } from "@/@types/renderer";
+import type { IRenderer } from "@/@types/";
 
 let imageCache: {
   [key: string]: { image: IRenderer; timeout: number };

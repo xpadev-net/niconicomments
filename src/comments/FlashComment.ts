@@ -5,11 +5,11 @@ import type {
   FormattedComment,
   FormattedCommentWithFont,
   FormattedCommentWithSize,
+  IRenderer,
   MeasureTextInput,
   MeasureTextResult,
   Position,
 } from "@/@types/";
-import type { IRenderer } from "@/@types/renderer";
 import { config, options } from "@/definition/config";
 import { TypeGuardError } from "@/errors/TypeGuardError";
 import typeGuard from "@/typeGuard";

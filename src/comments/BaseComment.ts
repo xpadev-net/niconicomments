@@ -3,12 +3,12 @@ import type {
   FormattedCommentWithFont,
   FormattedCommentWithSize,
   IComment,
+  IRenderer,
   MeasureTextInput,
   MeasureTextResult,
   ParseContentResult,
   Position,
 } from "@/@types/";
-import type { IRenderer } from "@/@types/renderer";
 import { imageCache } from "@/contexts";
 import { isDebug } from "@/contexts/debug";
 import { config } from "@/definition/config";

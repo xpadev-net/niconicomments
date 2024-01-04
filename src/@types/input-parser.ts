@@ -1,4 +1,4 @@
-import type { FormattedComment } from "@/@types/format.formatted";
+import type { FormattedComment } from "@/@types/";
 
 export interface InputParser {
   key: string[];

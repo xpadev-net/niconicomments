@@ -4,10 +4,10 @@ import type {
   FormattedCommentWithFont,
   FormattedCommentWithSize,
   HTML5Fonts,
+  IRenderer,
   MeasureTextInput,
   MeasureTextResult,
 } from "@/@types/";
-import type { IRenderer } from "@/@types/renderer";
 import { config, options } from "@/definition/config";
 import { TypeGuardError } from "@/errors/TypeGuardError";
 import typeGuard from "@/typeGuard";

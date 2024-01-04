@@ -10,6 +10,7 @@ export * from "./format.legacy";
 export * from "./format.owner";
 export * from "./format.v1";
 export * from "./IComment";
+export * from "./input-parser";
 export * from "./IPlugins";
 export * from "./options";
 export * from "./renderer";

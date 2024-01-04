@@ -189,7 +189,12 @@ type NicoScriptReverse = {
   start: number;
   end: number;
 };
-export type NicoScriptReverseTarget = "コメ" | "投コメ" | "全";
+export const ZNicoScriptReverseTarget = union([
+  literal("\u30b3\u30e1"), //コメ
+  literal("\u6295\u30b3\u30e1"), //投コメ
+  literal("\u5168"), //全
+]);
+export type NicoScriptReverseTarget = Output<typeof ZNicoScriptReverseTarget>;
 export type NicoScriptReplace = {
   start: number;
   long: number | undefined;
@@ -204,14 +209,26 @@ export type NicoScriptReplace = {
   loc: CommentLoc | undefined;
   no: number;
 };
-export type NicoScriptReplaceRange = "単" | "全";
-export type NicoScriptReplaceTarget =
-  | "コメ"
-  | "投コメ"
-  | "全"
-  | "含まない"
-  | "含む";
-export type NicoScriptReplaceCondition = "完全一致" | "部分一致";
+export const ZNicoScriptReplaceRange = union([
+  literal("\u5358"), //単
+  literal("\u5168"), //全
+]);
+export type NicoScriptReplaceRange = Output<typeof ZNicoScriptReplaceRange>;
+export const ZNicoScriptReplaceTarget = union([
+  literal("\u30b3\u30e1"), //コメ
+  literal("\u6295\u30b3\u30e1"), //投コメ
+  literal("\u5168"), //全
+  literal("\u542b\u307e\u306a\u3044"), //含まない
+  literal("\u542b\u3080"), //含む
+]);
+export type NicoScriptReplaceTarget = Output<typeof ZNicoScriptReplaceTarget>;
+export const ZNicoScriptReplaceCondition = union([
+  literal("\u90e8\u5206\u4e00\u81f4"), //部分一致
+  literal("\u5b8c\u5168\u4e00\u81f4"), //完全一致
+]);
+export type NicoScriptReplaceCondition = Output<
+  typeof ZNicoScriptReplaceCondition
+>;
 type NicoScriptBan = {
   start: number;
   end: number;

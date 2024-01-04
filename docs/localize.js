@@ -80,6 +80,11 @@ const localize = {
       <td>Pass XML parseFromString with DOMParser</td>
     </tr>
     <tr>
+      <td>xml2js</td>
+      <td class="type"><a href="./type/types/_types_format_xml2js.Xml2jsPacket.html">Xml2jsPacket</a></td>
+      <td>Pass object parsed with xml2js</td>
+    </tr>
+    <tr>
         <td>formatted</td>
         <td class="type"><a href="./type/types/_types_format_formatted.formattedComment.html">formattedComment</a>[] |<a href="./type/types/_types_format_formatted.formattedLegacyComment.html">formattedLegacyComment</a>[]</td>
         <td>If user_id and layer are not included, it will be formattedLegacyComment</td>
@@ -120,6 +125,11 @@ const localize = {
       <td>XMLDocument</td>
       <td class="type">XMLDocument</td>
       <td>saccubusやniconicome等が生成したXMLをDOMParserでparseFromStringしたものを渡してください<br>後方互換のためフォーマット名「niconicome」もサポートしていますが、今後予告なく実装から削除される場合があります</td>
+    </tr>
+    <tr>
+      <td>xml2js</td>
+      <td class="type"><a href="./type/types/_types_format_xml2js.Xml2jsPacket.html">Xml2jsPacket</a></td>
+      <td>xml形式のコメントをxml2jsでパースしたオブジェクトを渡してください</td>
     </tr>
     <tr>
       <td>formatted</td>

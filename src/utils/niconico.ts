@@ -2,9 +2,9 @@ import type {
   CommentContentItem,
   CommentHTML5Font,
   CommentSize,
+  IRenderer,
   MeasureInput,
 } from "@/@types";
-import type { IRenderer } from "@/@types/renderer";
 import { config } from "@/definition/config";
 import { TypeGuardError } from "@/errors/TypeGuardError";
 

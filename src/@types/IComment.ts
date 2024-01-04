@@ -1,5 +1,9 @@
-import type { CommentLoc, FormattedCommentWithSize, Position } from "@/@types/";
-import type { IRenderer } from "@/@types/renderer";
+import type {
+  CommentLoc,
+  FormattedCommentWithSize,
+  IRenderer,
+  Position,
+} from "@/@types/";
 
 export interface IComment {
   comment: FormattedCommentWithSize;

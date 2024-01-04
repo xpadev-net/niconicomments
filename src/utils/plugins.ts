@@ -1,5 +1,4 @@
-import type { FormattedComment } from "@/@types";
-import type { IRenderer } from "@/@types/renderer";
+import type { FormattedComment, IRenderer } from "@/@types";
 import { HTML5Comment } from "@/comments";
 import { config } from "@/definition/config";
 

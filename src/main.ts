@@ -5,11 +5,11 @@ import type {
   IComment,
   InputFormat,
   IPluginList,
+  IRenderer,
   Options,
   Position,
   Timeline,
 } from "@/@types/";
-import type { IRenderer } from "@/@types/renderer";
 import { FlashComment } from "@/comments/";
 import {
   plugins,

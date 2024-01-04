@@ -34,6 +34,9 @@ import type {
   RawApiResponse,
   V1Comment,
   V1Thread,
+  Xml2jsChat,
+  Xml2jsChatItem,
+  Xml2jsPacket,
 } from "@/@types/";
 import {
   ZApiChat,
@@ -58,6 +61,9 @@ import {
   ZRawApiResponse,
   ZV1Comment,
   ZV1Thread,
+  ZXml2jsChat,
+  ZXml2jsChatItem,
+  ZXml2jsPacket,
 } from "@/@types/";
 import { colors } from "@/definition/colors";
 
@@ -116,6 +122,11 @@ const typeGuard = {
       if (!typeAttributeVerify(element, ["vpos", "date"])) return false;
     }
     return true;
+  },
+  xml2js: {
+    packet: (i: unknown): i is Xml2jsPacket => is(ZXml2jsPacket, i),
+    chat: (i: unknown): i is Xml2jsChat => is(ZXml2jsChat, i),
+    chatItem: (i: unknown): i is Xml2jsChatItem => is(ZXml2jsChatItem, i),
   },
   legacyOwner: {
     comments: (i: unknown): i is string =>

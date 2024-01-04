@@ -12,12 +12,9 @@ const convert2formattedComment = (
   data: unknown,
   type: InputFormatType,
 ): FormattedComment[] => {
-  for (const parser of parsers) {
-    if (parser.key.includes(type)) {
-      return sort(parser.parse(data));
-    }
-  }
-  throw new InvalidFormatError();
+  const parser = parsers.find((parser) => parser.key.includes(type));
+  if (!parser) throw new InvalidFormatError();
+  return sort(parser.parse(data));
 };
 
 /**

@@ -8,8 +8,8 @@ import type {
   OwnerComment,
   RawApiResponse,
   V1Thread,
+  Xml2jsPacket,
 } from "@/@types/";
-import type { Xml2jsPacket } from "@/@types/format.xml2js";
 
 export const ZInputFormatType = union([
   literal("XMLDocument"),

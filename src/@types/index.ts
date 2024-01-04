@@ -9,6 +9,7 @@ export * from "./format.formatted";
 export * from "./format.legacy";
 export * from "./format.owner";
 export * from "./format.v1";
+export * from "./format.xml2js";
 export * from "./IComment";
 export * from "./input-parser";
 export * from "./IPlugins";

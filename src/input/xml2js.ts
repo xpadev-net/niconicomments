@@ -1,8 +1,7 @@
 import { parse } from "valibot";
 
-import type { FormattedComment, InputParser } from "@/@types";
-import type { Xml2jsPacket } from "@/@types/format.xml2js";
-import { ZXml2jsPacket } from "@/@types/format.xml2js";
+import type { FormattedComment, InputParser, Xml2jsPacket } from "@/@types";
+import { ZXml2jsPacket } from "@/@types/";
 
 export const Xml2jsParser: InputParser = {
   key: ["xml2js"],

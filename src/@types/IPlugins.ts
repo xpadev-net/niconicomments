@@ -1,5 +1,4 @@
-import type { IComment } from "@/@types/";
-import type { IRenderer } from "@/@types/renderer";
+import type { IComment, IRenderer } from "@/@types/";
 
 export interface IPluginConstructor {
   id: string;

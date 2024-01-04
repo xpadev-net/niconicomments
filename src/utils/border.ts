@@ -1,4 +1,4 @@
-import type { IRenderer } from "@/@types/renderer";
+import type { IRenderer } from "@/@types/";
 
 /**
  * ボタンの左端枠を描画する

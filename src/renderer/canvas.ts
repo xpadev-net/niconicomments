@@ -1,4 +1,4 @@
-import type { IRenderer } from "@/@types/renderer";
+import type { IRenderer } from "@/@types/";
 import { CanvasRenderingContext2DError } from "@/errors";
 
 /**

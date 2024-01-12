@@ -158,7 +158,7 @@ class NiconiComments {
       pv.push(createCommentInstance(val, this.renderer, index));
       return pv;
     }, []);
-    this.getCommentPos(instances, options.lazy ? 0 : instances.length);
+    this.getCommentPos(instances, instances.length, options.lazy);
     this.sortTimelineComment();
 
     const plugins: IPluginList = [];
@@ -187,23 +187,28 @@ class NiconiComments {
    * 計算された描画サイズをもとに各コメントの配置位置を決定する
    * @param data コメントデータ
    * @param end 終了インデックス
+   * @param lazy 遅延処理を行うか
    */
-  private getCommentPos(data: IComment[], end: number) {
+  private getCommentPos(data: IComment[], end: number, lazy: boolean = false) {
     const getCommentPosStart = performance.now();
-    if (this.processedCommentIndex >= end) return;
-    data.slice(this.processedCommentIndex, end).forEach((comment, index) => {
-      if (comment.invisible) return;
+    if (this.processedCommentIndex + 1 >= end) return;
+    for (const comment of data.slice(this.processedCommentIndex, end)) {
+      if (comment.invisible) continue;
       if (comment.loc === "naka") {
-        processMovableComment(comment, this.collision, this.timeline);
+        processMovableComment(comment, this.collision, this.timeline, lazy);
       } else {
         processFixedComment(
           comment,
           this.collision[comment.loc],
           this.timeline,
+          lazy,
         );
       }
-      this.processedCommentIndex = index;
-    });
+      this.processedCommentIndex = comment.index;
+    }
+    if (lazy) {
+      this.processedCommentIndex = 0;
+    }
     logger(
       `getCommentPos complete: ${performance.now() - getCommentPosStart}ms`,
     );

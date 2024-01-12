@@ -30,19 +30,22 @@ class BaseComment implements IComment {
   public readonly pluginName: string = "BaseComment";
   public image?: IRenderer | null;
   public buttonImage?: IRenderer | null;
+  public index: number;
 
   /**
    * コンストラクタ
    * @param comment 処理対象のコメント
    * @param renderer 描画対象のレンダラークラス
+   * @param index コメントのインデックス
    */
-  constructor(comment: FormattedComment, renderer: IRenderer) {
+  constructor(comment: FormattedComment, renderer: IRenderer, index: number) {
     this.renderer = renderer;
     this.posY = 0;
     this.pos = { x: 0, y: 0 };
     comment.content = comment.content.replace(/\t/g, "\u2003\u2003");
     this.comment = this.convertComment(comment);
     this.cacheKey = this.getCacheKey();
+    this.index = index;
   }
   get invisible() {
     return this.comment.invisible;

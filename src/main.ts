@@ -53,6 +53,8 @@ class NiconiComments {
   public showFPS: boolean;
   public showCommentCount: boolean;
   private lastVpos: number;
+  private processedCommentIndex: number;
+  private comments: IComment[];
   private readonly renderer: IRenderer;
   private readonly collision: Collision;
   private readonly timeline: Timeline;
@@ -135,7 +137,9 @@ class NiconiComments {
       right: [],
     };
     this.lastVpos = -1;
-    this.preRendering(parsedData);
+    this.processedCommentIndex = 0;
+
+    this.comments = this.preRendering(parsedData);
 
     logger(`constructor complete: ${performance.now() - constructorStart}ms`);
   }
@@ -143,18 +147,19 @@ class NiconiComments {
   /**
    * 事前に当たり判定を考慮してコメントの描画場所を決定する
    * @param rawData コメントデータ
+   * @returns コメントのインスタンス配列
    */
   private preRendering(rawData: FormattedComment[]) {
     const preRenderingStart = performance.now();
     if (options.keepCA) {
       rawData = changeCALayer(rawData);
     }
-    let instances = rawData.reduce<IComment[]>((pv, val) => {
-      pv.push(createCommentInstance(val, this.renderer));
+    let instances = rawData.reduce<IComment[]>((pv, val, index) => {
+      pv.push(createCommentInstance(val, this.renderer, index));
       return pv;
     }, []);
-    this.getCommentPos(instances);
-    this.sortComment();
+    this.getCommentPos(instances, instances.length, options.lazy);
+    this.sortTimelineComment();
 
     const plugins: IPluginList = [];
     for (const plugin of config.plugins) {
@@ -175,25 +180,34 @@ class NiconiComments {
 
     setPlugins(plugins);
     logger(`preRendering complete: ${performance.now() - preRenderingStart}ms`);
+    return instances;
   }
 
   /**
    * 計算された描画サイズをもとに各コメントの配置位置を決定する
    * @param data コメントデータ
+   * @param end 終了インデックス
+   * @param lazy 遅延処理を行うか
    */
-  private getCommentPos(data: IComment[]) {
+  private getCommentPos(data: IComment[], end: number, lazy: boolean = false) {
     const getCommentPosStart = performance.now();
-    for (const comment of data) {
+    if (this.processedCommentIndex + 1 >= end) return;
+    for (const comment of data.slice(this.processedCommentIndex, end)) {
       if (comment.invisible) continue;
       if (comment.loc === "naka") {
-        processMovableComment(comment, this.collision, this.timeline);
+        processMovableComment(comment, this.collision, this.timeline, lazy);
       } else {
         processFixedComment(
           comment,
           this.collision[comment.loc],
           this.timeline,
+          lazy,
         );
       }
+      this.processedCommentIndex = comment.index;
+    }
+    if (lazy) {
+      this.processedCommentIndex = 0;
     }
     logger(
       `getCommentPos complete: ${performance.now() - getCommentPosStart}ms`,
@@ -203,7 +217,7 @@ class NiconiComments {
   /**
    * 投稿者コメントを前に移動
    */
-  private sortComment() {
+  private sortTimelineComment() {
     const sortCommentStart = performance.now();
     for (const vpos of Object.keys(this.timeline)) {
       const item = this.timeline[Number(vpos)];
@@ -228,8 +242,10 @@ class NiconiComments {
    * @param rawComments コメントデータ
    */
   public addComments(...rawComments: FormattedComment[]) {
-    const comments = rawComments.reduce<IComment[]>((pv, val) => {
-      pv.push(createCommentInstance(val, this.renderer));
+    const comments = rawComments.reduce<IComment[]>((pv, val, index) => {
+      pv.push(
+        createCommentInstance(val, this.renderer, this.comments.length + index),
+      );
       return pv;
     }, []);
     for (const plugin of plugins) {
@@ -333,6 +349,7 @@ class NiconiComments {
         if (comment.invisible) {
           continue;
         }
+        this.getCommentPos(this.comments, comment.index + 1);
         comment.draw(vpos, this.showCollision, cursor);
       }
     }

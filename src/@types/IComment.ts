@@ -8,6 +8,7 @@ import type {
 export interface IComment {
   comment: FormattedCommentWithSize;
   invisible: boolean;
+  index: number;
   loc: CommentLoc;
   width: number;
   long: number;

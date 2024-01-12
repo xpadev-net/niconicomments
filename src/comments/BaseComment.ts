@@ -40,7 +40,7 @@ class BaseComment implements IComment {
    */
   constructor(comment: FormattedComment, renderer: IRenderer, index: number) {
     this.renderer = renderer;
-    this.posY = 0;
+    this.posY = -1;
     this.pos = { x: 0, y: 0 };
     comment.content = comment.content.replace(/\t/g, "\u2003\u2003");
     this.comment = this.convertComment(comment);

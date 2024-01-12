@@ -26,6 +26,7 @@ const defaultOptions: BaseOptions = {
   showFPS: false,
   useLegacy: false,
   video: undefined,
+  lazy: false,
 };
 
 let config: BaseConfig;

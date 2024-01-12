@@ -4,6 +4,7 @@ import type { IRenderer } from "@/@types/renderer";
 export interface IComment {
   comment: FormattedCommentWithSize;
   invisible: boolean;
+  index: number;
   loc: CommentLoc;
   width: number;
   long: number;

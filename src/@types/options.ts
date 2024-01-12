@@ -41,6 +41,7 @@ export type BaseOptions = {
   showFPS: boolean;
   useLegacy: boolean;
   video: HTMLVideoElement | undefined;
+  lazy: boolean;
 };
 export type Options = Partial<BaseOptions>;
 

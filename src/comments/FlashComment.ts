@@ -34,8 +34,8 @@ class FlashComment extends BaseComment {
   private _globalScale: number;
   override readonly pluginName: string = "FlashComment";
   override buttonImage: IRenderer;
-  constructor(comment: FormattedComment, renderer: IRenderer) {
-    super(comment, renderer);
+  constructor(comment: FormattedComment, renderer: IRenderer, index: number) {
+    super(comment, renderer, index);
     this._globalScale ??= getConfig(config.commentScale, true);
     this.buttonImage = renderer.getCanvas();
   }

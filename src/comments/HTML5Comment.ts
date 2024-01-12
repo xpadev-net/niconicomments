@@ -28,8 +28,8 @@ import { BaseComment } from "./BaseComment";
 
 class HTML5Comment extends BaseComment {
   override readonly pluginName: string = "HTML5Comment";
-  constructor(comment: FormattedComment, context: IRenderer) {
-    super(comment, context);
+  constructor(comment: FormattedComment, context: IRenderer, index: number) {
+    super(comment, context, index);
     this.posY = 0;
   }
 

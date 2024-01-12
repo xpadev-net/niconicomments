@@ -622,6 +622,7 @@ const processMovableComment = (
   for (let j = beforeVpos, n = comment.long + 125; j < n; j++) {
     const vpos = comment.vpos + j;
     const leftPos = getPosX(comment.comment, vpos);
+    if (timeline[vpos]?.includes(comment)) break;
     arrayPush(timeline, vpos, comment);
     if (
       leftPos + comment.width + config.collisionPadding >=
@@ -668,12 +669,16 @@ const getMovablePosY = (
   }
   let posY = 0;
   let isChanged = true;
+  let lastUpdatedIndex: number | undefined = undefined;
   while (isChanged) {
     isChanged = false;
-    for (let j = beforeVpos, n = comment.long + 125; j < n; j++) {
+    for (let j = beforeVpos, n = comment.long + 125; j < n; j += 5) {
       const vpos = comment.vpos + j;
       const leftPos = getPosX(comment.comment, vpos);
       let isBreak = false;
+      if (lastUpdatedIndex !== undefined && lastUpdatedIndex === vpos) {
+        return posY;
+      }
       if (
         leftPos + comment.width >= config.collisionRange.right &&
         leftPos <= config.collisionRange.right
@@ -681,6 +686,7 @@ const getMovablePosY = (
         const result = getPosY(posY, comment, collision.right[vpos]);
         posY = result.currentPos;
         isChanged ||= result.isChanged;
+        if (result.isChanged) lastUpdatedIndex = vpos;
         isBreak = result.isBreak;
       }
       if (
@@ -690,6 +696,7 @@ const getMovablePosY = (
         const result = getPosY(posY, comment, collision.left[vpos]);
         posY = result.currentPos;
         isChanged ||= result.isChanged;
+        if (result.isChanged) lastUpdatedIndex = vpos;
         isBreak = result.isBreak;
       }
       if (isBreak) return posY;
@@ -715,11 +722,13 @@ const getPosY = (
   let isBreak = false;
   if (!collision) return { currentPos, isChanged, isBreak };
   for (const collisionItem of collision) {
+    if (collisionItem.index === targetComment.index || collisionItem.posY < 0)
+      continue;
     if (
-      currentPos < collisionItem.posY + collisionItem.height &&
-      currentPos + targetComment.height > collisionItem.posY &&
       collisionItem.owner === targetComment.owner &&
-      collisionItem.layer === targetComment.layer
+      collisionItem.layer === targetComment.layer &&
+      currentPos < collisionItem.posY + collisionItem.height &&
+      currentPos + targetComment.height > collisionItem.posY
     ) {
       if (collisionItem.posY + collisionItem.height > currentPos) {
         currentPos = collisionItem.posY + collisionItem.height;

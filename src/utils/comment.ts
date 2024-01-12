@@ -585,25 +585,15 @@ const isBanActive = (vpos: number): boolean => {
  * @param comment 固定コメント
  * @param collision コメントの衝突判定用配列
  * @param timeline コメントのタイムライン
+ * @param lazy Y座標の計算を遅延させるか
  */
 const processFixedComment = (
   comment: IComment,
   collision: CollisionItem,
   timeline: Timeline,
+  lazy: boolean = false,
 ) => {
-  let posY = 0,
-    isChanged = true,
-    count = 0;
-  while (isChanged && count < 10) {
-    isChanged = false;
-    count++;
-    for (let j = 0; j < comment.long; j++) {
-      const result = getPosY(posY, comment, collision[comment.vpos + j]);
-      posY = result.currentPos;
-      isChanged = result.isChanged;
-      if (result.isBreak) break;
-    }
-  }
+  const posY = lazy ? -1 : getFixedPosY(comment, collision);
   for (let j = 0; j < comment.long; j++) {
     const vpos = comment.vpos + j;
     arrayPush(timeline, vpos, comment);
@@ -618,49 +608,17 @@ const processFixedComment = (
  * @param comment nakaコメント
  * @param collision コメントの衝突判定用配列
  * @param timeline コメントのタイムライン
+ * @param lazy Y座標の計算を遅延させるか
  */
 const processMovableComment = (
   comment: IComment,
   collision: Collision,
   timeline: Timeline,
+  lazy: boolean = false,
 ) => {
   const beforeVpos =
     Math.round(-288 / ((1632 + comment.width) / (comment.long + 125))) - 100;
-  const posY = (() => {
-    if (config.canvasHeight < comment.height) {
-      return (comment.height - config.canvasHeight) / -2;
-    }
-    let posY = 0;
-    let isChanged = true;
-    while (isChanged) {
-      isChanged = false;
-      for (let j = beforeVpos, n = comment.long + 125; j < n; j++) {
-        const vpos = comment.vpos + j;
-        const leftPos = getPosX(comment.comment, vpos);
-        let isBreak = false;
-        if (
-          leftPos + comment.width >= config.collisionRange.right &&
-          leftPos <= config.collisionRange.right
-        ) {
-          const result = getPosY(posY, comment, collision.right[vpos]);
-          posY = result.currentPos;
-          isChanged ||= result.isChanged;
-          isBreak = result.isBreak;
-        }
-        if (
-          leftPos + comment.width >= config.collisionRange.left &&
-          leftPos <= config.collisionRange.left
-        ) {
-          const result = getPosY(posY, comment, collision.left[vpos]);
-          posY = result.currentPos;
-          isChanged ||= result.isChanged;
-          isBreak = result.isBreak;
-        }
-        if (isBreak) return posY;
-      }
-    }
-    return posY;
-  })();
+  const posY = lazy ? -1 : getMovablePosY(comment, collision, beforeVpos);
   for (let j = beforeVpos, n = comment.long + 125; j < n; j++) {
     const vpos = comment.vpos + j;
     const leftPos = getPosX(comment.comment, vpos);
@@ -681,6 +639,63 @@ const processMovableComment = (
     }
   }
   comment.posY = posY;
+};
+
+const getFixedPosY = (comment: IComment, collision: CollisionItem) => {
+  let posY = 0,
+    isChanged = true,
+    count = 0;
+  while (isChanged && count < 10) {
+    isChanged = false;
+    count++;
+    for (let j = 0; j < comment.long; j++) {
+      const result = getPosY(posY, comment, collision[comment.vpos + j]);
+      posY = result.currentPos;
+      isChanged = result.isChanged;
+      if (result.isBreak) break;
+    }
+  }
+  return posY;
+};
+
+const getMovablePosY = (
+  comment: IComment,
+  collision: Collision,
+  beforeVpos: number,
+) => {
+  if (config.canvasHeight < comment.height) {
+    return (comment.height - config.canvasHeight) / -2;
+  }
+  let posY = 0;
+  let isChanged = true;
+  while (isChanged) {
+    isChanged = false;
+    for (let j = beforeVpos, n = comment.long + 125; j < n; j++) {
+      const vpos = comment.vpos + j;
+      const leftPos = getPosX(comment.comment, vpos);
+      let isBreak = false;
+      if (
+        leftPos + comment.width >= config.collisionRange.right &&
+        leftPos <= config.collisionRange.right
+      ) {
+        const result = getPosY(posY, comment, collision.right[vpos]);
+        posY = result.currentPos;
+        isChanged ||= result.isChanged;
+        isBreak = result.isBreak;
+      }
+      if (
+        leftPos + comment.width >= config.collisionRange.left &&
+        leftPos <= config.collisionRange.left
+      ) {
+        const result = getPosY(posY, comment, collision.left[vpos]);
+        posY = result.currentPos;
+        isChanged ||= result.isChanged;
+        isBreak = result.isBreak;
+      }
+      if (isBreak) return posY;
+    }
+  }
+  return posY;
 };
 
 /**
@@ -779,6 +794,8 @@ const parseFont = (font: CommentFont, size: string | number): string => {
 
 export {
   getDefaultCommand,
+  getFixedPosY,
+  getMovablePosY,
   getPosX,
   getPosY,
   isBanActive,

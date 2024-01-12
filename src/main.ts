@@ -154,7 +154,7 @@ class NiconiComments {
       return pv;
     }, []);
     this.getCommentPos(instances);
-    this.sortComment();
+    this.sortTimelineComment();
 
     const plugins: IPluginList = [];
     for (const plugin of config.plugins) {
@@ -203,7 +203,7 @@ class NiconiComments {
   /**
    * 投稿者コメントを前に移動
    */
-  private sortComment() {
+  private sortTimelineComment() {
     const sortCommentStart = performance.now();
     for (const vpos of Object.keys(this.timeline)) {
       const item = this.timeline[Number(vpos)];

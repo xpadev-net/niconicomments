@@ -62,6 +62,12 @@ class CanvasRenderer implements IRenderer {
     width?: number,
     height?: number,
   ) {
+    if (!(image instanceof CanvasRenderer)) {
+      throw new TypeError(
+        "CanvasRenderer.drawImage: 'image' argument must be an instance of CanvasRenderer.",
+      );
+    }
+
     if (width === undefined || height === undefined)
       this.context.drawImage(image.canvas, x, y);
     else this.context.drawImage(image.canvas, x, y, width, height);

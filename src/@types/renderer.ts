@@ -1,6 +1,4 @@
 export interface IRenderer {
-  readonly canvas: HTMLCanvasElement;
-  readonly video?: HTMLVideoElement;
   destroy(): void;
   drawVideo(enableLegacyPip: boolean): void;
   getFont(): string;

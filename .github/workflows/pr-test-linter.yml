@@ -19,4 +19,5 @@ jobs:
         run: |
           npm -g install pnpm
           pnpm install
-          pnpm lint
+      - name: Run Linter tests
+        run: pnpm lint

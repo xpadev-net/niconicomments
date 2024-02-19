@@ -19,4 +19,5 @@ jobs:
         run: |
           npm -g install pnpm
           pnpm install
-          pnpm build
+      - name: Building niconicomments
+        run: pnpm build

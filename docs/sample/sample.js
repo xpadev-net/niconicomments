@@ -334,13 +334,11 @@ const updateTime = (currentTime, paused) => {
 const updateCanvas = () => {
   if (!nico) return;
   if (!videoMicroSec) {
-    nico.drawCanvas(Math.floor(currentTime * 100));
+    nico.drawCanvas(currentTime * 100);
   } else {
     nico.drawCanvas(
-        Math.floor(
-            (performance.now() - videoMicroSec.microsec) / 10 +
-            videoMicroSec.currentTime * 100
-        )
+        (performance.now() - videoMicroSec.microsec) / 10 +
+        videoMicroSec.currentTime * 100
     );
   }
 };

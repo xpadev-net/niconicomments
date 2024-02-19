@@ -20,7 +20,7 @@
     const nico = new NiconiComments(canvasElement, res, {
       format: "formatted",
     });
-    nico.drawCanvas(Math.floor(time * 100));
+    nico.drawCanvas(time * 100);
     const elem = document.createElement("div");
     elem.id = "loaded";
     document.body.appendChild(elem);

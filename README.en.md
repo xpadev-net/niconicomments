@@ -33,7 +33,7 @@ const res = await req.json();
 const niconiComments = new NiconiComments(canvas, res);
 //If video.ontimeupdate is used, the comments will be choppy due to the small number of calls.
 setInterval(
-  () => niconiComments.drawCanvas(Math.floor(video.currentTime * 100)),
+  () => niconiComments.drawCanvas(video.currentTime * 100),
   10
 );
 ```

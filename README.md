@@ -35,7 +35,7 @@ const res = await req.json();
 const niconiComments = new NiconiComments(canvas, res);
 //video.ontimeupdateを使用すると、呼び出し回数の関係でコメントカクつく
 setInterval(
-  () => niconiComments.drawCanvas(Math.floor(video.currentTime * 100)),
+  () => niconiComments.drawCanvas(video.currentTime * 100),
   10
 );
 ```

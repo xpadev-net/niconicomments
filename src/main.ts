@@ -53,6 +53,9 @@ class NiconiComments {
   public showFPS: boolean;
   public showCommentCount: boolean;
   private lastVpos: number;
+  private get lastVposInt() {
+    return Math.floor(this.lastVpos);
+  }
   private processedCommentIndex: number;
   private comments: IComment[];
   private readonly renderer: IRenderer;
@@ -281,21 +284,23 @@ class NiconiComments {
     forceRendering = false,
     cursor?: Position,
   ): boolean {
+    const vposInt = Math.floor(vpos);
     const drawCanvasStart = performance.now();
     if (this.lastVpos === vpos && !forceRendering) return false;
-    triggerHandler(vpos, this.lastVpos);
-    const timelineRange = this.timeline[vpos];
+    triggerHandler(vposInt, this.lastVposInt);
+    const timelineRange = this.timeline[vposInt];
     if (
       !forceRendering &&
       plugins.length === 0 &&
       timelineRange?.filter((item) => item.loc === "naka").length === 0 &&
-      this.timeline[this.lastVpos]?.filter((item) => item.loc === "naka")
+      this.timeline[this.lastVposInt]?.filter((item) => item.loc === "naka")
         ?.length === 0
     ) {
       const current = timelineRange.filter((item) => item.loc !== "naka"),
         last =
-          this.timeline[this.lastVpos]?.filter((item) => item.loc !== "naka") ??
-          [];
+          this.timeline[this.lastVposInt]?.filter(
+            (item) => item.loc !== "naka",
+          ) ?? [];
       if (arrayEqual(current, last)) return false;
     }
     this.renderer.clearRect(0, 0, config.canvasWidth, config.canvasHeight);
@@ -309,7 +314,7 @@ class NiconiComments {
         console.error(`Failed to draw comments`, e);
       }
     }
-    this._drawCollision(vpos);
+    this._drawCollision(vposInt);
     this._drawComments(timelineRange, vpos, cursor);
     this._drawFPS(drawCanvasStart);
     this._drawCommentCount(timelineRange?.length);

@@ -19,9 +19,11 @@ jobs:
         run: |
           npm -g install pnpm
           pnpm install
-          pnpm build
           pnpm playwright install-deps
           pnpm playwright install firefox
+      - name: Building niconicomments
+        run: |
+          pnpm build
       - name: Run Playwright tests
         run: pnpm playwright test
       - uses: actions/upload-artifact@v3

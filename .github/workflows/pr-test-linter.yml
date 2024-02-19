@@ -1,0 +1,23 @@
+name: LinterTests
+on:
+  push:
+    branches: [master, develop]
+  pull_request:
+    branches: [master, develop]
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+      - name: allow write in work dir
+        run: sudo chmod -R 777 .
+      - name: Install Dependencies
+        run: |
+          npm -g install pnpm
+          pnpm install
+      - name: Run Linter tests
+        run: pnpm lint

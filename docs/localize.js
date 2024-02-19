@@ -275,10 +275,8 @@ const localize = {
     `<p>addEventListenerで追加されたイベントハンドラを削除します</p>`,
   ],
   m_drawCanvas: [
-    `<p>Draws a comment on the canvas based on vpos(currentTime*100 of the video)</p>
-<p>vpos must be an integer (<span class="yellow">int</span>)</p>`,
-    `<p>vpos(動画のcurrentTime*100)を元にキャンバスにコメントを描画します</p>
-<p>vposは<span class="yellow">整数(int)</span>である必要があります</p>`,
+    `<p>Draws a comment on the canvas based on vpos(currentTime*100 of the video)</p>`,
+    `<p>vpos(動画のcurrentTime*100)を元にキャンバスにコメントを描画します</p>`,
   ],
   m_clear: [`<p>Erase Canvas</p>`, `<p>キャンバスを消去します</p>`],
   c_flash: [

@@ -48,7 +48,7 @@ const getUsersScore = (
 ): { [key: string]: number } => {
   const userScoreList: { [key: number]: number } = {};
   for (const comment of comments) {
-    if (comment.user_id === undefined || comment.user_id === -1) continue;
+    if (comment.user_id === -1) continue;
     userScoreList[comment.user_id] ||= 0;
     if (
       comment.mail.includes("ca") ||

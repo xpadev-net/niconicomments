@@ -87,7 +87,7 @@ const nicoscriptReplaceIgnoreable = (
   (item.condition === "\u5b8c\u5168\u4e00\u81f4" &&
     comment.content !== item.keyword) ||
   (item.condition === "\u90e8\u5206\u4e00\u81f4" &&
-    !comment.content.includes(item.keyword));
+    comment.content.indexOf(item.keyword) === -1);
 
 /**
  * 置換コマンドを適用する
@@ -408,9 +408,9 @@ const processAtButton = (
     groups: { before?: string; body?: string; after?: string };
   };
   const message = {
-    before: content.groups.before ?? "",
-    body: content.groups.body ?? "",
-    after: content.groups.after ?? "",
+    before: content.groups?.before ?? "",
+    body: content.groups?.body ?? "",
+    after: content.groups?.after ?? "",
   };
   commands.button = {
     message,

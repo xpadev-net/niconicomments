@@ -11,6 +11,9 @@ const arrayPush = (
   key: string | number,
   push: IComment,
 ) => {
+  if (!array) {
+    array = {};
+  }
   if (!array[Number(key)]) {
     array[Number(key)] = [];
   }

@@ -47,6 +47,7 @@
   "devDependencies": {
     "@babel/core": "^7.24.4",
     "@babel/preset-env": "^7.24.4",
+    "@eslint/js": "^9.0.0",
     "@playwright/test": "^1.43.0",
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-commonjs": "^25.0.7",
@@ -73,6 +74,7 @@
     "typedoc": "^0.25.13",
     "typedoc-plugin-missing-exports": "^2.2.0",
     "typescript": "^5.4.5",
+    "typescript-eslint": "^7.6.0",
     "valibot": "^0.30.0"
   }
 }

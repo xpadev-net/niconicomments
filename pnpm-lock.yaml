@@ -11,6 +11,9 @@ devDependencies:
   '@babel/preset-env':
     specifier: ^7.24.4
     version: 7.24.4(@babel/core@7.24.4)
+  '@eslint/js':
+    specifier: ^9.0.0
+    version: 9.0.0
   '@playwright/test':
     specifier: ^1.43.0
     version: 1.43.0
@@ -89,6 +92,9 @@ devDependencies:
   typescript:
     specifier: ^5.4.5
     version: 5.4.5
+  typescript-eslint:
+    specifier: ^7.6.0
+    version: 7.6.0(eslint@9.0.0)(typescript@5.4.5)
   valibot:
     specifier: ^0.30.0
     version: 0.30.0
@@ -3672,6 +3678,25 @@ packages:
       minimatch: 9.0.4
       shiki: 0.14.7
       typescript: 5.4.5
+    dev: true
+
+  /typescript-eslint@7.6.0(eslint@9.0.0)(typescript@5.4.5):
+    resolution: {integrity: sha512-LY6vH6F1l5jpGqRtU+uK4+mOecIb4Cd4kaz1hAiJrgnNiHUA8wiw8BkJyYS+MRLM69F1QuSKwtGlQqnGl1Rc6w==}
+    engines: {node: ^18.18.0 || >=20.0.0}
+    peerDependencies:
+      eslint: ^8.56.0
+      typescript: '*'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+    dependencies:
+      '@typescript-eslint/eslint-plugin': 7.6.0(@typescript-eslint/parser@7.6.0)(eslint@9.0.0)(typescript@5.4.5)
+      '@typescript-eslint/parser': 7.6.0(eslint@9.0.0)(typescript@5.4.5)
+      '@typescript-eslint/utils': 7.6.0(eslint@9.0.0)(typescript@5.4.5)
+      eslint: 9.0.0
+      typescript: 5.4.5
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /typescript@5.4.5:

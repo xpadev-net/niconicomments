@@ -21,8 +21,8 @@ export const LegacyParser: InputParser = {
  * @returns 変換後のデータ
  */
 const fromLegacy = (data: RawApiResponse[]): FormattedComment[] => {
-  const data_: FormattedComment[] = [],
-    userList: string[] = [];
+  const data_: FormattedComment[] = [];
+  const userList: string[] = [];
   for (const _val of data) {
     const val = safeParse(ZApiChat, _val.chat);
     if (!val.success) continue;

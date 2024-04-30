@@ -78,8 +78,8 @@ const processCommentDisableScript = (vpos: number, lastVpos: number) => {
   if (handlerCounts.commentDisable < 1 && handlerCounts.commentEnable < 1)
     return;
   for (const range of nicoScripts.ban) {
-    const vposInRange = range.start < vpos && vpos < range.end,
-      lastVposInRange = range.start < lastVpos && lastVpos < range.end;
+    const vposInRange = range.start < vpos && vpos < range.end;
+    const lastVposInRange = range.start < lastVpos && lastVpos < range.end;
     if (vposInRange && !lastVposInRange) {
       executeEvents("commentDisable", {
         type: "commentDisable",
@@ -104,8 +104,8 @@ const processCommentDisableScript = (vpos: number, lastVpos: number) => {
 const processSeekDisableScript = (vpos: number, lastVpos: number) => {
   if (handlerCounts.seekDisable < 1 && handlerCounts.seekEnable < 1) return;
   for (const range of nicoScripts.seekDisable) {
-    const vposInRange = range.start < vpos && vpos < range.end,
-      lastVposInRange = range.start < lastVpos && lastVpos < range.end;
+    const vposInRange = range.start < vpos && vpos < range.end;
+    const lastVposInRange = range.start < lastVpos && lastVpos < range.end;
     if (vposInRange && !lastVposInRange) {
       executeEvents("seekDisable", {
         type: "seekDisable",
@@ -130,9 +130,9 @@ const processSeekDisableScript = (vpos: number, lastVpos: number) => {
 const processJumpScript = (vpos: number, lastVpos: number) => {
   if (handlerCounts.jump < 1) return;
   for (const range of nicoScripts.jump) {
-    const vposInRange = range.start < vpos && (!range.end || vpos < range.end),
-      lastVposInRange =
-        range.start < lastVpos && (!range.end || lastVpos < range.end);
+    const vposInRange = range.start < vpos && (!range.end || vpos < range.end);
+    const lastVposInRange =
+      range.start < lastVpos && (!range.end || lastVpos < range.end);
     if (vposInRange && !lastVposInRange) {
       executeEvents("jump", {
         type: "jump",

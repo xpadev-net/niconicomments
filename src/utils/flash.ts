@@ -25,17 +25,20 @@ const getFlashFontIndex = (part: string): CommentContentIndex[] => {
     gothic: new RegExp(config.flashChar.gothic),
   };
   const index: CommentContentIndex[] = [];
-  let match;
-  if ((match = regex.simsunStrong.exec(part)) !== null) {
+  let match = regex.simsunStrong.exec(part);
+  if (match !== null) {
     index.push({ font: "simsunStrong", index: match.index });
   }
-  if ((match = regex.simsunWeak.exec(part)) !== null) {
+  match = regex.simsunWeak.exec(part);
+  if (match !== null) {
     index.push({ font: "simsunWeak", index: match.index });
   }
-  if ((match = regex.gulim.exec(part)) !== null) {
+  match = regex.gulim.exec(part);
+  if (match !== null) {
     index.push({ font: "gulim", index: match.index });
   }
-  if ((match = regex.gothic.exec(part)) !== null) {
+  match = regex.gothic.exec(part);
+  if (match !== null) {
     index.push({ font: "gothic", index: match.index });
   }
   return index;
@@ -178,8 +181,8 @@ const parseMultiFontFullWidthPart = (
   if (config.flashMode === "xp") {
     let offset = 0;
     for (let i = 1, n = index.length; i < n; i++) {
-      const currentVal = index[i],
-        lastVal = index[i - 1];
+      const currentVal = index[i];
+      const lastVal = index[i - 1];
       if (currentVal === undefined || lastVal === undefined) continue;
       const content = part.slice(offset, currentVal.index);
       addPartToResult(lineContent, content, getFlashFontName(lastVal.font));
@@ -192,8 +195,8 @@ const parseMultiFontFullWidthPart = (
     }
     return;
   }
-  const firstVal = index[0],
-    secondVal = index[1];
+  const firstVal = index[0];
+  const secondVal = index[1];
   if (!firstVal || !secondVal) {
     addPartToResult(lineContent, part);
     return;
@@ -227,9 +230,9 @@ const getButtonParts = (
     comment.fontSize *
       comment.lineHeight *
       config.flashCommentYOffset[comment.size][offsetKey];
-  let leftOffset = 0,
-    lineCount = 0,
-    isLastButton = false;
+  let leftOffset = 0;
+  let lineCount = 0;
+  let isLastButton = false;
   for (const item of comment.content) {
     if (item.type === "spacer") {
       leftOffset += item.count * comment.fontSize * item.charWidth;

@@ -23,16 +23,17 @@ class CanvasRenderer implements IRenderer {
 
   drawVideo(enableLegacyPip: boolean) {
     if (this.video) {
-      let scale;
-      const height = this.canvas.height / this.video.videoHeight,
-        width = this.canvas.width / this.video.videoWidth;
+      let scale: number;
+      const height = this.canvas.height / this.video.videoHeight;
+      const width = this.canvas.width / this.video.videoWidth;
       if (enableLegacyPip ? height > width : height < width) {
         scale = width;
       } else {
         scale = height;
       }
-      const offsetX = (this.canvas.width - this.video.videoWidth * scale) * 0.5,
-        offsetY = (this.canvas.height - this.video.videoHeight * scale) * 0.5;
+      const offsetX = (this.canvas.width - this.video.videoWidth * scale) * 0.5;
+      const offsetY =
+        (this.canvas.height - this.video.videoHeight * scale) * 0.5;
       this.context.drawImage(
         this.video,
         offsetX,

@@ -23,10 +23,11 @@ const getLineHeight = (
   isFlash: boolean,
   resized = false,
 ) => {
-  const lineCounts = getConfig(config.html5LineCounts, isFlash),
-    commentStageSize = getConfig(config.commentStageSize, isFlash),
-    lineHeight = commentStageSize.height / lineCounts.doubleResized[fontSize],
-    defaultLineCount = lineCounts.default[fontSize];
+  const lineCounts = getConfig(config.html5LineCounts, isFlash);
+  const commentStageSize = getConfig(config.commentStageSize, isFlash);
+  const lineHeight =
+    commentStageSize.height / lineCounts.doubleResized[fontSize];
+  const defaultLineCount = lineCounts.default[fontSize];
   if (resized) {
     const resizedLineCount = lineCounts.resized[fontSize];
     return (
@@ -45,8 +46,8 @@ const getLineHeight = (
  * @returns フォントサイズ
  */
 const getCharSize = (fontSize: CommentSize, isFlash: boolean): number => {
-  const lineCounts = getConfig(config.html5LineCounts, isFlash),
-    commentStageSize = getConfig(config.commentStageSize, isFlash);
+  const lineCounts = getConfig(config.html5LineCounts, isFlash);
+  const commentStageSize = getConfig(config.commentStageSize, isFlash);
   return commentStageSize.height / lineCounts.doubleResized[fontSize];
 };
 
@@ -67,10 +68,10 @@ const measure = (comment: MeasureInput, renderer: IRenderer) => {
 const addHTML5PartToResult = (
   lineContent: CommentContentItem[],
   part: string,
-  font?: CommentHTML5Font,
+  _font?: CommentHTML5Font,
 ) => {
   if (part === "") return;
-  font ??= "defont";
+  const font = _font ?? "defont";
   for (const key of Object.keys(config.compatSpacer.html5)) {
     const spacerWidth = config.compatSpacer.html5[key]?.[font];
     if (!spacerWidth) continue;
@@ -105,9 +106,9 @@ const addHTML5PartToResult = (
  * @returns 計測結果
  */
 const measureWidth = (comment: MeasureInput, renderer: IRenderer) => {
-  const { fontSize, scale } = getFontSizeAndScale(comment.charSize),
-    lineWidth: number[] = [],
-    itemWidth: number[][] = [];
+  const { fontSize, scale } = getFontSizeAndScale(comment.charSize);
+  const lineWidth: number[] = [];
+  const itemWidth: number[][] = [];
   renderer.setFont(parseFont(comment.font, fontSize));
   let currentWidth = 0;
   for (const item of comment.content) {
@@ -143,10 +144,11 @@ const measureWidth = (comment: MeasureInput, renderer: IRenderer) => {
 
 /**
  * フォントサイズとスケールを返す
- * @param charSize 文字サイズ
+ * @param _charSize 文字サイズ
  * @returns フォントサイズとスケール
  */
-const getFontSizeAndScale = (charSize: number) => {
+const getFontSizeAndScale = (_charSize: number) => {
+  let charSize = _charSize;
   charSize *= 0.8;
   if (charSize < config.html5MinFontSize) {
     if (charSize >= 1) charSize = Math.floor(charSize);

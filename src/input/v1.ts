@@ -17,11 +17,11 @@ export const V1Parser: InputParser = {
  * @returns 変換後のデータ
  */
 const fromV1 = (data: V1Thread[]): FormattedComment[] => {
-  const data_: FormattedComment[] = [],
-    userList: string[] = [];
+  const data_: FormattedComment[] = [];
+  const userList: string[] = [];
   for (const item of data) {
-    const val = item.comments,
-      forkName = item.fork;
+    const val = item.comments;
+    const forkName = item.fork;
     for (const value of val) {
       const tmpParam: FormattedComment = {
         id: value.no,

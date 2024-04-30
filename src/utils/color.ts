@@ -3,10 +3,11 @@ import { config } from "@/definition/config";
 
 /**
  * Hexからrgbに変換する(_live用)
- * @param hex カラコ
+ * @param _hex カラコ
  * @returns RGB
  */
-const hex2rgb = (hex: string) => {
+const hex2rgb = (_hex: string) => {
+  let hex = _hex;
   if (hex.startsWith("#")) hex = hex.slice(1);
   if (hex.length === 3)
     hex =
@@ -17,18 +18,17 @@ const hex2rgb = (hex: string) => {
       hex.slice(2, 3) +
       hex.slice(2, 3);
 
-  return [hex.slice(0, 2), hex.slice(2, 4), hex.slice(4, 6)].map(
-    function (str) {
-      return parseInt(str, 16);
-    },
+  return [hex.slice(0, 2), hex.slice(2, 4), hex.slice(4, 6)].map((str) =>
+    Number.parseInt(str, 16),
   );
 };
 /**
  * Hexからrgbaに変換する(_live用)
- * @param hex カラコ
+ * @param _hex カラコ
  * @returns RGB
  */
-const hex2rgba = (hex: string) => {
+const hex2rgba = (_hex: string) => {
+  let hex = _hex;
   if (hex.startsWith("#")) hex = hex.slice(1);
   if (hex.length === 4)
     hex =
@@ -47,8 +47,8 @@ const hex2rgba = (hex: string) => {
     hex.slice(4, 6),
     hex.slice(4, 6),
   ].map((str, index) => {
-    if (index === 3) return parseInt(str, 16) / 256;
-    return parseInt(str, 16);
+    if (index === 3) return Number.parseInt(str, 16) / 256;
+    return Number.parseInt(str, 16);
   });
 };
 
@@ -63,7 +63,8 @@ const getStrokeColor = (comment: FormattedCommentWithSize) => {
     const length = color.length;
     if (length === 3 || length === 6) {
       return `rgba(${hex2rgb(color).join(",")},${config.contextStrokeOpacity})`;
-    } else if (length === 4 || length === 8) {
+    }
+    if (length === 4 || length === 8) {
       return `rgba(${hex2rgba(color).join(",")})`;
     }
   }

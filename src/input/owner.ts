@@ -65,16 +65,18 @@ const time2vpos = (input: string): number => {
     ) {
       return (
         (Number(time[1]) * 60 + Number(time[2])) * 100 +
-        Number(time[3]) / Math.pow(10, time[3].length - 2)
+        Number(time[3]) / 10 ** (time[3].length - 2)
       );
-    } else if (time[4] !== undefined && time[5] !== undefined) {
+    }
+    if (time[4] !== undefined && time[5] !== undefined) {
       return (Number(time[4]) * 60 + Number(time[5])) * 100;
-    } else if (time[6] !== undefined && time[7] !== undefined) {
+    }
+    if (time[6] !== undefined && time[7] !== undefined) {
       return (
-        Number(time[6]) * 100 +
-        Number(time[7]) / Math.pow(10, time[7].length - 2)
+        Number(time[6]) * 100 + Number(time[7]) / 10 ** (time[7].length - 2)
       );
-    } else if (time[8] !== undefined) {
+    }
+    if (time[8] !== undefined) {
       return Number(time[8]) * 100;
     }
   }

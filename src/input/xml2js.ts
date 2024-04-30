@@ -11,8 +11,8 @@ export const Xml2jsParser: InputParser = {
 };
 
 const fromXml2js = (data: Xml2jsPacket): FormattedComment[] => {
-  const data_: FormattedComment[] = [],
-    userList: string[] = [];
+  const data_: FormattedComment[] = [];
+  const userList: string[] = [];
   let index = data.packet.chat.length;
   for (const item of data.packet.chat) {
     const tmpParam: FormattedComment = {

@@ -9,15 +9,25 @@ import { isFlashComment } from "@/utils/comment";
  * コンフィグを初期化する
  */
 const initConfig = () => {
-  const platform: Platform = (function (ua) {
-    if (RegExp(/windows nt 6\.[12]/i).exec(ua)) return "win7";
-    else if (RegExp(/windows nt (6\.3|10\.\d+)|win32/i).exec(ua))
+  const platform: Platform = ((ua) => {
+    if (RegExp(/windows nt 6\.[12]/i).exec(ua)) {
+      return "win7";
+    }
+    if (RegExp(/windows nt (6\.3|10\.\d+)|win32/i).exec(ua)) {
       return "win8_1";
-    else if (RegExp(/windows nt/i).exec(ua)) return "win";
-    else if (RegExp(/mac os x 10(.|_)(9|10)/i).exec(ua)) return "mac10_9";
-    else if (RegExp(/mac os x 10(.|_)\d{2}|darwin/i).exec(ua))
+    }
+    if (RegExp(/windows nt/i).exec(ua)) {
+      return "win";
+    }
+    if (RegExp(/mac os x 10(.|_)(9|10)/i).exec(ua)) {
+      return "mac10_9";
+    }
+    if (RegExp(/mac os x 10(.|_)\d{2}|darwin/i).exec(ua)) {
       return "mac10_11";
-    else if (RegExp(/mac os x/i).exec(ua)) return "mac";
+    }
+    if (RegExp(/mac os x/i).exec(ua)) {
+      return "mac";
+    }
     return "other";
   })(typeof navigator !== "undefined" ? navigator.userAgent : process.platform);
   const defaultConfig: BaseConfig = {

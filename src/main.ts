@@ -3,9 +3,9 @@ import type {
   CommentEventHandlerMap,
   FormattedComment,
   IComment,
-  InputFormat,
   IPluginList,
   IRenderer,
+  InputFormat,
   Options,
   Position,
   Timeline,
@@ -76,7 +76,7 @@ class NiconiComments {
    * @param initOptions 初期化オプション
    */
   constructor(
-    renderer: IRenderer | HTMLCanvasElement,
+    _renderer: IRenderer | HTMLCanvasElement,
     data: InputFormat,
     initOptions: Options = {},
   ) {
@@ -89,6 +89,7 @@ class NiconiComments {
     setIsDebug(options.debug);
     resetImageCache();
     resetNicoScripts();
+    let renderer = _renderer;
     if (renderer instanceof HTMLCanvasElement) {
       renderer = new CanvasRenderer(renderer, options.video);
     } else if (options.video) {
@@ -140,7 +141,7 @@ class NiconiComments {
       right: [],
     };
     this.lastVpos = -1;
-    this.processedCommentIndex = 0;
+    this.processedCommentIndex = -1;
 
     this.comments = this.preRendering(parsedData);
 
@@ -149,10 +150,11 @@ class NiconiComments {
 
   /**
    * 事前に当たり判定を考慮してコメントの描画場所を決定する
-   * @param rawData コメントデータ
+   * @param _rawData コメントデータ
    * @returns コメントのインスタンス配列
    */
-  private preRendering(rawData: FormattedComment[]) {
+  private preRendering(_rawData: FormattedComment[]) {
+    let rawData = _rawData;
     const preRenderingStart = performance.now();
     if (options.keepCA) {
       rawData = changeCALayer(rawData);
@@ -192,10 +194,10 @@ class NiconiComments {
    * @param end 終了インデックス
    * @param lazy 遅延処理を行うか
    */
-  private getCommentPos(data: IComment[], end: number, lazy: boolean = false) {
+  private getCommentPos(data: IComment[], end: number, lazy = false) {
     const getCommentPosStart = performance.now();
     if (this.processedCommentIndex + 1 >= end) return;
-    for (const comment of data.slice(this.processedCommentIndex, end)) {
+    for (const comment of data.slice(this.processedCommentIndex + 1, end)) {
       if (comment.invisible || (comment.posY > -1 && !lazy)) continue;
       if (comment.loc === "naka") {
         processMovableComment(comment, this.collision, this.timeline, lazy);
@@ -225,8 +227,8 @@ class NiconiComments {
     for (const vpos of Object.keys(this.timeline)) {
       const item = this.timeline[Number(vpos)];
       if (!item) continue;
-      const owner: IComment[] = [],
-        user: IComment[] = [];
+      const owner: IComment[] = [];
+      const user: IComment[] = [];
       for (const comment of item) {
         if (comment?.owner) {
           owner.push(comment);
@@ -296,11 +298,11 @@ class NiconiComments {
       this.timeline[this.lastVposInt]?.filter((item) => item.loc === "naka")
         ?.length === 0
     ) {
-      const current = timelineRange.filter((item) => item.loc !== "naka"),
-        last =
-          this.timeline[this.lastVposInt]?.filter(
-            (item) => item.loc !== "naka",
-          ) ?? [];
+      const current = timelineRange.filter((item) => item.loc !== "naka");
+      const last =
+        this.timeline[this.lastVposInt]?.filter(
+          (item) => item.loc !== "naka",
+        ) ?? [];
       if (arrayEqual(current, last)) return false;
     }
     this.renderer.clearRect(0, 0, config.canvasWidth, config.canvasHeight);
@@ -311,7 +313,7 @@ class NiconiComments {
         plugin.instance.draw?.(vpos);
         this.renderer.drawImage(plugin.canvas, 0, 0);
       } catch (e) {
-        console.error(`Failed to draw comments`, e);
+        console.error("Failed to draw comments", e);
       }
     }
     this._drawCollision(vposInt);
@@ -367,8 +369,8 @@ class NiconiComments {
   private _drawCollision(vpos: number) {
     if (this.showCollision) {
       this.renderer.save();
-      const leftCollision = this.collision.left[vpos],
-        rightCollision = this.collision.right[vpos];
+      const leftCollision = this.collision.left[vpos];
+      const rightCollision = this.collision.right[vpos];
       this.renderer.setFillStyle("red");
       if (leftCollision) {
         for (const comment of leftCollision) {

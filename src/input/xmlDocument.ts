@@ -16,8 +16,8 @@ export const XmlDocumentParser: InputParser = {
  * @returns 変換後のデータ
  */
 const parseXMLDocument = (data: XMLDocument): FormattedComment[] => {
-  const data_: FormattedComment[] = [],
-    userList: string[] = [];
+  const data_: FormattedComment[] = [];
+  const userList: string[] = [];
   let index = Array.from(data.documentElement.children).length;
   for (const item of Array.from(data.documentElement.children)) {
     if (item.nodeName !== "chat") continue;

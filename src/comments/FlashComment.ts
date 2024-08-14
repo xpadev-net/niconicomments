@@ -58,7 +58,7 @@ class FlashComment extends BaseComment {
     }
     this.comment = this.getCommentSize(comment);
     this.cacheKey = this.getCacheKey();
-    delete this.image;
+    this.image = undefined;
   }
 
   override convertComment(comment: FormattedComment): FormattedCommentWithSize {
@@ -169,9 +169,9 @@ class FlashComment extends BaseComment {
 
   override measureText(comment: MeasureTextInput): MeasureTextResult {
     //ref: https://github.com/Saccubus/Saccubus1/blob/master/vhook/src/comment/com_surface.c
-    const configLineHeight = getConfig(config.lineHeight, true),
-      configFontSize = getConfig(config.fontSize, true)[comment.size],
-      configStageSize = getConfig(config.commentStageSize, true);
+    const configLineHeight = getConfig(config.lineHeight, true);
+    const configFontSize = getConfig(config.fontSize, true)[comment.size];
+    const configStageSize = getConfig(config.commentStageSize, true);
     const defaultFontSize = configFontSize.default;
     comment.lineHeight ??= configLineHeight[comment.size].default;
     const widthLimit = configStageSize[comment.full ? "fullWidth" : "width"];
@@ -263,10 +263,10 @@ class FlashComment extends BaseComment {
   }
 
   private _measureContent(comment: MeasureTextInput) {
-    const widthArr: number[] = [],
-      spacedWidthArr: number[] = [];
-    let currentWidth = 0,
-      spacedWidth = 0;
+    const widthArr: number[] = [];
+    const spacedWidthArr: number[] = [];
+    let currentWidth = 0;
+    let spacedWidth = 0;
     for (const item of comment.content) {
       if (item.type === "spacer") {
         spacedWidth +=
@@ -303,9 +303,9 @@ class FlashComment extends BaseComment {
       spacedWidthArr.push(spacedWidth);
       item.width = widths;
     }
-    const leadLine = (function () {
-      let max = 0,
-        index = -1;
+    const leadLine = (() => {
+      let max = 0;
+      let index = -1;
       spacedWidthArr.forEach((val, i) => {
         if (max < val) {
           max = val;
@@ -342,7 +342,7 @@ class FlashComment extends BaseComment {
               this.comment.resizedY ? "resized" : "default"
             ]) *
           this.comment.scale;
-        this.renderer.setStrokeStyle(`rgba(255,255,0,0.25)`);
+        this.renderer.setStrokeStyle("rgba(255,255,0,0.25)");
         this.renderer.strokeRect(
           posX,
           posY + linePosY * this._globalScale,
@@ -371,10 +371,10 @@ class FlashComment extends BaseComment {
       this.comment.fontSize *
         this.comment.lineHeight *
         config.flashCommentYOffset[this.comment.size][offsetKey];
-    let lastFont = this.comment.font,
-      leftOffset = 0,
-      lineCount = 0,
-      isLastButton = false;
+    let lastFont = this.comment.font;
+    let leftOffset = 0;
+    let lineCount = 0;
+    let isLastButton = false;
     for (const item of this.comment.content) {
       if (item.type === "spacer") {
         leftOffset += item.count * item.charWidth * this.comment.fontSize;

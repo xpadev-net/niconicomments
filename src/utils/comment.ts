@@ -47,10 +47,10 @@ const getDefaultCommand = (vpos: number): DefaultCommand => {
   nicoScripts.default = nicoScripts.default.filter(
     (item) => !item.long || item.start + item.long >= vpos,
   );
-  let color = undefined,
-    size: CommentSize | undefined = undefined,
-    font = undefined,
-    loc: CommentLoc | undefined = undefined;
+  let color = undefined;
+  let size: CommentSize | undefined = undefined;
+  let font = undefined;
+  let loc: CommentLoc | undefined = undefined;
   for (const item of nicoScripts.default) {
     if (item.loc) {
       loc = item.loc;
@@ -108,10 +108,18 @@ const applyNicoScriptReplace = (
     } else {
       comment.content = item.replace;
     }
-    item.loc && (commands.loc = item.loc);
-    item.color && (commands.color = item.color);
-    item.size && (commands.size = item.size);
-    item.font && (commands.font = item.font);
+    if (item.loc) {
+      commands.loc = item.loc;
+    }
+    if (item.color) {
+      commands.color = item.color;
+    }
+    if (item.size) {
+      commands.size = item.size;
+    }
+    if (item.font) {
+      commands.font = item.font;
+    }
   }
 };
 
@@ -154,11 +162,11 @@ const parseCommandAndNicoScript = (
  * @returns パース後の文字列
  */
 const parseBrackets = (input: string) => {
-  const content = input.split(""),
-    result = [];
-  let quote = "",
-    lastChar = "",
-    string = "";
+  const content = input.split("");
+  const result = [];
+  let quote = "";
+  let lastChar = "";
+  let string = "";
   for (const i of content) {
     if (RegExp(/^["'\u300c]$/).exec(i) && quote === "") {
       //["'「]
@@ -430,8 +438,8 @@ const processAtButton = (
  * @returns パースしたコマンド
  */
 const parseCommands = (comment: FormattedComment): ParsedCommand => {
-  const commands = comment.mail,
-    isFlash = isFlashComment(comment);
+  const commands = comment.mail;
+  const isFlash = isFlashComment(comment);
   const result: ParsedCommand = {
     loc: undefined,
     size: undefined,
@@ -526,7 +534,8 @@ const getColor = (match: RegExpMatchArray | null) => {
   const value = match[1];
   if (typeGuard.comment.color(value)) {
     return colors[value];
-  } else if (typeGuard.comment.colorCodeAllowAlpha(value)) {
+  }
+  if (typeGuard.comment.colorCodeAllowAlpha(value)) {
     return value;
   }
   return;
@@ -591,7 +600,7 @@ const processFixedComment = (
   comment: IComment,
   collision: CollisionItem,
   timeline: Timeline,
-  lazy: boolean = false,
+  lazy = false,
 ) => {
   const posY = lazy ? -1 : getFixedPosY(comment, collision);
   for (let j = 0; j < comment.long; j++) {
@@ -614,7 +623,7 @@ const processMovableComment = (
   comment: IComment,
   collision: Collision,
   timeline: Timeline,
-  lazy: boolean = false,
+  lazy = false,
 ) => {
   const beforeVpos =
     Math.round(-288 / ((1632 + comment.width) / (comment.long + 125))) - 100;
@@ -643,9 +652,9 @@ const processMovableComment = (
 };
 
 const getFixedPosY = (comment: IComment, collision: CollisionItem) => {
-  let posY = 0,
-    isChanged = true,
-    count = 0;
+  let posY = 0;
+  let isChanged = true;
+  let count = 0;
   while (isChanged && count < 10) {
     isChanged = false;
     count++;
@@ -707,20 +716,23 @@ const getMovablePosY = (
 
 /**
  * 当たり判定からコメントを配置できる場所を探す
- * @param currentPos 現在のy座標
+ * @param _currentPos 現在のy座標
  * @param targetComment 対象コメント
  * @param collision 当たり判定
- * @param isChanged 位置が変更されたか
+ * @param _isChanged 位置が変更されたか
  * @returns 現在地、更新されたか、終了すべきか
  */
 const getPosY = (
-  currentPos: number,
+  _currentPos: number,
   targetComment: IComment,
   collision: IComment[] | undefined,
-  isChanged = false,
+  _isChanged = false,
 ): { currentPos: number; isChanged: boolean; isBreak: boolean } => {
   let isBreak = false;
-  if (!collision) return { currentPos, isChanged, isBreak };
+  if (!collision)
+    return { currentPos: _currentPos, isChanged: _isChanged, isBreak };
+  let currentPos = _currentPos;
+  let isChanged = _isChanged;
   for (const collisionItem of collision) {
     if (collisionItem.index === targetComment.index || collisionItem.posY < 0)
       continue;

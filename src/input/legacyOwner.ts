@@ -1,5 +1,5 @@
 import type { InputParser } from "@/@types";
-import { type FormattedComment } from "@/@types";
+import type { FormattedComment } from "@/@types";
 import { InvalidFormatError } from "@/errors";
 import typeGuard from "@/typeGuard";
 
@@ -17,15 +17,16 @@ export const LegacyOwnerParser: InputParser = {
  * @returns 変換後のデータ
  */
 const fromLegacyOwner = (data: string): FormattedComment[] => {
-  const data_: FormattedComment[] = [],
-    comments = data.split("\n");
+  const data_: FormattedComment[] = [];
+  const comments = data.split("\n");
   for (let i = 0, n = comments.length; i < n; i++) {
     const value = comments[i];
     if (!value) continue;
     const commentData = value.split(":");
     if (commentData.length < 3) {
       continue;
-    } else if (commentData.length > 3) {
+    }
+    if (commentData.length > 3) {
       for (let j = 3, n = commentData.length; j < n; j++) {
         commentData[2] += `:${commentData[j]}`;
       }

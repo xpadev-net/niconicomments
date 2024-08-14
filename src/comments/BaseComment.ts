@@ -281,7 +281,7 @@ class BaseComment implements IComment {
       this.image = cache.image;
       window.setTimeout(
         () => {
-          delete this.image;
+          this.image = undefined;
         },
         this.comment.long * 10 + config.cacheAge,
       );
@@ -317,7 +317,7 @@ class BaseComment implements IComment {
     this.image = image;
     window.setTimeout(
       () => {
-        delete this.image;
+        this.image = undefined;
       },
       this.comment.long * 10 + config.cacheAge,
     );
@@ -352,11 +352,11 @@ class BaseComment implements IComment {
   }
 
   protected getCacheKey() {
-    return (
-      JSON.stringify(this.comment.content) +
-      `@@${this.pluginName}@@` +
-      [...this.comment.mail].sort((a, b) => a.localeCompare(b)).join(",")
-    );
+    return `${JSON.stringify(this.comment.content)}@@${this.pluginName}@@${[
+      ...this.comment.mail,
+    ]
+      .sort((a, b) => a.localeCompare(b))
+      .join(",")}`;
   }
 }
 

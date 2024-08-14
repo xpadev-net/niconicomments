@@ -47,7 +47,7 @@ class HTML5Comment extends BaseComment {
     };
     this.comment = this.getCommentSize(comment);
     this.cacheKey = this.getCacheKey();
-    delete this.image;
+    this.image = undefined;
   }
 
   override convertComment(comment: FormattedComment): FormattedCommentWithSize {
@@ -129,9 +129,9 @@ class HTML5Comment extends BaseComment {
 
   override measureText(comment: MeasureTextInput): MeasureTextResult {
     const scale = getConfig(config.commentScale, false);
-    const configFontSize = getConfig(config.fontSize, false),
-      lineHeight = getLineHeight(comment.size, false),
-      charSize = getCharSize(comment.size, false);
+    const configFontSize = getConfig(config.fontSize, false);
+    const lineHeight = getLineHeight(comment.size, false);
+    const charSize = getCharSize(comment.size, false);
     if (!comment.lineHeight) comment.lineHeight = lineHeight;
     if (!comment.charSize) comment.charSize = charSize;
     comment.fontSize = comment.charSize * 0.8;

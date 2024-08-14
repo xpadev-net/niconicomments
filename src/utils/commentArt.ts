@@ -75,10 +75,10 @@ const removeDuplicateCommentArt = (comments: FormattedComment[]) => {
   const index: { [key: string]: FormattedComment } = {};
   return comments.filter((comment) => {
     const key = `${comment.content}@@${[...comment.mail]
-        .sort((a, b) => a.localeCompare(b))
-        .filter((e) => !RegExp(/@[\d.]+|184|device:.+|patissier|ca/).exec(e))
-        .join("")}`,
-      lastComment = index[key];
+      .sort((a, b) => a.localeCompare(b))
+      .filter((e) => !RegExp(/@[\d.]+|184|device:.+|patissier|ca/).exec(e))
+      .join("")}`;
+    const lastComment = index[key];
     if (lastComment === undefined) {
       index[key] = comment;
       return true;

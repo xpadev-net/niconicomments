@@ -2,15 +2,16 @@ import type { IComment } from "@/@types";
 
 /**
  * phpのarray_push的なあれ
- * @param array 追加対象の配列
+ * @param _array 追加対象の配列
  * @param key 追加対象のキー
  * @param push 追加する値
  */
 const arrayPush = (
-  array: { [key: number]: IComment[] },
+  _array: { [key: number]: IComment[] },
   key: string | number,
   push: IComment,
 ) => {
+  let array = _array;
   if (!array) {
     array = {};
   }

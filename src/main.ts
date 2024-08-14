@@ -141,7 +141,7 @@ class NiconiComments {
       right: [],
     };
     this.lastVpos = -1;
-    this.processedCommentIndex = 0;
+    this.processedCommentIndex = -1;
 
     this.comments = this.preRendering(parsedData);
 
@@ -197,7 +197,7 @@ class NiconiComments {
   private getCommentPos(data: IComment[], end: number, lazy = false) {
     const getCommentPosStart = performance.now();
     if (this.processedCommentIndex + 1 >= end) return;
-    for (const comment of data.slice(this.processedCommentIndex, end)) {
+    for (const comment of data.slice(this.processedCommentIndex + 1, end)) {
       if (comment.invisible || (comment.posY > -1 && !lazy)) continue;
       if (comment.loc === "naka") {
         processMovableComment(comment, this.collision, this.timeline, lazy);

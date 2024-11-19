@@ -18,6 +18,7 @@
     "format:fix": "biome format --write src",
     "lint": "biome check src",
     "lint:fix": "biome check --apply-unsafe src",
+    "prepare": "lefthook install",
     "test": "docker-compose run --rm pw",
     "test-server": "http-server"
   },
@@ -37,10 +38,7 @@
   "bugs": {
     "url": "https://github.com/xpadev-net/niconicomments/issues"
   },
-  "files": [
-    "dist/bundle.js",
-    "dist/bundle.d.ts"
-  ],
+  "files": ["dist/bundle.js", "dist/bundle.d.ts"],
   "homepage": "https://xpadev-net.github.io/niconicomments/",
   "license": "MIT",
   "devDependencies": {
@@ -56,6 +54,7 @@
     "@types/node": "^22.9.0",
     "copyfiles": "^2.4.1",
     "http-server": "^14.1.1",
+    "lefthook": "^1.8.4",
     "rimraf": "^6.0.1",
     "rollup": "^4.27.3",
     "rollup-plugin-dts": "^6.1.1",

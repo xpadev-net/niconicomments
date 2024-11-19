@@ -1,7 +1,7 @@
 import babel from "@rollup/plugin-babel";
 import typescript from "@rollup/plugin-typescript";
 import { nodeResolve } from "@rollup/plugin-node-resolve";
-import pkg from "./package.json" assert { type: "json" };
+import pkg from "./package.json" with { type: "json" };
 import { fileURLToPath } from "url";
 import * as path from "path";
 const banner = `/*!

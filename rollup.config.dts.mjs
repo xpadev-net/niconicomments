@@ -1,4 +1,4 @@
-import pkg from "./package.json" assert { type: "json" };
+import pkg from "./package.json" with { type: "json" };
 import { fileURLToPath } from "url";
 import * as path from "path";
 import dts from "rollup-plugin-dts";

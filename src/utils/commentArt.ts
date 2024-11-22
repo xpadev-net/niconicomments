@@ -56,11 +56,13 @@ const getUsersScore = (
       comment.mail.includes("ender") ||
       comment.mail.includes("full")
     ) {
-      userScoreList[comment.user_id] += 5;
+      userScoreList[comment.user_id] =
+        (userScoreList[comment.user_id] ?? 0) + 5;
     }
     const lineCount = (comment.content.match(/\r\n|\n|\r/g) ?? []).length;
     if (lineCount > 2) {
-      userScoreList[comment.user_id] += lineCount / 2;
+      userScoreList[comment.user_id] =
+        (userScoreList[comment.user_id] ?? 0) + lineCount / 2;
     }
   }
   return userScoreList;

@@ -605,6 +605,7 @@ const processFixedComment = (
   const posY = lazy ? -1 : getFixedPosY(comment, collision);
   for (let j = 0; j < comment.long; j++) {
     const vpos = comment.vpos + j;
+    if (timeline[vpos]?.includes(comment)) continue;
     arrayPush(timeline, vpos, comment);
     if (j > comment.long - 20) continue;
     arrayPush(collision, vpos, comment);
@@ -631,7 +632,7 @@ const processMovableComment = (
   for (let j = beforeVpos, n = comment.long + 125; j < n; j++) {
     const vpos = comment.vpos + j;
     const leftPos = getPosX(comment.comment, vpos);
-    if (timeline[vpos]?.includes(comment)) break;
+    if (timeline[vpos]?.includes(comment)) continue;
     arrayPush(timeline, vpos, comment);
     if (
       leftPos + comment.width + config.collisionPadding >=

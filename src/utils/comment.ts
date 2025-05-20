@@ -152,6 +152,7 @@ const parseCommandAndNicoScript = (
     strokeColor: commands.strokeColor,
     wakuColor: commands.wakuColor,
     fillColor: commands.fillColor,
+    opacity: commands.opacity,
     button: commands.button,
   };
 };
@@ -497,6 +498,11 @@ const parseCommand = (
     result.fillColor ??= fillColor;
     return;
   }
+  const opacity = getOpacity(RegExp(/^nico:opacity:(.+)$/).exec(command));
+  if (typeof opacity === "number") {
+    result.opacity ??= opacity;
+    return;
+  }
   if (is(ZCommentLoc, command)) {
     result.loc ??= command;
     return;
@@ -536,6 +542,20 @@ const getColor = (match: RegExpMatchArray | null) => {
     return colors[value];
   }
   if (typeGuard.comment.colorCodeAllowAlpha(value)) {
+    return value;
+  }
+  return;
+};
+
+/**
+ * 正規表現の結果から透明度を取得する
+ * @param match 正規表現の結果
+ * @returns 透明度
+ */
+const getOpacity = (match: RegExpMatchArray | null) => {
+  if (!match) return;
+  const value = Number(match[1]);
+  if (!Number.isNaN(value)) {
     return value;
   }
   return;

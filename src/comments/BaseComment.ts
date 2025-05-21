@@ -181,10 +181,7 @@ class BaseComment implements IComment {
     }
     if (this.image) {
       this.renderer.save();
-      if (
-        typeof this.comment.opacity === "number" &&
-        this.comment.opacity >= 0
-      ) {
+      if (typeof this.comment.opacity === "number") {
         this.renderer.setGlobalAlpha(this.comment.opacity);
       } else if (this.comment._live) {
         this.renderer.setGlobalAlpha(config.contextFillLiveOpacity);

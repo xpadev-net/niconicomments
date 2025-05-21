@@ -555,7 +555,7 @@ const getColor = (match: RegExpMatchArray | null) => {
 const getOpacity = (match: RegExpMatchArray | null) => {
   if (!match) return;
   const value = Number(match[1]);
-  if (!Number.isNaN(value)) {
+  if (!Number.isNaN(value) && value >= 0) {
     return value;
   }
   return;

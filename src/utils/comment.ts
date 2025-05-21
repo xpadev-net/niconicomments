@@ -152,6 +152,7 @@ const parseCommandAndNicoScript = (
     strokeColor: commands.strokeColor,
     wakuColor: commands.wakuColor,
     fillColor: commands.fillColor,
+    opacity: commands.opacity,
     button: commands.button,
   };
 };
@@ -328,14 +329,16 @@ const processReverseScript = (
   const reverse = RegExp(
     /^[@\uff20]\u9006(?:\s+)?(\u5168|\u30b3\u30e1|\u6295\u30b3\u30e1)?/,
   ).exec(comment.content);
-  if (!reverse?.[1] || !typeGuard.nicoScript.range.target(reverse[1])) return;
+  const target = typeGuard.nicoScript.range.target(reverse?.[1])
+    ? reverse?.[1]
+    : "全";
   if (commands.long === undefined) {
     commands.long = 30;
   }
   nicoScripts.reverse.unshift({
     start: comment.vpos,
     end: comment.vpos + commands.long * 100,
-    target: reverse[1],
+    target,
   });
 };
 
@@ -497,6 +500,11 @@ const parseCommand = (
     result.fillColor ??= fillColor;
     return;
   }
+  const opacity = getOpacity(RegExp(/^nico:opacity:(.+)$/).exec(command));
+  if (typeof opacity === "number") {
+    result.opacity ??= opacity;
+    return;
+  }
   if (is(ZCommentLoc, command)) {
     result.loc ??= command;
     return;
@@ -536,6 +544,20 @@ const getColor = (match: RegExpMatchArray | null) => {
     return colors[value];
   }
   if (typeGuard.comment.colorCodeAllowAlpha(value)) {
+    return value;
+  }
+  return;
+};
+
+/**
+ * 正規表現の結果から透明度を取得する
+ * @param match 正規表現の結果
+ * @returns 透明度
+ */
+const getOpacity = (match: RegExpMatchArray | null) => {
+  if (!match) return;
+  const value = Number(match[1]);
+  if (!Number.isNaN(value) && value >= 0) {
     return value;
   }
   return;

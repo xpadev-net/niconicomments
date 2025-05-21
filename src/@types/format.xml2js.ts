@@ -1,4 +1,4 @@
-import type { Output } from "valibot";
+import type { InferOutput } from "valibot";
 import { array, object, optional, string } from "valibot";
 
 export const ZXml2jsChatItem = object({
@@ -14,14 +14,14 @@ export const ZXml2jsChatItem = object({
     mail: optional(string(), ""),
   }),
 });
-export type Xml2jsChatItem = Output<typeof ZXml2jsChatItem>;
+export type Xml2jsChatItem = InferOutput<typeof ZXml2jsChatItem>;
 
 export const ZXml2jsChat = object({
   chat: array(ZXml2jsChatItem),
 });
-export type Xml2jsChat = Output<typeof ZXml2jsChat>;
+export type Xml2jsChat = InferOutput<typeof ZXml2jsChat>;
 
 export const ZXml2jsPacket = object({
   packet: ZXml2jsChat,
 });
-export type Xml2jsPacket = Output<typeof ZXml2jsPacket>;
+export type Xml2jsPacket = InferOutput<typeof ZXml2jsPacket>;

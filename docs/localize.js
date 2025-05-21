@@ -20,7 +20,10 @@ const localize = {
   about_repo: ["Repository: ", "リポジトリ: "],
   sample: ["sample", "サンプル"],
   example_canvas: ["Using HTMLCanvasElement", "HTMLCanvasElementを使用した例"],
-  example_canvas_renderer: ["Using CanvasRenderer","CanvasRendererを使用した例"],
+  example_canvas_renderer: [
+    "Using CanvasRenderer",
+    "CanvasRendererを使用した例",
+  ],
   class_main: ["The main body of this library.", "このライブラリの本体です"],
   p_canvas: [
     `<p>Pass a class or object conforming to <a href="./type/interfaces/_types_renderer.IRenderer.html">IRenderer</a> or Canvas Element for comment drawing</p>
@@ -301,7 +304,7 @@ const localize = {
 <p>Color code can also specify transparency</p>`,
     `<p>コメント単位で枠の表示を制御できます</p>
 <p>色の指定は色コマンドまたはカラーコードで行ってください</p>
-<p>カラーコードは透明度も指定可能です</p>`
+<p>カラーコードは透明度も指定可能です</p>`,
   ],
   c_fill: [
     `<p>You can control the background color per comment.</p>
@@ -309,8 +312,14 @@ const localize = {
 <p>Color code can also specify transparency</p>`,
     `<p>コメント単位で背景色の表示を制御できます</p>
 <p>色の指定は色コマンドまたはカラーコードで行ってください</p>
-<p>カラーコードは透明度も指定可能です</p>`
-  ]
+<p>カラーコードは透明度も指定可能です</p>`,
+  ],
+  c_opacity: [
+    `<p>Change the opacity of the comment</p>
+<p>1 for opaque, 0 for transparent</p>`,
+    `<p>コメント単位で不透明度を制御できます</p>
+<p>1で不透明、0で透明になります</p>`,
+  ],
 };
 const resources = { en: { translation: {} }, ja: { translation: {} } };
 for (const key in localize) {

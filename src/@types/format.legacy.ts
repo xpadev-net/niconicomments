@@ -1,9 +1,10 @@
-import type { Output } from "valibot";
+import type { InferOutput } from "valibot";
 import {
   notValue,
   number,
   object,
   optional,
+  pipe,
   record,
   string,
   union,
@@ -24,13 +25,13 @@ export const ZApiChat = object({
   content: string(),
   deleted: optional(number(), 0),
 });
-export type ApiChat = Output<typeof ZApiChat>;
+export type ApiChat = InferOutput<typeof ZApiChat>;
 
 export const ZRawApiResponse = union([
   object({ chat: ZApiChat }),
-  record(string([notValue("chat")]), unknown()),
+  record(pipe(string(), notValue("chat")), unknown()),
 ]);
-export type RawApiResponse = Output<typeof ZRawApiResponse>;
+export type RawApiResponse = InferOutput<typeof ZRawApiResponse>;
 
 /**
  * @deprecated
@@ -41,7 +42,7 @@ export const ZApiPing = object({
 /**
  * @deprecated
  */
-export type ApiPing = Output<typeof ZApiPing>;
+export type ApiPing = InferOutput<typeof ZApiPing>;
 
 /**
  * @deprecated
@@ -56,7 +57,7 @@ export const ZApiThread = object({
 /**
  * @deprecated
  */
-export type ApiThread = Output<typeof ZApiThread>;
+export type ApiThread = InferOutput<typeof ZApiThread>;
 
 /**
  * @deprecated
@@ -68,7 +69,7 @@ export const ZApiLeaf = object({
 /**
  * @deprecated
  */
-export type ApiLeaf = Output<typeof ZApiLeaf>;
+export type ApiLeaf = InferOutput<typeof ZApiLeaf>;
 
 /**
  * @deprecated
@@ -80,7 +81,7 @@ export const ZApiGlobalNumRes = object({
 /**
  * @deprecated
  */
-export type ApiGlobalNumRes = Output<typeof ZApiGlobalNumRes>;
+export type ApiGlobalNumRes = InferOutput<typeof ZApiGlobalNumRes>;
 
 /**
  * @deprecated

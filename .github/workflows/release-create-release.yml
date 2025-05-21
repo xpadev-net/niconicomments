@@ -1,0 +1,113 @@
+name: Create Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_type:
+        description: 'Release Type'
+        required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+        default: 'patch'
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: develop
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: false
+
+      - name: Configure Git
+        run: |
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'actions@github.com'
+
+      - name: Calculate new version
+        id: version
+        run: |
+          current_version=$(node -p "require('./package.json').version")
+          echo "Current version: $current_version"
+          
+          # Calculate new version based on release type
+          if [ "${{ github.event.inputs.release_type }}" = "major" ]; then
+            new_version=$(node -p "const [major, minor, patch] = '${current_version}'.split('.'); \`\${Number(major) + 1}.0.0\`")
+          elif [ "${{ github.event.inputs.release_type }}" = "minor" ]; then
+            new_version=$(node -p "const [major, minor, patch] = '${current_version}'.split('.'); \`\${major}.\${Number(minor) + 1}.0\`")
+          else
+            new_version=$(node -p "const [major, minor, patch] = '${current_version}'.split('.'); \`\${major}.\${minor}.\${Number(patch) + 1}\`")
+          fi
+          
+          echo "New version: $new_version"
+          echo "new_version=$new_version" >> $GITHUB_OUTPUT
+
+      - name: Update package.json version
+        run: |
+          pnpm version ${{ steps.version.outputs.new_version }} --no-git-tag-version
+          git add package.json pnpm-lock.yaml
+          git commit -m "chore: bump version to v${{ steps.version.outputs.new_version }}"
+          git push origin develop
+          
+      - name: Create PR from develop to release
+        id: create-pr
+        run: |
+          PR_URL=$(gh pr create --base master --head develop \
+            --title "Release v${{ steps.version.outputs.new_version }}" \
+            --body "## Release v${{ steps.version.outputs.new_version }}\n\nThis PR was automatically created by the release workflow.\n\nRelease type: ${{ github.event.inputs.release_type }}")
+          echo "PR URL: $PR_URL"
+          PR_NUMBER=$(echo $PR_URL | grep -o '[0-9]\+$')
+          echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Merge PR
+        id: merge-pr
+        run: |
+          PR_NUMBER=${{ steps.create-pr.outputs.pr_number }}
+          gh pr merge $PR_NUMBER --merge --admin
+          # Get the merge commit SHA
+          MERGE_SHA=$(gh pr view $PR_NUMBER --json mergeCommit -q .mergeCommit.oid)
+          echo "merge_sha=$MERGE_SHA" >> $GITHUB_OUTPUT
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create and push tag on release branch
+        run: |
+          git fetch --all
+          git checkout release
+          git pull origin release
+          git tag -a v${{ steps.version.outputs.new_version }} ${{ steps.merge-pr.outputs.merge_sha }} -m "Release v${{ steps.version.outputs.new_version }}"
+          git push origin v${{ steps.version.outputs.new_version }}
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ steps.version.outputs.new_version }}
+          name: Release v${{ steps.version.outputs.new_version }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Trigger build workflow
+        run: |
+          gh workflow run release-publish-package.yml --ref v${{ steps.version.outputs.new_version }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

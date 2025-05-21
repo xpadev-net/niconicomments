@@ -1,4 +1,4 @@
-import type { Output } from "valibot";
+import type { InferOutput } from "valibot";
 import { literal, union } from "valibot";
 
 export type Platform =
@@ -14,7 +14,7 @@ export const ZHTML5Fonts = union([
   literal("mincho"),
   literal("defont"),
 ]);
-export type HTML5Fonts = Output<typeof ZHTML5Fonts>;
+export type HTML5Fonts = InferOutput<typeof ZHTML5Fonts>;
 export type FontItem = {
   font: string;
   offset: number;

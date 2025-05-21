@@ -1,10 +1,11 @@
 import {
   array,
-  custom,
+  check,
   instance,
   is,
   literal,
   optional,
+  pipe,
   regex,
   string,
   union,
@@ -131,8 +132,9 @@ const typeGuard = {
   legacyOwner: {
     comments: (i: unknown): i is string =>
       is(
-        string([
-          custom((i) => {
+        pipe(
+          string(),
+          check((i) => {
             const lists = i.split(/\r\n|\r|\n/);
             for (const list of lists) {
               if (list.split(":").length < 3) {
@@ -141,7 +143,7 @@ const typeGuard = {
             }
             return true;
           }),
-        ]),
+        ),
         i,
       ),
   },
@@ -186,14 +188,21 @@ const typeGuard = {
         ),
     },
     color: (i: unknown): i is keyof typeof colors =>
-      is(string([custom((i) => Object.keys(colors).includes(i))]), i),
+      is(
+        pipe(
+          string(),
+          check((i) => Object.keys(colors).includes(i)),
+        ),
+        i,
+      ),
     colorCode: (i: unknown): i is string =>
-      is(string([regex(/^#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6})$/)]), i),
+      is(pipe(string(), regex(/^#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6})$/)), i),
     colorCodeAllowAlpha: (i: unknown): i is string =>
       is(
-        string([
+        pipe(
+          string(),
           regex(/^#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/),
-        ]),
+        ),
         i,
       ),
   },

@@ -1,4 +1,4 @@
-import type { Output } from "valibot";
+import type { InferOutput } from "valibot";
 import {
   array,
   boolean,
@@ -22,7 +22,7 @@ export const ZFormattedComment = object({
   layer: optional(number(), -1),
   is_my_post: optional(boolean(), false),
 });
-export type FormattedComment = Output<typeof ZFormattedComment>;
+export type FormattedComment = InferOutput<typeof ZFormattedComment>;
 
 /**
  * @deprecated
@@ -35,7 +35,9 @@ export const ZFormattedLegacyComment = omit(ZFormattedComment, [
 /**
  * @deprecated
  */
-export type FormattedLegacyComment = Output<typeof ZFormattedLegacyComment>;
+export type FormattedLegacyComment = InferOutput<
+  typeof ZFormattedLegacyComment
+>;
 
 /**
  * @deprecated

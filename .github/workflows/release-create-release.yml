@@ -42,7 +42,6 @@ jobs:
       - name: Calculate new version
         id: version
         run: |
-          git checkout develop
           current_version=$(node -p "require('./package.json').version")
           echo "Current version: $current_version"
           

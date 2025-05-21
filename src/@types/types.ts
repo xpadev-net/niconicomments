@@ -1,4 +1,4 @@
-import type { Output } from "valibot";
+import type { InferOutput } from "valibot";
 import {
   array,
   boolean,
@@ -89,21 +89,21 @@ export const ZCommentFont = union([
   literal("gulim"),
   literal("simsun"),
 ]);
-export type CommentFont = Output<typeof ZCommentFont>;
+export type CommentFont = InferOutput<typeof ZCommentFont>;
 
 export const ZCommentHTML5Font = union([
   literal("defont"),
   literal("mincho"),
   literal("gothic"),
 ]);
-export type CommentHTML5Font = Output<typeof ZCommentHTML5Font>;
+export type CommentHTML5Font = InferOutput<typeof ZCommentHTML5Font>;
 
 export const ZCommentFlashFont = union([
   literal("defont"),
   literal("gulim"),
   literal("simsun"),
 ]);
-export type CommentFlashFont = Output<typeof ZCommentFlashFont>;
+export type CommentFlashFont = InferOutput<typeof ZCommentFlashFont>;
 
 export const ZCommentContentItemSpacer = object({
   type: literal("spacer"),
@@ -122,13 +122,15 @@ export const ZCommentContentItemText = object({
   font: optional(ZCommentFlashFont),
   width: optional(array(number())),
 });
-export type CommentContentItemText = Output<typeof ZCommentContentItemText>;
+export type CommentContentItemText = InferOutput<
+  typeof ZCommentContentItemText
+>;
 
 export const ZCommentContentItem = union([
   ZCommentContentItemSpacer,
   ZCommentContentItemText,
 ]);
-export type CommentContentItem = Output<typeof ZCommentContentItem>;
+export type CommentContentItem = InferOutput<typeof ZCommentContentItem>;
 export const ZCommentMeasuredContentItemText = intersect([
   ZCommentContentItem,
   object({
@@ -140,7 +142,7 @@ export const ZCommentMeasuredContentItem = union([
   ZCommentMeasuredContentItemText,
   ZCommentContentItemSpacer,
 ]);
-export type CommentMeasuredContentItem = Output<
+export type CommentMeasuredContentItem = InferOutput<
   typeof ZCommentMeasuredContentItem
 >;
 export type CommentFlashFontParsed =
@@ -157,13 +159,13 @@ export const ZCommentSize = union([
   literal("medium"),
   literal("small"),
 ]);
-export type CommentSize = Output<typeof ZCommentSize>;
+export type CommentSize = InferOutput<typeof ZCommentSize>;
 export const ZCommentLoc = union([
   literal("ue"),
   literal("naka"),
   literal("shita"),
 ]);
-export type CommentLoc = Output<typeof ZCommentLoc>;
+export type CommentLoc = InferOutput<typeof ZCommentLoc>;
 export type Collision = { [key in CollisionPos]: CollisionItem };
 export type Timeline = { [key: number]: IComment[] };
 export type CollisionPos = "ue" | "shita" | "right" | "left";
@@ -196,7 +198,9 @@ export const ZNicoScriptReverseTarget = union([
   literal("\u6295\u30b3\u30e1"), //投コメ
   literal("\u5168"), //全
 ]);
-export type NicoScriptReverseTarget = Output<typeof ZNicoScriptReverseTarget>;
+export type NicoScriptReverseTarget = InferOutput<
+  typeof ZNicoScriptReverseTarget
+>;
 export type NicoScriptReplace = {
   start: number;
   long: number | undefined;
@@ -215,7 +219,9 @@ export const ZNicoScriptReplaceRange = union([
   literal("\u5358"), //単
   literal("\u5168"), //全
 ]);
-export type NicoScriptReplaceRange = Output<typeof ZNicoScriptReplaceRange>;
+export type NicoScriptReplaceRange = InferOutput<
+  typeof ZNicoScriptReplaceRange
+>;
 export const ZNicoScriptReplaceTarget = union([
   literal("\u30b3\u30e1"), //コメ
   literal("\u6295\u30b3\u30e1"), //投コメ
@@ -223,12 +229,14 @@ export const ZNicoScriptReplaceTarget = union([
   literal("\u542b\u307e\u306a\u3044"), //含まない
   literal("\u542b\u3080"), //含む
 ]);
-export type NicoScriptReplaceTarget = Output<typeof ZNicoScriptReplaceTarget>;
+export type NicoScriptReplaceTarget = InferOutput<
+  typeof ZNicoScriptReplaceTarget
+>;
 export const ZNicoScriptReplaceCondition = union([
   literal("\u90e8\u5206\u4e00\u81f4"), //部分一致
   literal("\u5b8c\u5168\u4e00\u81f4"), //完全一致
 ]);
-export type NicoScriptReplaceCondition = Output<
+export type NicoScriptReplaceCondition = InferOutput<
   typeof ZNicoScriptReplaceCondition
 >;
 type NicoScriptBan = {
@@ -305,6 +313,6 @@ export const ZMeasureInput = object({
   charSize: number(),
   lineCount: number(),
 });
-export type MeasureInput = Output<typeof ZMeasureInput>;
+export type MeasureInput = InferOutput<typeof ZMeasureInput>;
 
 export type ValueOf<T> = T[keyof T];

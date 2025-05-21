@@ -1,4 +1,4 @@
-import type { Output } from "valibot";
+import type { InferOutput } from "valibot";
 import { literal, union } from "valibot";
 
 import type {
@@ -23,7 +23,7 @@ export const ZInputFormatType = union([
   literal("empty"),
   literal("default"),
 ]);
-export type InputFormatType = Output<typeof ZInputFormatType>;
+export type InputFormatType = InferOutput<typeof ZInputFormatType>;
 
 export type InputFormat =
   | XMLDocument

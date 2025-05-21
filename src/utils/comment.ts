@@ -328,14 +328,16 @@ const processReverseScript = (
   const reverse = RegExp(
     /^[@\uff20]\u9006(?:\s+)?(\u5168|\u30b3\u30e1|\u6295\u30b3\u30e1)?/,
   ).exec(comment.content);
-  if (!reverse?.[1] || !typeGuard.nicoScript.range.target(reverse[1])) return;
+  const target = typeGuard.nicoScript.range.target(reverse?.[1])
+    ? reverse?.[1]
+    : "全";
   if (commands.long === undefined) {
     commands.long = 30;
   }
   nicoScripts.reverse.unshift({
     start: comment.vpos,
     end: comment.vpos + commands.long * 100,
-    target: reverse[1],
+    target,
   });
 };
 

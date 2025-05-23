@@ -393,9 +393,13 @@ const processJumpScript = (
     /\s*((?:sm|so|nm|\uff53\uff4d|\uff53\uff4f|\uff4e\uff4d)?[1-9\uff11-\uff19][0-9\uff11-\uff19]*|#[0-9]+:[0-9]+(?:\.[0-9]+)?)\s+(.*)/,
   ).exec(input);
   if (!options?.[1]) return;
+  const end =
+    commands.long === undefined
+      ? undefined
+      : commands.long * 100 + comment.vpos;
   nicoScripts.jump.unshift({
     start: comment.vpos,
-    end: commands.long === undefined ? undefined : commands.long * 100,
+    end,
     to: options[1],
     message: options[2],
   });

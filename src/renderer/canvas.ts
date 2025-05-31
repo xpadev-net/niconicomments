@@ -18,6 +18,7 @@ class CanvasRenderer implements IRenderer {
     this.context = context;
     this.context.textAlign = "start";
     this.context.textBaseline = "alphabetic";
+    this.context.lineJoin = "round";
     this.video = video;
   }
 

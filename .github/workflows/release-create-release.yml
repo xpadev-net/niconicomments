@@ -53,11 +53,11 @@ jobs:
           
           # Calculate new version based on release type
           if [ "${{ github.event.inputs.release_type }}" = "major" ]; then
-            new_version=$(node -p "const [major, minor, patch] = '${current_version}'.split('.'); \`${Number(major) + 1}.0.0\`")
+            new_version=$(node -p "const [major, minor, patch] = '${current_version}'.split('.'); \`\${Number(major) + 1}.0.0\`")
           elif [ "${{ github.event.inputs.release_type }}" = "minor" ]; then
-            new_version=$(node -p "const [major, minor, patch] = '${current_version}'.split('.'); \`${major}.${Number(minor) + 1}.0\`")
+            new_version=$(node -p "const [major, minor, patch] = '${current_version}'.split('.'); \`\${major}.\${Number(minor) + 1}.0\`")
           else
-            new_version=$(node -p "const [major, minor, patch] = '${current_version}'.split('.'); \`${major}.${minor}.${Number(patch) + 1}\`")
+            new_version=$(node -p "const [major, minor, patch] = '${current_version}'.split('.'); \`\${major}.\${minor}.\${Number(patch) + 1}\`")
           fi
           
           echo "New version: $new_version"

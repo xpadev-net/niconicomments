@@ -34,6 +34,12 @@ jobs:
           version: 9
           run_install: false
 
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: 'pnpm'
+
       - name: Configure Git
         run: |
           git config --global user.name 'GitHub Actions'

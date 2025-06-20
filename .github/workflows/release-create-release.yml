@@ -53,11 +53,11 @@ jobs:
           
           # Calculate new version based on release type
           if [ "${{ github.event.inputs.release_type }}" = "major" ]; then
-            new_version=$(node -p "const [major, minor, patch] = '${current_version}'.split('.'); \`\${Number(major) + 1}.0.0\`")
+            new_version=$(node -p "const [major, minor, patch] = '${current_version}'.split('.'); \`${Number(major) + 1}.0.0\`")
           elif [ "${{ github.event.inputs.release_type }}" = "minor" ]; then
-            new_version=$(node -p "const [major, minor, patch] = '${current_version}'.split('.'); \`\${major}.\${Number(minor) + 1}.0\`")
+            new_version=$(node -p "const [major, minor, patch] = '${current_version}'.split('.'); \`${major}.${Number(minor) + 1}.0\`")
           else
-            new_version=$(node -p "const [major, minor, patch] = '${current_version}'.split('.'); \`\${major}.\${minor}.\${Number(patch) + 1}\`")
+            new_version=$(node -p "const [major, minor, patch] = '${current_version}'.split('.'); \`${major}.${minor}.${Number(patch) + 1}\`")
           fi
           
           echo "New version: $new_version"
@@ -82,38 +82,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Merge PR
-        id: merge-pr
-        run: |
-          PR_NUMBER=${{ steps.create-pr.outputs.pr_number }}
-          gh pr merge $PR_NUMBER --merge --admin
-          # Get the merge commit SHA
-          MERGE_SHA=$(gh pr view $PR_NUMBER --json mergeCommit -q .mergeCommit.oid)
-          echo "merge_sha=$MERGE_SHA" >> $GITHUB_OUTPUT
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Create and push tag on release branch
-        run: |
-          git fetch --all
-          git checkout master
-          git pull origin master
-          git tag -a v${{ steps.version.outputs.new_version }} ${{ steps.merge-pr.outputs.merge_sha }} -m "Release v${{ steps.version.outputs.new_version }}"
-          git push origin v${{ steps.version.outputs.new_version }}
-
-      - name: Create GitHub release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: v${{ steps.version.outputs.new_version }}
-          name: Release v${{ steps.version.outputs.new_version }}
-          draft: false
-          prerelease: false
-          generate_release_notes: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
-      - name: Trigger build workflow
-        run: |
-          gh workflow run release-publish-package.yml --ref v${{ steps.version.outputs.new_version }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # GitHub release will only be created after the PR is merged manually

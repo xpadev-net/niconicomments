@@ -21,18 +21,23 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - name: setup Node
-        uses: actions/setup-node@v3
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
         with:
-          node-version: 22
-          registry-url: "https://registry.npmjs.org"
-      # Runs a single command using the runners shell
-      - name: init
-        run: |
-          npm i -g pnpm
-          pnpm install
+          version: 9
+          run_install: false
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
 
       # Runs a set of commands using the runners shell
       - name: clear output dir

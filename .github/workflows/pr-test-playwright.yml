@@ -8,16 +8,28 @@ jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20, 22, 24]
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
         with:
-          node-version: "22"
+          version: 9
+          run_install: false
+
+      - uses: actions/setup-node@v4
+        with:
+          cache: 'pnpm'
+          node-version: "${{ matrix.node-version }}"
+
       - name: allow write in work dir
         run: sudo chmod -R 777 .
+
       - name: Install Dependencies
         run: |
-          npm -g install pnpm
           pnpm install
           pnpm playwright install-deps
           pnpm playwright install firefox

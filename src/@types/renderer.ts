@@ -25,7 +25,7 @@ export interface IRenderer {
   stroke(): void;
   save(): void;
   restore(): void;
-  getCanvas(): IRenderer;
+  getCanvas(padding?: number): IRenderer;
   drawImage(
     image: IRenderer,
     x: number,

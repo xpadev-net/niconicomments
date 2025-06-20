@@ -1,8 +1,14 @@
 name: publish package
 
+permissions:
+  contents: read
+  packages: write
+  actions: write
+
 on:
-  release:
-    types: [published]
+  push:
+    branches:
+      - master
   workflow_dispatch:
 
 jobs:
@@ -10,19 +16,39 @@ jobs:
     name: Publish npm package
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Install Node
-        uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
         with:
-          node-version: '22'
+          version: 9
+          run_install: false
+
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
           registry-url: https://registry.npmjs.org
           always-auth: true
           scope: '@xpadev-net'
+          cache: 'pnpm'
+
       - name: Install dependencies
         run: |
-          npm -g install pnpm
           pnpm install
+
       - name: Publish package
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

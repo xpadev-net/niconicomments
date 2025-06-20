@@ -11,7 +11,16 @@ class CanvasRenderer implements IRenderer {
   public readonly canvas: HTMLCanvasElement;
   public readonly video?: HTMLVideoElement;
   private readonly context: CanvasRenderingContext2D;
-  constructor(canvas?: HTMLCanvasElement, video?: HTMLVideoElement) {
+
+  private padding = 0;
+  private width = 0;
+  private height = 0;
+
+  constructor(
+    canvas?: HTMLCanvasElement,
+    video?: HTMLVideoElement,
+    padding = 0,
+  ) {
     this.canvas = canvas ?? document.createElement("canvas");
     const context = this.canvas.getContext("2d");
     if (!context) throw new CanvasRenderingContext2DError();
@@ -20,6 +29,14 @@ class CanvasRenderer implements IRenderer {
     this.context.textBaseline = "alphabetic";
     this.context.lineJoin = "round";
     this.video = video;
+    this.padding = padding;
+    this.width = this.canvas.width;
+    this.height = this.canvas.height;
+    if (this.padding > 0) {
+      this.canvas.width += this.padding * 2;
+      this.canvas.height += this.padding * 2;
+      this.context.translate(this.padding, this.padding);
+    }
   }
 
   drawVideo(enableLegacyPip: boolean) {
@@ -113,12 +130,17 @@ class CanvasRenderer implements IRenderer {
     this.context.globalAlpha = alpha;
   }
   setSize(width: number, height: number) {
-    this.canvas.width = width;
-    this.canvas.height = height;
+    this.width = width;
+    this.height = height;
+    this.canvas.width = width + this.padding * 2;
+    this.canvas.height = height + this.padding * 2;
   }
 
   getSize(): { width: number; height: number } {
-    return { width: this.canvas.width, height: this.canvas.height };
+    return {
+      width: this.width,
+      height: this.height,
+    };
   }
 
   measureText(text: string): TextMetrics {
@@ -145,8 +167,8 @@ class CanvasRenderer implements IRenderer {
   restore(): void {
     this.context.restore();
   }
-  getCanvas(): IRenderer {
-    return new CanvasRenderer();
+  getCanvas(padding = 0): IRenderer {
+    return new CanvasRenderer(undefined, undefined, padding);
   }
 
   destroy() {

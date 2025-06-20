@@ -1,27 +1,40 @@
 on: [workflow_dispatch]
 
 name: Update Playwright Screenshots
+permissions:
+  contents: write
 
 jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
         with:
-          node-version: "22"
+          version: 9
+          run_install: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: 'pnpm'
+
       - name: allow write in work dir
-        run: sudo chmod -R 777 .
+        run: sudo chmod u+w .
+
       - name: Install Dependencies
         run: |
-          npm -g install pnpm
           pnpm install
           pnpm build
           pnpm playwright install-deps
           pnpm playwright install firefox
+
       - name: Run Playwright tests
         run: pnpm playwright test --update-snapshots
+
       - name: Create commit
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

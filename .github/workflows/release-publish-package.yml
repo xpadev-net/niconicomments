@@ -1,8 +1,9 @@
 name: publish package
 
 on:
-  release:
-    types: [published]
+  push:
+    branches:
+      - master
   workflow_dispatch:
 
 jobs:
@@ -35,3 +36,14 @@ jobs:
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -270,8 +270,8 @@ class HTML5Comment extends BaseComment {
       getConfig(config.commentScale, false) *
       scale *
       (this.comment.layer === -1 ? options.scale : 1);
-const DEFAULT_COMMENT_PADDING = 4;
-const image = this.renderer.getCanvas(DEFAULT_COMMENT_PADDING);
+    const DEFAULT_COMMENT_PADDING = 4;
+    const image = this.renderer.getCanvas(DEFAULT_COMMENT_PADDING);
     image.setSize(this.comment.width, this.comment.height);
     image.setStrokeStyle(getStrokeColor(this.comment));
     image.setFillStyle(this.comment.color);

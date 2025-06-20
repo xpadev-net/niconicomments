@@ -1,4 +1,6 @@
 name: BuildTests
+permissions:
+  contents: read
 on:
   push:
     branches: [master, develop]

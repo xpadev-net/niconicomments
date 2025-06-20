@@ -1,4 +1,6 @@
 name: LinterTests
+permissions:
+  contents: read
 on:
   push:
     branches: [master, develop]

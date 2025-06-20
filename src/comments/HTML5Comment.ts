@@ -270,7 +270,7 @@ class HTML5Comment extends BaseComment {
       getConfig(config.commentScale, false) *
       scale *
       (this.comment.layer === -1 ? options.scale : 1);
-    const image = this.renderer.getCanvas();
+    const image = this.renderer.getCanvas(4);
     image.setSize(this.comment.width, this.comment.height);
     image.setStrokeStyle(getStrokeColor(this.comment));
     image.setFillStyle(this.comment.color);

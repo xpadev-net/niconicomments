@@ -1,6 +1,8 @@
 on: [workflow_dispatch]
 
 name: Update Playwright Screenshots
+permissions:
+  contents: write
 
 jobs:
   test:

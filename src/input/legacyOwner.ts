@@ -1,5 +1,4 @@
-import type { InputParser } from "@/@types";
-import type { FormattedComment } from "@/@types";
+import type { FormattedComment, InputParser } from "@/@types";
 import { InvalidFormatError } from "@/errors";
 import typeGuard from "@/typeGuard";
 

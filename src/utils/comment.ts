@@ -47,10 +47,10 @@ const getDefaultCommand = (vpos: number): DefaultCommand => {
   nicoScripts.default = nicoScripts.default.filter(
     (item) => !item.long || item.start + item.long >= vpos,
   );
-  let color = undefined;
-  let size: CommentSize | undefined = undefined;
-  let font = undefined;
-  let loc: CommentLoc | undefined = undefined;
+  let color: string | undefined;
+  let size: CommentSize | undefined;
+  let font: CommentFont | undefined;
+  let loc: CommentLoc | undefined;
   for (const item of nicoScripts.default) {
     if (item.loc) {
       loc = item.loc;
@@ -705,7 +705,7 @@ const getMovablePosY = (
   }
   let posY = 0;
   let isChanged = true;
-  let lastUpdatedIndex: number | undefined = undefined;
+  let lastUpdatedIndex: number | undefined;
   while (isChanged) {
     isChanged = false;
     for (let j = beforeVpos, n = comment.long + 125; j < n; j += 5) {

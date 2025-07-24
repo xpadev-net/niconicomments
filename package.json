@@ -17,7 +17,7 @@
     "format": "biome format src",
     "format:fix": "biome format --write src",
     "lint": "biome check src",
-    "lint:fix": "biome check --apply-unsafe src",
+    "lint:fix": "biome check --write --unsafe src",
     "prepare": "lefthook install",
     "test": "docker-compose run --rm pw",
     "test-server": "http-server"
@@ -47,7 +47,7 @@
   "devDependencies": {
     "@babel/core": "^7.27.4",
     "@babel/preset-env": "^7.27.2",
-    "@biomejs/biome": "^1.9.4",
+    "@biomejs/biome": "^2.0.0",
     "@playwright/test": "^1.53.1",
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-commonjs": "^28.0.6",

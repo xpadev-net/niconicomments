@@ -1,4 +1,5 @@
 import type { BaseConfig, BaseOptions } from "@/@types/";
+
 let defaultConfig: BaseConfig;
 
 /**

@@ -219,7 +219,7 @@ const parseMultiFontFullWidthPart = (
 const getButtonParts = (
   comment: FormattedCommentWithSize,
 ): FormattedCommentWithSize => {
-  let leftParts: ButtonPartLeft | undefined = undefined;
+  let leftParts: ButtonPartLeft | undefined;
   const parts: ButtonPartMiddle[] = [];
   const atButtonPadding = getConfig(config.atButtonPadding, true);
   const lineOffset = comment.lineOffset;

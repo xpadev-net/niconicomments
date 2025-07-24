@@ -3,9 +3,9 @@ import type {
   CommentEventHandlerMap,
   FormattedComment,
   IComment,
+  InputFormat,
   IPluginList,
   IRenderer,
-  InputFormat,
   Options,
   Position,
   Timeline,
@@ -178,7 +178,7 @@ class NiconiComments {
         if (pluginInstance.transformComments) {
           instances = pluginInstance.transformComments(instances);
         }
-      } catch (e) {
+      } catch (_e) {
         console.error("Failed to init plugin");
       }
     }

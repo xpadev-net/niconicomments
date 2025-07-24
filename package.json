@@ -17,7 +17,7 @@
     "format": "biome format src",
     "format:fix": "biome format --write src",
     "lint": "biome check src",
-    "lint:fix": "biome check --apply-unsafe src",
+    "lint:fix": "biome check --write --unsafe src",
     "prepare": "lefthook install",
     "test": "docker-compose run --rm pw",
     "test-server": "http-server"

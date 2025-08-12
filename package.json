@@ -70,5 +70,11 @@
   },
   "engines": {
     "node": ">=20.0.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "lefthook",
+      "@biomejs/biome"
+    ]
   }
 }

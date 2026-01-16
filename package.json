@@ -45,36 +45,36 @@
   "homepage": "https://xpadev-net.github.io/niconicomments/",
   "license": "MIT",
   "devDependencies": {
-    "@babel/core": "^7.27.4",
-    "@babel/preset-env": "^7.27.2",
-    "@biomejs/biome": "^2.0.0",
-    "@playwright/test": "^1.53.1",
-    "@rollup/plugin-babel": "^6.0.4",
+    "@babel/core": "^7.28.6",
+    "@babel/preset-env": "^7.28.6",
+    "@biomejs/biome": "^2.3.11",
+    "@playwright/test": "^1.57.0",
+    "@rollup/plugin-babel": "^6.1.0",
     "@rollup/plugin-commonjs": "^29.0.0",
     "@rollup/plugin-json": "^6.1.0",
-    "@rollup/plugin-node-resolve": "^16.0.0",
-    "@rollup/plugin-typescript": "^12.0.0",
-    "@types/node": "^24.0.0",
+    "@rollup/plugin-node-resolve": "^16.0.3",
+    "@rollup/plugin-typescript": "^12.3.0",
+    "@types/node": "^24.10.9",
     "copyfiles": "^2.4.1",
     "http-server": "^14.1.1",
-    "lefthook": "^2.0.0",
-    "rimraf": "^6.0.1",
-    "rollup": "^4.44.0",
-    "rollup-plugin-dts": "^6.2.1",
+    "lefthook": "^2.0.15",
+    "rimraf": "^6.1.2",
+    "rollup": "^4.55.1",
+    "rollup-plugin-dts": "^6.3.0",
     "rollup-plugin-typescript-paths": "^1.5.0",
     "tslib": "^2.8.1",
-    "typedoc": "^0.28.0",
-    "typedoc-plugin-missing-exports": "^4.0.0",
-    "typescript": "^5.8.3",
-    "valibot": "^1.1.0"
+    "typedoc": "^0.28.16",
+    "typedoc-plugin-missing-exports": "^4.1.2",
+    "typescript": "^5.9.3",
+    "valibot": "^1.2.0"
   },
   "engines": {
     "node": ">=20.0.0"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
-      "lefthook",
-      "@biomejs/biome"
+      "@biomejs/biome",
+      "lefthook"
     ]
   }
 }

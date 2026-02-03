@@ -190,7 +190,7 @@ class HTML5Comment extends BaseComment {
     ];
     const scale = widthLimit / width;
     comment.resizedX = true;
-    const baseCharSize = (comment.charSize ?? 0) * scale;
+    const baseCharSize = Math.max(1, (comment.charSize ?? 0) * scale);
     const baseLineHeight = (comment.lineHeight ?? 0) * scale;
     const getMeasured = (nextCharSize: number) => {
       const nextLineHeight = baseLineHeight * (nextCharSize / baseCharSize);

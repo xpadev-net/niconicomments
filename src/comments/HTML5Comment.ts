@@ -218,14 +218,8 @@ class HTML5Comment extends BaseComment {
           bestResult = candidate;
           break;
         }
-        const nextLow = Math.max(1, Math.floor(low * 0.5));
-        if (nextLow === low) {
-          best = low;
-          bestResult = candidate;
-          break;
-        }
         high = low;
-        low = nextLow;
+        low = Math.max(1, Math.floor(low * 0.5));
       }
     } else {
       let remainingIterations = MAX_RESIZE_ITERATIONS;

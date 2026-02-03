@@ -32,6 +32,8 @@ Playwright tests could not run locally because `docker-compose` is not available
 
 The unit-test harness required configuring Vitest to understand the `@/*` path alias; without the alias it could not import internal modules.
 
+PNPM was required for dependency management; the environment initially lacked pnpm, so Corepack was used to enable it before installing dependencies.
+
 ## Decision Log
 
 - Decision: Keep public APIs and types stable, and use internal helpers (for example `WeakSet`) to track one-time timeline insertion rather than changing external interfaces.
@@ -117,13 +119,13 @@ Finally, update input parsers in `src/input/xmlDocument.ts`, `src/input/xml2js.t
 Run the build and the unit tests, then verify the sample pages still render correctly.
 
 - Build the bundle so the sample pages use the latest code.
-  Expected command (run in repo root, use npm when pnpm is unavailable):
-    npm install
-    npm run build
+  Expected command (run in repo root):
+    pnpm install
+    pnpm build
 
 - Run the unit tests.
   Expected command:
-    npm run test:unit
+    pnpm test:unit
 
   Expected outcome:
   - The new unit tests pass and demonstrate that repeated calls with the same inputs yield the same outputs.
@@ -132,7 +134,7 @@ Run the build and the unit tests, then verify the sample pages still render corr
   Run `pnpm test-server`, then open `http://localhost:8080/docs/sample/test.html?video=0&time=0` and ensure the comments render without missing text or visual glitches.
 
 - Type and lint sanity:
-  Run `npm run check-types` and `npm run lint` and confirm they complete without errors.
+  Run `pnpm check-types` and `pnpm lint` and confirm they complete without errors.
 
 ## Idempotence and Recovery
 
@@ -179,4 +181,4 @@ In `src/comments/HTML5Comment.ts`, define a helper that performs a bounded searc
 Initial version created to describe the performance improvement work and how to validate it.
 Updated to remove performance timing harnesses and require deterministic tests because timing-based benchmarks are not stable across environments.
 Updated to replace calc page snapshots with unit tests and a fake renderer to validate deterministic outputs without a browser.
-Updated to place unit tests under tests/ because test/ is gitignored, and to document npm commands when pnpm is unavailable.
+Updated to place unit tests under tests/ because test/ is gitignored, and to ensure commands use pnpm.

@@ -213,13 +213,14 @@ class HTML5Comment extends BaseComment {
       let remainingIterations = MAX_RESIZE_ITERATIONS;
       while (remainingIterations-- > 0) {
         const candidate = getMeasured(low).measure;
-        if (candidate.width <= widthLimit || low === 1) {
+        const nextLow = Math.max(1, Math.floor(low * 0.5));
+        if (candidate.width <= widthLimit || nextLow === low) {
           best = low;
           bestResult = candidate;
           break;
         }
         high = low;
-        low = Math.max(1, Math.floor(low * 0.5));
+        low = nextLow;
       }
     } else {
       let remainingIterations = MAX_RESIZE_ITERATIONS;

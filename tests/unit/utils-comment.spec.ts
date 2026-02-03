@@ -68,6 +68,14 @@ describe("process comment timeline determinism", () => {
     const rightArray = Object.values(collision.right).find(Array.isArray);
     expect(leftArray).toBeDefined();
     expect(rightArray).toBeDefined();
+    const leftEntry = collision.left[comment.vpos];
+    const rightEntry = collision.right[comment.vpos];
+    if (leftEntry) {
+      expect(leftEntry.includes(comment)).toBe(true);
+    }
+    if (rightEntry) {
+      expect(rightEntry.includes(comment)).toBe(true);
+    }
     expect(comment.posY).toBeGreaterThanOrEqual(0);
   });
 });

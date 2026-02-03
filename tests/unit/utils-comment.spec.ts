@@ -41,6 +41,7 @@ describe("process comment timeline determinism", () => {
     processFixedComment(comment, collision.ue, timeline, timelineInserted);
     const second = cloneState(timeline, collision);
     expect(second).toEqual(first);
+    expect(Object.keys(collision.ue).length).toBeGreaterThan(0);
     expect(comment.posY).toBeGreaterThanOrEqual(0);
   });
 
@@ -58,6 +59,8 @@ describe("process comment timeline determinism", () => {
     processMovableComment(comment, collision, timeline, timelineInserted);
     const second = cloneState(timeline, collision);
     expect(second).toEqual(first);
+    expect(Object.keys(collision.left).length).toBeGreaterThan(0);
+    expect(Object.keys(collision.right).length).toBeGreaterThan(0);
     expect(comment.posY).toBeGreaterThanOrEqual(0);
   });
 });

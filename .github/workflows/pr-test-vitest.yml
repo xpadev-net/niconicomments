@@ -28,7 +28,10 @@ jobs:
           node-version: "${{ matrix.node-version }}"
 
       - name: allow write in work dir
-        run: sudo chmod -R 777 .
+        run: |
+          sudo find "$GITHUB_WORKSPACE" -type d -exec chmod 755 {} +
+          sudo find "$GITHUB_WORKSPACE" -type f -perm /111 -exec chmod 755 {} +
+          sudo find "$GITHUB_WORKSPACE" -type f ! -perm /111 -exec chmod 644 {} +
 
       - name: Install Dependencies
         run: pnpm install

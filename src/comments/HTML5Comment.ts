@@ -26,6 +26,8 @@ import {
 
 import { BaseComment } from "./BaseComment";
 
+const MAX_RESIZE_ITERATIONS = 20; // enough iterations for exponential search to converge
+
 class HTML5Comment extends BaseComment {
   override readonly pluginName: string = "HTML5Comment";
   constructor(comment: FormattedComment, context: IRenderer, index: number) {
@@ -207,9 +209,8 @@ class HTML5Comment extends BaseComment {
     let high = Math.max(low, Math.ceil(baseCharSize * 1.5));
     let best = baseCharSize;
     let bestResult = getMeasured(baseCharSize).measure;
-    const maxResizeIterations = 20; // bound iterations to avoid infinite loops
     if (bestResult.width > widthLimit) {
-      let maxIterations = maxResizeIterations;
+      let maxIterations = MAX_RESIZE_ITERATIONS;
       while (maxIterations-- > 0) {
         const candidate = getMeasured(low).measure;
         if (candidate.width <= widthLimit || low === 1) {
@@ -221,7 +222,7 @@ class HTML5Comment extends BaseComment {
         low = Math.max(1, Math.floor(low * 0.5));
       }
     } else {
-      let maxIterations = maxResizeIterations;
+      let maxIterations = MAX_RESIZE_ITERATIONS;
       while (maxIterations-- > 0) {
         const candidate = getMeasured(high).measure;
         if (candidate.width > widthLimit) break;

@@ -12,7 +12,7 @@ export const Xml2jsParser: InputParser = {
 
 const fromXml2js = (data: Xml2jsPacket): FormattedComment[] => {
   const data_: FormattedComment[] = [];
-  const userList: string[] = [];
+  const userList = new Map<string, number>();
   let index = data.packet.chat.length;
   for (const item of data.packet.chat) {
     const tmpParam: FormattedComment = {
@@ -32,12 +32,13 @@ const fromXml2js = (data: Xml2jsPacket): FormattedComment[] => {
       tmpParam.mail.push("invisible");
     }
     const userId = item.$.user_id ?? "";
-    const isUserExist = userList.indexOf(userId);
-    if (isUserExist === -1) {
-      tmpParam.user_id = userList.length;
-      userList.push(userId);
+    const existing = userList.get(userId);
+    if (existing === undefined) {
+      const nextId = userList.size;
+      userList.set(userId, nextId);
+      tmpParam.user_id = nextId;
     } else {
-      tmpParam.user_id = isUserExist;
+      tmpParam.user_id = existing;
     }
     data_.push(tmpParam);
   }

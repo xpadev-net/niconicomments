@@ -291,18 +291,30 @@ class NiconiComments {
     if (this.lastVpos === vpos && !forceRendering) return false;
     triggerHandler(vposInt, this.lastVposInt);
     const timelineRange = this.timeline[vposInt];
+    const splitTimeline = (items: IComment[] | undefined) => {
+      const fixed: IComment[] = [];
+      let hasNaka = false;
+      if (items) {
+        for (const item of items) {
+          if (item.loc === "naka") {
+            hasNaka = true;
+          } else {
+            fixed.push(item);
+          }
+        }
+      }
+      return { fixed, hasNaka };
+    };
+    const currentSplit = splitTimeline(timelineRange);
+    const lastSplit = splitTimeline(this.timeline[this.lastVposInt]);
     if (
       !forceRendering &&
       plugins.length === 0 &&
-      timelineRange?.filter((item) => item.loc === "naka").length === 0 &&
-      this.timeline[this.lastVposInt]?.filter((item) => item.loc === "naka")
-        ?.length === 0
+      !currentSplit.hasNaka &&
+      !lastSplit.hasNaka
     ) {
-      const current = timelineRange.filter((item) => item.loc !== "naka");
-      const last =
-        this.timeline[this.lastVposInt]?.filter(
-          (item) => item.loc !== "naka",
-        ) ?? [];
+      const current = currentSplit.fixed;
+      const last = lastSplit.fixed;
       if (arrayEqual(current, last)) return false;
     }
     this.renderer.clearRect(0, 0, config.canvasWidth, config.canvasHeight);

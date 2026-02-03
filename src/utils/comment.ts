@@ -615,6 +615,8 @@ const isBanActive = (vpos: number): boolean => {
   return false;
 };
 
+const timelineInserted = new WeakSet<IComment>();
+
 /**
  * 固定コメントを処理する
  * @param comment 固定コメント
@@ -628,15 +630,18 @@ const processFixedComment = (
   timeline: Timeline,
   lazy = false,
 ) => {
-  const posY = lazy ? -1 : getFixedPosY(comment, collision);
-  for (let j = 0; j < comment.long; j++) {
-    const vpos = comment.vpos + j;
-    if (timeline[vpos]?.includes(comment)) continue;
-    arrayPush(timeline, vpos, comment);
-    if (j > comment.long - 20) continue;
-    arrayPush(collision, vpos, comment);
+  if (!timelineInserted.has(comment)) {
+    for (let j = 0; j < comment.long; j++) {
+      const vpos = comment.vpos + j;
+      arrayPush(timeline, vpos, comment);
+      if (j > comment.long - 20) continue;
+      arrayPush(collision, vpos, comment);
+    }
+    timelineInserted.add(comment);
   }
-  comment.posY = posY;
+  if (!lazy && comment.posY < 0) {
+    comment.posY = getFixedPosY(comment, collision);
+  }
 };
 
 /**
@@ -654,28 +659,31 @@ const processMovableComment = (
 ) => {
   const beforeVpos =
     Math.round(-288 / ((1632 + comment.width) / (comment.long + 125))) - 100;
-  const posY = lazy ? -1 : getMovablePosY(comment, collision, beforeVpos);
-  for (let j = beforeVpos, n = comment.long + 125; j < n; j++) {
-    const vpos = comment.vpos + j;
-    const leftPos = getPosX(comment.comment, vpos);
-    if (timeline[vpos]?.includes(comment)) continue;
-    arrayPush(timeline, vpos, comment);
-    if (
-      leftPos + comment.width + config.collisionPadding >=
-        config.collisionRange.right &&
-      leftPos <= config.collisionRange.right
-    ) {
-      arrayPush(collision.right, vpos, comment);
+  if (!timelineInserted.has(comment)) {
+    for (let j = beforeVpos, n = comment.long + 125; j < n; j++) {
+      const vpos = comment.vpos + j;
+      const leftPos = getPosX(comment.comment, vpos);
+      arrayPush(timeline, vpos, comment);
+      if (
+        leftPos + comment.width + config.collisionPadding >=
+          config.collisionRange.right &&
+        leftPos <= config.collisionRange.right
+      ) {
+        arrayPush(collision.right, vpos, comment);
+      }
+      if (
+        leftPos + comment.width + config.collisionPadding >=
+          config.collisionRange.left &&
+        leftPos <= config.collisionRange.left
+      ) {
+        arrayPush(collision.left, vpos, comment);
+      }
     }
-    if (
-      leftPos + comment.width + config.collisionPadding >=
-        config.collisionRange.left &&
-      leftPos <= config.collisionRange.left
-    ) {
-      arrayPush(collision.left, vpos, comment);
-    }
+    timelineInserted.add(comment);
   }
-  comment.posY = posY;
+  if (!lazy && comment.posY < 0) {
+    comment.posY = getMovablePosY(comment, collision, beforeVpos);
+  }
 };
 
 const getFixedPosY = (comment: IComment, collision: CollisionItem) => {

@@ -17,7 +17,7 @@ export const XmlDocumentParser: InputParser = {
  */
 const parseXMLDocument = (data: XMLDocument): FormattedComment[] => {
   const data_: FormattedComment[] = [];
-  const userList: string[] = [];
+  const userList = new Map<string, number>();
   let index = Array.from(data.documentElement.children).length;
   for (const item of Array.from(data.documentElement.children)) {
     if (item.nodeName !== "chat") continue;
@@ -41,12 +41,13 @@ const parseXMLDocument = (data: XMLDocument): FormattedComment[] => {
       tmpParam.mail.push("invisible");
     }
     const userId = item.getAttribute("user_id") ?? "";
-    const isUserExist = userList.indexOf(userId);
-    if (isUserExist === -1) {
-      tmpParam.user_id = userList.length;
-      userList.push(userId);
+    const existing = userList.get(userId);
+    if (existing === undefined) {
+      const nextId = userList.size;
+      userList.set(userId, nextId);
+      tmpParam.user_id = nextId;
     } else {
-      tmpParam.user_id = isUserExist;
+      tmpParam.user_id = existing;
     }
     data_.push(tmpParam);
   }

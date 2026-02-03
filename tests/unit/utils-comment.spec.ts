@@ -9,10 +9,10 @@ import { createComment, FakeRenderer, resetTestConfig } from "./helpers";
 const createTimeline = (): Timeline => ({});
 
 const createCollision = (): Collision => ({
-  ue: [],
-  shita: [],
-  left: [],
-  right: [],
+  ue: {},
+  shita: {},
+  left: {},
+  right: {},
 });
 
 const cloneState = (timeline: Timeline, collision: Collision) => ({

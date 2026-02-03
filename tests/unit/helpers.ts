@@ -1,6 +1,5 @@
 import type { IRenderer } from "@/@types";
 import {
-  config,
   defaultConfig,
   defaultOptions,
   setConfig,

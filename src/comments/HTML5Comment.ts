@@ -26,7 +26,7 @@ import {
 
 import { BaseComment } from "./BaseComment";
 
-const MAX_RESIZE_ITERATIONS = 20; // caps exponential search growth (~1.5^20) to avoid runaway loops
+const MAX_RESIZE_ITERATIONS = 20; // caps exponential search steps to avoid runaway loops
 
 class HTML5Comment extends BaseComment {
   override readonly pluginName: string = "HTML5Comment";
@@ -213,14 +213,13 @@ class HTML5Comment extends BaseComment {
       let remainingIterations = MAX_RESIZE_ITERATIONS;
       while (remainingIterations-- > 0) {
         const candidate = getMeasured(low).measure;
-        const nextLow = Math.max(1, Math.floor(low * 0.5));
         if (candidate.width <= widthLimit || low === 1) {
           best = low;
           bestResult = candidate;
           break;
         }
         high = low;
-        low = nextLow;
+        low = Math.max(1, Math.floor(low * 0.5));
       }
     } else {
       let remainingIterations = MAX_RESIZE_ITERATIONS;

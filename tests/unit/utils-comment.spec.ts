@@ -57,9 +57,13 @@ describe("process comment timeline determinism", () => {
     const timelineInserted = new WeakSet();
     processMovableComment(comment, collision, timeline, timelineInserted);
     const first = cloneState(timeline, collision);
+    const leftKeys = Object.keys(collision.left);
+    const rightKeys = Object.keys(collision.right);
     processMovableComment(comment, collision, timeline, timelineInserted);
     const second = cloneState(timeline, collision);
     expect(second).toEqual(first);
+    expect(Object.keys(collision.left)).toEqual(leftKeys);
+    expect(Object.keys(collision.right)).toEqual(rightKeys);
     const leftArray = Object.values(collision.left).find(Array.isArray);
     const rightArray = Object.values(collision.right).find(Array.isArray);
     expect(leftArray).toBeDefined();

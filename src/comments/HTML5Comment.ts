@@ -186,8 +186,6 @@ class HTML5Comment extends BaseComment {
     const widthLimit = getConfig(config.commentStageSize, false)[
       comment.full ? "fullWidth" : "width"
     ];
-    const lineHeight = getLineHeight(comment.size, false);
-    const charSize = getCharSize(comment.size, false);
     const scale = widthLimit / width;
     comment.resizedX = true;
     const baseCharSize = (comment.charSize ?? 0) * scale;
@@ -210,7 +208,8 @@ class HTML5Comment extends BaseComment {
     let best = baseCharSize;
     let bestResult = getMeasured(baseCharSize).measure;
     if (bestResult.width > widthLimit) {
-      while (true) {
+      let maxIterations = 20;
+      while (maxIterations-- > 0) {
         const candidate = getMeasured(low).measure;
         if (candidate.width <= widthLimit || low === 1) {
           best = low;
@@ -221,7 +220,8 @@ class HTML5Comment extends BaseComment {
         low = Math.max(1, Math.floor(low * 0.5));
       }
     } else {
-      while (true) {
+      let maxIterations = 20;
+      while (maxIterations-- > 0) {
         const candidate = getMeasured(high).measure;
         if (candidate.width > widthLimit) break;
         best = high;
@@ -246,9 +246,9 @@ class HTML5Comment extends BaseComment {
     }
     const finalLineHeight = baseLineHeight * (best / baseCharSize);
     if (comment.resizedY) {
-      const scale = best / (comment.charSize ?? 0);
-      comment.charSize = scale * charSize;
-      comment.lineHeight = scale * lineHeight;
+      const scale = best / (comment.charSize ?? best);
+      comment.charSize = (comment.charSize ?? best) * scale;
+      comment.lineHeight = (comment.lineHeight ?? finalLineHeight) * scale;
     } else {
       comment.charSize = best;
       comment.lineHeight = finalLineHeight;

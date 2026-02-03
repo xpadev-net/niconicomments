@@ -10,11 +10,13 @@ After this change, large comment datasets load faster and frame rendering does l
 
 ## Progress
 
-- [ ] (2026-02-03 00:00) Add deterministic unit tests that assert identical inputs yield identical outputs for key functions impacted by the refactor.
-- [ ] (2026-02-03 00:00) Reduce redundant work in timeline/collision building and per-frame filtering while preserving rendering behavior.
-- [ ] (2026-02-03 00:00) Replace linear resize loops in HTML5 text measurement with a bounded search while keeping visual sizes stable.
-- [ ] (2026-02-03 00:00) Remove quadratic user-id lookups in input parsers with a Map-based approach and re-run validations.
-- [ ] (2026-02-03 00:00) Validate with the unit tests, lint/type checks, and manual visual checks in the sample pages.
+- [x] (2026-02-03 22:06Z) Ran baseline lint/type check/build; Playwright tests could not run because docker-compose is unavailable in the environment.
+- [x] (2026-02-03 22:10Z) Updated plan to place new unit tests under tests/ because test/ is gitignored.
+- [x] (2026-02-03 22:19Z) Added vitest + deterministic unit tests under tests/ for timeline insertion, HTML5 sizing, and input parser stability.
+- [x] (2026-02-03 22:19Z) Reduced redundant work in timeline/collision building and per-frame filtering while preserving rendering behavior.
+- [x] (2026-02-03 22:19Z) Replaced linear resize loops in HTML5 text measurement with a bounded search while keeping visual sizes stable.
+- [x] (2026-02-03 22:19Z) Removed quadratic user-id lookups in input parsers with a Map-based approach.
+- [x] (2026-02-03 22:20Z) Validated with unit tests, lint/type checks, build, and manual visual check on sample page.
 
 ## Surprises & Discoveries
 
@@ -25,6 +27,10 @@ The HTML5 resize path in `src/comments/HTML5Comment.ts` shrinks or grows text on
 The XML, legacy, and v1 input parsers use `userList.indexOf` repeatedly, which scales poorly when many distinct user IDs appear.
 
 Timing-based benchmarks fluctuate across environments, so correctness must be guarded by deterministic unit tests rather than local timing deltas.
+
+Playwright tests could not run locally because `docker-compose` is not available in the environment, so only lint/type/build ran during baseline checks.
+
+The unit-test harness required configuring Vitest to understand the `@/*` path alias; without the alias it could not import internal modules.
 
 ## Decision Log
 
@@ -40,9 +46,13 @@ Timing-based benchmarks fluctuate across environments, so correctness must be gu
   Rationale: The repository currently uses Playwright for browser screenshots; placing unit tests elsewhere keeps concerns separate and avoids cross-runner confusion.
   Date/Author: 2026-02-03 / Codex
 
+- Decision: Place new deterministic unit tests under `tests/` instead of `test/` because `test/` is gitignored in this repository.
+  Rationale: Using a non-ignored folder ensures the new unit tests are committed while still keeping them separate from Playwright’s `test/` conventions.
+  Date/Author: 2026-02-03 / Codex
+
 ## Outcomes & Retrospective
 
-Not completed yet. This section will be updated after milestones are executed to summarize achieved improvements, any regressions, and remaining gaps.
+Milestones 1-3 completed: deterministic tests cover timeline insertion, HTML5 sizing, and input parser stability, and the performance optimizations are in place without changing sample page output. Remaining gap: Playwright visual regression tests could not run locally due to missing docker-compose, so full visual diff coverage depends on CI or another environment.
 
 ## Context and Orientation
 
@@ -62,7 +72,7 @@ Milestone 3 optimizes HTML5 text resize and input parsing. At the end of this mi
 
 ## Plan of Work
 
-First, add deterministic unit tests. Introduce `vitest` as a dev dependency, add a `vitest.config.ts` that targets the Node environment, and add a `test:unit` script in `package.json` that runs `vitest run`. Create `test/unit/` test files that exercise the functions being refactored and assert stable outputs. Use a small fake renderer that implements `IRenderer` with deterministic `measureText` results so HTML5 sizing logic can be tested without a browser.
+First, add deterministic unit tests. Introduce `vitest` as a dev dependency, add a `vitest.config.ts` that targets the Node environment, and add a `test:unit` script in `package.json` that runs `vitest run`. Create `tests/unit/` test files that exercise the functions being refactored and assert stable outputs. Use a small fake renderer that implements `IRenderer` with deterministic `measureText` results so HTML5 sizing logic can be tested without a browser.
 
 Next, remove redundant timeline insertion work. Add a module-scoped `WeakSet<IComment>` in `src/utils/comment.ts` to track whether a comment’s timeline and collision entries have already been inserted. Update `processFixedComment` and `processMovableComment` so they insert into `timeline`/`collision` only once per comment, and only recompute `posY` when it is still negative and `lazy` is false. Remove the `timeline[vpos]?.includes(comment)` check inside the loops once the one-time insertion guard is in place. This keeps behavior the same while eliminating repeated linear scans.
 
@@ -76,13 +86,13 @@ Finally, update input parsers in `src/input/xmlDocument.ts`, `src/input/xml2js.t
 
 1) Create deterministic unit tests.
    - Add `vitest` to `devDependencies`, add `vitest.config.ts` with `test.environment = "node"`, and add a `test:unit` script (`vitest run`).
-   - Create `test/unit/utils-comment.spec.ts` to cover:
+   - Create `tests/unit/utils-comment.spec.ts` to cover:
      - `processFixedComment` and `processMovableComment` producing identical `timeline` and `collision` contents across repeated runs with the same inputs.
      - Deterministic `posY` results when collisions are empty and canvas size is sufficient (avoid branches that call `Math.random`).
-   - Create `test/unit/html5-measure.spec.ts` to cover:
+   - Create `tests/unit/html5-measure.spec.ts` to cover:
      - `HTML5Comment.getCommentSize` (or `measure`) producing the same width/height for a fixed comment using a fake `IRenderer` where `measureText` returns `text.length * constant`.
      - A case that triggers resize logic so the bounded search path is exercised.
-   - Create `test/unit/input-parsers.spec.ts` to cover:
+   - Create `tests/unit/input-parsers.spec.ts` to cover:
      - `legacy`, `xmlDocument`, `xml2js`, and `v1` parsers producing identical outputs across repeated runs and stable `user_id` assignment order.
 
 2) Update timeline insertion and lazy positioning.
@@ -107,13 +117,13 @@ Finally, update input parsers in `src/input/xmlDocument.ts`, `src/input/xml2js.t
 Run the build and the unit tests, then verify the sample pages still render correctly.
 
 - Build the bundle so the sample pages use the latest code.
-  Expected command (run in repo root):
-    pnpm install
-    pnpm build
+  Expected command (run in repo root, use npm when pnpm is unavailable):
+    npm install
+    npm run build
 
 - Run the unit tests.
   Expected command:
-    pnpm test:unit
+    npm run test:unit
 
   Expected outcome:
   - The new unit tests pass and demonstrate that repeated calls with the same inputs yield the same outputs.
@@ -122,7 +132,7 @@ Run the build and the unit tests, then verify the sample pages still render corr
   Run `pnpm test-server`, then open `http://localhost:8080/docs/sample/test.html?video=0&time=0` and ensure the comments render without missing text or visual glitches.
 
 - Type and lint sanity:
-  Run `pnpm check-types` and `pnpm lint` and confirm they complete without errors.
+  Run `npm run check-types` and `npm run lint` and confirm they complete without errors.
 
 ## Idempotence and Recovery
 
@@ -169,3 +179,4 @@ In `src/comments/HTML5Comment.ts`, define a helper that performs a bounded searc
 Initial version created to describe the performance improvement work and how to validate it.
 Updated to remove performance timing harnesses and require deterministic tests because timing-based benchmarks are not stable across environments.
 Updated to replace calc page snapshots with unit tests and a fake renderer to validate deterministic outputs without a browser.
+Updated to place unit tests under tests/ because test/ is gitignored, and to document npm commands when pnpm is unavailable.

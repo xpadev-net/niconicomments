@@ -214,7 +214,7 @@ class HTML5Comment extends BaseComment {
       while (remainingIterations-- > 0) {
         const candidate = getMeasured(low).measure;
         const nextLow = Math.max(1, Math.floor(low * 0.5));
-        if (candidate.width <= widthLimit || nextLow === low) {
+        if (candidate.width <= widthLimit || low === 1) {
           best = low;
           bestResult = candidate;
           break;

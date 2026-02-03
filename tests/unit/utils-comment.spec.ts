@@ -35,9 +35,10 @@ describe("process comment timeline determinism", () => {
     const comment = newCommentInstance(renderer, 0);
     const timeline = createTimeline();
     const collision = createCollision();
-    processFixedComment(comment, collision.ue, timeline);
+    const timelineInserted = new WeakSet();
+    processFixedComment(comment, collision.ue, timeline, timelineInserted);
     const first = cloneState(timeline, collision);
-    processFixedComment(comment, collision.ue, timeline);
+    processFixedComment(comment, collision.ue, timeline, timelineInserted);
     const second = cloneState(timeline, collision);
     expect(second).toEqual(first);
     expect(comment.posY).toBeGreaterThanOrEqual(0);
@@ -51,9 +52,10 @@ describe("process comment timeline determinism", () => {
     comment.comment.long = 300;
     const timeline = createTimeline();
     const collision = createCollision();
-    processMovableComment(comment, collision, timeline);
+    const timelineInserted = new WeakSet();
+    processMovableComment(comment, collision, timeline, timelineInserted);
     const first = cloneState(timeline, collision);
-    processMovableComment(comment, collision, timeline);
+    processMovableComment(comment, collision, timeline, timelineInserted);
     const second = cloneState(timeline, collision);
     expect(second).toEqual(first);
     expect(comment.posY).toBeGreaterThanOrEqual(0);

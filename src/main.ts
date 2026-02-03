@@ -61,6 +61,7 @@ class NiconiComments {
   private readonly renderer: IRenderer;
   private readonly collision: Collision;
   private readonly timeline: Timeline;
+  private readonly timelineInserted: WeakSet<IComment>;
   static typeGuard = typeGuard;
   static default = NiconiComments;
   static FlashComment = {
@@ -140,6 +141,7 @@ class NiconiComments {
       left: [],
       right: [],
     };
+    this.timelineInserted = new WeakSet();
     this.lastVpos = -1;
     this.processedCommentIndex = -1;
 
@@ -200,12 +202,19 @@ class NiconiComments {
     for (const comment of data.slice(this.processedCommentIndex + 1, end)) {
       if (comment.invisible || (comment.posY > -1 && !lazy)) continue;
       if (comment.loc === "naka") {
-        processMovableComment(comment, this.collision, this.timeline, lazy);
+        processMovableComment(
+          comment,
+          this.collision,
+          this.timeline,
+          this.timelineInserted,
+          lazy,
+        );
       } else {
         processFixedComment(
           comment,
           this.collision[comment.loc],
           this.timeline,
+          this.timelineInserted,
           lazy,
         );
       }
@@ -263,12 +272,18 @@ class NiconiComments {
     for (const comment of comments) {
       if (comment.invisible) continue;
       if (comment.loc === "naka") {
-        processMovableComment(comment, this.collision, this.timeline);
+        processMovableComment(
+          comment,
+          this.collision,
+          this.timeline,
+          this.timelineInserted,
+        );
       } else {
         processFixedComment(
           comment,
           this.collision[comment.loc],
           this.timeline,
+          this.timelineInserted,
         );
       }
     }

@@ -20,7 +20,8 @@
     "lint:fix": "biome check --write --unsafe src",
     "prepare": "lefthook install",
     "test": "docker-compose run --rm pw",
-    "test-server": "http-server"
+    "test-server": "http-server",
+    "test:unit": "vitest run"
   },
   "repository": {
     "type": "git",
@@ -66,7 +67,8 @@
     "typedoc": "^0.28.16",
     "typedoc-plugin-missing-exports": "^4.1.2",
     "typescript": "^5.9.3",
-    "valibot": "^1.2.0"
+    "valibot": "^1.2.0",
+    "vitest": "^4.0.18"
   },
   "engines": {
     "node": ">=20.0.0"
@@ -74,6 +76,7 @@
   "pnpm": {
     "onlyBuiltDependencies": [
       "@biomejs/biome",
+      "esbuild",
       "lefthook"
     ]
   }

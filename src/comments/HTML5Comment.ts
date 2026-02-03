@@ -207,7 +207,7 @@ class HTML5Comment extends BaseComment {
     let high = Math.max(low, Math.ceil(baseCharSize * 1.5));
     let best = baseCharSize;
     let bestResult = getMeasured(baseCharSize).measure;
-    const maxResizeIterations = 20;
+    const maxResizeIterations = 20; // bound iterations to avoid infinite loops
     if (bestResult.width > widthLimit) {
       let maxIterations = maxResizeIterations;
       while (maxIterations-- > 0) {

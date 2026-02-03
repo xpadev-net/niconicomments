@@ -192,13 +192,6 @@ class HTML5Comment extends BaseComment {
     comment.resizedX = true;
     const baseCharSize = (comment.charSize ?? 0) * scale;
     const baseLineHeight = (comment.lineHeight ?? 0) * scale;
-    if (baseCharSize <= 0 || baseLineHeight <= 0) {
-      comment.charSize = baseCharSize;
-      comment.lineHeight = baseLineHeight;
-      comment.fontSize = (comment.charSize ?? 0) * 0.8;
-      if (!typeGuard.internal.MeasureInput(comment)) throw new TypeGuardError();
-      return measure(comment, this.renderer);
-    }
     const getMeasured = (nextCharSize: number) => {
       const nextLineHeight = baseLineHeight * (nextCharSize / baseCharSize);
       const nextComment: MeasureTextInput = {
@@ -253,7 +246,7 @@ class HTML5Comment extends BaseComment {
     }
     const finalLineHeight = baseLineHeight * (best / baseCharSize);
     if (comment.resizedY) {
-      const scale = best / (comment.charSize ?? 1);
+      const scale = best / (comment.charSize ?? 0);
       comment.charSize = scale * charSize;
       comment.lineHeight = scale * lineHeight;
     } else {

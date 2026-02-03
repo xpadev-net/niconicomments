@@ -39,7 +39,7 @@ const fromV1 = (data: V1Thread[]): FormattedComment[] => {
       if (tmpParam.content.startsWith("/") && tmpParam.owner) {
         tmpParam.mail.push("invisible");
       }
-      const userId = value.userId ?? "";
+      const userId = value.userId;
       const existing = userList.get(userId);
       if (existing === undefined) {
         const nextId = userList.size;

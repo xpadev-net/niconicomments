@@ -213,13 +213,19 @@ class HTML5Comment extends BaseComment {
       let remainingIterations = MAX_RESIZE_ITERATIONS;
       while (remainingIterations-- > 0) {
         const candidate = getMeasured(low).measure;
-        if (candidate.width <= widthLimit || low === 1) {
+        if (candidate.width <= widthLimit) {
+          best = low;
+          bestResult = candidate;
+          break;
+        }
+        const nextLow = Math.max(1, Math.floor(low * 0.5));
+        if (nextLow === low) {
           best = low;
           bestResult = candidate;
           break;
         }
         high = low;
-        low = Math.max(1, Math.floor(low * 0.5));
+        low = nextLow;
       }
     } else {
       let remainingIterations = MAX_RESIZE_ITERATIONS;
@@ -248,11 +254,14 @@ class HTML5Comment extends BaseComment {
     }
     const finalLineHeight = baseLineHeight * (best / baseCharSize);
     if (comment.resizedY) {
-      const resizedBase = comment.charSize ?? best;
+      const resizedCharSize =
+        comment.charSize ?? getCharSize(comment.size, false);
+      const resizedLineHeight =
+        comment.lineHeight ?? getLineHeight(comment.size, false, true);
       // Preserve prior Y-resize by scaling from the existing resized values.
-      const scale = best / resizedBase;
+      const scale = best / resizedCharSize;
       comment.charSize = best;
-      comment.lineHeight = (comment.lineHeight ?? finalLineHeight) * scale;
+      comment.lineHeight = resizedLineHeight * scale;
     } else {
       comment.charSize = best;
       comment.lineHeight = finalLineHeight;

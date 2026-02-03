@@ -615,19 +615,19 @@ const isBanActive = (vpos: number): boolean => {
   return false;
 };
 
-const timelineInserted = new WeakSet<IComment>();
-
 /**
  * 固定コメントを処理する
  * @param comment 固定コメント
  * @param collision コメントの衝突判定用配列
  * @param timeline コメントのタイムライン
+ * @param timelineInserted タイムライン挿入済みのコメント
  * @param lazy Y座標の計算を遅延させるか
  */
 const processFixedComment = (
   comment: IComment,
   collision: CollisionItem,
   timeline: Timeline,
+  timelineInserted: WeakSet<IComment>,
   lazy = false,
 ) => {
   if (!timelineInserted.has(comment)) {
@@ -649,12 +649,14 @@ const processFixedComment = (
  * @param comment nakaコメント
  * @param collision コメントの衝突判定用配列
  * @param timeline コメントのタイムライン
+ * @param timelineInserted タイムライン挿入済みのコメント
  * @param lazy Y座標の計算を遅延させるか
  */
 const processMovableComment = (
   comment: IComment,
   collision: Collision,
   timeline: Timeline,
+  timelineInserted: WeakSet<IComment>,
   lazy = false,
 ) => {
   const beforeVpos =

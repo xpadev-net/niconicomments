@@ -17,9 +17,8 @@ describe("processFixedComment", () => {
     const comments = generateCommentInstances(100, renderer, "ue");
     const timeline = createTimeline();
     const collision = createCollision();
-    const inserted = new WeakSet();
     for (const comment of comments) {
-      processFixedComment(comment, collision.ue, timeline, inserted);
+      processFixedComment(comment, collision.ue, timeline);
     }
   });
 
@@ -29,9 +28,8 @@ describe("processFixedComment", () => {
     const comments = generateCommentInstances(1000, renderer, "ue");
     const timeline = createTimeline();
     const collision = createCollision();
-    const inserted = new WeakSet();
     for (const comment of comments) {
-      processFixedComment(comment, collision.ue, timeline, inserted);
+      processFixedComment(comment, collision.ue, timeline);
     }
   });
 });
@@ -43,9 +41,8 @@ describe("processMovableComment", () => {
     const comments = generateCommentInstances(100, renderer, "naka");
     const timeline = createTimeline();
     const collision = createCollision();
-    const inserted = new WeakSet();
     for (const comment of comments) {
-      processMovableComment(comment, collision, timeline, inserted);
+      processMovableComment(comment, collision, timeline);
     }
   });
 
@@ -55,9 +52,8 @@ describe("processMovableComment", () => {
     const comments = generateCommentInstances(1000, renderer, "naka");
     const timeline = createTimeline();
     const collision = createCollision();
-    const inserted = new WeakSet();
     for (const comment of comments) {
-      processMovableComment(comment, collision, timeline, inserted);
+      processMovableComment(comment, collision, timeline);
     }
   });
 });
@@ -71,16 +67,15 @@ describe("mixed comments (preRendering equivalent)", () => {
     const shitaComments = generateCommentInstances(50, renderer, "shita", 3);
     const timeline = createTimeline();
     const collision = createCollision();
-    const inserted = new WeakSet();
 
     for (const comment of nakaComments) {
-      processMovableComment(comment, collision, timeline, inserted);
+      processMovableComment(comment, collision, timeline);
     }
     for (const comment of ueComments) {
-      processFixedComment(comment, collision.ue, timeline, inserted);
+      processFixedComment(comment, collision.ue, timeline);
     }
     for (const comment of shitaComments) {
-      processFixedComment(comment, collision.shita, timeline, inserted);
+      processFixedComment(comment, collision.shita, timeline);
     }
   });
 });

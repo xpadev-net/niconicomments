@@ -1,4 +1,10 @@
-import type { Collision, FormattedComment, IComment, Timeline } from "@/@types";
+import type {
+  Collision,
+  FormattedComment,
+  IComment,
+  IRenderer,
+  Timeline,
+} from "@/@types";
 import { HTML5Comment } from "@/comments/HTML5Comment";
 import { resetNicoScripts } from "@/contexts/nicoscript";
 import {
@@ -9,7 +15,69 @@ import {
 } from "@/definition/config";
 import { initConfig } from "@/definition/initConfig";
 
-import { FakeRenderer } from "../unit/helpers";
+const emptyTextMetrics = (width: number): TextMetrics =>
+  ({
+    width,
+    actualBoundingBoxLeft: 0,
+    actualBoundingBoxRight: width,
+    actualBoundingBoxAscent: 0,
+    actualBoundingBoxDescent: 0,
+    alphabeticBaseline: 0,
+    hangingBaseline: 0,
+    emHeightAscent: 0,
+    emHeightDescent: 0,
+    fontBoundingBoxAscent: 0,
+    fontBoundingBoxDescent: 0,
+    ideographicBaseline: 0,
+  }) as TextMetrics;
+
+class FakeRenderer implements IRenderer {
+  private font = "";
+  private size = { width: 1920, height: 1080 };
+
+  destroy() {}
+  drawVideo() {}
+  getFont() {
+    return this.font;
+  }
+  getFillStyle() {
+    return "#000000";
+  }
+  setScale() {}
+  fillRect() {}
+  strokeRect() {}
+  fillText() {}
+  strokeText() {}
+  quadraticCurveTo() {}
+  clearRect() {}
+  setFont(font: string) {
+    this.font = font;
+  }
+  setFillStyle() {}
+  setStrokeStyle() {}
+  setLineWidth() {}
+  setGlobalAlpha() {}
+  setSize(width: number, height: number) {
+    this.size = { width, height };
+  }
+  getSize() {
+    return this.size;
+  }
+  measureText(text: string) {
+    return emptyTextMetrics(text.length * 0.5);
+  }
+  beginPath() {}
+  closePath() {}
+  moveTo() {}
+  lineTo() {}
+  stroke() {}
+  save() {}
+  restore() {}
+  getCanvas() {
+    return this;
+  }
+  drawImage() {}
+}
 
 /**
  * Deterministic pseudo-random number generator (mulberry32)

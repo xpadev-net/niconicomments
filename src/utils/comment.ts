@@ -620,32 +620,27 @@ const isBanActive = (vpos: number): boolean => {
  * @param comment 固定コメント
  * @param collision コメントの衝突判定用配列
  * @param timeline コメントのタイムライン
- * @param timelineInserted タイムライン挿入済みのコメント
  * @param lazy Y座標の計算を遅延させるか
  */
 const processFixedComment = (
   comment: IComment,
   collision: CollisionItem,
   timeline: Timeline,
-  timelineInserted: WeakSet<IComment>,
   lazy = false,
 ) => {
-  if (!timelineInserted.has(comment)) {
-    const commentVpos = comment.vpos;
-    const commentLong = comment.long;
-    const collisionEnd = commentLong - 20;
-    for (let j = 0; j < commentLong; j++) {
-      const vpos = commentVpos + j;
-      arrayPush(timeline, vpos, comment);
-      if (j <= collisionEnd) {
-        arrayPush(collision, vpos, comment);
-      }
+  const commentVpos = comment.vpos;
+  const commentLong = comment.long;
+  const collisionEnd = commentLong - 20;
+  const posY = lazy ? -1 : getFixedPosY(comment, collision);
+  for (let j = 0; j < commentLong; j++) {
+    const vpos = commentVpos + j;
+    if (timeline[vpos]?.includes(comment)) continue;
+    arrayPush(timeline, vpos, comment);
+    if (j <= collisionEnd) {
+      arrayPush(collision, vpos, comment);
     }
-    timelineInserted.add(comment);
   }
-  if (!lazy && comment.posY < 0) {
-    comment.posY = getFixedPosY(comment, collision);
-  }
+  comment.posY = posY;
 };
 
 /**
@@ -653,14 +648,12 @@ const processFixedComment = (
  * @param comment nakaコメント
  * @param collision コメントの衝突判定用配列
  * @param timeline コメントのタイムライン
- * @param timelineInserted タイムライン挿入済みのコメント
  * @param lazy Y座標の計算を遅延させるか
  */
 const processMovableComment = (
   comment: IComment,
   collision: Collision,
   timeline: Timeline,
-  timelineInserted: WeakSet<IComment>,
   lazy = false,
 ) => {
   const commentWidth = comment.width;
@@ -677,30 +670,27 @@ const processMovableComment = (
 
   const beforeVpos =
     Math.round(-288 / ((1632 + commentWidth) / (commentLong + 125))) - 100;
-  if (!timelineInserted.has(comment)) {
-    const n = commentLong + 125;
-    for (let j = beforeVpos; j < n; j++) {
-      const vpos = commentVpos + j;
-      const leftPos = drawPadding + drawRange - (j + 100) * speed;
-      arrayPush(timeline, vpos, comment);
-      if (
-        leftPos + commentWidth + collisionPadding >= collisionRight &&
-        leftPos <= collisionRight
-      ) {
-        arrayPush(collision.right, vpos, comment);
-      }
-      if (
-        leftPos + commentWidth + collisionPadding >= collisionLeft &&
-        leftPos <= collisionLeft
-      ) {
-        arrayPush(collision.left, vpos, comment);
-      }
+  const posY = lazy ? -1 : getMovablePosY(comment, collision, beforeVpos);
+  const n = commentLong + 125;
+  for (let j = beforeVpos; j < n; j++) {
+    const vpos = commentVpos + j;
+    const leftPos = drawPadding + drawRange - (j + 100) * speed;
+    if (timeline[vpos]?.includes(comment)) continue;
+    arrayPush(timeline, vpos, comment);
+    if (
+      leftPos + commentWidth + collisionPadding >= collisionRight &&
+      leftPos <= collisionRight
+    ) {
+      arrayPush(collision.right, vpos, comment);
     }
-    timelineInserted.add(comment);
+    if (
+      leftPos + commentWidth + collisionPadding >= collisionLeft &&
+      leftPos <= collisionLeft
+    ) {
+      arrayPush(collision.left, vpos, comment);
+    }
   }
-  if (!lazy && comment.posY < 0) {
-    comment.posY = getMovablePosY(comment, collision, beforeVpos);
-  }
+  comment.posY = posY;
 };
 
 const getFixedPosY = (comment: IComment, collision: CollisionItem) => {

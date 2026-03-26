@@ -30,4 +30,5 @@ const colors = {
   nobleviolet: "#6633CC",
   black2: "#666666",
 };
+
 export { colors };

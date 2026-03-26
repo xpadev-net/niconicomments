@@ -175,4 +175,5 @@ class CanvasRenderer implements IRenderer {
     //for override
   }
 }
+
 export { CanvasRenderer };

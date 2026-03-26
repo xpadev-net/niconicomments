@@ -15,4 +15,5 @@ class NotImplementedError extends Error {
   }
 }
 NotImplementedError.prototype.name = "NotImplementedError";
+
 export { NotImplementedError };

@@ -388,4 +388,5 @@ const initConfig = () => {
   };
   updateConfig(defaultConfig);
 };
+
 export { initConfig };

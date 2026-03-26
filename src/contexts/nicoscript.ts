@@ -22,4 +22,5 @@ const resetNicoScripts = () => {
     jump: [],
   };
 };
+
 export { nicoScripts, resetNicoScripts };

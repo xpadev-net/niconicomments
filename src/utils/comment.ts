@@ -670,7 +670,9 @@ const processMovableComment = (
 
   const beforeVpos =
     Math.round(-288 / ((1632 + commentWidth) / (commentLong + 125))) - 100;
-  const posY = lazy ? -1 : getMovablePosY(comment, collision, beforeVpos);
+  const posY = lazy
+    ? -1
+    : getMovablePosY(comment, collision, beforeVpos, speed);
   const n = commentLong + 125;
   for (let j = beforeVpos; j < n; j++) {
     const vpos = commentVpos + j;
@@ -716,6 +718,7 @@ const getMovablePosY = (
   comment: IComment,
   collision: Collision,
   beforeVpos: number,
+  speed: number,
 ) => {
   const canvasHeight = config.canvasHeight;
   const commentHeight = comment.height;
@@ -725,9 +728,6 @@ const getMovablePosY = (
   const commentWidth = comment.width;
   const commentLong = comment.long;
   const commentVpos = comment.vpos;
-  const speed =
-    (config.commentDrawRange + commentWidth * config.nakaCommentSpeedOffset) /
-    (commentLong + 100);
   const drawPadding = config.commentDrawPadding;
   const drawRange = config.commentDrawRange;
   const collisionRight = config.collisionRange.right;
@@ -802,10 +802,8 @@ const getPosY = (
         currentPos < item.posY + item.height &&
         currentPos + targetHeight > item.posY
       ) {
-        if (item.posY + item.height > currentPos) {
-          currentPos = item.posY + item.height;
-          isChanged = true;
-        }
+        currentPos = item.posY + item.height;
+        isChanged = true;
         if (currentPos + targetHeight > canvasHeight) {
           if (canvasHeight < targetHeight) {
             if (targetComment.mail.includes("naka")) {
@@ -820,7 +818,6 @@ const getPosY = (
           }
           return { currentPos, isChanged: true, isBreak: true };
         }
-        isChanged = true;
         continue restart;
       }
     }

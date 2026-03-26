@@ -707,6 +707,8 @@ const getFixedPosY = (comment: IComment, collision: CollisionItem) => {
     for (let j = 0; j < commentLong; j++) {
       const result = getPosY(posY, comment, collision[commentVpos + j]);
       posY = result.currentPos;
+      // ||= で累積: 途中のスロットで衝突が解決されても、後続スロットの
+      // false で上書きされないようにし、外側whileで再走査を保証する
       isChanged ||= result.isChanged;
       if (result.isBreak) break;
     }

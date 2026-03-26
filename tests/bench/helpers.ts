@@ -63,8 +63,10 @@ class FakeRenderer implements IRenderer {
   getSize() {
     return this.size;
   }
-  measureText(text: string) {
-    return emptyTextMetrics(text.length * 0.5);
+  measureText(_text: string) {
+    // 実際のコメントは200〜500px幅になるため、現実的な幅で
+    // 衝突検出のホットパスを十分に負荷テストする
+    return emptyTextMetrics(300);
   }
   beginPath() {}
   closePath() {}

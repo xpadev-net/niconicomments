@@ -6,5 +6,5 @@ pre-commit:
       stage_fixed: true
     typecheck:
       glob: "*.{ts,tsx}"
-      run: npx tsc --noEmit --skipLibCheck --pretty --noErrorTruncation --skipDefaultLibCheck --types node --project tsconfig.json
+      run: npx tsc --noEmit --pretty --noErrorTruncation --types node --project tsconfig.json
       stage_fixed: true

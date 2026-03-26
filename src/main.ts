@@ -61,7 +61,6 @@ class NiconiComments {
   private readonly renderer: IRenderer;
   private readonly collision: Collision;
   private readonly timeline: Timeline;
-  private readonly timelineInserted: WeakSet<IComment>;
   static typeGuard = typeGuard;
   static default = NiconiComments;
   static FlashComment = {
@@ -141,7 +140,6 @@ class NiconiComments {
       left: [],
       right: [],
     };
-    this.timelineInserted = new WeakSet();
     this.lastVpos = -1;
     this.processedCommentIndex = -1;
 
@@ -202,19 +200,12 @@ class NiconiComments {
     for (const comment of data.slice(this.processedCommentIndex + 1, end)) {
       if (comment.invisible || (comment.posY > -1 && !lazy)) continue;
       if (comment.loc === "naka") {
-        processMovableComment(
-          comment,
-          this.collision,
-          this.timeline,
-          this.timelineInserted,
-          lazy,
-        );
+        processMovableComment(comment, this.collision, this.timeline, lazy);
       } else {
         processFixedComment(
           comment,
           this.collision[comment.loc],
           this.timeline,
-          this.timelineInserted,
           lazy,
         );
       }
@@ -272,18 +263,12 @@ class NiconiComments {
     for (const comment of comments) {
       if (comment.invisible) continue;
       if (comment.loc === "naka") {
-        processMovableComment(
-          comment,
-          this.collision,
-          this.timeline,
-          this.timelineInserted,
-        );
+        processMovableComment(comment, this.collision, this.timeline);
       } else {
         processFixedComment(
           comment,
           this.collision[comment.loc],
           this.timeline,
-          this.timelineInserted,
         );
       }
     }
@@ -306,30 +291,18 @@ class NiconiComments {
     if (this.lastVpos === vpos && !forceRendering) return false;
     triggerHandler(vposInt, this.lastVposInt);
     const timelineRange = this.timeline[vposInt];
-    const splitTimeline = (items: IComment[] | undefined) => {
-      const fixed: IComment[] = [];
-      let hasNaka = false;
-      if (items) {
-        for (const item of items) {
-          if (item.loc === "naka") {
-            hasNaka = true;
-          } else {
-            fixed.push(item);
-          }
-        }
-      }
-      return { fixed, hasNaka };
-    };
-    const currentSplit = splitTimeline(timelineRange);
-    const lastSplit = splitTimeline(this.timeline[this.lastVposInt]);
     if (
       !forceRendering &&
       plugins.length === 0 &&
-      !currentSplit.hasNaka &&
-      !lastSplit.hasNaka
+      timelineRange?.filter((item) => item.loc === "naka").length === 0 &&
+      this.timeline[this.lastVposInt]?.filter((item) => item.loc === "naka")
+        ?.length === 0
     ) {
-      const current = currentSplit.fixed;
-      const last = lastSplit.fixed;
+      const current = timelineRange.filter((item) => item.loc !== "naka");
+      const last =
+        this.timeline[this.lastVposInt]?.filter(
+          (item) => item.loc !== "naka",
+        ) ?? [];
       if (arrayEqual(current, last)) return false;
     }
     this.renderer.clearRect(0, 0, config.canvasWidth, config.canvasHeight);

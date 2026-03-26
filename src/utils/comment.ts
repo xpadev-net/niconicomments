@@ -705,7 +705,7 @@ const getFixedPosY = (comment: IComment, collision: CollisionItem) => {
     for (let j = 0; j < commentLong; j++) {
       const result = getPosY(posY, comment, collision[commentVpos + j]);
       posY = result.currentPos;
-      isChanged = result.isChanged;
+      isChanged ||= result.isChanged;
       if (result.isBreak) break;
     }
   }
@@ -754,14 +754,14 @@ const getMovablePosY = (
         posY = result.currentPos;
         isChanged ||= result.isChanged;
         if (result.isChanged) lastUpdatedIndex = vpos;
-        isBreak = result.isBreak;
+        isBreak ||= result.isBreak;
       }
       if (leftPos + commentWidth >= collisionLeft && leftPos <= collisionLeft) {
         const result = getPosY(posY, comment, collision.left[vpos]);
         posY = result.currentPos;
         isChanged ||= result.isChanged;
         if (result.isChanged) lastUpdatedIndex = vpos;
-        isBreak = result.isBreak;
+        isBreak ||= result.isBreak;
       }
       if (isBreak) return posY;
     }
@@ -774,19 +774,17 @@ const getMovablePosY = (
  * @param _currentPos 現在のy座標
  * @param targetComment 対象コメント
  * @param collision 当たり判定
- * @param _isChanged 位置が変更されたか
  * @returns 現在地、更新されたか、終了すべきか
  */
 const getPosY = (
   _currentPos: number,
   targetComment: IComment,
   collision: IComment[] | undefined,
-  _isChanged = false,
 ): { currentPos: number; isChanged: boolean; isBreak: boolean } => {
   if (!collision)
-    return { currentPos: _currentPos, isChanged: _isChanged, isBreak: false };
+    return { currentPos: _currentPos, isChanged: false, isBreak: false };
   let currentPos = _currentPos;
-  let isChanged = _isChanged;
+  let isChanged = false;
   const targetIndex = targetComment.index;
   const targetOwner = targetComment.owner;
   const targetLayer = targetComment.layer;

@@ -10,4 +10,5 @@ class TypeGuardError extends Error {
   }
 }
 TypeGuardError.prototype.name = "TypeGuardError";
+
 export { TypeGuardError };

@@ -7,4 +7,5 @@ class CanvasRenderingContext2DError extends Error {
   }
 }
 CanvasRenderingContext2DError.prototype.name = "CanvasRenderingContext2DError";
+
 export { CanvasRenderingContext2DError };

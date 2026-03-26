@@ -8,17 +8,15 @@ import type { IComment } from "@/@types";
  */
 const arrayPush = (
   _array: { [key: number]: IComment[] },
-  key: string | number,
+  key: number,
   push: IComment,
 ) => {
-  let array = _array;
-  if (!array) {
-    array = {};
+  const arr = _array[key];
+  if (arr) {
+    arr.push(push);
+  } else {
+    _array[key] = [push];
   }
-  if (!array[Number(key)]) {
-    array[Number(key)] = [];
-  }
-  array[Number(key)]?.push(push);
 };
 /**
  * ２つの配列を比較する

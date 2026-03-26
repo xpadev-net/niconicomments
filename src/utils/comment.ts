@@ -631,11 +631,15 @@ const processFixedComment = (
   lazy = false,
 ) => {
   if (!timelineInserted.has(comment)) {
-    for (let j = 0; j < comment.long; j++) {
-      const vpos = comment.vpos + j;
+    const commentVpos = comment.vpos;
+    const commentLong = comment.long;
+    const collisionEnd = commentLong - 20;
+    for (let j = 0; j < commentLong; j++) {
+      const vpos = commentVpos + j;
       arrayPush(timeline, vpos, comment);
-      if (j > comment.long - 20) continue;
-      arrayPush(collision, vpos, comment);
+      if (j <= collisionEnd) {
+        arrayPush(collision, vpos, comment);
+      }
     }
     timelineInserted.add(comment);
   }
@@ -659,24 +663,35 @@ const processMovableComment = (
   timelineInserted: WeakSet<IComment>,
   lazy = false,
 ) => {
+  const commentWidth = comment.width;
+  const commentLong = comment.long;
+  const commentVpos = comment.vpos;
+  const speed =
+    (config.commentDrawRange + commentWidth * config.nakaCommentSpeedOffset) /
+    (commentLong + 100);
+  const drawPadding = config.commentDrawPadding;
+  const drawRange = config.commentDrawRange;
+  const collisionPadding = config.collisionPadding;
+  const collisionRight = config.collisionRange.right;
+  const collisionLeft = config.collisionRange.left;
+
   const beforeVpos =
-    Math.round(-288 / ((1632 + comment.width) / (comment.long + 125))) - 100;
+    Math.round(-288 / ((1632 + commentWidth) / (commentLong + 125))) - 100;
   if (!timelineInserted.has(comment)) {
-    for (let j = beforeVpos, n = comment.long + 125; j < n; j++) {
-      const vpos = comment.vpos + j;
-      const leftPos = getPosX(comment.comment, vpos);
+    const n = commentLong + 125;
+    for (let j = beforeVpos; j < n; j++) {
+      const vpos = commentVpos + j;
+      const leftPos = drawPadding + drawRange - (j + 100) * speed;
       arrayPush(timeline, vpos, comment);
       if (
-        leftPos + comment.width + config.collisionPadding >=
-          config.collisionRange.right &&
-        leftPos <= config.collisionRange.right
+        leftPos + commentWidth + collisionPadding >= collisionRight &&
+        leftPos <= collisionRight
       ) {
         arrayPush(collision.right, vpos, comment);
       }
       if (
-        leftPos + comment.width + config.collisionPadding >=
-          config.collisionRange.left &&
-        leftPos <= config.collisionRange.left
+        leftPos + commentWidth + collisionPadding >= collisionLeft &&
+        leftPos <= collisionLeft
       ) {
         arrayPush(collision.left, vpos, comment);
       }
@@ -689,14 +704,16 @@ const processMovableComment = (
 };
 
 const getFixedPosY = (comment: IComment, collision: CollisionItem) => {
+  const commentLong = comment.long;
+  const commentVpos = comment.vpos;
   let posY = 0;
   let isChanged = true;
   let count = 0;
   while (isChanged && count < 10) {
     isChanged = false;
     count++;
-    for (let j = 0; j < comment.long; j++) {
-      const result = getPosY(posY, comment, collision[comment.vpos + j]);
+    for (let j = 0; j < commentLong; j++) {
+      const result = getPosY(posY, comment, collision[commentVpos + j]);
       posY = result.currentPos;
       isChanged = result.isChanged;
       if (result.isBreak) break;
@@ -710,24 +727,38 @@ const getMovablePosY = (
   collision: Collision,
   beforeVpos: number,
 ) => {
-  if (config.canvasHeight < comment.height) {
-    return (comment.height - config.canvasHeight) / -2;
+  const canvasHeight = config.canvasHeight;
+  const commentHeight = comment.height;
+  if (canvasHeight < commentHeight) {
+    return (commentHeight - canvasHeight) / -2;
   }
+  const commentWidth = comment.width;
+  const commentLong = comment.long;
+  const commentVpos = comment.vpos;
+  const speed =
+    (config.commentDrawRange + commentWidth * config.nakaCommentSpeedOffset) /
+    (commentLong + 100);
+  const drawPadding = config.commentDrawPadding;
+  const drawRange = config.commentDrawRange;
+  const collisionRight = config.collisionRange.right;
+  const collisionLeft = config.collisionRange.left;
+  const n = commentLong + 125;
+
   let posY = 0;
   let isChanged = true;
   let lastUpdatedIndex: number | undefined;
   while (isChanged) {
     isChanged = false;
-    for (let j = beforeVpos, n = comment.long + 125; j < n; j += 5) {
-      const vpos = comment.vpos + j;
-      const leftPos = getPosX(comment.comment, vpos);
+    for (let j = beforeVpos; j < n; j += 5) {
+      const vpos = commentVpos + j;
+      const leftPos = drawPadding + drawRange - (j + 100) * speed;
       let isBreak = false;
       if (lastUpdatedIndex !== undefined && lastUpdatedIndex === vpos) {
         return posY;
       }
       if (
-        leftPos + comment.width >= config.collisionRange.right &&
-        leftPos <= config.collisionRange.right
+        leftPos + commentWidth >= collisionRight &&
+        leftPos <= collisionRight
       ) {
         const result = getPosY(posY, comment, collision.right[vpos]);
         posY = result.currentPos;
@@ -735,10 +766,7 @@ const getMovablePosY = (
         if (result.isChanged) lastUpdatedIndex = vpos;
         isBreak = result.isBreak;
       }
-      if (
-        leftPos + comment.width >= config.collisionRange.left &&
-        leftPos <= config.collisionRange.left
-      ) {
+      if (leftPos + commentWidth >= collisionLeft && leftPos <= collisionLeft) {
         const result = getPosY(posY, comment, collision.left[vpos]);
         posY = result.currentPos;
         isChanged ||= result.isChanged;
@@ -765,43 +793,52 @@ const getPosY = (
   collision: IComment[] | undefined,
   _isChanged = false,
 ): { currentPos: number; isChanged: boolean; isBreak: boolean } => {
-  let isBreak = false;
   if (!collision)
-    return { currentPos: _currentPos, isChanged: _isChanged, isBreak };
+    return { currentPos: _currentPos, isChanged: _isChanged, isBreak: false };
   let currentPos = _currentPos;
   let isChanged = _isChanged;
-  for (const collisionItem of collision) {
-    if (collisionItem.index === targetComment.index || collisionItem.posY < 0)
-      continue;
-    if (
-      collisionItem.owner === targetComment.owner &&
-      collisionItem.layer === targetComment.layer &&
-      currentPos < collisionItem.posY + collisionItem.height &&
-      currentPos + targetComment.height > collisionItem.posY
-    ) {
-      if (collisionItem.posY + collisionItem.height > currentPos) {
-        currentPos = collisionItem.posY + collisionItem.height;
-        isChanged = true;
-      }
-      if (currentPos + targetComment.height > config.canvasHeight) {
-        if (config.canvasHeight < targetComment.height) {
-          if (targetComment.mail.includes("naka")) {
-            currentPos = (targetComment.height - config.canvasHeight) / -2;
-          } else {
-            currentPos = 0;
-          }
-        } else {
-          currentPos = Math.floor(
-            Math.random() * (config.canvasHeight - targetComment.height),
-          );
+  const targetIndex = targetComment.index;
+  const targetOwner = targetComment.owner;
+  const targetLayer = targetComment.layer;
+  const targetHeight = targetComment.height;
+  const canvasHeight = config.canvasHeight;
+  const len = collision.length;
+  // 再帰の代わりに外側ループで衝突発見時にリスタート
+  restart: while (true) {
+    for (let i = 0; i < len; i++) {
+      const item = collision[i];
+      if (item.index === targetIndex || item.posY < 0) continue;
+      if (
+        item.owner === targetOwner &&
+        item.layer === targetLayer &&
+        currentPos < item.posY + item.height &&
+        currentPos + targetHeight > item.posY
+      ) {
+        if (item.posY + item.height > currentPos) {
+          currentPos = item.posY + item.height;
+          isChanged = true;
         }
-        isBreak = true;
-        break;
+        if (currentPos + targetHeight > canvasHeight) {
+          if (canvasHeight < targetHeight) {
+            if (targetComment.mail.includes("naka")) {
+              currentPos = (targetHeight - canvasHeight) / -2;
+            } else {
+              currentPos = 0;
+            }
+          } else {
+            currentPos = Math.floor(
+              Math.random() * (canvasHeight - targetHeight),
+            );
+          }
+          return { currentPos, isChanged: true, isBreak: true };
+        }
+        isChanged = true;
+        continue restart;
       }
-      return getPosY(currentPos, targetComment, collision, true);
     }
+    break;
   }
-  return { currentPos, isChanged, isBreak };
+  return { currentPos, isChanged, isBreak: false };
 };
 /**
  * コメントのvposと現在のvposから左右の位置を返す

@@ -48,6 +48,7 @@ const setConfig = (value: BaseConfig) => {
 const setOptions = (value: BaseOptions) => {
   options = value;
 };
+
 export {
   config,
   defaultConfig,

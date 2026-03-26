@@ -10,4 +10,5 @@ class InvalidOptionError extends Error {
   }
 }
 InvalidOptionError.prototype.name = "InvalidOptionError";
+
 export { InvalidOptionError };

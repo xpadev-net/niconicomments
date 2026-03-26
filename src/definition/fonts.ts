@@ -152,4 +152,5 @@ const fonts = {
     mincho: build([fontTemplates.serif]),
   },
 };
+
 export { fonts, fontTemplates };

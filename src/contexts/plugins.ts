@@ -9,4 +9,5 @@ let plugins: IPluginList = [];
 const setPlugins = (input: IPluginList) => {
   plugins = input;
 };
+
 export { plugins, setPlugins };

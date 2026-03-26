@@ -10,4 +10,5 @@ let imageCache: {
 const resetImageCache = () => {
   imageCache = {};
 };
+
 export { imageCache, resetImageCache };

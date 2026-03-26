@@ -7,11 +7,11 @@
   "scripts": {
     "build": "npx rimraf dist&&npm run build:ts&&npm run build:dts",
     "build:ts": "rolldown -c rolldown.config.mjs",
-    "build:dts": "tsc --emitDeclarationOnly --types node&&node ./util/resolve-path-alias.js&&rollup -c rollup.config.dts.mjs",
+    "build:dts": "tsc --emitDeclarationOnly --types node --project tsconfig.json&&node ./util/resolve-path-alias.js&&rollup -c rollup.config.dts.mjs",
     "watch": "rolldown -c rolldown.config.mjs -w",
     "typedoc": "typedoc --entryPointStrategy Expand --out ./docs/type/ ./src/",
     "prepublishOnly": "npm run build",
-    "check-types": "tsc --noEmit --jsx react --types node",
+    "check-types": "tsc --noEmit --jsx react --types node --project tsconfig.json",
     "eslint": "biome lint src",
     "eslint:fix": "biome lint --write src",
     "format": "biome format src",

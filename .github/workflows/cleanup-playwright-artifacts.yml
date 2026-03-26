@@ -30,6 +30,7 @@ jobs:
               });
               baseTreeSha = commit.tree.sha;
             } catch (e) {
+              if (e.status !== 404) throw e;
               console.log('Branch does not exist, nothing to clean up');
               return;
             }
@@ -96,6 +97,11 @@ jobs:
             const { data: fullTree } = await github.rest.git.getTree({
               owner, repo, tree_sha: baseTreeSha, recursive: 'true',
             });
+
+            if (fullTree.truncated) {
+              console.log('Warning: tree is truncated, skipping cleanup to avoid data loss');
+              return;
+            }
 
             const newTreeEntries = fullTree.tree.filter(entry => {
               return !dirsToRemove.some(dir =>

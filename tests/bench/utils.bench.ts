@@ -7,46 +7,49 @@ import { getPosX, parseFont } from "@/utils/comment";
 
 import { resetBenchState } from "./helpers";
 
+// config 依存の関数のためセットアップを1回実行
+resetBenchState();
+
+const posXComment = {
+  loc: "naka",
+  width: 200,
+  long: 300,
+  vpos: 100,
+} as FormattedCommentWithSize;
+
+const rgbColors = ["#FF0000", "#00FF00", "#0000FF", "#ABC", "#FFFFFF", "#000"];
+const rgbaColors = ["#FF0000FF", "#00FF0080", "#0000FFCC", "#ABCD"];
+const fontNames = ["defont", "gothic", "mincho", "gulim", "simsun"] as const;
+const fontSizes = [15, 24, 39];
+
 describe("getPosX", () => {
   bench("10000 position calculations", () => {
-    resetBenchState();
-    const comment = {
-      loc: "naka",
-      width: 200,
-      long: 300,
-      vpos: 100,
-    } as FormattedCommentWithSize;
     for (let vpos = 100; vpos < 10100; vpos++) {
-      getPosX(comment, vpos);
+      getPosX(posXComment, vpos);
     }
   });
 });
 
 describe("hex2rgb", () => {
   bench("10000 hex to rgb conversions", () => {
-    const colors = ["#FF0000", "#00FF00", "#0000FF", "#ABC", "#FFFFFF", "#000"];
     for (let i = 0; i < 10000; i++) {
-      hex2rgb(colors[i % colors.length]);
+      hex2rgb(rgbColors[i % rgbColors.length]);
     }
   });
 });
 
 describe("hex2rgba", () => {
   bench("10000 hex to rgba conversions", () => {
-    const colors = ["#FF0000FF", "#00FF0080", "#0000FFCC", "#ABCD"];
     for (let i = 0; i < 10000; i++) {
-      hex2rgba(colors[i % colors.length]);
+      hex2rgba(rgbaColors[i % rgbaColors.length]);
     }
   });
 });
 
 describe("parseFont", () => {
   bench("10000 font parsing", () => {
-    resetBenchState();
-    const fonts = ["defont", "gothic", "mincho", "gulim", "simsun"] as const;
-    const sizes = [15, 24, 39];
     for (let i = 0; i < 10000; i++) {
-      parseFont(fonts[i % fonts.length], sizes[i % sizes.length]);
+      parseFont(fontNames[i % fontNames.length], fontSizes[i % fontSizes.length]);
     }
   });
 });

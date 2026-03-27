@@ -37,7 +37,7 @@ jobs:
 
       - name: Post failure screenshots to PR
         if: ${{ github.event.workflow_run.conclusion == 'failure' && steps.pr-info.outcome == 'success' }}
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const fs = require('fs');
@@ -293,7 +293,7 @@ jobs:
 
       - name: Remove stale failure comment
         if: ${{ github.event.workflow_run.conclusion == 'success' && steps.pr-info.outcome == 'success' }}
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const fs = require('fs');

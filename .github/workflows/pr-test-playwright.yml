@@ -11,6 +11,7 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         node-version: [20, 22, 24]
     steps:
@@ -41,8 +42,22 @@ jobs:
       - name: Run Playwright tests
         run: pnpm playwright test
       - uses: actions/upload-artifact@v7
-        if: always()
+        if: ${{ !cancelled() }}
         with:
-          name: test-results
+          name: test-results-node-${{ matrix.node-version }}
           path: test-results/
           retention-days: 30
+
+  save-pr-info:
+    if: ${{ github.event_name == 'pull_request' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Save PR info
+        run: |
+          mkdir -p pr-info
+          echo '${{ github.event.pull_request.number }}' > pr-info/number
+      - uses: actions/upload-artifact@v7
+        with:
+          name: pr-info
+          path: pr-info/
+          overwrite: true

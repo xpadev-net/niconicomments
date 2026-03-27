@@ -1,0 +1,150 @@
+name: Cleanup Playwright Artifacts
+on:
+  schedule:
+    - cron: '23 3 * * 0'
+  workflow_dispatch:
+permissions:
+  contents: write
+  pull-requests: read
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cleanup stale artifacts
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const branchName = '_playwright-artifacts';
+
+            // Check if branch exists
+            let baseSha, baseTreeSha;
+            try {
+              const { data: ref } = await github.rest.git.getRef({
+                owner, repo, ref: `heads/${branchName}`,
+              });
+              baseSha = ref.object.sha;
+              const { data: commit } = await github.rest.git.getCommit({
+                owner, repo, commit_sha: baseSha,
+              });
+              baseTreeSha = commit.tree.sha;
+            } catch (e) {
+              if (e.status !== 404) throw e;
+              console.log('Branch does not exist, nothing to clean up');
+              return;
+            }
+
+            // Get root tree to find pr-* directories
+            const { data: rootTree } = await github.rest.git.getTree({
+              owner, repo, tree_sha: baseTreeSha,
+            });
+
+            const prDirs = rootTree.tree.filter(
+              entry => entry.type === 'tree' && entry.path.startsWith('pr-')
+            );
+
+            if (prDirs.length === 0) {
+              console.log('No PR directories found');
+              return;
+            }
+
+            const dirsToRemove = [];
+
+            for (const prDir of prDirs) {
+              const prMatch = prDir.path.match(/^pr-(\d+)$/);
+              if (!prMatch) continue;
+              const prNumber = parseInt(prMatch[1], 10);
+
+              // Check PR state
+              let pr;
+              try {
+                const { data } = await github.rest.pulls.get({
+                  owner, repo, pull_number: prNumber,
+                });
+                pr = data;
+              } catch (e) {
+                if (e.status === 404) {
+                  dirsToRemove.push(prDir.path);
+                  console.log(`PR #${prNumber} not found, marking for removal`);
+                  continue;
+                }
+                throw e;
+              }
+
+              if (pr.state === 'closed') {
+                dirsToRemove.push(prDir.path);
+                console.log(`PR #${prNumber} is closed, marking for removal`);
+              } else {
+                // For open PRs, keep only the latest run
+                const { data: subTree } = await github.rest.git.getTree({
+                  owner, repo, tree_sha: prDir.sha,
+                });
+                const runDirs = subTree.tree
+                  .filter(e => e.type === 'tree' && /^\d+$/.test(e.path))
+                  .sort((a, b) => parseInt(b.path) - parseInt(a.path));
+
+                // Remove all but the latest run
+                for (let i = 1; i < runDirs.length; i++) {
+                  dirsToRemove.push(`${prDir.path}/${runDirs[i].path}`);
+                  console.log(`PR #${prNumber}: removing old run ${runDirs[i].path}`);
+                }
+              }
+            }
+
+            if (dirsToRemove.length === 0) {
+              console.log('Nothing to clean up');
+              return;
+            }
+
+            // Build new tree excluding removed directories
+            // We need to recursively get the full tree and filter out unwanted paths
+            const { data: fullTree } = await github.rest.git.getTree({
+              owner, repo, tree_sha: baseTreeSha, recursive: 'true',
+            });
+
+            if (fullTree.truncated) {
+              console.log('Warning: tree is truncated, skipping cleanup to avoid data loss');
+              return;
+            }
+
+            const newTreeEntries = fullTree.tree.filter(entry => {
+              return !dirsToRemove.some(dir =>
+                entry.path === dir || entry.path.startsWith(`${dir}/`)
+              );
+            }).filter(entry => entry.type === 'blob').map(entry => ({
+              path: entry.path,
+              mode: entry.mode,
+              type: entry.type,
+              sha: entry.sha,
+            }));
+
+            if (newTreeEntries.length === 0) {
+              // Keep at least the README
+              newTreeEntries.push({
+                path: 'README.md',
+                mode: '100644',
+                type: 'blob',
+                content: 'Playwright visual regression test artifacts. Auto-managed by CI.\n',
+              });
+            }
+
+            const { data: newTree } = await github.rest.git.createTree({
+              owner, repo, tree: newTreeEntries,
+            });
+
+            const { data: newCommit } = await github.rest.git.createCommit({
+              owner, repo,
+              message: `chore: cleanup stale playwright artifacts (removed ${dirsToRemove.length} directories)`,
+              tree: newTree.sha,
+              parents: [baseSha],
+            });
+
+            await github.rest.git.updateRef({
+              owner, repo,
+              ref: `heads/${branchName}`,
+              sha: newCommit.sha,
+              force: true,
+            });
+
+            console.log(`Cleanup complete: removed ${dirsToRemove.length} directories`);

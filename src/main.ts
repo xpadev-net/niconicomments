@@ -135,10 +135,10 @@ class NiconiComments {
 
     this.timeline = {};
     this.collision = {
-      ue: [],
-      shita: [],
-      left: [],
-      right: [],
+      ue: {},
+      shita: {},
+      left: {},
+      right: {},
     };
     this.lastVpos = -1;
     this.processedCommentIndex = -1;

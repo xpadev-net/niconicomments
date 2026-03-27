@@ -720,7 +720,9 @@ const getMovablePosY = (
   comment: IComment,
   collision: Collision,
   beforeVpos: number,
-  speed: number,
+  speed: number = (config.commentDrawRange +
+    comment.width * config.nakaCommentSpeedOffset) /
+    (comment.long + 100),
 ) => {
   const canvasHeight = config.canvasHeight;
   const commentHeight = comment.height;

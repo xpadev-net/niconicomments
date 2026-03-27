@@ -756,6 +756,7 @@ const getMovablePosY = (
         posY = result.currentPos;
         isChanged ||= result.isChanged;
         if (result.isChanged) lastUpdatedIndex = vpos;
+        // ||= で累積: right側のbreakがleft側のfalseで上書きされるのを防止
         isBreak ||= result.isBreak;
       }
       if (leftPos + commentWidth >= collisionLeft && leftPos <= collisionLeft) {
@@ -763,6 +764,7 @@ const getMovablePosY = (
         posY = result.currentPos;
         isChanged ||= result.isChanged;
         if (result.isChanged) lastUpdatedIndex = vpos;
+        // ||= で累積: left側のfalseがright側のtrueをリセットしない
         isBreak ||= result.isBreak;
       }
       if (isBreak) return posY;

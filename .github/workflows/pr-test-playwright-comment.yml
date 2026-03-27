@@ -17,7 +17,7 @@ jobs:
     steps:
       - name: Download PR info
         id: pr-info
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: pr-info
           path: pr-info/
@@ -27,7 +27,7 @@ jobs:
 
       - name: Download test results
         if: ${{ github.event.workflow_run.conclusion == 'failure' && steps.pr-info.outcome == 'success' }}
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           pattern: test-results-node-*
           path: all-test-results/

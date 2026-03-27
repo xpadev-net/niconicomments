@@ -796,7 +796,7 @@ const getPosY = (
   // 再帰の代わりに外側ループで衝突発見時にリスタート
   restart: while (true) {
     for (let i = 0; i < len; i++) {
-      const item = collision[i];
+      const item = collision[i] as IComment;
       if (item.index === targetIndex || item.posY < 0) continue;
       if (
         item.owner === targetOwner &&

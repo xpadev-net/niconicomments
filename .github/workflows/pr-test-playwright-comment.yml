@@ -7,7 +7,7 @@ on:
     workflows: ["Playwright Tests"]
     types: [completed]
 concurrency:
-  group: playwright-comment-${{ github.event.workflow_run.head_branch }}
+  group: playwright-comment-${{ github.event.workflow_run.head_sha }}
   cancel-in-progress: true
 jobs:
   comment:
@@ -32,6 +32,7 @@ jobs:
           path: all-test-results/
           run-id: ${{ github.event.workflow_run.id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
 
       - name: Post failure screenshots to PR
         if: ${{ github.event.workflow_run.conclusion == 'failure' && steps.pr-info.outcome == 'success' }}
@@ -98,6 +99,14 @@ jobs:
 
             console.log(`Found ${failures.length} failure(s)`);
 
+            // Sanitization helpers
+            function escapeHtml(s) {
+              return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+            }
+            function sanitizePathSegment(s) {
+              return s.replace(/[^a-zA-Z0-9._-]/g, '_');
+            }
+
             // Phase 2: Upload images to _playwright-artifacts branch via Git Data API
             async function createBlob(filePath) {
               const content = fs.readFileSync(filePath).toString('base64');
@@ -105,6 +114,13 @@ jobs:
                 owner, repo, content, encoding: 'base64',
               });
               return data.sha;
+            }
+
+            // Sanitize path segments for git tree and URLs
+            for (const failure of failures) {
+              failure.safeNodeVersion = sanitizePathSegment(failure.nodeVersion);
+              failure.safeTestName = sanitizePathSegment(failure.testName);
+              failure.safeScreenshotName = sanitizePathSegment(failure.screenshotName);
             }
 
             // Create all blobs in parallel
@@ -117,7 +133,7 @@ jobs:
               ]) {
                 blobEntries.push({
                   filePath,
-                  treePath: `pr-${prNumber}/${runId}/node-${failure.nodeVersion}/${failure.testName}/${failure.screenshotName}-${suffix}.png`,
+                  treePath: `pr-${prNumber}/${runId}/node-${failure.safeNodeVersion}/${failure.safeTestName}/${failure.safeScreenshotName}-${suffix}.png`,
                 });
               }
             }
@@ -223,13 +239,15 @@ jobs:
               body += `### Node ${nodeVersion}\n\n`;
 
               for (const f of nodeFailures) {
-                const prefix = `pr-${prNumber}/${runId}/node-${f.nodeVersion}/${f.testName}/${f.screenshotName}`;
-                body += `<details>\n<summary><strong>${f.testName}</strong> / ${f.screenshotName}</summary>\n\n`;
+                const urlPrefix = `pr-${prNumber}/${runId}/node-${f.safeNodeVersion}/${f.safeTestName}/${f.safeScreenshotName}`;
+                const safeTestName = escapeHtml(f.testName);
+                const safeScreenshotName = escapeHtml(f.screenshotName);
+                body += `<details>\n<summary><strong>${safeTestName}</strong> / ${safeScreenshotName}</summary>\n\n`;
                 body += `| Expected | Actual | Diff |\n`;
                 body += `|:---:|:---:|:---:|\n`;
-                body += `| <img src="${baseUrl}/${prefix}-expected.png" width="300" /> `;
-                body += `| <img src="${baseUrl}/${prefix}-actual.png" width="300" /> `;
-                body += `| <img src="${baseUrl}/${prefix}-diff.png" width="300" /> |\n\n`;
+                body += `| <img src="${baseUrl}/${urlPrefix}-expected.png" width="300" /> `;
+                body += `| <img src="${baseUrl}/${urlPrefix}-actual.png" width="300" /> `;
+                body += `| <img src="${baseUrl}/${urlPrefix}-diff.png" width="300" /> |\n\n`;
                 body += `</details>\n\n`;
               }
             }

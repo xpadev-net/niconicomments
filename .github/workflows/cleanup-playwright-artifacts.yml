@@ -57,33 +57,38 @@ jobs:
               const prNumber = parseInt(prMatch[1], 10);
 
               // Check PR state
+              let pr;
               try {
-                const { data: pr } = await github.rest.pulls.get({
+                const { data } = await github.rest.pulls.get({
                   owner, repo, pull_number: prNumber,
                 });
-
-                if (pr.state === 'closed') {
-                  dirsToRemove.push(prDir.path);
-                  console.log(`PR #${prNumber} is closed, marking for removal`);
-                } else {
-                  // For open PRs, keep only the latest run
-                  const { data: subTree } = await github.rest.git.getTree({
-                    owner, repo, tree_sha: prDir.sha,
-                  });
-                  const runDirs = subTree.tree
-                    .filter(e => e.type === 'tree')
-                    .sort((a, b) => parseInt(b.path) - parseInt(a.path));
-
-                  // Remove all but the latest run
-                  for (let i = 1; i < runDirs.length; i++) {
-                    dirsToRemove.push(`${prDir.path}/${runDirs[i].path}`);
-                    console.log(`PR #${prNumber}: removing old run ${runDirs[i].path}`);
-                  }
-                }
+                pr = data;
               } catch (e) {
-                // PR not found, remove the directory
+                if (e.status === 404) {
+                  dirsToRemove.push(prDir.path);
+                  console.log(`PR #${prNumber} not found, marking for removal`);
+                  continue;
+                }
+                throw e;
+              }
+
+              if (pr.state === 'closed') {
                 dirsToRemove.push(prDir.path);
-                console.log(`PR #${prNumber} not found, marking for removal`);
+                console.log(`PR #${prNumber} is closed, marking for removal`);
+              } else {
+                // For open PRs, keep only the latest run
+                const { data: subTree } = await github.rest.git.getTree({
+                  owner, repo, tree_sha: prDir.sha,
+                });
+                const runDirs = subTree.tree
+                  .filter(e => e.type === 'tree' && /^\d+$/.test(e.path))
+                  .sort((a, b) => parseInt(b.path) - parseInt(a.path));
+
+                // Remove all but the latest run
+                for (let i = 1; i < runDirs.length; i++) {
+                  dirsToRemove.push(`${prDir.path}/${runDirs[i].path}`);
+                  console.log(`PR #${prNumber}: removing old run ${runDirs[i].path}`);
+                }
               }
             }
 
@@ -139,6 +144,7 @@ jobs:
               owner, repo,
               ref: `heads/${branchName}`,
               sha: newCommit.sha,
+              force: true,
             });
 
             console.log(`Cleanup complete: removed ${dirsToRemove.length} directories`);

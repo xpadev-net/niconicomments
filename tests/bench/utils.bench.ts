@@ -1,6 +1,6 @@
 import { bench, describe } from "vitest";
 
-import type { FormattedCommentWithSize } from "@/@types";
+import type { FormattedCommentWithSize, IComment } from "@/@types";
 import { arrayPush } from "@/utils/array";
 import { hex2rgb, hex2rgba } from "@/utils/color";
 import { getPosX, parseFont } from "@/utils/comment";
@@ -56,8 +56,8 @@ describe("parseFont", () => {
 
 describe("arrayPush", () => {
   bench("10000 arrayPush operations", () => {
-    const obj: { [key: number]: unknown[] } = {};
-    const item = { index: 0 } as never;
+    const obj: { [key: number]: IComment[] } = {};
+    const item = { index: 0 } as IComment;
     for (let i = 0; i < 10000; i++) {
       arrayPush(obj, i % 500, item);
     }

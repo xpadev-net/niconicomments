@@ -101,6 +101,7 @@ interface RenderState {
 /* ─── WebGL2Renderer ─── */
 
 class WebGL2Renderer implements IRenderer {
+  public readonly rendererName = "WebGL2Renderer";
   public readonly canvas: HTMLCanvasElement;
   public readonly video?: HTMLVideoElement;
 
@@ -424,6 +425,8 @@ class WebGL2Renderer implements IRenderer {
       source instanceof HTMLVideoElement ? source.videoWidth : source.width;
     const h =
       source instanceof HTMLVideoElement ? source.videoHeight : source.height;
+
+    if (w <= 0 || h <= 0) return [];
 
     // Fast path: fits in a single texture
     if (w <= max && h <= max) {

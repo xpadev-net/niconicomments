@@ -8,6 +8,7 @@ import { CanvasRenderingContext2DError } from "@/errors";
  * @param video レンダリングするVideo(任意)
  */
 class CanvasRenderer implements IRenderer {
+  public readonly rendererName = "CanvasRenderer";
   public readonly canvas: HTMLCanvasElement;
   public readonly video?: HTMLVideoElement;
   private readonly context: CanvasRenderingContext2D;

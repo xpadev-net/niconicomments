@@ -99,7 +99,7 @@ class NiconiComments {
     }
 
     this.renderer = renderer;
-    logger(`renderer: ${renderer.constructor.name}`);
+    logger(`renderer: ${renderer.rendererName}`);
     this.renderer.setLineWidth(getConfig(config.contextLineWidth, false));
     const rendererSize = this.renderer.getSize();
     this.renderer.setScale(

@@ -1,4 +1,5 @@
 export interface IRenderer {
+  readonly rendererName: string;
   destroy(): void;
   drawVideo(enableLegacyPip: boolean): void;
   getFont(): string;

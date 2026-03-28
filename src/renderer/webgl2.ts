@@ -481,12 +481,14 @@ class WebGL2Renderer implements IRenderer {
       this.texMap.set(source, entry);
       return entry;
     }
-    // Re-upload only for dynamic sources (video, plugin) - once per frame
+    // Re-upload only for dynamic sources (video, plugin) - once per frame.
+    // Build new tiles before deleting old ones so the entry stays valid on error.
     if (forceUpload && entry.lastFrame < this.frameCount) {
-      for (const tile of entry.tiles) {
+      const oldTiles = entry.tiles;
+      entry.tiles = this._buildTiles(source);
+      for (const tile of oldTiles) {
         gl.deleteTexture(tile.tex);
       }
-      entry.tiles = this._buildTiles(source);
       const w =
         source instanceof HTMLVideoElement ? source.videoWidth : source.width;
       const h =
@@ -857,79 +859,81 @@ class WebGL2Renderer implements IRenderer {
     const gl = this.gl;
     gl.bindVertexArray(this.quadVAO);
 
-    let currentProg: WebGLProgram | null = null;
+    try {
+      let currentProg: WebGLProgram | null = null;
 
-    for (const cmd of this.cmds) {
-      if (cmd.kind === 0) {
-        // Sprite command — draw one quad per tile
+      for (const cmd of this.cmds) {
+        if (cmd.kind === 0) {
+          // Sprite command — draw one quad per tile
+          if (currentProg !== this.spriteProg) {
+            gl.useProgram(this.spriteProg);
+            gl.uniformMatrix4fv(this.spriteLocProj, false, this.proj);
+            currentProg = this.spriteProg;
+          }
+          gl.activeTexture(gl.TEXTURE0);
+          const entry = this._uploadTexture(
+            cmd.source,
+            cmd.source instanceof HTMLVideoElement,
+          );
+          const sx = cmd.w / entry.sourceW;
+          const sy = cmd.h / entry.sourceH;
+          for (const tile of entry.tiles) {
+            gl.bindTexture(gl.TEXTURE_2D, tile.tex);
+            gl.uniform4f(
+              this.spriteLocRect,
+              cmd.x + tile.srcX * sx,
+              cmd.y + tile.srcY * sy,
+              tile.srcW * sx,
+              tile.srcH * sy,
+            );
+            gl.uniform1f(this.spriteLocAlpha, cmd.alpha);
+            gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+          }
+        } else {
+          // Rect command
+          if (currentProg !== this.rectProg) {
+            gl.useProgram(this.rectProg);
+            gl.uniformMatrix4fv(this.rectLocProj, false, this.proj);
+            currentProg = this.rectProg;
+          }
+          gl.uniform4f(this.rectLocRect, cmd.x, cmd.y, cmd.w, cmd.h);
+          gl.uniform4f(this.rectLocColor, cmd.r, cmd.g, cmd.b, cmd.a);
+          gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+        }
+      }
+
+      // Composite Canvas 2D helper overlay (text/path operations)
+      if (this.helperDirty) {
         if (currentProg !== this.spriteProg) {
           gl.useProgram(this.spriteProg);
           gl.uniformMatrix4fv(this.spriteLocProj, false, this.proj);
-          currentProg = this.spriteProg;
         }
         gl.activeTexture(gl.TEXTURE0);
-        const entry = this._uploadTexture(
-          cmd.source,
-          cmd.source instanceof HTMLVideoElement,
-        );
-        const sx = cmd.w / entry.sourceW;
-        const sy = cmd.h / entry.sourceH;
-        for (const tile of entry.tiles) {
+        // Invalidate cached helper texture so _uploadTexture always
+        // re-uploads the latest helper canvas content
+        this.invalidateImage(this.helper);
+        const helperEntry = this._uploadTexture(this.helper.canvas, false);
+        const logicalW = this.canvas.width / this.scaleX;
+        const logicalH = this.canvas.height / this.scaleY;
+        for (const tile of helperEntry.tiles) {
           gl.bindTexture(gl.TEXTURE_2D, tile.tex);
           gl.uniform4f(
             this.spriteLocRect,
-            cmd.x + tile.srcX * sx,
-            cmd.y + tile.srcY * sy,
-            tile.srcW * sx,
-            tile.srcH * sy,
+            (tile.srcX / helperEntry.sourceW) * logicalW,
+            (tile.srcY / helperEntry.sourceH) * logicalH,
+            (tile.srcW / helperEntry.sourceW) * logicalW,
+            (tile.srcH / helperEntry.sourceH) * logicalH,
           );
-          gl.uniform1f(this.spriteLocAlpha, cmd.alpha);
+          gl.uniform1f(this.spriteLocAlpha, 1);
           gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
         }
-      } else {
-        // Rect command
-        if (currentProg !== this.rectProg) {
-          gl.useProgram(this.rectProg);
-          gl.uniformMatrix4fv(this.rectLocProj, false, this.proj);
-          currentProg = this.rectProg;
-        }
-        gl.uniform4f(this.rectLocRect, cmd.x, cmd.y, cmd.w, cmd.h);
-        gl.uniform4f(this.rectLocColor, cmd.r, cmd.g, cmd.b, cmd.a);
-        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
       }
+    } finally {
+      gl.bindVertexArray(null);
+      this.cmds.length = 0;
+      this.helperDirty = false;
+      this.frameCount++;
     }
-
-    // Composite Canvas 2D helper overlay (text/path operations)
-    if (this.helperDirty) {
-      if (currentProg !== this.spriteProg) {
-        gl.useProgram(this.spriteProg);
-        gl.uniformMatrix4fv(this.spriteLocProj, false, this.proj);
-      }
-      gl.activeTexture(gl.TEXTURE0);
-      // Invalidate cached helper texture so _uploadTexture always
-      // re-uploads the latest helper canvas content
-      this.invalidateImage(this.helper);
-      const helperEntry = this._uploadTexture(this.helper.canvas, false);
-      const logicalW = this.canvas.width / this.scaleX;
-      const logicalH = this.canvas.height / this.scaleY;
-      for (const tile of helperEntry.tiles) {
-        gl.bindTexture(gl.TEXTURE_2D, tile.tex);
-        gl.uniform4f(
-          this.spriteLocRect,
-          (tile.srcX / helperEntry.sourceW) * logicalW,
-          (tile.srcY / helperEntry.sourceH) * logicalH,
-          (tile.srcW / helperEntry.sourceW) * logicalW,
-          (tile.srcH / helperEntry.sourceH) * logicalH,
-        );
-        gl.uniform1f(this.spriteLocAlpha, 1);
-        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-      }
-    }
-
-    gl.bindVertexArray(null);
-    this.cmds.length = 0;
-    this.helperDirty = false;
-    this.frameCount++;
 
     // Periodic texture GC
     if (this.frameCount % GC_INTERVAL_FRAMES === 0) {

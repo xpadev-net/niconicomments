@@ -11,7 +11,10 @@ export function createRenderer(
   try {
     return new WebGL2Renderer(canvas, video);
   } catch (e) {
-    console.warn("WebGL2 not available, falling back to Canvas2D:", e);
-    return new CanvasRenderer(canvas, video);
+    if (e instanceof Error && e.message === "WebGL2 not available") {
+      console.warn("WebGL2 not available, falling back to Canvas2D");
+      return new CanvasRenderer(canvas, video);
+    }
+    throw e;
   }
 }

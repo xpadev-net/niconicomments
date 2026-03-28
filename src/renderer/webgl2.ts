@@ -315,6 +315,7 @@ class WebGL2Renderer implements IRenderer {
     gl.enableVertexAttribArray(0);
     gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
     gl.bindVertexArray(null);
+    gl.useProgram(null);
 
     return {
       spriteProg,
@@ -589,6 +590,14 @@ class WebGL2Renderer implements IRenderer {
   /* ═══ IRenderer: Canvas management ═══ */
 
   setSize(width: number, height: number): void {
+    // Evict old helper texture and discard pending text
+    const oldEntry = this.texMap.get(this.helper.canvas);
+    if (oldEntry) {
+      this._deleteTiles(oldEntry);
+      this.texMap.delete(this.helper.canvas);
+    }
+    this.helperDirty = false;
+
     this.width = width;
     this.height = height;
     this.canvas.width = width;

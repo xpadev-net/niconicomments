@@ -354,11 +354,8 @@ class BaseComment implements IComment {
   }
 
   protected getCacheKey() {
-    return `${JSON.stringify(this.comment.content)}@@${this.pluginName}@@${[
-      ...this.comment.mail,
-    ]
-      .sort((a, b) => a.localeCompare(b))
-      .join(",")}`;
+    const sortedMail = [...this.comment.mail].sort().join(",");
+    return `${this.pluginName}\0${sortedMail}\0${this.comment.rawContent}`;
   }
 }
 

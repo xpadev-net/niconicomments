@@ -350,9 +350,7 @@ const loadComments = async () => {
   canvasElement.style.transform = `scale(${(videoItem.scale || 100) - 1}%)`;
   const req = await fetch(`./commentdata/${video}.json`);
   const res = await req.json();
-  const renderer = new NiconiComments.internal.renderer.createRenderer(
-    canvasElement,
-  );
+  const renderer = NiconiComments.internal.renderer.createRenderer(canvasElement);
   nico = new NiconiComments(renderer, res, {
     mode: mode,
     keepCA: keepCA,

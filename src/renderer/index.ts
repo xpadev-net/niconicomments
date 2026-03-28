@@ -10,7 +10,8 @@ export function createRenderer(
 ): IRenderer {
   try {
     return new WebGL2Renderer(canvas, video);
-  } catch {
+  } catch (e) {
+    console.warn("WebGL2 not available, falling back to Canvas2D:", e);
     return new CanvasRenderer(canvas, video);
   }
 }

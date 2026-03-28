@@ -1,5 +1,5 @@
 import type { IRenderer } from "@/@types/";
-import { CanvasRenderer } from "./canvas";
+import { CanvasRenderer } from "@/renderer/canvas";
 
 /* ─── Shader Sources ─── */
 
@@ -42,6 +42,12 @@ out vec4 fragColor;
 void main() {
   fragColor = uColor;
 }`;
+
+/* ─── Constants ─── */
+
+const GC_INTERVAL_FRAMES = 60;
+const GC_MAX_IDLE_FRAMES = 300;
+const COLOR_CACHE_MAX_SIZE = 256;
 
 /* ─── Internal Types ─── */
 
@@ -93,10 +99,6 @@ interface RenderState {
   font: string;
 }
 
-/* ─── Color Cache ─── */
-
-const colorCache = new Map<string, [number, number, number, number]>();
-
 /* ─── WebGL2Renderer ─── */
 
 class WebGL2Renderer implements IRenderer {
@@ -110,7 +112,6 @@ class WebGL2Renderer implements IRenderer {
   private spriteLocRect: WebGLUniformLocation;
   private spriteLocProj: WebGLUniformLocation;
   private spriteLocAlpha: WebGLUniformLocation;
-  private spriteLocTex: WebGLUniformLocation;
 
   private rectProg: WebGLProgram;
   private rectLocRect: WebGLUniformLocation;
@@ -152,12 +153,20 @@ class WebGL2Renderer implements IRenderer {
   private helper: CanvasRenderer;
   private helperDirty = false;
 
-  // Color parsing context
+  // Color parsing
   private readonly colorCtx: CanvasRenderingContext2D;
+  private readonly colorCache = new Map<
+    string,
+    [number, number, number, number]
+  >();
 
   // Logical dimensions
   private width: number;
   private height: number;
+
+  // Event listener references for cleanup
+  private readonly _onContextLost: (e: Event) => void;
+  private readonly _onContextRestored: () => void;
 
   constructor(canvas: HTMLCanvasElement, video?: HTMLVideoElement) {
     this.canvas = canvas;
@@ -187,41 +196,23 @@ class WebGL2Renderer implements IRenderer {
     gl.viewport(0, 0, canvas.width, canvas.height);
     this.maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE) as number;
 
-    // Compile programs
-    this.spriteProg = this._createProgram(SPRITE_VERT, SPRITE_FRAG);
-    this.spriteLocRect = this._getUniformLocation(this.spriteProg, "uRect");
-    this.spriteLocProj = this._getUniformLocation(
-      this.spriteProg,
-      "uProjection",
-    );
-    this.spriteLocAlpha = this._getUniformLocation(this.spriteProg, "uAlpha");
-    this.spriteLocTex = this._getUniformLocation(this.spriteProg, "uTexture");
-    // Initialize sampler to texture unit 0
-    gl.useProgram(this.spriteProg);
-    gl.uniform1i(this.spriteLocTex, 0);
-
-    this.rectProg = this._createProgram(RECT_VERT, RECT_FRAG);
-    this.rectLocRect = this._getUniformLocation(this.rectProg, "uRect");
-    this.rectLocProj = this._getUniformLocation(this.rectProg, "uProjection");
-    this.rectLocColor = this._getUniformLocation(this.rectProg, "uColor");
-
-    // Unit quad (0,0)→(1,1) as TRIANGLE_STRIP
-    const quadVAO = gl.createVertexArray();
-    if (!quadVAO) throw new Error("Failed to create vertex array");
-    this.quadVAO = quadVAO;
-    const quadBuf = gl.createBuffer();
-    if (!quadBuf) throw new Error("Failed to create buffer");
-    this.quadBuf = quadBuf;
-    gl.bindVertexArray(this.quadVAO);
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.quadBuf);
-    gl.bufferData(
-      gl.ARRAY_BUFFER,
-      new Float32Array([0, 0, 1, 0, 0, 1, 1, 1]),
-      gl.STATIC_DRAW,
-    );
-    gl.enableVertexAttribArray(0);
-    gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
-    gl.bindVertexArray(null);
+    // Initialize GL resources (programs, VAO, buffer)
+    try {
+      const glRes = this._initGLResources();
+      this.spriteProg = glRes.spriteProg;
+      this.spriteLocRect = glRes.spriteLocRect;
+      this.spriteLocProj = glRes.spriteLocProj;
+      this.spriteLocAlpha = glRes.spriteLocAlpha;
+      this.rectProg = glRes.rectProg;
+      this.rectLocRect = glRes.rectLocRect;
+      this.rectLocProj = glRes.rectLocProj;
+      this.rectLocColor = glRes.rectLocColor;
+      this.quadVAO = glRes.quadVAO;
+      this.quadBuf = glRes.quadBuf;
+    } catch (e) {
+      gl.getExtension("WEBGL_lose_context")?.loseContext();
+      throw e;
+    }
 
     // Helper for text/path ops (same size, scale applied later via setScale)
     this.helper = this._createHelper(canvas.width, canvas.height);
@@ -236,11 +227,11 @@ class WebGL2Renderer implements IRenderer {
 
     this._updateProjection();
 
-    // Context loss handling
-    canvas.addEventListener("webglcontextlost", (e) => e.preventDefault());
-    canvas.addEventListener("webglcontextrestored", () =>
-      this._rebuildGLResources(),
-    );
+    // Context loss handling (store references for removal in destroy)
+    this._onContextLost = (e: Event) => e.preventDefault();
+    this._onContextRestored = () => this._rebuildGLResources();
+    canvas.addEventListener("webglcontextlost", this._onContextLost);
+    canvas.addEventListener("webglcontextrestored", this._onContextRestored);
   }
 
   /* ═══ Private: WebGL helpers ═══ */
@@ -294,6 +285,51 @@ class WebGL2Renderer implements IRenderer {
     return p;
   }
 
+  private _initGLResources() {
+    const gl = this.gl;
+
+    const spriteProg = this._createProgram(SPRITE_VERT, SPRITE_FRAG);
+    const spriteLocRect = this._getUniformLocation(spriteProg, "uRect");
+    const spriteLocProj = this._getUniformLocation(spriteProg, "uProjection");
+    const spriteLocAlpha = this._getUniformLocation(spriteProg, "uAlpha");
+    const spriteLocTex = this._getUniformLocation(spriteProg, "uTexture");
+    gl.useProgram(spriteProg);
+    gl.uniform1i(spriteLocTex, 0);
+
+    const rectProg = this._createProgram(RECT_VERT, RECT_FRAG);
+    const rectLocRect = this._getUniformLocation(rectProg, "uRect");
+    const rectLocProj = this._getUniformLocation(rectProg, "uProjection");
+    const rectLocColor = this._getUniformLocation(rectProg, "uColor");
+
+    const quadVAO = gl.createVertexArray();
+    if (!quadVAO) throw new Error("Failed to create vertex array");
+    const quadBuf = gl.createBuffer();
+    if (!quadBuf) throw new Error("Failed to create buffer");
+    gl.bindVertexArray(quadVAO);
+    gl.bindBuffer(gl.ARRAY_BUFFER, quadBuf);
+    gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array([0, 0, 1, 0, 0, 1, 1, 1]),
+      gl.STATIC_DRAW,
+    );
+    gl.enableVertexAttribArray(0);
+    gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+    gl.bindVertexArray(null);
+
+    return {
+      spriteProg,
+      spriteLocRect,
+      spriteLocProj,
+      spriteLocAlpha,
+      rectProg,
+      rectLocRect,
+      rectLocProj,
+      rectLocColor,
+      quadVAO,
+      quadBuf,
+    };
+  }
+
   private _updateProjection(): void {
     // Orthographic: left=0 right=logicalW top=0 bottom=logicalH
     const w = this.canvas.width / this.scaleX;
@@ -309,7 +345,7 @@ class WebGL2Renderer implements IRenderer {
   }
 
   private _parseColor(css: string): [number, number, number, number] {
-    const cached = colorCache.get(css);
+    const cached = this.colorCache.get(css);
     if (cached) return cached;
     this.colorCtx.clearRect(0, 0, 1, 1);
     this.colorCtx.fillStyle = css;
@@ -321,7 +357,11 @@ class WebGL2Renderer implements IRenderer {
       (d[2] ?? 0) / 255,
       (d[3] ?? 0) / 255,
     ];
-    colorCache.set(css, result);
+    if (this.colorCache.size >= COLOR_CACHE_MAX_SIZE) {
+      const firstKey = this.colorCache.keys().next().value;
+      if (firstKey !== undefined) this.colorCache.delete(firstKey);
+    }
+    this.colorCache.set(css, result);
     return result;
   }
 
@@ -398,16 +438,23 @@ class WebGL2Renderer implements IRenderer {
     const tilesX = Math.ceil(w / max);
     const tilesY = Math.ceil(h / max);
     const tiles: TileInfo[] = [];
-    for (let ty = 0; ty < tilesY; ty++) {
-      for (let tx = 0; tx < tilesX; tx++) {
-        const srcX = tx * max;
-        const srcY = ty * max;
-        const srcW = Math.min(max, w - srcX);
-        const srcH = Math.min(max, h - srcY);
-        const tileCanvas = this._extractTile(source, srcX, srcY, srcW, srcH);
-        const tex = this._createTexture(tileCanvas);
-        tiles.push({ tex, srcX, srcY, srcW, srcH });
+    try {
+      for (let ty = 0; ty < tilesY; ty++) {
+        for (let tx = 0; tx < tilesX; tx++) {
+          const srcX = tx * max;
+          const srcY = ty * max;
+          const srcW = Math.min(max, w - srcX);
+          const srcH = Math.min(max, h - srcY);
+          const tileCanvas = this._extractTile(source, srcX, srcY, srcW, srcH);
+          const tex = this._createTexture(tileCanvas);
+          tiles.push({ tex, srcX, srcY, srcW, srcH });
+        }
       }
+    } catch (e) {
+      for (const tile of tiles) {
+        gl.deleteTexture(tile.tex);
+      }
+      throw e;
     }
     gl.bindTexture(gl.TEXTURE_2D, null);
     return tiles;
@@ -454,7 +501,7 @@ class WebGL2Renderer implements IRenderer {
   }
 
   private _gcTextures(): void {
-    const threshold = this.frameCount - 300;
+    const threshold = this.frameCount - GC_MAX_IDLE_FRAMES;
     for (const [source, entry] of this.texMap) {
       if (entry.lastFrame < threshold) {
         this._deleteTiles(entry);
@@ -476,38 +523,17 @@ class WebGL2Renderer implements IRenderer {
     );
     gl.viewport(0, 0, this.canvas.width, this.canvas.height);
 
-    this.spriteProg = this._createProgram(SPRITE_VERT, SPRITE_FRAG);
-    this.spriteLocRect = this._getUniformLocation(this.spriteProg, "uRect");
-    this.spriteLocProj = this._getUniformLocation(
-      this.spriteProg,
-      "uProjection",
-    );
-    this.spriteLocAlpha = this._getUniformLocation(this.spriteProg, "uAlpha");
-    this.spriteLocTex = this._getUniformLocation(this.spriteProg, "uTexture");
-    gl.useProgram(this.spriteProg);
-    gl.uniform1i(this.spriteLocTex, 0);
-
-    this.rectProg = this._createProgram(RECT_VERT, RECT_FRAG);
-    this.rectLocRect = this._getUniformLocation(this.rectProg, "uRect");
-    this.rectLocProj = this._getUniformLocation(this.rectProg, "uProjection");
-    this.rectLocColor = this._getUniformLocation(this.rectProg, "uColor");
-
-    const quadVAO = gl.createVertexArray();
-    if (!quadVAO) throw new Error("Failed to create vertex array");
-    this.quadVAO = quadVAO;
-    const quadBuf = gl.createBuffer();
-    if (!quadBuf) throw new Error("Failed to create buffer");
-    this.quadBuf = quadBuf;
-    gl.bindVertexArray(this.quadVAO);
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.quadBuf);
-    gl.bufferData(
-      gl.ARRAY_BUFFER,
-      new Float32Array([0, 0, 1, 0, 0, 1, 1, 1]),
-      gl.STATIC_DRAW,
-    );
-    gl.enableVertexAttribArray(0);
-    gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
-    gl.bindVertexArray(null);
+    const res = this._initGLResources();
+    this.spriteProg = res.spriteProg;
+    this.spriteLocRect = res.spriteLocRect;
+    this.spriteLocProj = res.spriteLocProj;
+    this.spriteLocAlpha = res.spriteLocAlpha;
+    this.rectProg = res.rectProg;
+    this.rectLocRect = res.rectLocRect;
+    this.rectLocProj = res.rectLocProj;
+    this.rectLocColor = res.rectLocColor;
+    this.quadVAO = res.quadVAO;
+    this.quadBuf = res.quadBuf;
   }
 
   /* ═══ IRenderer: State ═══ */
@@ -599,10 +625,10 @@ class WebGL2Renderer implements IRenderer {
     width?: number,
     height?: number,
   ): void {
-    const source = (image as CanvasRenderer).canvas;
-    if (!(source instanceof HTMLCanvasElement)) {
+    if (!(image instanceof CanvasRenderer)) {
       throw new TypeError("drawImage: image must be a CanvasRenderer");
     }
+    const source = image.canvas;
     this.cmds.push({
       kind: 0,
       source,
@@ -867,10 +893,11 @@ class WebGL2Renderer implements IRenderer {
 
     gl.bindVertexArray(null);
     this.cmds.length = 0;
+    this.helperDirty = false;
     this.frameCount++;
 
     // Periodic texture GC
-    if (this.frameCount % 60 === 0) {
+    if (this.frameCount % GC_INTERVAL_FRAMES === 0) {
       this._gcTextures();
     }
   }
@@ -878,13 +905,11 @@ class WebGL2Renderer implements IRenderer {
   /* ═══ Texture invalidation ═══ */
 
   invalidateImage(image: IRenderer): void {
-    const source = (image as CanvasRenderer).canvas;
-    if (source instanceof HTMLCanvasElement) {
-      const entry = this.texMap.get(source);
-      if (entry) {
-        this._deleteTiles(entry);
-        this.texMap.delete(source);
-      }
+    if (!(image instanceof CanvasRenderer)) return;
+    const entry = this.texMap.get(image.canvas);
+    if (entry) {
+      this._deleteTiles(entry);
+      this.texMap.delete(image.canvas);
     }
   }
 
@@ -896,11 +921,17 @@ class WebGL2Renderer implements IRenderer {
       this._deleteTiles(entry);
     }
     this.texMap.clear();
+    this.colorCache.clear();
     gl.deleteVertexArray(this.quadVAO);
     gl.deleteBuffer(this.quadBuf);
     gl.deleteProgram(this.spriteProg);
     gl.deleteProgram(this.rectProg);
     this.helper.destroy();
+    this.canvas.removeEventListener("webglcontextlost", this._onContextLost);
+    this.canvas.removeEventListener(
+      "webglcontextrestored",
+      this._onContextRestored,
+    );
   }
 }
 

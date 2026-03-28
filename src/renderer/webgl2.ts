@@ -624,6 +624,7 @@ class WebGL2Renderer implements IRenderer {
     }
     this.helper.destroy();
     this.helperDirty = false;
+    this.cmds.length = 0;
 
     this.width = width;
     this.height = height;

@@ -754,6 +754,10 @@ class WebGL2Renderer implements IRenderer {
     }
   }
 
+  // NOTE: Positions are computed from raw canvas pixel dimensions, matching
+  // CanvasRenderer behaviour. Under a non-unit setScale the values are in the
+  // scaled coordinate space and the projection maps them identically to how
+  // Canvas 2D's transform would.
   drawVideo(enableLegacyPip: boolean): void {
     if (
       !this.video ||

@@ -33,6 +33,7 @@ const emptyTextMetrics = (width: number): TextMetrics =>
 
 class FakeRenderer implements IRenderer {
   public readonly rendererName = "FakeRenderer";
+  public readonly canvas = document.createElement("canvas");
   private font = "";
   private size = { width: 1920, height: 1080 };
 

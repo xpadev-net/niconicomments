@@ -1,5 +1,6 @@
 export interface IRenderer {
   readonly rendererName: string;
+  readonly canvas: HTMLCanvasElement;
   destroy(): void;
   drawVideo(enableLegacyPip: boolean): void;
   getFont(): string;
@@ -30,9 +31,7 @@ export interface IRenderer {
   /**
    * Draw a sub-renderer's content onto this renderer.
    *
-   * Note: `image` must be a `CanvasRenderer` instance (as returned by
-   * `getCanvas()`).  Passing other `IRenderer` implementations will throw
-   * at runtime in `WebGL2Renderer`.
+   * The source image is read from `image.canvas`.
    */
   drawImage(
     image: IRenderer,

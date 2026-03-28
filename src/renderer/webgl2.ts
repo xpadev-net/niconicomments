@@ -633,11 +633,18 @@ class WebGL2Renderer implements IRenderer {
     this.canvas.width = width;
     this.canvas.height = height;
     this.gl.viewport(0, 0, width, height);
-    // Reset scale to match Canvas2D behavior (canvas.width= resets transform)
+    // Reset all state to match Canvas2D behavior (canvas.width= resets context)
     this.scaleX = 1;
     this.scaleY = 1;
-    this.state.scaleX = 1;
-    this.state.scaleY = 1;
+    this.state = {
+      alpha: 1,
+      fillStyle: "#000000",
+      strokeStyle: "#000000",
+      lineWidth: 1,
+      font: "10px sans-serif",
+      scaleX: 1,
+      scaleY: 1,
+    };
     this._updateProjection();
     this.helper = this._createHelper(width, height);
   }
@@ -671,12 +678,6 @@ class WebGL2Renderer implements IRenderer {
     width?: number,
     height?: number,
   ): void {
-    // getCanvas() always returns CanvasRenderer, so this check is safe.
-    // If a non-CanvasRenderer IRenderer is needed as a source in the future,
-    // extract its HTMLCanvasElement via a shared interface property instead.
-    if (!(image instanceof CanvasRenderer)) {
-      throw new TypeError("drawImage: image must be a CanvasRenderer");
-    }
     const source = image.canvas;
     this.cmds.push({
       kind: 0,

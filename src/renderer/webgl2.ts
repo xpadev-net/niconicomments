@@ -521,6 +521,11 @@ class WebGL2Renderer implements IRenderer {
     const gl = this.gl;
     this.texMap.clear();
 
+    gl.deleteProgram(this.spriteProg);
+    gl.deleteProgram(this.rectProg);
+    gl.deleteVertexArray(this.quadVAO);
+    gl.deleteBuffer(this.quadBuf);
+
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
     gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);

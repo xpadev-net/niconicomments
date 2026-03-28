@@ -354,11 +354,10 @@ class BaseComment implements IComment {
   }
 
   protected getCacheKey() {
-    return `${JSON.stringify(this.comment.content)}@@${this.pluginName}@@${[
-      ...this.comment.mail,
-    ]
-      .sort((a, b) => a.localeCompare(b))
-      .join(",")}`;
+    // mail コマンドは ASCII 文字のみ ("naka", "big", "white" など) なので
+    // localeCompare 不要。code-unit 順で一意なキーが得られる
+    const sortedMail = [...this.comment.mail].sort().join(",");
+    return `${this.pluginName}\0${sortedMail}\0${this.comment.rawContent}`;
   }
 }
 

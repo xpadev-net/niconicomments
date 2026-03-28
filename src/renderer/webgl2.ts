@@ -351,11 +351,13 @@ class WebGL2Renderer implements IRenderer {
     this.colorCtx.fillStyle = css;
     this.colorCtx.fillRect(0, 0, 1, 1);
     const d = this.colorCtx.getImageData(0, 0, 1, 1).data;
+    // getImageData returns premultiplied RGB; un-premultiply to get straight alpha
+    const alpha = d[3] ?? 0;
     const result: [number, number, number, number] = [
-      (d[0] ?? 0) / 255,
-      (d[1] ?? 0) / 255,
-      (d[2] ?? 0) / 255,
-      (d[3] ?? 0) / 255,
+      alpha > 0 ? (d[0] ?? 0) / alpha : 0,
+      alpha > 0 ? (d[1] ?? 0) / alpha : 0,
+      alpha > 0 ? (d[2] ?? 0) / alpha : 0,
+      alpha / 255,
     ];
     if (this.colorCache.size >= COLOR_CACHE_MAX_SIZE) {
       const firstKey = this.colorCache.keys().next().value;
@@ -592,12 +594,11 @@ class WebGL2Renderer implements IRenderer {
     this.canvas.width = width;
     this.canvas.height = height;
     this.gl.viewport(0, 0, width, height);
+    // Reset scale to match Canvas2D behavior (canvas.width= resets transform)
+    this.scaleX = 1;
+    this.scaleY = 1;
     this._updateProjection();
-    // Recreate helper (canvas.width= resets 2D context state)
     this.helper = this._createHelper(width, height);
-    if (this.scaleX !== 1 || this.scaleY !== 1) {
-      this.helper.setScale(this.scaleX, this.scaleY);
-    }
   }
 
   getSize(): { width: number; height: number } {

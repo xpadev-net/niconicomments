@@ -96,6 +96,8 @@ interface RenderState {
   strokeStyle: string;
   lineWidth: number;
   font: string;
+  scaleX: number;
+  scaleY: number;
 }
 
 /* ─── WebGL2Renderer ─── */
@@ -139,6 +141,8 @@ class WebGL2Renderer implements IRenderer {
     strokeStyle: "#000000",
     lineWidth: 1,
     font: "10px sans-serif",
+    scaleX: 1,
+    scaleY: 1,
   };
   private readonly stateStack: RenderState[] = [];
 
@@ -438,15 +442,9 @@ class WebGL2Renderer implements IRenderer {
 
     // Fast path: fits in a single texture
     if (w <= max && h <= max) {
-      return [
-        {
-          tex: this._createTexture(source),
-          srcX: 0,
-          srcY: 0,
-          srcW: w,
-          srcH: h,
-        },
-      ];
+      const tex = this._createTexture(source);
+      gl.bindTexture(gl.TEXTURE_2D, null);
+      return [{ tex, srcX: 0, srcY: 0, srcW: w, srcH: h }];
     }
 
     // Tile grid
@@ -558,16 +556,27 @@ class WebGL2Renderer implements IRenderer {
 
   save(): void {
     this.stateStack.push({ ...this.state });
+    this.helper.save();
   }
 
   restore(): void {
     const s = this.stateStack.pop();
-    if (s) this.state = s;
+    if (s) {
+      const scaleChanged =
+        s.scaleX !== this.state.scaleX || s.scaleY !== this.state.scaleY;
+      this.state = s;
+      this.scaleX = s.scaleX;
+      this.scaleY = s.scaleY;
+      if (scaleChanged) this._updateProjection();
+    }
+    this.helper.restore();
   }
 
   setScale(scale: number, arg1?: number): void {
     this.scaleX *= scale;
     this.scaleY *= arg1 ?? scale;
+    this.state.scaleX = this.scaleX;
+    this.state.scaleY = this.scaleY;
     this._updateProjection();
     this.helper.setScale(scale, arg1);
   }
@@ -622,6 +631,8 @@ class WebGL2Renderer implements IRenderer {
     // Reset scale to match Canvas2D behavior (canvas.width= resets transform)
     this.scaleX = 1;
     this.scaleY = 1;
+    this.state.scaleX = 1;
+    this.state.scaleY = 1;
     this._updateProjection();
     this.helper = this._createHelper(width, height);
   }
@@ -987,6 +998,7 @@ class WebGL2Renderer implements IRenderer {
       "webglcontextrestored",
       this._onContextRestored,
     );
+    gl.getExtension("WEBGL_lose_context")?.loseContext();
   }
 }
 

@@ -34,6 +34,14 @@ export interface IRenderer {
     width?: number,
     height?: number,
   ): void;
+  /**
+   * Execute all buffered draw commands.
+   *
+   * Ordering contract: GPU-accelerated commands (drawImage, fillRect, strokeRect)
+   * are rendered first, then Canvas 2D helper operations (text/path) are
+   * composited on top.  Callers must ensure fillText/strokeText are issued
+   * AFTER all drawImage calls within a single frame.
+   */
   flush(): void;
   invalidateImage(image: IRenderer): void;
 }

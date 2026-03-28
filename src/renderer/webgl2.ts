@@ -22,8 +22,8 @@ uniform float uAlpha;
 out vec4 fragColor;
 void main() {
   vec4 c = texture(uTexture, vTexCoord);
-  c.a *= uAlpha;
-  fragColor = c;
+  float a = c.a * uAlpha;
+  fragColor = vec4(c.rgb * a, a);
 }`;
 
 const RECT_VERT = `#version 300 es
@@ -176,7 +176,7 @@ class WebGL2Renderer implements IRenderer {
 
     const gl = canvas.getContext("webgl2", {
       alpha: true,
-      premultipliedAlpha: false,
+      premultipliedAlpha: true,
       antialias: false,
       depth: false,
       stencil: false,
@@ -185,14 +185,10 @@ class WebGL2Renderer implements IRenderer {
     if (!gl) throw new Error("WebGL2 not available");
     this.gl = gl;
 
-    // Non-premultiplied alpha blending
+    // Premultiplied alpha blending — the sprite shader premultiplies
+    // in the fragment stage so the blend is always ONE × src + (1−srcA) × dst
     gl.enable(gl.BLEND);
-    gl.blendFuncSeparate(
-      gl.SRC_ALPHA,
-      gl.ONE_MINUS_SRC_ALPHA,
-      gl.ONE,
-      gl.ONE_MINUS_SRC_ALPHA,
-    );
+    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
     gl.viewport(0, 0, canvas.width, canvas.height);
     this.maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE) as number;
 
@@ -518,12 +514,7 @@ class WebGL2Renderer implements IRenderer {
     this.texMap.clear();
 
     gl.enable(gl.BLEND);
-    gl.blendFuncSeparate(
-      gl.SRC_ALPHA,
-      gl.ONE_MINUS_SRC_ALPHA,
-      gl.ONE,
-      gl.ONE_MINUS_SRC_ALPHA,
-    );
+    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
     gl.viewport(0, 0, this.canvas.width, this.canvas.height);
 
     const res = this._initGLResources();
@@ -671,9 +662,9 @@ class WebGL2Renderer implements IRenderer {
       y: ny,
       w: nw,
       h: nh,
-      r,
-      g,
-      b,
+      r: r * ea,
+      g: g * ea,
+      b: b * ea,
       a: ea,
     });
   }
@@ -695,6 +686,9 @@ class WebGL2Renderer implements IRenderer {
     const ea = a * this.state.alpha;
     const lw = this.state.lineWidth;
     const half = lw / 2;
+    const pr = r * ea,
+      pg = g * ea,
+      pb = b * ea;
     // Top edge (full width including corners)
     this.cmds.push({
       kind: 1,
@@ -702,9 +696,9 @@ class WebGL2Renderer implements IRenderer {
       y: ny - half,
       w: nw + lw,
       h: lw,
-      r,
-      g,
-      b,
+      r: pr,
+      g: pg,
+      b: pb,
       a: ea,
     });
     // Bottom edge
@@ -714,9 +708,9 @@ class WebGL2Renderer implements IRenderer {
       y: ny + nh - half,
       w: nw + lw,
       h: lw,
-      r,
-      g,
-      b,
+      r: pr,
+      g: pg,
+      b: pb,
       a: ea,
     });
     // Left & right edges (between top/bottom to avoid overlap)
@@ -727,9 +721,9 @@ class WebGL2Renderer implements IRenderer {
         y: ny + half,
         w: lw,
         h: nh - lw,
-        r,
-        g,
-        b,
+        r: pr,
+        g: pg,
+        b: pb,
         a: ea,
       });
       this.cmds.push({
@@ -738,9 +732,9 @@ class WebGL2Renderer implements IRenderer {
         y: ny + half,
         w: lw,
         h: nh - lw,
-        r,
-        g,
-        b,
+        r: pr,
+        g: pg,
+        b: pb,
         a: ea,
       });
     }

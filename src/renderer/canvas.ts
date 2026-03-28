@@ -1,5 +1,6 @@
 import type { IRenderer } from "@/@types/";
 import { CanvasRenderingContext2DError } from "@/errors";
+import { canvasPool } from "@/renderer/canvasPool";
 
 /**
  * Canvasを使ったレンダラー
@@ -16,12 +17,23 @@ class CanvasRenderer implements IRenderer {
   private width = 0;
   private height = 0;
 
+  /**
+   * measureText 結果のキャッシュ
+   * キー: "font\0text" → 値: width
+   * Canvas2D の measureText() は同じ (font, text) ペアに対して決定論的なので安全にキャッシュできる
+   */
+  private static _mtCache = new Map<string, number>();
+
+  /** プールから取得した canvas かどうか (destroy 時にプールに返却するため) */
+  private readonly pooled: boolean;
+
   constructor(
     canvas?: HTMLCanvasElement,
     video?: HTMLVideoElement,
     padding = 0,
   ) {
-    this.canvas = canvas ?? document.createElement("canvas");
+    this.pooled = !canvas;
+    this.canvas = canvas ?? canvasPool.acquire();
     const context = this.canvas.getContext("2d");
     if (!context) throw new CanvasRenderingContext2DError();
     this.context = context;
@@ -134,6 +146,9 @@ class CanvasRenderer implements IRenderer {
     this.height = height;
     this.canvas.width = width + this.padding * 2;
     this.canvas.height = height + this.padding * 2;
+    if (this.padding > 0) {
+      this.context.translate(this.padding, this.padding);
+    }
   }
 
   getSize(): { width: number; height: number } {
@@ -144,7 +159,18 @@ class CanvasRenderer implements IRenderer {
   }
 
   measureText(text: string): TextMetrics {
-    return this.context.measureText(text);
+    const key = `${this.context.font}\0${text}`;
+    const cached = CanvasRenderer._mtCache.get(key);
+    if (cached !== undefined) {
+      return { width: cached } as TextMetrics;
+    }
+    const result = this.context.measureText(text);
+    CanvasRenderer._mtCache.set(key, result.width);
+    return result;
+  }
+
+  static resetMeasureTextCache(): void {
+    CanvasRenderer._mtCache.clear();
   }
   beginPath(): void {
     this.context.beginPath();
@@ -172,7 +198,9 @@ class CanvasRenderer implements IRenderer {
   }
 
   destroy() {
-    //for override
+    if (this.pooled) {
+      canvasPool.release(this.canvas);
+    }
   }
 }
 

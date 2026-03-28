@@ -26,6 +26,8 @@ import {
 
 import { BaseComment } from "./BaseComment";
 
+const MAX_RESIZE_ITERATIONS = 20;
+
 class HTML5Comment extends BaseComment {
   override readonly pluginName: string = "HTML5Comment";
   constructor(comment: FormattedComment, context: IRenderer, index: number) {
@@ -190,39 +192,80 @@ class HTML5Comment extends BaseComment {
     const charSize = getCharSize(comment.size, false);
     const scale = widthLimit / width;
     comment.resizedX = true;
-    let _comment: MeasureTextInput = { ...comment };
-    _comment.charSize = (_comment.charSize ?? 0) * scale;
-    _comment.lineHeight = (_comment.lineHeight ?? 0) * scale;
-    _comment.fontSize = _comment.charSize * 0.8;
-    if (!typeGuard.internal.MeasureInput(_comment)) throw new TypeGuardError();
-    let result = measure(_comment, this.renderer);
-    if (result.width > widthLimit) {
-      while (result.width >= widthLimit) {
-        const originalCharSize = _comment.charSize;
-        _comment.charSize -= 1;
-        _comment.lineHeight *= _comment.charSize / originalCharSize;
-        _comment.fontSize = _comment.charSize * 0.8;
-        result = measure(_comment, this.renderer);
+    const baseCharSize = Math.max(1, (comment.charSize ?? 0) * scale);
+    const baseLineHeight = Math.max(1, (comment.lineHeight ?? 0) * scale);
+
+    // ワーキングオブジェクトを一度だけ生成し、ループ内で再利用する
+    // typeGuard は構造の検証なので、数値フィールドのみ変更する場合は
+    // 初回検証のみで十分
+    const workComment: MeasureTextInput = {
+      ...comment,
+      charSize: baseCharSize,
+      lineHeight: baseLineHeight,
+      fontSize: baseCharSize * 0.8,
+    };
+    if (!typeGuard.internal.MeasureInput(workComment)) {
+      throw new TypeGuardError();
+    }
+
+    const getMeasured = (nextCharSize: number) => {
+      workComment.charSize = nextCharSize;
+      workComment.lineHeight = baseLineHeight * (nextCharSize / baseCharSize);
+      workComment.fontSize = nextCharSize * 0.8;
+      return measure(workComment, this.renderer);
+    };
+
+    let low = Math.max(1, Math.floor(baseCharSize * 0.5));
+    let high = Math.max(low, Math.ceil(baseCharSize * 1.5));
+    let best = baseCharSize;
+    let bestResult = getMeasured(baseCharSize);
+    if (bestResult.width > widthLimit) {
+      let remainingIterations = MAX_RESIZE_ITERATIONS;
+      while (remainingIterations-- > 0) {
+        const candidate = getMeasured(low);
+        const nextLow = Math.max(1, Math.floor(low * 0.5));
+        if (candidate.width <= widthLimit || nextLow === low) {
+          best = low;
+          bestResult = candidate;
+          break;
+        }
+        high = low;
+        low = nextLow;
       }
     } else {
-      let lastComment: MeasureTextInput = { ..._comment };
-      while (result.width < widthLimit) {
-        lastComment = { ..._comment };
-        const originalCharSize = _comment.charSize;
-        _comment.charSize += 1;
-        _comment.lineHeight *= _comment.charSize / originalCharSize;
-        _comment.fontSize = _comment.charSize * 0.8;
-        result = measure(_comment, this.renderer);
+      let remainingIterations = MAX_RESIZE_ITERATIONS;
+      while (remainingIterations-- > 0) {
+        const candidate = getMeasured(high);
+        if (candidate.width > widthLimit) break;
+        best = high;
+        bestResult = candidate;
+        const nextHigh = Math.ceil(high * 1.5);
+        if (nextHigh === high) break;
+        high = nextHigh;
       }
-      _comment = lastComment;
+    }
+    if (bestResult.width <= widthLimit && low < high) {
+      let left = low;
+      let right = high;
+      while (left <= right) {
+        const mid = Math.floor((left + right) / 2);
+        const candidate = getMeasured(mid);
+        if (candidate.width <= widthLimit) {
+          best = mid;
+          bestResult = candidate;
+          left = mid + 1;
+        } else {
+          right = mid - 1;
+        }
+      }
     }
     if (comment.resizedY) {
-      const scale = (_comment.charSize ?? 0) / (comment.charSize ?? 0);
-      comment.charSize = scale * charSize;
-      comment.lineHeight = scale * lineHeight;
+      const resizeScale = best / (comment.charSize ?? 1);
+      comment.charSize = resizeScale * charSize;
+      comment.lineHeight = resizeScale * lineHeight;
     } else {
-      comment.charSize = _comment.charSize;
-      comment.lineHeight = _comment.lineHeight;
+      comment.charSize = best;
+      comment.lineHeight = baseLineHeight * (best / baseCharSize);
     }
     comment.fontSize = (comment.charSize ?? 0) * 0.8;
     if (!typeGuard.internal.MeasureInput(comment)) throw new TypeGuardError();

@@ -626,6 +626,7 @@ class WebGL2Renderer implements IRenderer {
     this.helper.destroy();
     this.helperDirty = false;
     this.cmds.length = 0;
+    this.stateStack.length = 0;
 
     this.width = width;
     this.height = height;
@@ -736,6 +737,23 @@ class WebGL2Renderer implements IRenderer {
     const pr = r * ea,
       pg = g * ea,
       pb = b * ea;
+    // When the rect is too small for non-overlapping edges, emit a single
+    // filled rect covering the entire stroke outline to avoid double-
+    // compositing artifacts with semi-transparent strokes.
+    if (nh <= lw || nw <= lw) {
+      this.cmds.push({
+        kind: 1,
+        x: nx - half,
+        y: ny - half,
+        w: nw + lw,
+        h: nh + lw,
+        r: pr,
+        g: pg,
+        b: pb,
+        a: ea,
+      });
+      return;
+    }
     // Top edge (full width including corners)
     this.cmds.push({
       kind: 1,
@@ -761,30 +779,28 @@ class WebGL2Renderer implements IRenderer {
       a: ea,
     });
     // Left & right edges (between top/bottom to avoid overlap)
-    if (nh > lw) {
-      this.cmds.push({
-        kind: 1,
-        x: nx - half,
-        y: ny + half,
-        w: lw,
-        h: nh - lw,
-        r: pr,
-        g: pg,
-        b: pb,
-        a: ea,
-      });
-      this.cmds.push({
-        kind: 1,
-        x: nx + nw - half,
-        y: ny + half,
-        w: lw,
-        h: nh - lw,
-        r: pr,
-        g: pg,
-        b: pb,
-        a: ea,
-      });
-    }
+    this.cmds.push({
+      kind: 1,
+      x: nx - half,
+      y: ny + half,
+      w: lw,
+      h: nh - lw,
+      r: pr,
+      g: pg,
+      b: pb,
+      a: ea,
+    });
+    this.cmds.push({
+      kind: 1,
+      x: nx + nw - half,
+      y: ny + half,
+      w: lw,
+      h: nh - lw,
+      r: pr,
+      g: pg,
+      b: pb,
+      a: ea,
+    });
   }
 
   // NOTE: Positions are computed from raw canvas pixel dimensions, matching

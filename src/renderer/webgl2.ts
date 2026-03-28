@@ -230,7 +230,17 @@ class WebGL2Renderer implements IRenderer {
 
     // Context loss handling (store references for removal in destroy)
     this._onContextLost = (e: Event) => e.preventDefault();
-    this._onContextRestored = () => this._rebuildGLResources();
+    this._onContextRestored = () => {
+      try {
+        this._rebuildGLResources();
+      } catch (e) {
+        console.error(
+          "WebGL2Renderer: context restore failed, renderer is now inactive:",
+          e,
+        );
+        this.destroy();
+      }
+    };
     canvas.addEventListener("webglcontextlost", this._onContextLost);
     canvas.addEventListener("webglcontextrestored", this._onContextRestored);
   }
@@ -736,7 +746,7 @@ class WebGL2Renderer implements IRenderer {
       a: ea,
     });
     // Left & right edges (between top/bottom to avoid overlap)
-    if (nh > 0) {
+    if (nh > lw) {
       this.cmds.push({
         kind: 1,
         x: nx - half,

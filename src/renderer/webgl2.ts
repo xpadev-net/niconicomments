@@ -839,8 +839,11 @@ class WebGL2Renderer implements IRenderer {
   }
 
   measureText(text: string): TextMetrics {
+    this.helper.save();
     this.helper.setFont(this.state.font);
-    return this.helper.measureText(text);
+    const result = this.helper.measureText(text);
+    this.helper.restore();
+    return result;
   }
 
   /* ═══ IRenderer: Path (delegated to Canvas 2D helper) ═══ */

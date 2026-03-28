@@ -612,6 +612,10 @@ class WebGL2Renderer implements IRenderer {
 
   /* ═══ IRenderer: Drawing ═══ */
 
+  // NOTE: gl.clear always clears the full framebuffer regardless of x/y/w/h.
+  // This matches the current call site (always full-canvas), but deviates from
+  // the Canvas 2D sub-region semantics. Use gl.scissor if sub-region support
+  // is needed in the future.
   clearRect(x: number, y: number, w: number, h: number): void {
     this.gl.clearColor(0, 0, 0, 0);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT);
@@ -627,6 +631,9 @@ class WebGL2Renderer implements IRenderer {
     width?: number,
     height?: number,
   ): void {
+    // getCanvas() always returns CanvasRenderer, so this check is safe.
+    // If a non-CanvasRenderer IRenderer is needed as a source in the future,
+    // extract its HTMLCanvasElement via a shared interface property instead.
     if (!(image instanceof CanvasRenderer)) {
       throw new TypeError("drawImage: image must be a CanvasRenderer");
     }
@@ -831,6 +838,11 @@ class WebGL2Renderer implements IRenderer {
 
   /* ═══ Flush: execute all buffered draw commands ═══ */
 
+  // ORDERING CONTRACT: All GPU commands (sprites + rects) are drawn first,
+  // then the Canvas 2D helper overlay (text/path ops) is composited on top.
+  // This is correct as long as fillText/strokeText on the main renderer are
+  // only called AFTER all drawImage calls within a frame — which is the case
+  // in the current drawCanvas flow (debug text is drawn last).
   flush(): void {
     const gl = this.gl;
     gl.bindVertexArray(this.quadVAO);

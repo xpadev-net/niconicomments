@@ -146,9 +146,6 @@ class CanvasRenderer implements IRenderer {
     this.height = height;
     this.canvas.width = width + this.padding * 2;
     this.canvas.height = height + this.padding * 2;
-    if (this.padding > 0) {
-      this.context.translate(this.padding, this.padding);
-    }
   }
 
   getSize(): { width: number; height: number } {

@@ -285,19 +285,23 @@ class WebGL2Renderer implements IRenderer {
     const gl = this.gl;
     const p = gl.createProgram();
     if (!p) throw new Error("Failed to create program");
-    const vShader = this._createShader(gl.VERTEX_SHADER, vs);
-    const fShader = this._createShader(gl.FRAGMENT_SHADER, fs);
-    gl.attachShader(p, vShader);
-    gl.attachShader(p, fShader);
-    gl.linkProgram(p);
-    gl.deleteShader(vShader);
-    gl.deleteShader(fShader);
-    if (!gl.getProgramParameter(p, gl.LINK_STATUS)) {
-      const log = gl.getProgramInfoLog(p);
+    try {
+      const vShader = this._createShader(gl.VERTEX_SHADER, vs);
+      const fShader = this._createShader(gl.FRAGMENT_SHADER, fs);
+      gl.attachShader(p, vShader);
+      gl.attachShader(p, fShader);
+      gl.linkProgram(p);
+      gl.deleteShader(vShader);
+      gl.deleteShader(fShader);
+      if (!gl.getProgramParameter(p, gl.LINK_STATUS)) {
+        const log = gl.getProgramInfoLog(p);
+        throw new Error(`Program link: ${log}`);
+      }
+      return p;
+    } catch (e) {
       gl.deleteProgram(p);
-      throw new Error(`Program link: ${log}`);
+      throw e;
     }
-    return p;
   }
 
   private _initGLResources() {
@@ -527,14 +531,9 @@ class WebGL2Renderer implements IRenderer {
 
   private _rebuildGLResources(): void {
     const gl = this.gl;
-    // After context loss all GPU objects (textures, programs, …) are already
-    // destroyed by the browser; skip _deleteTiles and just drop the map.
+    // After context loss all GPU objects (textures, programs, VAOs, buffers)
+    // are already invalidated by the browser — no GL delete calls needed.
     this.texMap.clear();
-
-    gl.deleteProgram(this.spriteProg);
-    gl.deleteProgram(this.rectProg);
-    gl.deleteVertexArray(this.quadVAO);
-    gl.deleteBuffer(this.quadBuf);
 
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);

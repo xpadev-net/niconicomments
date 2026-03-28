@@ -534,6 +534,8 @@ class WebGL2Renderer implements IRenderer {
     // After context loss all GPU objects (textures, programs, VAOs, buffers)
     // are already invalidated by the browser — no GL delete calls needed.
     this.texMap.clear();
+    this.cmds.length = 0;
+    this.helperDirty = false;
 
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
@@ -998,6 +1000,8 @@ class WebGL2Renderer implements IRenderer {
     gl.deleteProgram(this.spriteProg);
     gl.deleteProgram(this.rectProg);
     this.helper.destroy();
+    this.tileCanvas = null;
+    this.tileCtx = null;
     this.canvas.removeEventListener("webglcontextlost", this._onContextLost);
     this.canvas.removeEventListener(
       "webglcontextrestored",

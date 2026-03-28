@@ -22,8 +22,7 @@ uniform float uAlpha;
 out vec4 fragColor;
 void main() {
   vec4 c = texture(uTexture, vTexCoord);
-  float a = c.a * uAlpha;
-  fragColor = vec4(c.rgb * a, a);
+  fragColor = vec4(c.rgb * uAlpha, c.a * uAlpha);
 }`;
 
 const RECT_VERT = `#version 300 es
@@ -185,10 +184,11 @@ class WebGL2Renderer implements IRenderer {
     if (!gl) throw new Error("WebGL2 not available");
     this.gl = gl;
 
-    // Premultiplied alpha blending — the sprite shader premultiplies
-    // in the fragment stage so the blend is always ONE × src + (1−srcA) × dst
+    // Premultiplied alpha: UNPACK ensures textures are premultiplied,
+    // blend is ONE × src + (1−srcA) × dst
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
     gl.viewport(0, 0, canvas.width, canvas.height);
     this.maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE) as number;
 
@@ -347,14 +347,13 @@ class WebGL2Renderer implements IRenderer {
     this.colorCtx.clearRect(0, 0, 1, 1);
     this.colorCtx.fillStyle = css;
     this.colorCtx.fillRect(0, 0, 1, 1);
+    // getImageData returns non-premultiplied RGBA per spec
     const d = this.colorCtx.getImageData(0, 0, 1, 1).data;
-    // getImageData returns premultiplied RGB; un-premultiply to get straight alpha
-    const alpha = d[3] ?? 0;
     const result: [number, number, number, number] = [
-      alpha > 0 ? (d[0] ?? 0) / alpha : 0,
-      alpha > 0 ? (d[1] ?? 0) / alpha : 0,
-      alpha > 0 ? (d[2] ?? 0) / alpha : 0,
-      alpha / 255,
+      (d[0] ?? 0) / 255,
+      (d[1] ?? 0) / 255,
+      (d[2] ?? 0) / 255,
+      (d[3] ?? 0) / 255,
     ];
     if (this.colorCache.size >= COLOR_CACHE_MAX_SIZE) {
       const firstKey = this.colorCache.keys().next().value;
@@ -515,6 +514,7 @@ class WebGL2Renderer implements IRenderer {
 
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
     gl.viewport(0, 0, this.canvas.width, this.canvas.height);
 
     const res = this._initGLResources();
@@ -587,6 +587,7 @@ class WebGL2Renderer implements IRenderer {
       this._deleteTiles(oldEntry);
       this.texMap.delete(this.helper.canvas);
     }
+    this.helper.destroy();
     this.helperDirty = false;
 
     this.width = width;
@@ -741,7 +742,12 @@ class WebGL2Renderer implements IRenderer {
   }
 
   drawVideo(enableLegacyPip: boolean): void {
-    if (!this.video) return;
+    if (
+      !this.video ||
+      this.video.videoWidth === 0 ||
+      this.video.videoHeight === 0
+    )
+      return;
     let scale: number;
     const hRatio = this.canvas.height / this.video.videoHeight;
     const wRatio = this.canvas.width / this.video.videoWidth;

@@ -184,8 +184,14 @@ class WebGL2Renderer implements IRenderer {
     if (!gl) throw new Error("WebGL2 not available");
     this.gl = gl;
 
-    // Premultiplied alpha: UNPACK ensures textures are premultiplied,
-    // blend is ONE × src + (1−srcA) × dst
+    // Premultiplied alpha pipeline:
+    // - UNPACK_PREMULTIPLY_ALPHA_WEBGL ensures texImage2D always delivers
+    //   premultiplied data (the browser un-premultiplies Canvas 2D's internal
+    //   store then re-premultiplies on upload, per WebGL spec §5.14.8).
+    // - Blend ONE × src + (1−srcA) × dst is the standard premultiplied blend.
+    // - The sprite shader scales both RGB and A by uAlpha.
+    // This relies on spec-compliant Canvas→WebGL premultiplication round-trip;
+    // minor precision loss (≤1/255) may occur for partially-transparent pixels.
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
     gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
@@ -896,7 +902,10 @@ class WebGL2Renderer implements IRenderer {
         gl.uniformMatrix4fv(this.spriteLocProj, false, this.proj);
       }
       gl.activeTexture(gl.TEXTURE0);
-      const helperEntry = this._uploadTexture(this.helper.canvas, true);
+      // Invalidate cached helper texture so _uploadTexture always
+      // re-uploads the latest helper canvas content
+      this.invalidateImage(this.helper);
+      const helperEntry = this._uploadTexture(this.helper.canvas, false);
       const logicalW = this.canvas.width / this.scaleX;
       const logicalH = this.canvas.height / this.scaleY;
       for (const tile of helperEntry.tiles) {

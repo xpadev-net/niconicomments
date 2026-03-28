@@ -19,10 +19,12 @@ class CanvasRenderer implements IRenderer {
 
   /**
    * measureText 結果のキャッシュ
-   * キー: "font\0text" → 値: width
+   * キー: "font\0text" → 値: TextMetrics
    * Canvas2D の measureText() は同じ (font, text) ペアに対して決定論的なので安全にキャッシュできる
+   * エントリ数が _MT_CACHE_MAX_SIZE に達した場合はそれ以上追加しない（既存エントリは維持）
    */
-  private static _mtCache = new Map<string, number>();
+  private static readonly _MT_CACHE_MAX_SIZE = 5000;
+  private static _mtCache = new Map<string, TextMetrics>();
 
   /** プールから取得した canvas かどうか (destroy 時にプールに返却するため) */
   private readonly pooled: boolean;
@@ -158,11 +160,11 @@ class CanvasRenderer implements IRenderer {
   measureText(text: string): TextMetrics {
     const key = `${this.context.font}\0${text}`;
     const cached = CanvasRenderer._mtCache.get(key);
-    if (cached !== undefined) {
-      return { width: cached } as TextMetrics;
-    }
+    if (cached !== undefined) return cached;
     const result = this.context.measureText(text);
-    CanvasRenderer._mtCache.set(key, result.width);
+    if (CanvasRenderer._mtCache.size < CanvasRenderer._MT_CACHE_MAX_SIZE) {
+      CanvasRenderer._mtCache.set(key, result);
+    }
     return result;
   }
 

@@ -354,6 +354,8 @@ class BaseComment implements IComment {
   }
 
   protected getCacheKey() {
+    // mail コマンドは ASCII 文字のみ ("naka", "big", "white" など) なので
+    // localeCompare 不要。code-unit 順で一意なキーが得られる
     const sortedMail = [...this.comment.mail].sort().join(",");
     return `${this.pluginName}\0${sortedMail}\0${this.comment.rawContent}`;
   }

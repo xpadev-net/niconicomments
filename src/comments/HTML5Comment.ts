@@ -220,6 +220,8 @@ class HTML5Comment extends BaseComment {
     let best = baseCharSize;
     let bestResult = getMeasured(baseCharSize);
     if (bestResult.width > widthLimit) {
+      // baseCharSize は既に超過確定なので upper bound として使う（無駄な探索を省く）
+      high = baseCharSize;
       let remainingIterations = MAX_RESIZE_ITERATIONS;
       while (remainingIterations-- > 0) {
         const candidate = getMeasured(low);

@@ -171,6 +171,14 @@ class CanvasRenderer implements IRenderer {
     return new CanvasRenderer(undefined, undefined, padding);
   }
 
+  flush(): void {
+    // Canvas 2Dでは即時描画のため何もしない
+  }
+
+  invalidateImage(_image: IRenderer): void {
+    // Canvas 2Dではテクスチャキャッシュがないため何もしない
+  }
+
   destroy() {
     //for override
   }

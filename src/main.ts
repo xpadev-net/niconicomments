@@ -30,7 +30,7 @@ import { initConfig } from "@/definition/initConfig";
 import { InvalidOptionError } from "@/errors/";
 import { registerHandler, removeHandler, triggerHandler } from "@/eventHandler";
 import convert2formattedComment from "@/inputParser";
-import { CanvasRenderer } from "@/renderer";
+import { createRenderer } from "@/renderer";
 import typeGuard from "@/typeGuard";
 import {
   arrayEqual,
@@ -91,7 +91,7 @@ class NiconiComments {
     resetNicoScripts();
     let renderer = _renderer;
     if (renderer instanceof HTMLCanvasElement) {
-      renderer = new CanvasRenderer(renderer, options.video);
+      renderer = createRenderer(renderer, options.video);
     } else if (options.video) {
       console.warn(
         "options.video is ignored because renderer is not HTMLCanvasElement",
@@ -99,6 +99,7 @@ class NiconiComments {
     }
 
     this.renderer = renderer;
+    logger(`renderer: ${renderer.constructor.name}`);
     this.renderer.setLineWidth(getConfig(config.contextLineWidth, false));
     const rendererSize = this.renderer.getSize();
     this.renderer.setScale(
@@ -311,6 +312,7 @@ class NiconiComments {
     for (const plugin of plugins) {
       try {
         plugin.instance.draw?.(vpos);
+        this.renderer.invalidateImage(plugin.canvas);
         this.renderer.drawImage(plugin.canvas, 0, 0);
       } catch (e) {
         console.error("Failed to draw comments", e);
@@ -320,6 +322,7 @@ class NiconiComments {
     this._drawComments(timelineRange, vpos, cursor);
     this._drawFPS(drawCanvasStart);
     this._drawCommentCount(timelineRange?.length);
+    this.renderer.flush();
     logger(`drawCanvas complete: ${performance.now() - drawCanvasStart}ms`);
     return true;
   }

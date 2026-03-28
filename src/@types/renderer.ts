@@ -33,4 +33,6 @@ export interface IRenderer {
     width?: number,
     height?: number,
   ): void;
+  flush(): void;
+  invalidateImage(image: IRenderer): void;
 }

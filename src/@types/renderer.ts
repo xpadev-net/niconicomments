@@ -27,6 +27,13 @@ export interface IRenderer {
   save(): void;
   restore(): void;
   getCanvas(padding?: number): IRenderer;
+  /**
+   * Draw a sub-renderer's content onto this renderer.
+   *
+   * Note: `image` must be a `CanvasRenderer` instance (as returned by
+   * `getCanvas()`).  Passing other `IRenderer` implementations will throw
+   * at runtime in `WebGL2Renderer`.
+   */
   drawImage(
     image: IRenderer,
     x: number,

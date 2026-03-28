@@ -527,6 +527,8 @@ class WebGL2Renderer implements IRenderer {
 
   private _rebuildGLResources(): void {
     const gl = this.gl;
+    // After context loss all GPU objects (textures, programs, …) are already
+    // destroyed by the browser; skip _deleteTiles and just drop the map.
     this.texMap.clear();
 
     gl.deleteProgram(this.spriteProg);

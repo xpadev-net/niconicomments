@@ -80,6 +80,8 @@ class FakeRenderer implements IRenderer {
     return this;
   }
   drawImage() {}
+  flush() {}
+  invalidateImage() {}
 }
 
 /**

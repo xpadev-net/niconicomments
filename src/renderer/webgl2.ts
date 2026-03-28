@@ -199,7 +199,7 @@ class WebGL2Renderer implements IRenderer {
     gl.viewport(0, 0, canvas.width, canvas.height);
     this.maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE) as number;
 
-    // Initialize GL resources (programs, VAO, buffer)
+    // Initialize all resources; release GL context on any failure
     try {
       const glRes = this._initGLResources();
       this.spriteProg = glRes.spriteProg;
@@ -212,21 +212,19 @@ class WebGL2Renderer implements IRenderer {
       this.rectLocColor = glRes.rectLocColor;
       this.quadVAO = glRes.quadVAO;
       this.quadBuf = glRes.quadBuf;
+
+      this.helper = this._createHelper(canvas.width, canvas.height);
+
+      const colorEl = document.createElement("canvas");
+      colorEl.width = 1;
+      colorEl.height = 1;
+      const colorCtx = colorEl.getContext("2d");
+      if (!colorCtx) throw new Error("Failed to create 2D context");
+      this.colorCtx = colorCtx;
     } catch (e) {
       gl.getExtension("WEBGL_lose_context")?.loseContext();
       throw e;
     }
-
-    // Helper for text/path ops (same size, scale applied later via setScale)
-    this.helper = this._createHelper(canvas.width, canvas.height);
-
-    // 1x1 canvas for CSS color parsing
-    const colorEl = document.createElement("canvas");
-    colorEl.width = 1;
-    colorEl.height = 1;
-    const colorCtx = colorEl.getContext("2d");
-    if (!colorCtx) throw new Error("Failed to create 2D context");
-    this.colorCtx = colorCtx;
 
     this._updateProjection();
 
@@ -733,7 +731,7 @@ class WebGL2Renderer implements IRenderer {
       a: ea,
     });
     // Left & right edges (between top/bottom to avoid overlap)
-    if (nh > lw) {
+    if (nh > 0) {
       this.cmds.push({
         kind: 1,
         x: nx - half,

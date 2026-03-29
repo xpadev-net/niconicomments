@@ -5,6 +5,7 @@ import type {
   FormattedCommentWithSize,
   HTML5Fonts,
   IRenderer,
+  MeasureInput,
   MeasureTextInput,
   MeasureTextResult,
 } from "@/@types/";
@@ -247,7 +248,7 @@ class HTML5Comment extends BaseComment {
       }
     }
     if (bestResult.width <= widthLimit && low < high) {
-      let left = low;
+      let left = best;
       let right = high;
       while (left <= right) {
         const mid = Math.floor((left + right) / 2);
@@ -270,8 +271,8 @@ class HTML5Comment extends BaseComment {
       comment.lineHeight = baseLineHeight * (best / baseCharSize);
     }
     comment.fontSize = (comment.charSize ?? 0) * 0.8;
-    if (!typeGuard.internal.MeasureInput(comment)) throw new TypeGuardError();
-    return measure(comment, this.renderer);
+    // charSize / lineHeight は上で必ず代入済みなので MeasureInput として安全
+    return measure(comment as MeasureTextInput & MeasureInput, this.renderer);
   }
 
   override _drawCollision(posX: number, posY: number, showCollision: boolean) {

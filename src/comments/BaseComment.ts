@@ -180,20 +180,24 @@ class BaseComment implements IComment {
       this.image = this.getTextImage();
     }
     if (this.image) {
-      this.renderer.save();
-      if (typeof this.comment.opacity === "number") {
-        this.renderer.setGlobalAlpha(this.comment.opacity);
-      } else if (this.comment._live) {
-        this.renderer.setGlobalAlpha(config.contextFillLiveOpacity);
-      } else {
-        this.renderer.setGlobalAlpha(1);
+      const needsAlpha =
+        typeof this.comment.opacity === "number" || this.comment._live;
+      if (needsAlpha) {
+        this.renderer.save();
+        if (typeof this.comment.opacity === "number") {
+          this.renderer.setGlobalAlpha(this.comment.opacity);
+        } else {
+          this.renderer.setGlobalAlpha(config.contextFillLiveOpacity);
+        }
       }
       if (this.comment.button && !this.comment.button.hidden) {
         const button = this.getButtonImage(posX, posY, cursor);
         button && this.renderer.drawImage(button, posX, posY);
       }
       this.renderer.drawImage(this.image, posX, posY);
-      this.renderer.restore();
+      if (needsAlpha) {
+        this.renderer.restore();
+      }
     }
   }
 
@@ -326,6 +330,7 @@ class BaseComment implements IComment {
     imageCache[this.cacheKey] = {
       timeout: window.setTimeout(
         () => {
+          imageCache[this.cacheKey]?.image.destroy();
           delete imageCache[this.cacheKey];
         },
         this.comment.long * 10 + config.cacheAge,

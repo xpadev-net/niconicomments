@@ -109,7 +109,9 @@ const measureWidth = (comment: MeasureInput, renderer: IRenderer) => {
   const { fontSize, scale } = getFontSizeAndScale(comment.charSize);
   const lineWidth: number[] = [];
   const itemWidth: number[][] = [];
-  renderer.setFont(parseFont(comment.font, fontSize));
+  const initialFont = parseFont(comment.font, fontSize);
+  renderer.setFont(initialFont);
+  let lastFont = initialFont;
   let currentWidth = 0;
   for (const item of comment.content) {
     if (item.type === "spacer") {
@@ -119,7 +121,11 @@ const measureWidth = (comment: MeasureInput, renderer: IRenderer) => {
       continue;
     }
     const lines = item.content.split("\n");
-    renderer.setFont(parseFont(item.font ?? comment.font, fontSize));
+    const font = parseFont(item.font ?? comment.font, fontSize);
+    if (font !== lastFont) {
+      renderer.setFont(font);
+      lastFont = font;
+    }
     const width = [];
     for (let j = 0, n = lines.length; j < n; j++) {
       const line = lines[j];

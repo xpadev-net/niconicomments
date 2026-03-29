@@ -55,7 +55,7 @@ class CanvasRenderer implements IRenderer {
   }
 
   drawVideo(enableLegacyPip: boolean) {
-    if (this.video) {
+    if (this.video && this.video.videoWidth > 0 && this.video.videoHeight > 0) {
       let scale: number;
       const height = this.canvas.height / this.video.videoHeight;
       const width = this.canvas.width / this.video.videoWidth;

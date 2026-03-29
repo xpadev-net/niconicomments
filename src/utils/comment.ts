@@ -767,9 +767,11 @@ const getMovablePosY = (
 
   let posY = 0;
   let isChanged = true;
+  let count = 0;
   let lastUpdatedIndex: number | undefined;
-  while (isChanged) {
+  while (isChanged && count < 10) {
     isChanged = false;
+    count++;
     for (let j = beforeVpos; j < n; j += 5) {
       const vpos = commentVpos + j;
       const leftPos = drawPadding + drawRange - (j + 100) * speed;

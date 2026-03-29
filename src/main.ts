@@ -84,8 +84,8 @@ class NiconiComments {
     initConfig();
     if (!typeGuard.config.initOptions(initOptions))
       throw new InvalidOptionError();
-    setOptions(Object.assign(defaultOptions, initOptions));
-    setConfig(Object.assign(defaultConfig, options.config));
+    setOptions(Object.assign({}, defaultOptions, initOptions));
+    setConfig(Object.assign({}, defaultConfig, options.config));
     setIsDebug(options.debug);
     resetImageCache();
     resetNicoScripts();
@@ -213,7 +213,7 @@ class NiconiComments {
       this.processedCommentIndex = comment.index;
     }
     if (lazy) {
-      this.processedCommentIndex = 0;
+      this.processedCommentIndex = -1;
     }
     logger(
       `getCommentPos complete: ${performance.now() - getCommentPosStart}ms`,

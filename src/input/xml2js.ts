@@ -17,10 +17,10 @@ const fromXml2js = (data: Xml2jsPacket): FormattedComment[] => {
   for (const item of data.packet.chat) {
     const tmpParam: FormattedComment = {
       id: Number(item.$.no) || index++,
-      vpos: Number(item.$.vpos),
+      vpos: Number(item.$.vpos) || 0,
       content: item._,
-      date: Number(item.$.date),
-      date_usec: Number(item.$.date_usec),
+      date: Number(item.$.date) || 0,
+      date_usec: Number(item.$.date_usec) || 0,
       owner: !(item.$.owner === "0" || item.$.user_id),
       premium: item.$.premium === "1",
       mail: item.$.mail.split(/\s+/g),

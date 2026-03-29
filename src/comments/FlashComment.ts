@@ -28,9 +28,13 @@ import {
   drawRightBorder,
 } from "@/utils/border";
 
+import { BaseComment } from "./BaseComment";
+
+let flashScriptCharRegexConfig: typeof config | null = null;
 let flashScriptCharRegex: { super: RegExp; sub: RegExp } | null = null;
 const getFlashScriptCharRegex = () => {
-  if (!flashScriptCharRegex) {
+  if (flashScriptCharRegex === null || flashScriptCharRegexConfig !== config) {
+    flashScriptCharRegexConfig = config;
     flashScriptCharRegex = {
       super: new RegExp(config.flashScriptChar.super, "g"),
       sub: new RegExp(config.flashScriptChar.sub, "g"),
@@ -38,8 +42,6 @@ const getFlashScriptCharRegex = () => {
   }
   return flashScriptCharRegex;
 };
-
-import { BaseComment } from "./BaseComment";
 
 class FlashComment extends BaseComment {
   private _globalScale: number;

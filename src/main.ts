@@ -233,7 +233,9 @@ class NiconiComments {
     for (const vpos of Object.keys(this.timeline)) {
       const item = this.timeline[Number(vpos)];
       if (!item) continue;
-      item.sort((a, b) => (a.owner === b.owner ? 0 : a.owner ? 1 : -1));
+      item.sort(
+        (a, b) => Number(a.owner) - Number(b.owner) || a.index - b.index,
+      );
     }
     logger(`parseData complete: ${performance.now() - sortCommentStart}ms`);
   }

@@ -12,6 +12,7 @@ import { config } from "@/definition/config";
 import { getConfig } from "@/utils/config";
 import { nativeSort } from "@/utils/sort";
 
+let flashCharRegexConfig: typeof config | null = null;
 let flashCharRegex: {
   simsunStrong: RegExp;
   simsunWeak: RegExp;
@@ -19,7 +20,8 @@ let flashCharRegex: {
   gothic: RegExp;
 } | null = null;
 const getFlashCharRegex = () => {
-  if (!flashCharRegex) {
+  if (flashCharRegex === null || flashCharRegexConfig !== config) {
+    flashCharRegexConfig = config;
     flashCharRegex = {
       simsunStrong: new RegExp(config.flashChar.simsunStrong),
       simsunWeak: new RegExp(config.flashChar.simsunWeak),

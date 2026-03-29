@@ -28,6 +28,17 @@ import {
   drawRightBorder,
 } from "@/utils/border";
 
+let flashScriptCharRegex: { super: RegExp; sub: RegExp } | null = null;
+const getFlashScriptCharRegex = () => {
+  if (!flashScriptCharRegex) {
+    flashScriptCharRegex = {
+      super: new RegExp(config.flashScriptChar.super, "g"),
+      sub: new RegExp(config.flashScriptChar.sub, "g"),
+    };
+  }
+  return flashScriptCharRegex;
+};
+
 import { BaseComment } from "./BaseComment";
 
 class FlashComment extends BaseComment {
@@ -154,11 +165,10 @@ class FlashComment extends BaseComment {
       : parseContent(input);
     const lineCount = (input.match(/\n/g)?.length ?? 0) + 1;
     const lineOffset =
-      (input.match(new RegExp(config.flashScriptChar.super, "g"))?.length ??
-        0) *
+      (input.match(getFlashScriptCharRegex().super)?.length ?? 0) *
         -1 *
         config.flashScriptCharOffset +
-      (input.match(new RegExp(config.flashScriptChar.sub, "g"))?.length ?? 0) *
+      (input.match(getFlashScriptCharRegex().sub)?.length ?? 0) *
         config.flashScriptCharOffset;
     return {
       content,

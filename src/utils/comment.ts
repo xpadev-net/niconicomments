@@ -25,6 +25,23 @@ import typeGuard from "@/typeGuard";
 import { arrayPush } from "./array";
 import { getConfig } from "./config";
 
+const RE_QUOTE_START = /^["'\u300c]$/;
+const RE_QUOTE_END = /^["']$/;
+const RE_WHITESPACE = /^\s+$/;
+const RE_NICOSCRIPT = /^[@\uff20](\S+)(?:\s(.+))?/;
+const RE_REVERSE =
+  /^[@\uff20]\u9006(?:\s+)?(\u5168|\u30b3\u30e1|\u6295\u30b3\u30e1)?/;
+const RE_JUMP =
+  /\s*((?:sm|so|nm|\uff53\uff4d|\uff53\uff4f|\uff4e\uff4d)?[1-9\uff11-\uff19][0-9\uff11-\uff19]*|#[0-9]+:[0-9]+(?:\.[0-9]+)?)\s+(.*)/;
+const RE_BUTTON_CONTENT =
+  /^(?:(?<before>.*?)\[)?(?<body>.*?)(?:\](?<after>[^\]]*?))?$/su;
+const RE_LONG = /^[@\uff20]([0-9.]+)/;
+const RE_STROKE = /^nico:stroke:(.+)$/;
+const RE_WAKU = /^nico:waku:(.+)$/;
+const RE_FILL = /^nico:fill:(.+)$/;
+const RE_OPACITY = /^nico:opacity:(.+)$/;
+const RE_COLOR_CODE = /^#(?:[0-9a-z]{3}|[0-9a-z]{6})$/;
+
 /**
  * 改行リサイズが発生するか
  * @param comment 判定対象のコメント
@@ -44,9 +61,17 @@ const isLineBreakResize = (comment: MeasureTextInput) => {
  * @returns コメントの初期設定
  */
 const getDefaultCommand = (vpos: number): DefaultCommand => {
-  nicoScripts.default = nicoScripts.default.filter(
-    (item) => !item.long || item.start + item.long >= vpos,
-  );
+  {
+    let writeIdx = 0;
+    for (let i = 0; i < nicoScripts.default.length; i++) {
+      const item = nicoScripts.default[i];
+      if (!item) continue;
+      if (!item.long || item.start + item.long >= vpos) {
+        nicoScripts.default[writeIdx++] = item;
+      }
+    }
+    nicoScripts.default.length = writeIdx;
+  }
   let color: string | undefined;
   let size: CommentSize | undefined;
   let font: CommentFont | undefined;
@@ -98,9 +123,17 @@ const applyNicoScriptReplace = (
   comment: FormattedComment,
   commands: ParsedCommand,
 ) => {
-  nicoScripts.replace = nicoScripts.replace.filter(
-    (item) => !item.long || item.start + item.long >= comment.vpos,
-  );
+  {
+    let writeIdx = 0;
+    for (let i = 0; i < nicoScripts.replace.length; i++) {
+      const item = nicoScripts.replace[i];
+      if (!item) continue;
+      if (!item.long || item.start + item.long >= comment.vpos) {
+        nicoScripts.replace[writeIdx++] = item;
+      }
+    }
+    nicoScripts.replace.length = writeIdx;
+  }
   for (const item of nicoScripts.replace) {
     if (nicoscriptReplaceIgnoreable(comment, item)) continue;
     if (item.range === "\u5358") {
@@ -169,10 +202,10 @@ const parseBrackets = (input: string) => {
   let lastChar = "";
   let string = "";
   for (const i of content) {
-    if (RegExp(/^["'\u300c]$/).exec(i) && quote === "") {
+    if (RE_QUOTE_START.test(i) && quote === "") {
       //["'「]
       quote = i;
-    } else if (RegExp(/^["']$/).exec(i) && quote === i && lastChar !== "\\") {
+    } else if (RE_QUOTE_END.test(i) && quote === i && lastChar !== "\\") {
       result.push(string.replaceAll("\\n", "\n"));
       quote = "";
       string = "";
@@ -181,7 +214,7 @@ const parseBrackets = (input: string) => {
       result.push(string);
       quote = "";
       string = "";
-    } else if (quote === "" && RegExp(/^\s+$/).exec(i)) {
+    } else if (quote === "" && RE_WHITESPACE.test(i)) {
       if (string) {
         result.push(string);
         string = "";
@@ -257,7 +290,7 @@ const processNicoscript = (
   comment: FormattedComment,
   commands: ParsedCommand,
 ) => {
-  const nicoscript = RegExp(/^[@\uff20](\S+)(?:\s(.+))?/).exec(comment.content);
+  const nicoscript = RE_NICOSCRIPT.exec(comment.content);
   if (!nicoscript) return;
   if (nicoscript[1] === "\u30dc\u30bf\u30f3" && nicoscript[2]) {
     //ボタン
@@ -326,9 +359,7 @@ const processReverseScript = (
   comment: FormattedComment,
   commands: ParsedCommand,
 ) => {
-  const reverse = RegExp(
-    /^[@\uff20]\u9006(?:\s+)?(\u5168|\u30b3\u30e1|\u6295\u30b3\u30e1)?/,
-  ).exec(comment.content);
+  const reverse = RE_REVERSE.exec(comment.content);
   const target = typeGuard.nicoScript.range.target(reverse?.[1])
     ? reverse?.[1]
     : "全";
@@ -389,9 +420,7 @@ const processJumpScript = (
   commands: ParsedCommand,
   input: string,
 ) => {
-  const options = RegExp(
-    /\s*((?:sm|so|nm|\uff53\uff4d|\uff53\uff4f|\uff4e\uff4d)?[1-9\uff11-\uff19][0-9\uff11-\uff19]*|#[0-9]+:[0-9]+(?:\.[0-9]+)?)\s+(.*)/,
-  ).exec(input);
+  const options = RE_JUMP.exec(input);
   if (!options?.[1]) return;
   const end =
     commands.long === undefined
@@ -417,9 +446,7 @@ const processAtButton = (
   const args = parseBrackets(comment.content);
   if (args[1] === undefined) return;
   commands.invisible = false;
-  const content = RegExp(
-    /^(?:(?<before>.*?)\[)?(?<body>.*?)(?:\](?<after>[^\]]*?))?$/su,
-  ).exec(args[1]) as {
+  const content = RE_BUTTON_CONTENT.exec(args[1]) as {
     groups: { before?: string; body?: string; after?: string };
   };
   const message = {
@@ -484,27 +511,27 @@ const parseCommand = (
   isFlash: boolean,
 ) => {
   const command = _command.toLowerCase();
-  const long = RegExp(/^[@\uff20]([0-9.]+)/).exec(command);
+  const long = RE_LONG.exec(command);
   if (long) {
     result.long = Number(long[1]);
     return;
   }
-  const strokeColor = getColor(RegExp(/^nico:stroke:(.+)$/).exec(command));
+  const strokeColor = getColor(RE_STROKE.exec(command));
   if (strokeColor) {
     result.strokeColor ??= strokeColor;
     return;
   }
-  const rectColor = getColor(RegExp(/^nico:waku:(.+)$/).exec(command));
+  const rectColor = getColor(RE_WAKU.exec(command));
   if (rectColor) {
     result.wakuColor ??= rectColor;
     return;
   }
-  const fillColor = getColor(RegExp(/^nico:fill:(.+)$/).exec(command));
+  const fillColor = getColor(RE_FILL.exec(command));
   if (fillColor) {
     result.fillColor ??= fillColor;
     return;
   }
-  const opacity = getOpacity(RegExp(/^nico:opacity:(.+)$/).exec(command));
+  const opacity = getOpacity(RE_OPACITY.exec(command));
   if (typeof opacity === "number") {
     result.opacity ??= opacity;
     return;
@@ -522,7 +549,7 @@ const parseCommand = (
     result.color ??= config.colors[command];
     return;
   }
-  const colorCode = RegExp(/^#(?:[0-9a-z]{3}|[0-9a-z]{6})$/).exec(command);
+  const colorCode = RE_COLOR_CODE.exec(command);
   if (colorCode && comment.premium) {
     result.color ??= colorCode[0].toUpperCase();
     return;

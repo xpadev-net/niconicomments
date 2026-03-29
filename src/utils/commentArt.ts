@@ -1,6 +1,8 @@
 import type { FormattedComment } from "@/@types";
 import { config } from "@/definition/config";
 
+const RE_CA_FILTER = /@[\d.]+|184|device:.+|patissier|ca/;
+
 type GroupedByUser = {
   comments: FormattedComment[];
   userId: number;
@@ -78,7 +80,7 @@ const removeDuplicateCommentArt = (comments: FormattedComment[]) => {
   return comments.filter((comment) => {
     const key = `${comment.content}@@${[...comment.mail]
       .sort((a, b) => a.localeCompare(b))
-      .filter((e) => !RegExp(/@[\d.]+|184|device:.+|patissier|ca/).exec(e))
+      .filter((e) => !RE_CA_FILTER.test(e))
       .join("")}`;
     const lastComment = index[key];
     if (lastComment === undefined) {
@@ -117,32 +119,20 @@ const updateLayerId = (filteredComments: GroupedByTime) => {
  * @param comments コメントデータ
  * @returns ユーザーごとにグループ化したコメントデータ
  */
-const groupCommentsByUser = (comments: FormattedComment[]) => {
-  return comments.reduce<GroupedByUser>((users, comment) => {
-    const user = getUser(comment.user_id, users);
+const groupCommentsByUser = (comments: FormattedComment[]): GroupedByUser => {
+  const userMap = new Map<
+    number,
+    { comments: FormattedComment[]; userId: number }
+  >();
+  for (const comment of comments) {
+    let user = userMap.get(comment.user_id);
+    if (!user) {
+      user = { userId: comment.user_id, comments: [] };
+      userMap.set(comment.user_id, user);
+    }
     user.comments.push(comment);
-    return users;
-  }, []);
-};
-
-/**
- * ユーザー配列から該当のユーザーの参照を取得する
- * @param userId 探す対処のuserId
- * @param users ユーザー配列
- * @returns 該当のユーザーの参照
- */
-const getUser = (
-  userId: number,
-  users: GroupedByUser,
-): { comments: FormattedComment[]; userId: number } => {
-  const user = users.find((user) => user.userId === userId);
-  if (user) return user;
-  const obj = {
-    userId,
-    comments: [],
-  };
-  users.push(obj);
-  return obj;
+  }
+  return Array.from(userMap.values());
 };
 
 /**

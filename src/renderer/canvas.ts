@@ -9,6 +9,7 @@ import { canvasPool } from "@/renderer/canvasPool";
  * @param video レンダリングするVideo(任意)
  */
 class CanvasRenderer implements IRenderer {
+  public readonly rendererName = "CanvasRenderer";
   public readonly canvas: HTMLCanvasElement;
   public readonly video?: HTMLVideoElement;
   private readonly context: CanvasRenderingContext2D;
@@ -95,12 +96,6 @@ class CanvasRenderer implements IRenderer {
     width?: number,
     height?: number,
   ) {
-    if (!(image instanceof CanvasRenderer)) {
-      throw new TypeError(
-        "CanvasRenderer.drawImage: 'image' argument must be an instance of CanvasRenderer.",
-      );
-    }
-
     if (width === undefined || height === undefined)
       this.context.drawImage(image.canvas, x, y);
     else this.context.drawImage(image.canvas, x, y, width, height);
@@ -194,6 +189,14 @@ class CanvasRenderer implements IRenderer {
   }
   getCanvas(padding = 0): IRenderer {
     return new CanvasRenderer(undefined, undefined, padding);
+  }
+
+  flush(): void {
+    // Canvas 2Dでは即時描画のため何もしない
+  }
+
+  invalidateImage(_image: IRenderer): void {
+    // Canvas 2Dではテクスチャキャッシュがないため何もしない
   }
 
   destroy() {

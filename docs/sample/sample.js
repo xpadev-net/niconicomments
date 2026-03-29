@@ -157,14 +157,14 @@ const videos = [
         nc: "nm14999484",
         _nc: "sm15050039",
         title:
-            "【読込激重】魔法少女まどか☆マギカ完結版OPをコメントでry【元動画１】",
+          "【読込激重】魔法少女まどか☆マギカ完結版OPをコメントでry【元動画１】",
       },
       {
         id: 24,
         nc: "nm14999567",
         _nc: "sm15050039",
         title:
-            "【読込激重】魔法少女まどか☆マギカ完結版OPをコメントでry【元動画２】",
+          "【読込激重】魔法少女まどか☆マギカ完結版OPをコメントでry【元動画２】",
       },
       {
         id: 25,
@@ -181,21 +181,23 @@ const videos = [
         id: 27,
         nc: "sm37156063",
         _nc: "sm37156104",
-        title: "【ニワン語歌詞】アンインストール【打ってみた件】コマテ動画その2",
+        title:
+          "【ニワン語歌詞】アンインストール【打ってみた件】コマテ動画その2",
       },
       {
         id: 28,
         nc: "sm37156104",
-        title: "【ニワン語歌詞】アンインストール【打ってみた件】コマテ動画その3",
+        title:
+          "【ニワン語歌詞】アンインストール【打ってみた件】コマテ動画その3",
       },
       {
         id: 29,
         nc: "nm10561034",
         _nc: "sm29843635",
         bg: "black",
-        title: "【投コメ歌詞】けいおん!!OP GO!GO!MANIAC【TV size】"
-      }
-    ]
+        title: "【投コメ歌詞】けいおん!!OP GO!GO!MANIAC【TV size】",
+      },
+    ],
   },
   {
     title: i18next.t("debug"),
@@ -211,22 +213,22 @@ const videos = [
 ];
 const urlParams = new URLSearchParams(window.location.search);
 let video = Number(urlParams.get("video") || 0),
-    noVideo = !!urlParams.get("novideo"),
-    time = Number(urlParams.get("time") || -1),
-    player,
-    nicoIframe,
-    nico = null,
-    mode = "default",
-    showFPS = false,
-    showCollision = false,
-    showCommentCount = false,
-    videoMicroSec = false,
-    keepCA = false,
-    debug = false,
-    scale = 1,
-    currentTime = 0,
-    isPaused = true,
-    interval = null;
+  noVideo = !!urlParams.get("novideo"),
+  time = Number(urlParams.get("time") || -1),
+  player,
+  nicoIframe,
+  nico = null,
+  mode = "default",
+  showFPS = false,
+  showCollision = false,
+  showCommentCount = false,
+  videoMicroSec = false,
+  keepCA = false,
+  debug = false,
+  scale = 1,
+  currentTime = 0,
+  isPaused = true,
+  interval = null;
 /** @type {HTMLDivElement} */
 const controlWrapper = document.getElementById("control");
 /** @type {HTMLSelectElement} */
@@ -237,7 +239,7 @@ const controlShowFPSElement = document.getElementById("show-fps");
 const controlShowCollisionElement = document.getElementById("show-collision");
 /** @type {HTMLInputElement} */
 const controlShowCommentCountElement =
-    document.getElementById("show-comment-count");
+  document.getElementById("show-comment-count");
 /** @type {HTMLInputElement} */
 const controlModeElement = document.getElementById("mode");
 /** @type {HTMLInputElement} */
@@ -285,9 +287,9 @@ if (!noVideo) {
     urlParams.set("video", video);
     document.title = `${videoItem.title}(${videoItem.nc}) - niconicomments sample`;
     history.pushState(
-        "",
-        "",
-        `${window.location.pathname}?${urlParams.toString()}`
+      "",
+      "",
+      `${window.location.pathname}?${urlParams.toString()}`,
     );
   };
   controlShowFPSElement.onchange = (e) => {
@@ -337,8 +339,8 @@ const updateCanvas = () => {
     nico.drawCanvas(currentTime * 100);
   } else {
     nico.drawCanvas(
-        (performance.now() - videoMicroSec.microsec) / 10 +
-        videoMicroSec.currentTime * 100
+      (performance.now() - videoMicroSec.microsec) / 10 +
+        videoMicroSec.currentTime * 100,
     );
   }
 };
@@ -348,7 +350,7 @@ const loadComments = async () => {
   canvasElement.style.transform = `scale(${(videoItem.scale || 100) - 1}%)`;
   const req = await fetch(`./commentdata/${video}.json`);
   const res = await req.json();
-  const renderer = new NiconiComments.internal.renderer.CanvasRenderer(canvasElement);
+  const renderer = NiconiComments.internal.renderer.createRenderer(canvasElement);
   nico = new NiconiComments(renderer, res, {
     mode: mode,
     keepCA: keepCA,
@@ -356,7 +358,9 @@ const loadComments = async () => {
     debug: debug,
     scale: Number(scale),
     config: {
-      plugins: window.PluginNiwango ? [window.PluginNiwango(window.Niwango)] : [],
+      plugins: window.PluginNiwango
+        ? [window.PluginNiwango(window.Niwango)]
+        : [],
     },
   });
   const elem = document.createElement("div");
@@ -367,7 +371,7 @@ const loadComments = async () => {
   if (time >= 0) {
     seekTo(time);
   }
-  if (!interval){
+  if (!interval) {
     interval = setInterval(updateCanvas, 1);
   }
   const handler = (e) => {
@@ -392,9 +396,9 @@ const getById = (array, id) => {
 };
 const resize = () => {
   const width = document.body.clientWidth / 1920,
-      height = document.body.clientHeight / 1080;
+    height = document.body.clientHeight / 1080;
   container.style.transform = `translate(-50%,-50%) scale(${
-      Math.min(height, width) * 100
+    Math.min(height, width) * 100
   }%)`;
 };
 
@@ -414,9 +418,8 @@ const loadVideo = async () => {
 const loadNicoVideo = (nicoId) => {
   player?.destroy();
   player = undefined;
-  document.getElementById(
-      "player"
-  ).innerHTML = `<iframe src="https://embed.nicovideo.jp/watch/${nicoId}?jsapi=1&playerId=a" id="nico-iframe" width="1920" height="1080"></iframe>`;
+  document.getElementById("player").innerHTML =
+    `<iframe src="https://embed.nicovideo.jp/watch/${nicoId}?jsapi=1&playerId=a" id="nico-iframe" width="1920" height="1080"></iframe>`;
   nicoIframe = document.getElementById("nico-iframe");
   return new Promise((resolve, reject) => {
     const messageHandler = (e) => {
@@ -462,15 +465,15 @@ const seekTo = (time) => {
     player.seekTo(time, true);
   } else {
     nicoIframe?.contentWindow.postMessage(
-        {
-          eventName: "seek",
-          data: {
-            time: time,
-          },
-          sourceConnectorType: 1,
-          playerId: "a",
+      {
+        eventName: "seek",
+        data: {
+          time: time,
         },
-        "https://embed.nicovideo.jp"
+        sourceConnectorType: 1,
+        playerId: "a",
+      },
+      "https://embed.nicovideo.jp",
     );
   }
 };

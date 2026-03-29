@@ -25,15 +25,9 @@ const convert2formattedComment = (
  * @returns ソート後の配列
  */
 const sort = (data: FormattedComment[]): FormattedComment[] => {
-  data.sort((a: FormattedComment, b: FormattedComment) => {
-    if (a.vpos < b.vpos) return -1;
-    if (a.vpos > b.vpos) return 1;
-    if (a.date < b.date) return -1;
-    if (a.date > b.date) return 1;
-    if (a.date_usec < b.date_usec) return -1;
-    if (a.date_usec > b.date_usec) return 1;
-    return 0;
-  });
+  data.sort(
+    (a, b) => a.vpos - b.vpos || a.date - b.date || a.date_usec - b.date_usec,
+  );
   return data;
 };
 

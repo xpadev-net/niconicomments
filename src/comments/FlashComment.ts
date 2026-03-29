@@ -30,6 +30,19 @@ import {
 
 import { BaseComment } from "./BaseComment";
 
+let flashScriptCharRegexConfig: typeof config | null = null;
+let flashScriptCharRegex: { super: RegExp; sub: RegExp } | null = null;
+const getFlashScriptCharRegex = () => {
+  if (flashScriptCharRegex === null || flashScriptCharRegexConfig !== config) {
+    flashScriptCharRegexConfig = config;
+    flashScriptCharRegex = {
+      super: new RegExp(config.flashScriptChar.super, "g"),
+      sub: new RegExp(config.flashScriptChar.sub, "g"),
+    };
+  }
+  return flashScriptCharRegex;
+};
+
 class FlashComment extends BaseComment {
   private _globalScale: number;
   override readonly pluginName: string = "FlashComment";
@@ -154,11 +167,10 @@ class FlashComment extends BaseComment {
       : parseContent(input);
     const lineCount = (input.match(/\n/g)?.length ?? 0) + 1;
     const lineOffset =
-      (input.match(new RegExp(config.flashScriptChar.super, "g"))?.length ??
-        0) *
+      (input.match(getFlashScriptCharRegex().super)?.length ?? 0) *
         -1 *
         config.flashScriptCharOffset +
-      (input.match(new RegExp(config.flashScriptChar.sub, "g"))?.length ?? 0) *
+      (input.match(getFlashScriptCharRegex().sub)?.length ?? 0) *
         config.flashScriptCharOffset;
     return {
       content,

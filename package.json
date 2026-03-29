@@ -4,6 +4,7 @@
   "description": "NiconiComments is a comment drawing library that is somewhat compatible with the official Nico Nico Douga player.",
   "main": "dist/bundle.js",
   "types": "dist/bundle.d.ts",
+  "sideEffects": false,
   "scripts": {
     "build": "npx rimraf dist&&npm run build:ts&&npm run build:dts",
     "build:ts": "rolldown -c rolldown.config.mjs",

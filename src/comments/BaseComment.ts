@@ -180,22 +180,22 @@ class BaseComment implements IComment {
       this.image = this.getTextImage();
     }
     if (this.image) {
-      const needsAlpha =
-        typeof this.comment.opacity === "number" || this.comment._live;
-      if (needsAlpha) {
+      const effectiveAlpha =
+        typeof this.comment.opacity === "number"
+          ? this.comment.opacity
+          : this.comment._live
+            ? config.contextFillLiveOpacity
+            : 1;
+      if (effectiveAlpha !== 1) {
         this.renderer.save();
-        if (typeof this.comment.opacity === "number") {
-          this.renderer.setGlobalAlpha(this.comment.opacity);
-        } else {
-          this.renderer.setGlobalAlpha(config.contextFillLiveOpacity);
-        }
+        this.renderer.setGlobalAlpha(effectiveAlpha);
       }
       if (this.comment.button && !this.comment.button.hidden) {
         const button = this.getButtonImage(posX, posY, cursor);
         button && this.renderer.drawImage(button, posX, posY);
       }
       this.renderer.drawImage(this.image, posX, posY);
-      if (needsAlpha) {
+      if (effectiveAlpha !== 1) {
         this.renderer.restore();
       }
     }
@@ -282,7 +282,8 @@ class BaseComment implements IComment {
         0
     )
       return null;
-    const cache = imageCache[this.cacheKey];
+    const key = this.cacheKey;
+    const cache = imageCache[key];
     if (cache) {
       this.image = cache.image;
       window.setTimeout(
@@ -294,8 +295,8 @@ class BaseComment implements IComment {
       clearTimeout(cache.timeout);
       cache.timeout = window.setTimeout(
         () => {
-          imageCache[this.cacheKey]?.image.destroy();
-          delete imageCache[this.cacheKey];
+          imageCache[key]?.image.destroy();
+          delete imageCache[key];
         },
         this.comment.long * 10 + config.cacheAge,
       );
@@ -320,6 +321,7 @@ class BaseComment implements IComment {
    * @param image キャッシュ対象の画像
    */
   protected _cacheImage(image: IRenderer) {
+    const key = this.cacheKey;
     this.image = image;
     window.setTimeout(
       () => {
@@ -327,11 +329,11 @@ class BaseComment implements IComment {
       },
       this.comment.long * 10 + config.cacheAge,
     );
-    imageCache[this.cacheKey] = {
+    imageCache[key] = {
       timeout: window.setTimeout(
         () => {
-          imageCache[this.cacheKey]?.image.destroy();
-          delete imageCache[this.cacheKey];
+          imageCache[key]?.image.destroy();
+          delete imageCache[key];
         },
         this.comment.long * 10 + config.cacheAge,
       ),

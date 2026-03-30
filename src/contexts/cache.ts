@@ -10,12 +10,9 @@ let imageCache: {
  * キャッシュをリセットする
  */
 const resetImageCache = () => {
-  for (const key of Object.keys(imageCache)) {
-    const entry = imageCache[key];
-    if (entry) {
-      clearTimeout(entry.timeout);
-      entry.image.destroy();
-    }
+  for (const entry of Object.values(imageCache)) {
+    clearTimeout(entry.timeout);
+    entry.image.destroy();
   }
   imageCache = {};
   CanvasRenderer.resetMeasureTextCache();

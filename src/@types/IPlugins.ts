@@ -6,7 +6,7 @@ export interface IPluginConstructor {
 }
 
 export interface IPlugin {
-  draw?: (vpos: number) => void;
+  draw?: (vpos: number) => boolean | undefined;
   addComments?: (comments: IComment[]) => void;
   transformComments?: (comments: IComment[]) => IComment[];
 }

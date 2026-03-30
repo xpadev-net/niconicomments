@@ -42,6 +42,29 @@ const RE_FILL = /^nico:fill:(.+)$/;
 const RE_OPACITY = /^nico:opacity:(.+)$/;
 const RE_COLOR_CODE = /^#(?:[0-9a-z]{3}|[0-9a-z]{6})$/;
 
+const ACTIVE_CACHE_MAX_SIZE = 4096;
+
+const reverseActiveOwnerCache = new Map<number, boolean>();
+const reverseActiveViewerCache = new Map<number, boolean>();
+const banActiveCache = new Map<number, boolean>();
+
+const resetRangePointers = () => {
+  reverseActiveOwnerCache.clear();
+  reverseActiveViewerCache.clear();
+  banActiveCache.clear();
+};
+
+const setCachedActiveState = (
+  cache: Map<number, boolean>,
+  vpos: number,
+  result: boolean,
+) => {
+  if (cache.size >= ACTIVE_CACHE_MAX_SIZE) {
+    cache.clear();
+  }
+  cache.set(vpos, result);
+};
+
 /**
  * 改行リサイズが発生するか
  * @param comment 判定対象のコメント
@@ -617,6 +640,10 @@ const isFlashComment = (comment: FormattedComment): boolean =>
  * @returns 逆コマンド適用対象かどうか
  */
 const isReverseActive = (vpos: number, isOwner: boolean): boolean => {
+  const cache = isOwner ? reverseActiveOwnerCache : reverseActiveViewerCache;
+  const cached = cache.get(vpos);
+  if (cached !== undefined) return cached;
+  let result = false;
   for (const range of nicoScripts.reverse) {
     if (
       (range.target === "コメ" && isOwner) ||
@@ -624,10 +651,12 @@ const isReverseActive = (vpos: number, isOwner: boolean): boolean => {
     )
       continue;
     if (range.start < vpos && vpos < range.end) {
-      return true;
+      result = true;
+      break;
     }
   }
-  return false;
+  setCachedActiveState(cache, vpos, result);
+  return result;
 };
 
 /**
@@ -636,10 +665,17 @@ const isReverseActive = (vpos: number, isOwner: boolean): boolean => {
  * @returns コメント禁止コマンド適用対象かどうか
  */
 const isBanActive = (vpos: number): boolean => {
+  const cached = banActiveCache.get(vpos);
+  if (cached !== undefined) return cached;
+  let result = false;
   for (const range of nicoScripts.ban) {
-    if (range.start < vpos && vpos < range.end) return true;
+    if (range.start < vpos && vpos < range.end) {
+      result = true;
+      break;
+    }
   }
-  return false;
+  setCachedActiveState(banActiveCache, vpos, result);
+  return result;
 };
 
 /**
@@ -921,4 +957,5 @@ export {
   parseFont,
   processFixedComment,
   processMovableComment,
+  resetRangePointers,
 };

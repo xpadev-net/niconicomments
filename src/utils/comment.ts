@@ -60,7 +60,10 @@ const setCachedActiveState = (
   result: boolean,
 ) => {
   if (cache.size >= ACTIVE_CACHE_MAX_SIZE) {
-    cache.clear();
+    const oldestKey = cache.keys().next().value;
+    if (oldestKey !== undefined) {
+      cache.delete(oldestKey);
+    }
   }
   cache.set(vpos, result);
 };
@@ -394,6 +397,8 @@ const processReverseScript = (
     end: comment.vpos + commands.long * 100,
     target,
   });
+  reverseActiveOwnerCache.clear();
+  reverseActiveViewerCache.clear();
 };
 
 /**
@@ -412,6 +417,7 @@ const processBanScript = (
     start: comment.vpos,
     end: comment.vpos + commands.long * 100,
   });
+  banActiveCache.clear();
 };
 
 /**

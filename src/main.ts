@@ -51,8 +51,8 @@ import * as internal from "./internal";
 const EMPTY_TIMELINE: IComment[] = [];
 
 const toIntegerOrInfinity = (value: number) => {
-  if (!Number.isFinite(value)) return value;
   if (Number.isNaN(value) || value === 0) return 0;
+  if (!Number.isFinite(value)) return value;
   return Math.trunc(value);
 };
 
@@ -108,6 +108,7 @@ class NiconiComments {
     vpos: number;
     hasNaka: boolean;
   } | null = null;
+  private commentArrayIndexMap: WeakMap<IComment, number>;
   private processedCommentIndex: number;
   private comments: IComment[];
   private readonly renderer: IRenderer;
@@ -195,11 +196,22 @@ class NiconiComments {
       right: {},
     };
     this.lastVpos = -1;
+    this.commentArrayIndexMap = new WeakMap();
     this.processedCommentIndex = -1;
 
     this.comments = this.preRendering(parsedData);
+    this._rebuildCommentArrayIndex(this.comments);
 
     logger(`constructor complete: ${performance.now() - constructorStart}ms`);
+  }
+
+  private _rebuildCommentArrayIndex(comments: IComment[]) {
+    this.commentArrayIndexMap = new WeakMap();
+    for (let i = 0, n = comments.length; i < n; i++) {
+      const comment = comments[i];
+      if (!comment) continue;
+      this.commentArrayIndexMap.set(comment, i);
+    }
   }
 
   /**
@@ -255,7 +267,7 @@ class NiconiComments {
     for (let i = startIndex; i < end; i++) {
       const comment = data[i];
       if (!comment) continue;
-      this.processedCommentIndex = comment.index;
+      this.processedCommentIndex = i;
       if (comment.invisible || (comment.posY > -1 && !lazy)) continue;
       if (comment.loc === "naka") {
         processMovableComment(comment, this.collision, this.timeline, lazy);
@@ -324,6 +336,8 @@ class NiconiComments {
       }
     }
     this.comments.push(...comments);
+    this._rebuildCommentArrayIndex(this.comments);
+    this.processedCommentIndex = this.comments.length - 1;
     this.sortTimelineComment();
     this._cachedSplit = null;
   }
@@ -420,7 +434,7 @@ class NiconiComments {
     setProfile("drawCollision", drawCollisionStart);
 
     const drawCommentsStart = profile ? performance.now() : 0;
-    this._drawComments(timelineRange, vpos, cursor);
+    const drawnCount = this._drawComments(timelineRange, vpos, cursor);
     setProfile("drawComments", drawCommentsStart);
 
     const drawFPSStart = profile ? performance.now() : 0;
@@ -428,7 +442,7 @@ class NiconiComments {
     setProfile("drawFPS", drawFPSStart);
 
     const drawCommentCountStart = profile ? performance.now() : 0;
-    this._drawCommentCount(timelineRange.length);
+    this._drawCommentCount(drawnCount);
     setProfile("drawCommentCount", drawCommentCountStart);
 
     const flushStart = profile ? performance.now() : 0;
@@ -440,8 +454,9 @@ class NiconiComments {
       logger(
         `drawCanvas profile: trigger=${profile.triggerHandler.toFixed(2)}ms, video=${profile.drawVideo.toFixed(2)}ms, plugins=${profile.drawPlugins.toFixed(2)}ms, collision=${profile.drawCollision.toFixed(2)}ms, comments=${profile.drawComments.toFixed(2)}ms, fps=${profile.drawFPS.toFixed(2)}ms, count=${profile.drawCommentCount.toFixed(2)}ms, flush=${profile.flush.toFixed(2)}ms, total=${profile.total.toFixed(2)}ms`,
       );
+    } else {
+      logger(`drawCanvas complete: ${performance.now() - drawCanvasStart}ms`);
     }
-    logger(`drawCanvas complete: ${performance.now() - drawCanvasStart}ms`);
     return true;
   }
 
@@ -457,12 +472,13 @@ class NiconiComments {
    * @param timelineRange 指定されたvposに存在するコメント
    * @param vpos vpos
    * @param cursor カーソルの位置
+   * @returns 描画したコメント数
    */
   private _drawComments(
     timelineRange: IComment[],
     vpos: number,
     cursor?: Position,
-  ) {
+  ): number {
     let startIndex = 0;
     let endIndex = timelineRange.length;
     if (config.commentLimit !== undefined) {
@@ -479,24 +495,41 @@ class NiconiComments {
         ));
       }
     }
-    let maxCommentIndex = -1;
+    let maxCommentOffset = -1;
+    let requiresFullScan = false;
     for (let i = startIndex; i < endIndex; i++) {
       const comment = timelineRange[i];
       if (!comment || comment.invisible) continue;
-      if (maxCommentIndex < comment.index) {
-        maxCommentIndex = comment.index;
+      const commentOffset = this.commentArrayIndexMap.get(comment);
+      if (commentOffset === undefined) {
+        requiresFullScan = true;
+        continue;
+      }
+      if (maxCommentOffset < commentOffset) {
+        maxCommentOffset = commentOffset;
       }
     }
-    if (maxCommentIndex >= 0 && this.processedCommentIndex < maxCommentIndex) {
-      this.getCommentPos(this.comments, maxCommentIndex + 1);
+    if (
+      requiresFullScan &&
+      this.processedCommentIndex < this.comments.length - 1
+    ) {
+      this.getCommentPos(this.comments, this.comments.length);
+    } else if (
+      maxCommentOffset >= 0 &&
+      this.processedCommentIndex < maxCommentOffset
+    ) {
+      this.getCommentPos(this.comments, maxCommentOffset + 1);
     }
+    let drawnCount = 0;
     for (let i = startIndex; i < endIndex; i++) {
       const comment = timelineRange[i];
       if (!comment || comment.invisible) {
         continue;
       }
       comment.draw(vpos, this.showCollision, cursor);
+      drawnCount += 1;
     }
+    return drawnCount;
   }
 
   /**

@@ -47,7 +47,7 @@ const hex2rgba = (_hex: string) => {
     hex.slice(4, 6),
     hex.slice(6, 8),
   ].map((str, index) => {
-    if (index === 3) return Number.parseInt(str, 16) / 256;
+    if (index === 3) return Number.parseInt(str, 16) / 255;
     return Number.parseInt(str, 16);
   });
 };

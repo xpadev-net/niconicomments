@@ -66,7 +66,7 @@ const getDefaultCommand = (vpos: number): DefaultCommand => {
     for (let i = 0; i < nicoScripts.default.length; i++) {
       const item = nicoScripts.default[i];
       if (!item) continue;
-      if (!item.long || item.start + item.long >= vpos) {
+      if (item.long === undefined || item.start + item.long >= vpos) {
         nicoScripts.default[writeIdx++] = item;
       }
     }
@@ -128,7 +128,7 @@ const applyNicoScriptReplace = (
     for (let i = 0; i < nicoScripts.replace.length; i++) {
       const item = nicoScripts.replace[i];
       if (!item) continue;
-      if (!item.long || item.start + item.long >= comment.vpos) {
+      if (item.long === undefined || item.start + item.long >= comment.vpos) {
         nicoScripts.replace[writeIdx++] = item;
       }
     }
@@ -657,7 +657,7 @@ const processFixedComment = (
 ) => {
   const commentVpos = comment.vpos;
   const commentLong = comment.long;
-  const collisionEnd = commentLong - 20;
+  const collisionEnd = Math.max(commentLong - 20, 0);
   const posY = lazy ? -1 : getFixedPosY(comment, collision);
   for (let j = 0; j < commentLong; j++) {
     const vpos = commentVpos + j;

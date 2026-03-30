@@ -271,6 +271,7 @@ class NiconiComments {
         );
       }
     }
+    this.comments.push(...comments);
     this.sortTimelineComment();
     this._cachedSplit = null;
   }

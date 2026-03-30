@@ -337,7 +337,9 @@ class NiconiComments {
     }
     this.comments.push(...comments);
     this._rebuildCommentArrayIndex(this.comments);
-    this.processedCommentIndex = this.comments.length - 1;
+    if (!options.lazy) {
+      this.processedCommentIndex = this.comments.length - 1;
+    }
     this.sortTimelineComment();
     this._cachedSplit = null;
   }

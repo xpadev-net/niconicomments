@@ -6,6 +6,7 @@ export interface IPluginConstructor {
 }
 
 export interface IPlugin {
+  /** Returning false skips texture invalidation only; compositing still runs. */
   draw?: (vpos: number) => boolean | undefined;
   addComments?: (comments: IComment[]) => void;
   transformComments?: (comments: IComment[]) => IComment[];

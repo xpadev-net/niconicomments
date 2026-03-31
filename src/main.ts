@@ -83,6 +83,17 @@ const getSliceBounds = (length: number, start: number, end?: number) => {
   return { startIndex, endIndex };
 };
 
+const hasNakaComment = (items: IComment[]) => {
+  let hasNaka = false;
+  for (const item of items) {
+    if (item.loc === "naka") {
+      hasNaka = true;
+      break;
+    }
+  }
+  return hasNaka;
+};
+
 type DrawCanvasProfile = {
   triggerHandler: number;
   drawVideo: number;
@@ -336,7 +347,12 @@ class NiconiComments {
       }
     }
     this.comments.push(...comments);
-    this._rebuildCommentArrayIndex(this.comments);
+    const baseOffset = this.comments.length - comments.length;
+    for (let i = 0, n = comments.length; i < n; i++) {
+      const comment = comments[i];
+      if (!comment) continue;
+      this.commentArrayIndexMap.set(comment, baseOffset + i);
+    }
     if (!options.lazy) {
       this.processedCommentIndex = this.comments.length - 1;
     }
@@ -386,21 +402,11 @@ class NiconiComments {
     setProfile("triggerHandler", triggerHandlerStart);
     const timelineRange = this.timeline[vposInt] ?? EMPTY_TIMELINE;
     const lastTimelineRange = this.timeline[this.lastVposInt] ?? EMPTY_TIMELINE;
-    const hasNaka = (items: IComment[]) => {
-      let hasNaka = false;
-      for (const item of items) {
-        if (item.loc === "naka") {
-          hasNaka = true;
-          break;
-        }
-      }
-      return hasNaka;
-    };
-    const currentHasNaka = hasNaka(timelineRange);
+    const currentHasNaka = hasNakaComment(timelineRange);
     const lastHasNaka =
       this._cachedSplit?.vpos === this.lastVposInt
         ? this._cachedSplit.hasNaka
-        : hasNaka(lastTimelineRange);
+        : hasNakaComment(lastTimelineRange);
     this._cachedSplit = { vpos: vposInt, hasNaka: currentHasNaka };
     if (
       !forceRendering &&

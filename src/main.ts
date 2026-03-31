@@ -514,7 +514,7 @@ class NiconiComments {
       const commentOffset = this.commentArrayIndexMap.get(comment);
       if (commentOffset === undefined) {
         requiresFullScan = true;
-        continue;
+        break;
       }
       if (maxCommentOffset < commentOffset) {
         maxCommentOffset = commentOffset;

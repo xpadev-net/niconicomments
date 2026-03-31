@@ -44,6 +44,9 @@ const RE_COLOR_CODE = /^#(?:[0-9a-z]{3}|[0-9a-z]{6})$/;
 
 const ACTIVE_CACHE_MAX_SIZE = 4096;
 
+// nicoScripts and active-state caches are intentionally module-scoped.
+// resetRangePointers() clears them process-wide, so this library assumes
+// a single active renderer instance per runtime.
 const reverseActiveOwnerCache = new Map<number, boolean>();
 const reverseActiveViewerCache = new Map<number, boolean>();
 const banActiveCache = new Map<number, boolean>();
@@ -59,9 +62,7 @@ const setCachedActiveState = (
   vpos: number,
   result: boolean,
 ) => {
-  // vpos is an integer timeline position. Distinct keys can burst per frame,
-  // so we keep a bounded FIFO map and evict one oldest entry on overflow.
-  // If oldestKey === vpos, delete+set refreshes insertion order intentionally.
+  // Bounded FIFO: evict the oldest entry when the cache reaches capacity.
   if (cache.size >= ACTIVE_CACHE_MAX_SIZE) {
     const oldestKey = cache.keys().next().value;
     if (oldestKey !== undefined) {

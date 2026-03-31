@@ -355,9 +355,12 @@ class NiconiComments {
     }
     if (!options.lazy) {
       this.processedCommentIndex = this.comments.length - 1;
-      // In non-lazy mode, addComments eagerly resolves positions, so skipping
+      // Non-lazy mode eagerly resolves all positions here, so skipping
       // already-known indices avoids unnecessary rescans in draw path.
-      // In lazy mode we intentionally keep processedCommentIndex unchanged.
+    } else {
+      // Lazy mode may still contain historical comments with unresolved posY.
+      // Advancing to the tail here can skip those unresolved entries forever.
+      // Keep processedCommentIndex unchanged so draw-time resolution can catch up.
     }
     this.sortTimelineComment();
     this._cachedSplit = null;

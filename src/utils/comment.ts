@@ -62,7 +62,9 @@ const setCachedActiveState = (
   vpos: number,
   result: boolean,
 ) => {
-  // Bounded FIFO: evict the oldest entry when the cache reaches capacity.
+  // Bounded FIFO: evict the oldest (insertion-order) entry at capacity.
+  // This favors continuous playback locality. After large seeks, old vpos keys
+  // may survive until naturally evicted, but results remain correct.
   if (cache.size >= ACTIVE_CACHE_MAX_SIZE) {
     const oldestKey = cache.keys().next().value;
     if (oldestKey !== undefined) {

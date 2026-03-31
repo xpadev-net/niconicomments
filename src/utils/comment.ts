@@ -61,6 +61,7 @@ const setCachedActiveState = (
 ) => {
   // vpos is an integer timeline position. Distinct keys can burst per frame,
   // so we keep a bounded FIFO map and evict one oldest entry on overflow.
+  // If oldestKey === vpos, delete+set refreshes insertion order intentionally.
   if (cache.size >= ACTIVE_CACHE_MAX_SIZE) {
     const oldestKey = cache.keys().next().value;
     if (oldestKey !== undefined) {

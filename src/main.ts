@@ -48,7 +48,7 @@ import { createCommentInstance } from "@/utils/plugins";
 
 import * as internal from "./internal";
 
-const EMPTY_TIMELINE: IComment[] = [];
+const EMPTY_TIMELINE = Object.freeze([]) as readonly IComment[];
 
 const toIntegerOrInfinity = (value: number) => {
   if (Number.isNaN(value) || value === 0) return 0;
@@ -83,7 +83,7 @@ const getSliceBounds = (length: number, start: number, end?: number) => {
   return { startIndex, endIndex };
 };
 
-const hasNakaComment = (items: IComment[]) => {
+const hasNakaComment = (items: readonly IComment[]) => {
   let hasNaka = false;
   for (const item of items) {
     if (item.loc === "naka") {
@@ -355,6 +355,9 @@ class NiconiComments {
     }
     if (!options.lazy) {
       this.processedCommentIndex = this.comments.length - 1;
+      // In non-lazy mode, addComments eagerly resolves positions, so skipping
+      // already-known indices avoids unnecessary rescans in draw path.
+      // In lazy mode we intentionally keep processedCommentIndex unchanged.
     }
     this.sortTimelineComment();
     this._cachedSplit = null;
@@ -483,7 +486,7 @@ class NiconiComments {
    * @returns 描画したコメント数
    */
   private _drawComments(
-    timelineRange: IComment[],
+    timelineRange: readonly IComment[],
     vpos: number,
     cursor?: Position,
   ): number {
@@ -522,6 +525,10 @@ class NiconiComments {
       this.processedCommentIndex < this.comments.length - 1
     ) {
       this.getCommentPos(this.comments, this.comments.length);
+    } else if (requiresFullScan) {
+      logger(
+        "_drawComments: requiresFullScan with no unprocessed comments — possible plugin side-effect",
+      );
     } else if (
       maxCommentOffset >= 0 &&
       this.processedCommentIndex < maxCommentOffset

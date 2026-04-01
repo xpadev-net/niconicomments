@@ -109,6 +109,8 @@ type DrawCanvasProfile = {
   total: number;
 };
 
+let activeInstanceCount = 0;
+
 class NiconiComments {
   public enableLegacyPiP: boolean;
   public showCollision: boolean;
@@ -147,6 +149,12 @@ class NiconiComments {
     data: InputFormat,
     initOptions: Options = {},
   ) {
+    if (activeInstanceCount > 0) {
+      console.warn(
+        "Multiple NiconiComments instances detected in one runtime. Module-scoped nicoscript/active-state caches are shared and may affect each other.",
+      );
+    }
+    activeInstanceCount += 1;
     const constructorStart = performance.now();
     initConfig();
     if (!typeGuard.config.initOptions(initOptions))
@@ -217,6 +225,12 @@ class NiconiComments {
     this._rebuildCommentArrayIndex(this.comments);
 
     logger(`constructor complete: ${performance.now() - constructorStart}ms`);
+  }
+
+  public destroy() {
+    if (activeInstanceCount > 0) {
+      activeInstanceCount -= 1;
+    }
   }
 
   private _rebuildCommentArrayIndex(comments: IComment[]) {
@@ -541,10 +555,11 @@ class NiconiComments {
     ) {
       this.getCommentPos(this.comments, maxCommentOffset + 1);
     }
+    const vposInt = Math.floor(vpos);
     const frameActiveState: FrameActiveState = {
-      banActive: isBanActive(vpos),
-      reverseActiveOwner: isReverseActive(vpos, true),
-      reverseActiveViewer: isReverseActive(vpos, false),
+      banActive: isBanActive(vposInt),
+      reverseActiveOwner: isReverseActive(vposInt, true),
+      reverseActiveViewer: isReverseActive(vposInt, false),
     };
     let drawnCount = 0;
     for (let i = startIndex; i < endIndex; i++) {
@@ -553,7 +568,9 @@ class NiconiComments {
         continue;
       }
       comment.draw(vpos, this.showCollision, cursor, frameActiveState);
-      drawnCount += 1;
+      if (!frameActiveState.banActive) {
+        drawnCount += 1;
+      }
     }
     return drawnCount;
   }

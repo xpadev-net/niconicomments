@@ -12,18 +12,33 @@ import { config } from "@/definition/config";
 import { getConfig } from "@/utils/config";
 import { nativeSort } from "@/utils/sort";
 
+let flashCharRegexConfig: typeof config | null = null;
+let flashCharRegex: {
+  simsunStrong: RegExp;
+  simsunWeak: RegExp;
+  gulim: RegExp;
+  gothic: RegExp;
+} | null = null;
+const getFlashCharRegex = () => {
+  if (flashCharRegex === null || flashCharRegexConfig !== config) {
+    flashCharRegexConfig = config;
+    flashCharRegex = {
+      simsunStrong: new RegExp(config.flashChar.simsunStrong),
+      simsunWeak: new RegExp(config.flashChar.simsunWeak),
+      gulim: new RegExp(config.flashChar.gulim),
+      gothic: new RegExp(config.flashChar.gothic),
+    };
+  }
+  return flashCharRegex;
+};
+
 /**
  * コメントの内容からフォント情報を取得する
  * @param part コメントの内容
  * @returns フォント情報
  */
 const getFlashFontIndex = (part: string): CommentContentIndex[] => {
-  const regex = {
-    simsunStrong: new RegExp(config.flashChar.simsunStrong),
-    simsunWeak: new RegExp(config.flashChar.simsunWeak),
-    gulim: new RegExp(config.flashChar.gulim),
-    gothic: new RegExp(config.flashChar.gothic),
-  };
+  const regex = getFlashCharRegex();
   const index: CommentContentIndex[] = [];
   let match = regex.simsunStrong.exec(part);
   if (match !== null) {

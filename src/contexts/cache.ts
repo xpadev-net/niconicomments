@@ -10,6 +10,10 @@ let imageCache: {
  * キャッシュをリセットする
  */
 const resetImageCache = () => {
+  for (const entry of Object.values(imageCache)) {
+    clearTimeout(entry.timeout);
+    entry.image.destroy();
+  }
   imageCache = {};
   CanvasRenderer.resetMeasureTextCache();
   canvasPool.clear();

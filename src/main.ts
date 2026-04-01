@@ -56,6 +56,11 @@ class NiconiComments {
   private get lastVposInt() {
     return Math.floor(this.lastVpos);
   }
+  private _cachedSplit: {
+    vpos: number;
+    fixed: IComment[];
+    hasNaka: boolean;
+  } | null = null;
   private processedCommentIndex: number;
   private comments: IComment[];
   private readonly renderer: IRenderer;
@@ -84,8 +89,8 @@ class NiconiComments {
     initConfig();
     if (!typeGuard.config.initOptions(initOptions))
       throw new InvalidOptionError();
-    setOptions(Object.assign(defaultOptions, initOptions));
-    setConfig(Object.assign(defaultConfig, options.config));
+    setOptions(Object.assign({}, defaultOptions, initOptions));
+    setConfig(Object.assign({}, defaultConfig, options.config));
     setIsDebug(options.debug);
     resetImageCache();
     resetNicoScripts();
@@ -199,6 +204,7 @@ class NiconiComments {
     const getCommentPosStart = performance.now();
     if (this.processedCommentIndex + 1 >= end) return;
     for (const comment of data.slice(this.processedCommentIndex + 1, end)) {
+      this.processedCommentIndex = comment.index;
       if (comment.invisible || (comment.posY > -1 && !lazy)) continue;
       if (comment.loc === "naka") {
         processMovableComment(comment, this.collision, this.timeline, lazy);
@@ -210,10 +216,9 @@ class NiconiComments {
           lazy,
         );
       }
-      this.processedCommentIndex = comment.index;
     }
     if (lazy) {
-      this.processedCommentIndex = 0;
+      this.processedCommentIndex = -1;
     }
     logger(
       `getCommentPos complete: ${performance.now() - getCommentPosStart}ms`,
@@ -228,16 +233,9 @@ class NiconiComments {
     for (const vpos of Object.keys(this.timeline)) {
       const item = this.timeline[Number(vpos)];
       if (!item) continue;
-      const owner: IComment[] = [];
-      const user: IComment[] = [];
-      for (const comment of item) {
-        if (comment?.owner) {
-          owner.push(comment);
-        } else {
-          user.push(comment);
-        }
-      }
-      this.timeline[Number(vpos)] = user.concat(owner);
+      item.sort(
+        (a, b) => Number(a.owner) - Number(b.owner) || a.index - b.index,
+      );
     }
     logger(`parseData complete: ${performance.now() - sortCommentStart}ms`);
   }
@@ -273,6 +271,9 @@ class NiconiComments {
         );
       }
     }
+    this.comments.push(...comments);
+    this.sortTimelineComment();
+    this._cachedSplit = null;
   }
 
   /**
@@ -292,19 +293,33 @@ class NiconiComments {
     if (this.lastVpos === vpos && !forceRendering) return false;
     triggerHandler(vposInt, this.lastVposInt);
     const timelineRange = this.timeline[vposInt];
+    const splitTimeline = (items: IComment[] | undefined) => {
+      const fixed: IComment[] = [];
+      let hasNaka = false;
+      if (items) {
+        for (const item of items) {
+          if (item.loc === "naka") {
+            hasNaka = true;
+          } else {
+            fixed.push(item);
+          }
+        }
+      }
+      return { fixed, hasNaka };
+    };
+    const currentSplit = splitTimeline(timelineRange);
+    const lastSplit =
+      this._cachedSplit?.vpos === this.lastVposInt
+        ? this._cachedSplit
+        : splitTimeline(this.timeline[this.lastVposInt]);
+    this._cachedSplit = { vpos: vposInt, ...currentSplit };
     if (
       !forceRendering &&
       plugins.length === 0 &&
-      timelineRange?.filter((item) => item.loc === "naka").length === 0 &&
-      this.timeline[this.lastVposInt]?.filter((item) => item.loc === "naka")
-        ?.length === 0
+      !currentSplit.hasNaka &&
+      !lastSplit.hasNaka
     ) {
-      const current = timelineRange.filter((item) => item.loc !== "naka");
-      const last =
-        this.timeline[this.lastVposInt]?.filter(
-          (item) => item.loc !== "naka",
-        ) ?? [];
-      if (arrayEqual(current, last)) return false;
+      if (arrayEqual(currentSplit.fixed, lastSplit.fixed)) return false;
     }
     this.renderer.clearRect(0, 0, config.canvasWidth, config.canvasHeight);
     this.lastVpos = vpos;
@@ -346,15 +361,12 @@ class NiconiComments {
     cursor?: Position,
   ) {
     if (timelineRange) {
-      const targetComment = (() => {
-        if (config.commentLimit === undefined) {
-          return timelineRange;
-        }
-        if (config.hideCommentOrder === "asc") {
-          return timelineRange.slice(-config.commentLimit);
-        }
-        return timelineRange.slice(0, config.commentLimit);
-      })();
+      const targetComment =
+        config.commentLimit === undefined
+          ? timelineRange
+          : config.hideCommentOrder === "asc"
+            ? timelineRange.slice(-config.commentLimit)
+            : timelineRange.slice(0, config.commentLimit);
       for (const comment of targetComment) {
         if (comment.invisible) {
           continue;
@@ -483,8 +495,9 @@ class NiconiComments {
   public click(vpos: number, pos: Position) {
     const _comments = this.timeline[vpos];
     if (!_comments) return;
-    const comments = [..._comments].reverse();
-    for (const comment of comments) {
+    for (let i = _comments.length - 1; i >= 0; i--) {
+      const comment = _comments[i];
+      if (!comment) continue;
       if (comment.isHovered(pos)) {
         const newComment = buildAtButtonComment(comment.comment, vpos);
         if (!newComment) continue;

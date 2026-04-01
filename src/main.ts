@@ -116,6 +116,7 @@ class NiconiComments {
   public showCollision: boolean;
   public showFPS: boolean;
   public showCommentCount: boolean;
+  private activeInstanceRegistered = false;
   private lastVpos: number;
   private get lastVposInt() {
     return Math.floor(this.lastVpos);
@@ -154,7 +155,6 @@ class NiconiComments {
         "Multiple NiconiComments instances detected in one runtime. Module-scoped nicoscript/active-state caches are shared and may affect each other.",
       );
     }
-    activeInstanceCount += 1;
     const constructorStart = performance.now();
     initConfig();
     if (!typeGuard.config.initOptions(initOptions))
@@ -223,11 +223,22 @@ class NiconiComments {
 
     this.comments = this.preRendering(parsedData);
     this._rebuildCommentArrayIndex(this.comments);
+    this.activeInstanceRegistered = true;
+    activeInstanceCount += 1;
 
     logger(`constructor complete: ${performance.now() - constructorStart}ms`);
   }
 
+  /**
+   * Releases this instance's module-scoped registration.
+   * Call this when the instance is no longer used to avoid
+   * spurious multi-instance warnings on future constructions.
+   */
   public destroy() {
+    if (!this.activeInstanceRegistered) {
+      return;
+    }
+    this.activeInstanceRegistered = false;
     if (activeInstanceCount > 0) {
       activeInstanceCount -= 1;
     }
@@ -561,6 +572,7 @@ class NiconiComments {
       reverseActiveOwner: isReverseActive(vposInt, true),
       reverseActiveViewer: isReverseActive(vposInt, false),
     };
+    if (frameActiveState.banActive) return 0;
     let drawnCount = 0;
     for (let i = startIndex; i < endIndex; i++) {
       const comment = timelineRange[i];
@@ -568,9 +580,7 @@ class NiconiComments {
         continue;
       }
       comment.draw(vpos, this.showCollision, cursor, frameActiveState);
-      if (!frameActiveState.banActive) {
-        drawnCount += 1;
-      }
+      drawnCount += 1;
     }
     return drawnCount;
   }

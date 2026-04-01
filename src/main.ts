@@ -382,9 +382,13 @@ class NiconiComments {
       this.commentArrayIndexMap.set(comment, baseOffset + i);
     }
     if (!options.lazy) {
-      this.processedCommentIndex = this.comments.length - 1;
-      // Non-lazy mode eagerly resolves all positions here, so skipping
-      // already-known indices avoids unnecessary rescans in draw path.
+      // Non-lazy mode resolves newly added entries above. Advance only up to
+      // the pre-push tail so unresolved historical entries (if any) are not
+      // skipped permanently.
+      this.processedCommentIndex = Math.max(
+        this.processedCommentIndex,
+        baseOffset - 1,
+      );
     } else {
       // Lazy mode may still contain historical comments with unresolved posY.
       // Advancing to the tail here can skip those unresolved entries forever.
@@ -537,6 +541,13 @@ class NiconiComments {
         ));
       }
     }
+    const vposInt = Math.floor(vpos);
+    const frameActiveState: FrameActiveState = {
+      banActive: isBanActive(vposInt),
+      reverseActiveOwner: isReverseActive(vposInt, true),
+      reverseActiveViewer: isReverseActive(vposInt, false),
+    };
+    if (frameActiveState.banActive) return 0;
     let maxCommentOffset = -1;
     let requiresFullScan = false;
     for (let i = startIndex; i < endIndex; i++) {
@@ -566,13 +577,6 @@ class NiconiComments {
     ) {
       this.getCommentPos(this.comments, maxCommentOffset + 1);
     }
-    const vposInt = Math.floor(vpos);
-    const frameActiveState: FrameActiveState = {
-      banActive: isBanActive(vposInt),
-      reverseActiveOwner: isReverseActive(vposInt, true),
-      reverseActiveViewer: isReverseActive(vposInt, false),
-    };
-    if (frameActiveState.banActive) return 0;
     let drawnCount = 0;
     for (let i = startIndex; i < endIndex; i++) {
       const comment = timelineRange[i];

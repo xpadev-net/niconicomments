@@ -2,6 +2,7 @@ import type {
   Collision,
   CommentEventHandlerMap,
   FormattedComment,
+  FrameActiveState,
   IComment,
   InputFormat,
   IPluginList,
@@ -38,7 +39,9 @@ import {
   changeCALayer,
   getConfig,
   hex2rgb,
+  isBanActive,
   isFlashComment,
+  isReverseActive,
   parseFont,
   processFixedComment,
   processMovableComment,
@@ -538,13 +541,18 @@ class NiconiComments {
     ) {
       this.getCommentPos(this.comments, maxCommentOffset + 1);
     }
+    const frameActiveState: FrameActiveState = {
+      banActive: isBanActive(vpos),
+      reverseActiveOwner: isReverseActive(vpos, true),
+      reverseActiveViewer: isReverseActive(vpos, false),
+    };
     let drawnCount = 0;
     for (let i = startIndex; i < endIndex; i++) {
       const comment = timelineRange[i];
       if (!comment || comment.invisible) {
         continue;
       }
-      comment.draw(vpos, this.showCollision, cursor);
+      comment.draw(vpos, this.showCollision, cursor, frameActiveState);
       drawnCount += 1;
     }
     return drawnCount;

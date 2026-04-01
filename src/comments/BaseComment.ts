@@ -2,6 +2,7 @@ import type {
   FormattedComment,
   FormattedCommentWithFont,
   FormattedCommentWithSize,
+  FrameActiveState,
   IComment,
   IRenderer,
   MeasureTextInput,
@@ -149,10 +150,19 @@ class BaseComment implements IComment {
    * @param vpos vpos
    * @param showCollision 当たり判定を表示するか
    * @param cursor カーソルの位置
+   * @param frameActiveState フレーム単位で計算済みの active state
    */
-  public draw(vpos: number, showCollision: boolean, cursor?: Position) {
-    if (isBanActive(vpos)) return;
-    const reverse = isReverseActive(vpos, this.comment.owner);
+  public draw(
+    vpos: number,
+    showCollision: boolean,
+    cursor?: Position,
+    frameActiveState?: FrameActiveState,
+  ) {
+    const banActive = frameActiveState?.banActive ?? isBanActive(vpos);
+    if (banActive) return;
+    const reverse = this.comment.owner
+      ? (frameActiveState?.reverseActiveOwner ?? isReverseActive(vpos, true))
+      : (frameActiveState?.reverseActiveViewer ?? isReverseActive(vpos, false));
     const posX = getPosX(this.comment, vpos, reverse);
     const posY =
       this.comment.loc === "shita"

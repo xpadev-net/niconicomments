@@ -961,9 +961,11 @@ export {
   getMovablePosY,
   getPosX,
   getPosY,
+  // Kept for compatibility and non-render call sites.
   isBanActive,
   isFlashComment,
   isLineBreakResize,
+  // Kept for compatibility and non-render call sites.
   isReverseActive,
   parseCommandAndNicoScript,
   parseFont,

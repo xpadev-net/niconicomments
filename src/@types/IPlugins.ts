@@ -6,7 +6,13 @@ export interface IPluginConstructor {
 }
 
 export interface IPlugin {
-  draw?: (vpos: number) => void;
+  /**
+   * Returning false skips texture invalidation only; compositing still runs.
+   * Do not return false before your canvas has been rendered at least once.
+   * Plugins with static canvases should still implement draw() and return
+   * false after first render to skip per-frame texture invalidation.
+   */
+  draw?: (vpos: number) => boolean | undefined;
   addComments?: (comments: IComment[]) => void;
   transformComments?: (comments: IComment[]) => IComment[];
 }

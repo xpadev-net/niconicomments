@@ -42,6 +42,40 @@ const RE_FILL = /^nico:fill:(.+)$/;
 const RE_OPACITY = /^nico:opacity:(.+)$/;
 const RE_COLOR_CODE = /^#(?:[0-9a-z]{3}|[0-9a-z]{6})$/;
 
+const ACTIVE_CACHE_MAX_SIZE = 4096;
+
+// nicoScripts and active-state caches are intentionally module-scoped.
+// resetRangePointers() clears them process-wide, so this library assumes
+// a single active renderer instance per runtime.
+const reverseActiveOwnerCache = new Map<number, boolean>();
+const reverseActiveViewerCache = new Map<number, boolean>();
+const banActiveCache = new Map<number, boolean>();
+
+const resetRangePointers = () => {
+  reverseActiveOwnerCache.clear();
+  reverseActiveViewerCache.clear();
+  banActiveCache.clear();
+};
+
+const setCachedActiveState = (
+  cache: Map<number, boolean>,
+  vpos: number,
+  result: boolean,
+) => {
+  // Bounded FIFO: evict the oldest (insertion-order) entry at capacity.
+  // This favors continuous playback locality. After large seeks, old vpos keys
+  // may survive until naturally evicted, but results remain correct.
+  // Cache-hit paths return before this helper; insertion order is not refreshed.
+  // Frequent seeks can evict previously hot keys; this is a FIFO trade-off.
+  if (cache.size >= ACTIVE_CACHE_MAX_SIZE) {
+    const oldestKey = cache.keys().next().value;
+    if (oldestKey !== undefined) {
+      cache.delete(oldestKey);
+    }
+  }
+  cache.set(vpos, result);
+};
+
 /**
  * 改行リサイズが発生するか
  * @param comment 判定対象のコメント
@@ -371,6 +405,8 @@ const processReverseScript = (
     end: comment.vpos + commands.long * 100,
     target,
   });
+  reverseActiveOwnerCache.clear();
+  reverseActiveViewerCache.clear();
 };
 
 /**
@@ -389,6 +425,7 @@ const processBanScript = (
     start: comment.vpos,
     end: comment.vpos + commands.long * 100,
   });
+  banActiveCache.clear();
 };
 
 /**
@@ -617,6 +654,10 @@ const isFlashComment = (comment: FormattedComment): boolean =>
  * @returns 逆コマンド適用対象かどうか
  */
 const isReverseActive = (vpos: number, isOwner: boolean): boolean => {
+  const cache = isOwner ? reverseActiveOwnerCache : reverseActiveViewerCache;
+  const cached = cache.get(vpos);
+  if (cached !== undefined) return cached;
+  let result = false;
   for (const range of nicoScripts.reverse) {
     if (
       (range.target === "コメ" && isOwner) ||
@@ -624,10 +665,12 @@ const isReverseActive = (vpos: number, isOwner: boolean): boolean => {
     )
       continue;
     if (range.start < vpos && vpos < range.end) {
-      return true;
+      result = true;
+      break;
     }
   }
-  return false;
+  setCachedActiveState(cache, vpos, result);
+  return result;
 };
 
 /**
@@ -636,10 +679,17 @@ const isReverseActive = (vpos: number, isOwner: boolean): boolean => {
  * @returns コメント禁止コマンド適用対象かどうか
  */
 const isBanActive = (vpos: number): boolean => {
+  const cached = banActiveCache.get(vpos);
+  if (cached !== undefined) return cached;
+  let result = false;
   for (const range of nicoScripts.ban) {
-    if (range.start < vpos && vpos < range.end) return true;
+    if (range.start < vpos && vpos < range.end) {
+      result = true;
+      break;
+    }
   }
-  return false;
+  setCachedActiveState(banActiveCache, vpos, result);
+  return result;
 };
 
 /**
@@ -913,12 +963,15 @@ export {
   getMovablePosY,
   getPosX,
   getPosY,
+  // Kept for compatibility and non-render call sites.
   isBanActive,
   isFlashComment,
   isLineBreakResize,
+  // Kept for compatibility and non-render call sites.
   isReverseActive,
   parseCommandAndNicoScript,
   parseFont,
   processFixedComment,
   processMovableComment,
+  resetRangePointers,
 };

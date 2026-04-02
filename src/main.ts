@@ -382,13 +382,19 @@ class NiconiComments {
       this.commentArrayIndexMap.set(comment, baseOffset + i);
     }
     if (!options.lazy) {
-      // Non-lazy mode resolves newly added entries above. Advance only up to
-      // the pre-push tail so unresolved historical entries (if any) are not
-      // skipped permanently.
-      this.processedCommentIndex = Math.max(
-        this.processedCommentIndex,
-        baseOffset - 1,
-      );
+      // Non-lazy mode resolves newly added entries above, so advance past them
+      // to avoid redundant getCommentPos iteration on the next frame.
+      // If processedCommentIndex is unexpectedly behind pre-push tail, clamp
+      // to pre-push tail first to avoid skipping unresolved historical entries.
+      const prePushTail = baseOffset - 1;
+      if (this.processedCommentIndex < prePushTail) {
+        this.processedCommentIndex = prePushTail;
+      } else {
+        this.processedCommentIndex = Math.max(
+          this.processedCommentIndex,
+          this.comments.length - 1,
+        );
+      }
     } else {
       // Lazy mode may still contain historical comments with unresolved posY.
       // Advancing to the tail here can skip those unresolved entries forever.
@@ -577,11 +583,21 @@ class NiconiComments {
     ) {
       this.getCommentPos(this.comments, maxCommentOffset + 1);
     }
+    const guardUnregisteredUnresolved = requiresFullScan;
     let drawnCount = 0;
     for (let i = startIndex; i < endIndex; i++) {
       const comment = timelineRange[i];
       if (!comment || comment.invisible) {
         continue;
+      }
+      if (guardUnregisteredUnresolved) {
+        const commentOffset = this.commentArrayIndexMap.get(comment);
+        if (commentOffset === undefined && comment.posY < 0) {
+          logger(
+            "_drawComments: skip unresolved unregistered comment (possible plugin-injected entry)",
+          );
+          continue;
+        }
       }
       comment.draw(vpos, this.showCollision, cursor, frameActiveState);
       drawnCount += 1;

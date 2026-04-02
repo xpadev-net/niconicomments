@@ -66,6 +66,7 @@ const setCachedActiveState = (
   // This favors continuous playback locality. After large seeks, old vpos keys
   // may survive until naturally evicted, but results remain correct.
   // Cache-hit paths return before this helper; insertion order is not refreshed.
+  // Frequent seeks can evict previously hot keys; this is a FIFO trade-off.
   if (cache.size >= ACTIVE_CACHE_MAX_SIZE) {
     const oldestKey = cache.keys().next().value;
     if (oldestKey !== undefined) {

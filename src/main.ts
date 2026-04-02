@@ -384,8 +384,9 @@ class NiconiComments {
     if (!options.lazy) {
       // Non-lazy mode resolves newly added entries above, so advance past them
       // to avoid redundant getCommentPos iteration on the next frame.
-      // If processedCommentIndex is unexpectedly behind pre-push tail, clamp
-      // to pre-push tail first to avoid skipping unresolved historical entries.
+      // If processedCommentIndex is unexpectedly behind pre-push tail, advance
+      // to that tail first. In non-lazy mode, pre-existing comments are already
+      // resolved during preRendering, so this catch-up is safe.
       const prePushTail = baseOffset - 1;
       if (this.processedCommentIndex < prePushTail) {
         this.processedCommentIndex = prePushTail;
@@ -547,13 +548,12 @@ class NiconiComments {
         ));
       }
     }
-    const vposInt = Math.floor(vpos);
     const frameActiveState: FrameActiveState = {
-      banActive: isBanActive(vposInt),
-      reverseActiveOwner: isReverseActive(vposInt, true),
-      reverseActiveViewer: isReverseActive(vposInt, false),
+      banActive: isBanActive(vpos),
+      reverseActiveOwner: isReverseActive(vpos, true),
+      reverseActiveViewer: isReverseActive(vpos, false),
     };
-    if (frameActiveState.banActive) return 0;
+    if (frameActiveState.banActive) return 0; // defer pos-resolution to first non-ban frame
     let maxCommentOffset = -1;
     let requiresFullScan = false;
     for (let i = startIndex; i < endIndex; i++) {

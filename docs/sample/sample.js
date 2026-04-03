@@ -570,7 +570,7 @@ const loadNicoVideo = (nicoId) => {
       else resolve();
     };
     const timeoutId = setTimeout(() => {
-      nicoIframe = null;
+      if (myLoadId === nicoLoadId) nicoIframe = null;
       cleanup(new Error("niconico load timeout"));
     }, 30000);
     const messageHandler = (e) => {

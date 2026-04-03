@@ -337,9 +337,19 @@ const vcSeekElement = document.getElementById("vc-seek");
 const vcTimeElement = document.getElementById("vc-time");
 
 // --- Version selector setup ---
-ncVersionElement.value = ncVersion;
-pluginVersionElement.value = pluginVersion;
-niwangoVersionElement.value = niwangoVersion;
+const ensureVersionOption = (selectEl, version) => {
+  if (!Array.from(selectEl.options).some((o) => o.value === version)) {
+    const opt = document.createElement("option");
+    opt.value = version;
+    opt.text = version;
+    selectEl.appendChild(opt);
+  }
+  selectEl.value = version;
+};
+
+ensureVersionOption(ncVersionElement, ncVersion);
+ensureVersionOption(pluginVersionElement, pluginVersion);
+ensureVersionOption(niwangoVersionElement, niwangoVersion);
 
 const fetchVersions = async (packageName) => {
   try {
@@ -355,8 +365,11 @@ const fetchVersions = async (packageName) => {
 };
 
 const appendVersionOptions = (selectEl, versions, currentVersion) => {
+  const existingValues = new Set(
+    Array.from(selectEl.options).map((o) => o.value),
+  );
   for (const ver of versions) {
-    if (selectEl.querySelector(`option[value="${CSS.escape(ver)}"]`)) continue;
+    if (existingValues.has(ver)) continue;
     const opt = document.createElement("option");
     opt.value = ver;
     opt.text = ver;

@@ -398,19 +398,22 @@ const reloadWithVersion = (param, value) => {
   window.location.search = urlParams.toString();
 };
 
-ncVersionElement.onchange = (e) => reloadWithVersion("ncVersion", e.target.value);
+ncVersionElement.onchange = (e) =>
+  reloadWithVersion("ncVersion", e.target.value);
 pluginVersionElement.onchange = (e) =>
   reloadWithVersion("pluginVersion", e.target.value);
 niwangoVersionElement.onchange = (e) =>
   reloadWithVersion("niwangoVersion", e.target.value);
 
 // --- Helper functions ---
-const showScriptError = () => {
+const showScriptError = (message) => {
   const el = document.createElement("div");
   el.style.cssText =
     "position:fixed;top:0;left:0;right:0;z-index:100;background:#c00;" +
     "color:#fff;padding:12px 16px;font-family:monospace;font-size:13px;";
-  el.textContent = `Script load failed (ncVersion=${ncVersion}, pluginVersion=${pluginVersion}, niwangoVersion=${niwangoVersion}). Check version selectors.`;
+  el.textContent =
+    message ||
+    `Script load failed (ncVersion=${ncVersion}, pluginVersion=${pluginVersion}, niwangoVersion=${niwangoVersion}). Check version selectors.`;
   document.body.appendChild(el);
 };
 
@@ -490,7 +493,8 @@ const loadComments = async () => {
   if (!req.ok) throw new Error(`Failed to load comment data: ${req.status}`);
   const res = await req.json();
   if (gen !== loadGeneration) return;
-  const renderer = NiconiComments.internal.renderer.createRenderer(canvasElement);
+  const renderer =
+    NiconiComments.internal.renderer.createRenderer(canvasElement);
   nico = new NiconiComments(renderer, res, {
     mode: mode,
     keepCA: keepCA,
@@ -832,7 +836,13 @@ if (noVideo) {
   });
 } else {
   window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
-  loadScript("https://www.youtube.com/iframe_api");
+  loadScript("https://www.youtube.com/iframe_api").catch((err) => {
+    console.error("Failed to load YouTube IFrame API:", err);
+    showScriptError(
+      "Failed to load YouTube IFrame API. Please reload the page.",
+    );
+    controlWrapper.style.display = "flex";
+  });
 }
 window.onresize = resize;
 window.onload = resize;

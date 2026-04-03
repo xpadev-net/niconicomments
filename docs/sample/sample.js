@@ -362,7 +362,8 @@ const fetchVersions = async (packageName) => {
     if (!res.ok) return [];
     const data = await res.json();
     return (data.versions ?? []).map((v) => v.version);
-  } catch {
+  } catch (e) {
+    console.warn("fetchVersions failed for", packageName, e);
     return [];
   }
 };
@@ -598,6 +599,7 @@ const loadYTVideo = (ytId) => {
       suggestedQuality: "large",
     });
     duration = 0;
+    vcPlayPauseElement.disabled = false;
     return Promise.resolve();
   }
   return new Promise((resolve) => {

@@ -43,7 +43,8 @@ jobs:
         run: |
           git config user.email "github-actions@xpadev.net"
           git config user.name "github-actions"
-          git checkout -b dev-build
+          git checkout --orphan dev-build
+          git rm -rf . --quiet || true
           git add dist/bundle.js -f
           git commit -m "dev build"
           git push -f origin dev-build

@@ -571,7 +571,6 @@ const loadYTVideo = (ytId) => {
     });
     duration = 0;
     vcSeekElement.max = "100";
-    vcSeekElement.disabled = false;
     vcPlayPauseElement.disabled = false;
     return Promise.resolve();
   }

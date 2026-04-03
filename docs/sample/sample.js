@@ -551,6 +551,7 @@ const loadNicoVideo = (nicoId) => {
       if (e.origin !== "https://embed.nicovideo.jp") return;
       if (e.data.eventName === "loadComplete") {
         vcPlayPauseElement.disabled = false;
+        vcSeekElement.disabled = false;
         window.removeEventListener("message", messageHandler);
         resolve();
       } else if (e.data.eventName === "loadError") {

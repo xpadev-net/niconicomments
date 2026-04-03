@@ -8,6 +8,10 @@ const localize = {
   showCommentCount: ["show Comment Count", "コメント数表示"],
   keepCA: ["keep Comment Art", "CA衝突回避"],
   debug: ["debug", "デバッグ"],
+  ncVersion: ["niconicomments version", "niconicommentsバージョン"],
+  pluginVersion: ["plugin version", "プラグインバージョン"],
+  niwangoVersion: ["niwango version", "niwangoバージョン"],
+  devBuild: ["dev build", "devビルド"],
   general: ["general", "一般"],
   sm9_2: [
     "新・豪血寺一族 -煩悩解放 - レッツゴー！陰陽師(enlarged edition)",

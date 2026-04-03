@@ -1,3 +1,49 @@
+const NC_DEV_URL =
+  "https://cdn.jsdelivr.net/gh/xpadev-net/niconicomments@dev-build/dist/bundle.js";
+const NIWANGO_DEV_URL =
+  "https://cdn.jsdelivr.net/gh/xpadev-net/niwango.js@dev-build/dist/bundle.js";
+const CONTROLS_BAR_HEIGHT = 44;
+
+const urlParams = new URLSearchParams(window.location.search);
+let video = Number(urlParams.get("video") || 0),
+  noVideo = !!urlParams.get("novideo"),
+  time = Number(urlParams.get("time") || -1);
+const ncVersion = urlParams.get("ncVersion") || "dev";
+const pluginVersion = urlParams.get("pluginVersion") || "latest";
+const niwangoVersion = urlParams.get("niwangoVersion") || "dev-build";
+
+// --- Dynamic script loading ---
+const loadScript = (src) =>
+  new Promise((resolve, reject) => {
+    const s = document.createElement("script");
+    s.src = src;
+    s.onload = resolve;
+    s.onerror = reject;
+    document.head.appendChild(s);
+  });
+
+const getNCUrl = (v) =>
+  v === "dev"
+    ? NC_DEV_URL
+    : `https://cdn.jsdelivr.net/npm/@xpadev-net/niconicomments@${v}/dist/bundle.min.js`;
+const getPluginUrl = (v) =>
+  `https://cdn.jsdelivr.net/npm/@xpadev-net/niconicomments-plugin-niwango@${v}/dist/bundle.min.js`;
+const getNiwangoUrl = (v) =>
+  v === "dev-build"
+    ? NIWANGO_DEV_URL
+    : `https://cdn.jsdelivr.net/npm/@xpadev-net/niwango@${v}/dist/bundle.js`;
+
+let resolveScripts;
+const scriptsLoaded = new Promise((resolve) => {
+  resolveScripts = resolve;
+});
+Promise.all([
+  loadScript(getNCUrl(ncVersion)),
+  loadScript(getPluginUrl(pluginVersion)),
+  loadScript(getNiwangoUrl(niwangoVersion)),
+]).then(resolveScripts, resolveScripts);
+
+// --- Video data ---
 const videos = [
   {
     title: i18next.t("general"),
@@ -211,11 +257,9 @@ const videos = [
     ],
   },
 ];
-const urlParams = new URLSearchParams(window.location.search);
-let video = Number(urlParams.get("video") || 0),
-  noVideo = !!urlParams.get("novideo"),
-  time = Number(urlParams.get("time") || -1),
-  player,
+
+// --- State ---
+let player,
   nicoIframe,
   nico = null,
   mode = "default",
@@ -228,7 +272,11 @@ let video = Number(urlParams.get("video") || 0),
   scale = 1,
   currentTime = 0,
   isPaused = true,
+  duration = 0,
+  seekDragging = false,
   interval = null;
+
+// --- DOM references ---
 /** @type {HTMLDivElement} */
 const controlWrapper = document.getElementById("control");
 /** @type {HTMLSelectElement} */
@@ -256,28 +304,326 @@ const container = document.getElementById("container");
 const canvasElement = document.getElementById("canvas");
 /** @type {HTMLDivElement} */
 const backgroundElement = document.getElementById("background");
+/** @type {HTMLSelectElement} */
+const ncVersionElement = document.getElementById("nc-version");
+/** @type {HTMLSelectElement} */
+const pluginVersionElement = document.getElementById("plugin-version");
+/** @type {HTMLSelectElement} */
+const niwangoVersionElement = document.getElementById("niwango-version");
+/** @type {HTMLButtonElement} */
+const vcPlayPauseElement = document.getElementById("vc-play-pause");
+/** @type {HTMLInputElement} */
+const vcSeekElement = document.getElementById("vc-seek");
+/** @type {HTMLSpanElement} */
+const vcTimeElement = document.getElementById("vc-time");
 
-const onYouTubeIframeAPIReady = async () => {
-  for (const group of videos) {
-    const groupElement = document.createElement("optgroup");
-    groupElement.label = group.title;
-    for (const item of group.items) {
-      const optionElement = document.createElement("option");
-      optionElement.value = item.id;
-      optionElement.text = `${item.title}(${item.nc})`;
-      if (item.id === Number(video)) {
-        optionElement.selected = true;
-      }
-      groupElement.appendChild(optionElement);
-    }
-    controlVideoElement.appendChild(groupElement);
+// --- Version selector setup ---
+ncVersionElement.value = ncVersion;
+pluginVersionElement.value = pluginVersion;
+niwangoVersionElement.value = niwangoVersion;
+
+const fetchVersions = async (packageName) => {
+  try {
+    const res = await fetch(
+      `https://data.jsdelivr.com/v1/packages/npm/${encodeURIComponent(packageName)}`,
+    );
+    if (!res.ok) return [];
+    const data = await res.json();
+    return (data.versions ?? []).map((v) => v.version);
+  } catch {
+    return [];
   }
-  await loadVideo();
-  controlWrapper.style.display = "flex";
-  const videoItem = getVideoItem();
-  document.title = `${videoItem.title}(${videoItem.nc}) - niconicomments sample`;
-  await loadComments();
 };
+
+const appendVersionOptions = (selectEl, versions, currentVersion) => {
+  for (const ver of versions) {
+    if (selectEl.querySelector(`option[value="${CSS.escape(ver)}"]`)) continue;
+    const opt = document.createElement("option");
+    opt.value = ver;
+    opt.text = ver;
+    selectEl.appendChild(opt);
+  }
+  selectEl.value = currentVersion;
+};
+
+Promise.all([
+  fetchVersions("@xpadev-net/niconicomments"),
+  fetchVersions("@xpadev-net/niconicomments-plugin-niwango"),
+  fetchVersions("@xpadev-net/niwango"),
+]).then(([ncVersions, pluginVersions, niwangoVersions]) => {
+  appendVersionOptions(ncVersionElement, ncVersions, ncVersion);
+  appendVersionOptions(pluginVersionElement, pluginVersions, pluginVersion);
+  appendVersionOptions(niwangoVersionElement, niwangoVersions, niwangoVersion);
+});
+
+const reloadWithVersion = (param, value) => {
+  urlParams.set(param, value);
+  urlParams.set("time", String(Math.floor(currentTime)));
+  window.location.search = urlParams.toString();
+};
+
+ncVersionElement.onchange = (e) => reloadWithVersion("ncVersion", e.target.value);
+pluginVersionElement.onchange = (e) =>
+  reloadWithVersion("pluginVersion", e.target.value);
+niwangoVersionElement.onchange = (e) =>
+  reloadWithVersion("niwangoVersion", e.target.value);
+
+// --- Helper functions ---
+const formatTime = (sec) => {
+  const m = Math.floor(sec / 60);
+  const s = Math.floor(sec % 60);
+  return `${m}:${String(s).padStart(2, "0")}`;
+};
+
+const updatePlayPauseButton = () => {
+  vcPlayPauseElement.textContent = isPaused ? "▶" : "⏸";
+};
+
+const getById = (array, id) => {
+  for (const i of array) {
+    for (const j of i.items) {
+      if (j.id === Number(id)) {
+        return j;
+      }
+    }
+  }
+  return false;
+};
+
+const getVideoItem = () => {
+  return getById(videos, video);
+};
+
+// --- Core playback logic ---
+const updateTime = (currentTime_, paused) => {
+  if (!paused) {
+    videoMicroSec = {
+      currentTime: currentTime_,
+      microsec: performance.now(),
+    };
+  } else {
+    videoMicroSec = false;
+  }
+};
+
+const updateCanvas = () => {
+  if (!nico) return;
+  let vpos;
+  if (!videoMicroSec) {
+    vpos = currentTime * 100;
+  } else {
+    vpos =
+      (performance.now() - videoMicroSec.microsec) / 10 +
+      videoMicroSec.currentTime * 100;
+  }
+  nico.drawCanvas(vpos);
+  const sec = vpos / 100;
+  if (!seekDragging) {
+    vcSeekElement.value = String(sec);
+  }
+  vcTimeElement.textContent = `${formatTime(sec)} / ${formatTime(duration)}`;
+};
+
+const resize = () => {
+  const width = document.body.clientWidth / 1920,
+    height = (document.body.clientHeight - CONTROLS_BAR_HEIGHT) / 1080;
+  container.style.transform = `translate(-50%,-50%) scale(${
+    Math.min(height, width) * 100
+  }%)`;
+};
+
+const loadComments = async () => {
+  const videoItem = getVideoItem();
+  canvasElement.style.transform = `scale(${(videoItem.scale || 100) - 1}%)`;
+  const req = await fetch(`./commentdata/${video}.json`);
+  const res = await req.json();
+  const renderer = NiconiComments.internal.renderer.createRenderer(canvasElement);
+  nico = new NiconiComments(renderer, res, {
+    mode: mode,
+    keepCA: keepCA,
+    format: "formatted",
+    debug: debug,
+    scale: Number(scale),
+    config: {
+      plugins: window.PluginNiwango
+        ? [window.PluginNiwango(window.Niwango)]
+        : [],
+    },
+  });
+  const elem = document.createElement("div");
+  elem.id = "loaded";
+  document.body.appendChild(elem);
+  const background = getById(videos, video).bg;
+  backgroundElement.style.background = background || "none";
+  if (time >= 0) {
+    seekTo(time);
+  }
+  if (!interval) {
+    interval = setInterval(updateCanvas, 1);
+  }
+  const handler = (e) => {
+    console.log(e);
+  };
+  nico.addEventListener("commentDisable", handler);
+  nico.addEventListener("commentEnable", handler);
+  nico.addEventListener("seekDisable", handler);
+  nico.addEventListener("seekEnable", handler);
+  nico.addEventListener("jump", handler);
+};
+
+const resetVideoControls = () => {
+  duration = 0;
+  vcSeekElement.value = "0";
+  vcSeekElement.max = "100";
+  vcSeekElement.disabled = true;
+  vcPlayPauseElement.disabled = true;
+  updatePlayPauseButton();
+};
+
+const loadVideo = async () => {
+  const videoItem = getVideoItem();
+  currentTime = 0;
+  isPaused = true;
+  videoMicroSec = false;
+  nico = undefined;
+  resetVideoControls();
+  if (videoItem.yt) {
+    await loadYTVideo(videoItem.yt);
+  } else {
+    await loadNicoVideo(videoItem._nc ?? videoItem.nc);
+  }
+};
+
+const loadNicoVideo = (nicoId) => {
+  player?.destroy();
+  player = undefined;
+  document.getElementById("player").innerHTML =
+    `<iframe src="https://embed.nicovideo.jp/watch/${nicoId}?jsapi=1&playerId=a" id="nico-iframe" width="1920" height="1080"></iframe>`;
+  nicoIframe = document.getElementById("nico-iframe");
+  return new Promise((resolve, reject) => {
+    const messageHandler = (e) => {
+      if (e.origin !== "https://embed.nicovideo.jp") return;
+      if (e.data.eventName === "loadComplete") {
+        vcSeekElement.disabled = false;
+        vcPlayPauseElement.disabled = false;
+        resolve();
+      } else {
+        reject();
+      }
+      window.removeEventListener("message", messageHandler);
+    };
+    window.addEventListener("message", messageHandler);
+  });
+};
+
+const loadYTVideo = (ytId) => {
+  if (player) {
+    player.loadVideoById({
+      videoId: ytId,
+      suggestedQuality: "large",
+    });
+    return;
+  }
+  return new Promise((resolve) => {
+    player = new YT.Player("player", {
+      height: "360",
+      width: "640",
+      videoId: ytId,
+      playerVars: {
+        controls: 0,
+      },
+      events: {
+        onReady: (e) => {
+          const d = player.getDuration();
+          if (d > 0) {
+            duration = d;
+            vcSeekElement.max = String(d);
+          }
+          vcSeekElement.disabled = false;
+          vcPlayPauseElement.disabled = false;
+          resolve(e);
+        },
+        onStateChange: (e) => {
+          console.log(e);
+          currentTime = player.getCurrentTime();
+          isPaused = e.data !== YT.PlayerState.PLAYING;
+          updateTime(currentTime, isPaused);
+          updatePlayPauseButton();
+          const d = player.getDuration();
+          if (d > 0 && duration !== d) {
+            duration = d;
+            vcSeekElement.max = String(d);
+            if (vcSeekElement.disabled) {
+              vcSeekElement.disabled = false;
+              vcPlayPauseElement.disabled = false;
+            }
+          }
+        },
+      },
+    });
+  });
+};
+
+const seekTo = (time_) => {
+  if (player) {
+    player.seekTo(time_, true);
+  } else {
+    nicoIframe?.contentWindow.postMessage(
+      {
+        eventName: "seek",
+        data: {
+          time: time_,
+        },
+        sourceConnectorType: 1,
+        playerId: "a",
+      },
+      "https://embed.nicovideo.jp",
+    );
+  }
+};
+
+const togglePlayback = () => {
+  if (player?.getPlayerState) {
+    if (isPaused) {
+      player.playVideo();
+    } else {
+      player.pauseVideo();
+    }
+  } else if (nicoIframe) {
+    nicoIframe.contentWindow.postMessage(
+      {
+        eventName: isPaused ? "play" : "pause",
+        sourceConnectorType: 1,
+        playerId: "a",
+      },
+      "https://embed.nicovideo.jp",
+    );
+  }
+};
+
+// --- Video control event handlers ---
+vcPlayPauseElement.onclick = togglePlayback;
+
+vcSeekElement.addEventListener("mousedown", () => {
+  seekDragging = true;
+});
+vcSeekElement.addEventListener("mouseup", () => {
+  seekDragging = false;
+});
+vcSeekElement.addEventListener("touchstart", () => {
+  seekDragging = true;
+});
+vcSeekElement.addEventListener("touchend", () => {
+  seekDragging = false;
+});
+vcSeekElement.oninput = (e) => {
+  vcTimeElement.textContent = `${formatTime(Number(e.target.value))} / ${formatTime(duration)}`;
+};
+vcSeekElement.onchange = (e) => {
+  seekTo(Number(e.target.value));
+};
+
+// --- Settings control event handlers ---
 if (!noVideo) {
   controlVideoElement.onchange = async (e) => {
     video = e.target.value;
@@ -322,181 +668,54 @@ if (!noVideo) {
   };
 }
 
-const updateTime = (currentTime, paused) => {
-  if (!paused) {
-    videoMicroSec = {
-      currentTime: currentTime,
-      microsec: performance.now(),
-    };
-  } else {
-    videoMicroSec = false;
-  }
-};
-
-const updateCanvas = () => {
-  if (!nico) return;
-  if (!videoMicroSec) {
-    nico.drawCanvas(currentTime * 100);
-  } else {
-    nico.drawCanvas(
-      (performance.now() - videoMicroSec.microsec) / 10 +
-        videoMicroSec.currentTime * 100,
-    );
-  }
-};
-
-const loadComments = async () => {
-  const videoItem = getVideoItem();
-  canvasElement.style.transform = `scale(${(videoItem.scale || 100) - 1}%)`;
-  const req = await fetch(`./commentdata/${video}.json`);
-  const res = await req.json();
-  const renderer = NiconiComments.internal.renderer.createRenderer(canvasElement);
-  nico = new NiconiComments(renderer, res, {
-    mode: mode,
-    keepCA: keepCA,
-    format: "formatted",
-    debug: debug,
-    scale: Number(scale),
-    config: {
-      plugins: window.PluginNiwango
-        ? [window.PluginNiwango(window.Niwango)]
-        : [],
-    },
-  });
-  const elem = document.createElement("div");
-  elem.id = "loaded";
-  document.body.appendChild(elem);
-  const background = getById(videos, video).bg;
-  backgroundElement.style.background = background || "none";
-  if (time >= 0) {
-    seekTo(time);
-  }
-  if (!interval) {
-    interval = setInterval(updateCanvas, 1);
-  }
-  const handler = (e) => {
-    console.log(e);
-  };
-  nico.addEventListener("commentDisable", handler);
-  nico.addEventListener("commentEnable", handler);
-  nico.addEventListener("seekDisable", handler);
-  nico.addEventListener("seekEnable", handler);
-  nico.addEventListener("jump", handler);
-};
-
-const getById = (array, id) => {
-  for (const i of array) {
-    for (const j of i.items) {
-      if (j.id === Number(id)) {
-        return j;
-      }
-    }
-  }
-  return false;
-};
-const resize = () => {
-  const width = document.body.clientWidth / 1920,
-    height = document.body.clientHeight / 1080;
-  container.style.transform = `translate(-50%,-50%) scale(${
-    Math.min(height, width) * 100
-  }%)`;
-};
-
-const loadVideo = async () => {
-  const videoItem = getVideoItem();
-  currentTime = 0;
-  isPaused = true;
-  videoMicroSec = false;
-  nico = undefined;
-  if (videoItem.yt) {
-    await loadYTVideo(videoItem.yt);
-  } else {
-    await loadNicoVideo(videoItem._nc ?? videoItem.nc);
-  }
-};
-
-const loadNicoVideo = (nicoId) => {
-  player?.destroy();
-  player = undefined;
-  document.getElementById("player").innerHTML =
-    `<iframe src="https://embed.nicovideo.jp/watch/${nicoId}?jsapi=1&playerId=a" id="nico-iframe" width="1920" height="1080"></iframe>`;
-  nicoIframe = document.getElementById("nico-iframe");
-  return new Promise((resolve, reject) => {
-    const messageHandler = (e) => {
-      if (e.origin !== "https://embed.nicovideo.jp") return;
-      if (e.data.eventName === "loadComplete") {
-        resolve();
-      } else {
-        reject();
-      }
-      window.removeEventListener("message", messageHandler);
-    };
-    window.addEventListener("message", messageHandler);
-  });
-};
-
-const loadYTVideo = (ytId) => {
-  if (player) {
-    player?.loadVideoById({
-      videoId: ytId,
-      suggestedQuality: "large",
-    });
-    return;
-  }
-  return new Promise((resolve) => {
-    player = new YT.Player("player", {
-      height: "360",
-      width: "640",
-      videoId: ytId,
-      events: {
-        onReady: resolve,
-        onStateChange: (e) => {
-          console.log(e);
-          currentTime = player.getCurrentTime();
-          updateTime(currentTime, e.data !== 1);
-        },
-      },
-    });
-  });
-};
-
-const seekTo = (time) => {
-  if (player) {
-    player.seekTo(time, true);
-  } else {
-    nicoIframe?.contentWindow.postMessage(
-      {
-        eventName: "seek",
-        data: {
-          time: time,
-        },
-        sourceConnectorType: 1,
-        playerId: "a",
-      },
-      "https://embed.nicovideo.jp",
-    );
-  }
-};
-
+// --- Message events from embedded players ---
 window.addEventListener("message", (e) => {
   if (e.origin !== "https://embed.nicovideo.jp") return;
   if (e.data.eventName === "playerMetadataChange") {
     currentTime = e.data.data.currentTime / 1000;
+    if (e.data.data.duration != null) {
+      duration = e.data.data.duration / 1000;
+      vcSeekElement.max = String(duration);
+    }
     updateTime(currentTime, isPaused);
   } else if (e.data.eventName === "playerStatusChange") {
     isPaused = e.data.data.playerStatus !== 2;
     videoMicroSec = false;
+    updatePlayPauseButton();
   }
 });
 
-const getVideoItem = () => {
-  return getById(videos, video);
+// --- Main initialization ---
+const onYouTubeIframeAPIReady = async () => {
+  await scriptsLoaded;
+  for (const group of videos) {
+    const groupElement = document.createElement("optgroup");
+    groupElement.label = group.title;
+    for (const item of group.items) {
+      const optionElement = document.createElement("option");
+      optionElement.value = item.id;
+      optionElement.text = `${item.title}(${item.nc})`;
+      if (item.id === Number(video)) {
+        optionElement.selected = true;
+      }
+      groupElement.appendChild(optionElement);
+    }
+    controlVideoElement.appendChild(groupElement);
+  }
+  await loadVideo();
+  controlWrapper.style.display = "flex";
+  const videoItem = getVideoItem();
+  document.title = `${videoItem.title}(${videoItem.nc}) - niconicomments sample`;
+  await loadComments();
 };
+
 if (noVideo) {
-  void loadComments();
-  const elem = document.createElement("div");
-  elem.id = "inited";
-  document.body.appendChild(elem);
+  scriptsLoaded.then(() => {
+    void loadComments();
+    const elem = document.createElement("div");
+    elem.id = "inited";
+    document.body.appendChild(elem);
+  });
 } else {
   window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
 }

@@ -502,6 +502,7 @@ const loadComments = async () => {
   backgroundElement.style.background = background || "none";
   if (time >= 0) {
     seekTo(time);
+    time = -1;
   }
   if (!interval) {
     interval = setInterval(updateCanvas, 1);
@@ -551,8 +552,6 @@ const loadNicoVideo = (nicoId) => {
       if (e.origin !== "https://embed.nicovideo.jp") return;
       if (e.data.eventName === "loadComplete") {
         vcPlayPauseElement.disabled = false;
-        vcSeekElement.max = "99999";
-        vcSeekElement.disabled = false;
         window.removeEventListener("message", messageHandler);
         resolve();
       } else if (e.data.eventName === "loadError") {

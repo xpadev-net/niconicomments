@@ -6,12 +6,6 @@
   <title></title>
   <script src="https://cdn.jsdelivr.net/npm/i18next@22.0.5/dist/umd/i18next.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/i18next-browser-languagedetector@7.0.1/dist/umd/i18nextBrowserLanguageDetector.min.js"></script>
-  <script type="text/javascript" src="../../dist/bundle.js"></script>
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@xpadev-net/niconicomments-plugin-niwango@latest/dist/bundle.min.js"></script>
-  <script
-          type="text/javascript"
-          src="https://cdn.jsdelivr.net/gh/xpadev-net/niwango.js@dev-build/dist/bundle.js"
-  ></script>
   <link rel="stylesheet" href="./sample.css" />
 </head>
 <body id="body">
@@ -89,14 +83,33 @@
       <input type="checkbox" name="debug" id="debug" autocomplete="off" />
       <span data-i18n="debug"></span>
     </label>
+    <label>
+      <span data-i18n="ncVersion"></span>
+      <select name="nc-version" id="nc-version" autocomplete="off">
+        <option value="dev" data-i18n="devBuild"></option>
+      </select>
+    </label>
+    <label>
+      <span data-i18n="pluginVersion"></span>
+      <select name="plugin-version" id="plugin-version" autocomplete="off">
+        <option value="latest">latest</option>
+      </select>
+    </label>
+    <label>
+      <span data-i18n="niwangoVersion"></span>
+      <select name="niwango-version" id="niwango-version" autocomplete="off">
+        <option value="dev-build" data-i18n="devBuild"></option>
+      </select>
+    </label>
     <div id="toggle"><p>&lt;</p></div>
   </div>
 </div>
-</body>
-</html>
+<div id="video-controls">
+  <button id="vc-play-pause" disabled aria-label="Play">▶</button>
+  <input type="range" id="vc-seek" min="0" max="100" step="0.1" value="0" disabled />
+  <span id="vc-time">0:00 / 0:00</span>
+</div>
 <script src="./localize.js"></script>
 <script src="./sample.js"></script>
-<script
-        type="text/javascript"
-        src="https://www.youtube.com/iframe_api"
-></script>
+</body>
+</html>

@@ -1,11 +1,13 @@
+:root {
+  --controls-height: 44px;
+}
+
 .wrapper {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  bottom: 0;
-  aspect-ratio: 16/9;
-  height: 100vh;
+  height: calc(100vh - var(--controls-height));
   width: 100vw;
   z-index: 0;
   background-color: #333333;
@@ -133,4 +135,56 @@ html {
   height: 0;
   left: 0;
   top: 0;
+}
+
+#video-controls {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  height: var(--controls-height);
+  background-color: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 15px;
+  color: white;
+}
+
+#vc-play-pause {
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+  width: 32px;
+  height: 28px;
+  padding: 0;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+#vc-play-pause:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+#vc-seek {
+  flex: 1;
+  height: 6px;
+  accent-color: white;
+  cursor: pointer;
+}
+
+#vc-seek:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+#vc-time {
+  font-size: 12px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-family: monospace;
 }

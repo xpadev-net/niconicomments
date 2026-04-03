@@ -8,17 +8,15 @@ import type { IComment } from "@/@types";
  */
 const arrayPush = (
   _array: { [key: number]: IComment[] },
-  key: string | number,
+  key: number,
   push: IComment,
 ) => {
-  let array = _array;
-  if (!array) {
-    array = {};
+  const arr = _array[key];
+  if (arr) {
+    arr.push(push);
+  } else {
+    _array[key] = [push];
   }
-  if (!array[Number(key)]) {
-    array[Number(key)] = [];
-  }
-  array[Number(key)]?.push(push);
 };
 /**
  * ２つの配列を比較する
@@ -26,7 +24,7 @@ const arrayPush = (
  * @param b ２つ目
  * @returns ２つの配列が等しいか
  */
-const arrayEqual = (a: unknown[], b: unknown[]) => {
+const arrayEqual = (a: readonly unknown[], b: readonly unknown[]) => {
   if (a.length !== b.length) return false;
   for (let i = 0, n = a.length; i < n; ++i) {
     if (a[i] !== b[i]) return false;

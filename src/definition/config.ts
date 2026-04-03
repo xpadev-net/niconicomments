@@ -1,4 +1,5 @@
 import type { BaseConfig, BaseOptions } from "@/@types/";
+
 let defaultConfig: BaseConfig;
 
 /**
@@ -47,6 +48,7 @@ const setConfig = (value: BaseConfig) => {
 const setOptions = (value: BaseOptions) => {
   options = value;
 };
+
 export {
   config,
   defaultConfig,

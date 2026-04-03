@@ -2,10 +2,11 @@ import type {
   Collision,
   CommentEventHandlerMap,
   FormattedComment,
+  FrameActiveState,
   IComment,
+  InputFormat,
   IPluginList,
   IRenderer,
-  InputFormat,
   Options,
   Position,
   Timeline,
@@ -30,7 +31,7 @@ import { initConfig } from "@/definition/initConfig";
 import { InvalidOptionError } from "@/errors/";
 import { registerHandler, removeHandler, triggerHandler } from "@/eventHandler";
 import convert2formattedComment from "@/inputParser";
-import { CanvasRenderer } from "@/renderer";
+import { createRenderer } from "@/renderer";
 import typeGuard from "@/typeGuard";
 import {
   arrayEqual,
@@ -38,24 +39,94 @@ import {
   changeCALayer,
   getConfig,
   hex2rgb,
+  isBanActive,
   isFlashComment,
+  isReverseActive,
   parseFont,
   processFixedComment,
   processMovableComment,
+  resetRangePointers,
 } from "@/utils";
 import { createCommentInstance } from "@/utils/plugins";
 
 import * as internal from "./internal";
+
+const EMPTY_TIMELINE = Object.freeze([]) as readonly IComment[];
+const BAN_FRAME_POSITION_RESOLUTION_BUDGET = 256;
+
+const toIntegerOrInfinity = (value: number) => {
+  if (Number.isNaN(value) || value === 0) return 0;
+  if (!Number.isFinite(value)) return value;
+  return Math.trunc(value);
+};
+
+const getSliceBounds = (length: number, start: number, end?: number) => {
+  let startIndex = toIntegerOrInfinity(start);
+  let endIndex = end === undefined ? length : toIntegerOrInfinity(end);
+
+  if (startIndex === -Infinity) {
+    startIndex = 0;
+  } else if (startIndex < 0) {
+    startIndex = Math.max(length + startIndex, 0);
+  } else {
+    startIndex = Math.min(startIndex, length);
+  }
+
+  if (endIndex === -Infinity) {
+    endIndex = 0;
+  } else if (endIndex < 0) {
+    endIndex = Math.max(length + endIndex, 0);
+  } else {
+    endIndex = Math.min(endIndex, length);
+  }
+
+  if (endIndex < startIndex) {
+    endIndex = startIndex;
+  }
+
+  return { startIndex, endIndex };
+};
+
+const hasNakaComment = (items: readonly IComment[]) => {
+  let hasNaka = false;
+  for (const item of items) {
+    if (item.loc === "naka") {
+      hasNaka = true;
+      break;
+    }
+  }
+  return hasNaka;
+};
+
+type DrawCanvasProfile = {
+  triggerHandler: number;
+  drawVideo: number;
+  drawPlugins: number;
+  drawCollision: number;
+  drawComments: number;
+  drawFPS: number;
+  drawCommentCount: number;
+  flush: number;
+  total: number;
+};
+
+let activeInstanceCount = 0;
 
 class NiconiComments {
   public enableLegacyPiP: boolean;
   public showCollision: boolean;
   public showFPS: boolean;
   public showCommentCount: boolean;
+  private activeInstanceRegistered = false;
   private lastVpos: number;
   private get lastVposInt() {
     return Math.floor(this.lastVpos);
   }
+  private _cachedSplit: {
+    vpos: number;
+    hasNaka: boolean;
+  } | null = null;
+  private commentArrayIndexMap: WeakMap<IComment, number>;
   private processedCommentIndex: number;
   private comments: IComment[];
   private readonly renderer: IRenderer;
@@ -80,18 +151,24 @@ class NiconiComments {
     data: InputFormat,
     initOptions: Options = {},
   ) {
+    if (activeInstanceCount > 0) {
+      console.warn(
+        "Multiple NiconiComments instances detected in one runtime. Module-scoped nicoscript/active-state caches are shared and may affect each other.",
+      );
+    }
     const constructorStart = performance.now();
     initConfig();
     if (!typeGuard.config.initOptions(initOptions))
       throw new InvalidOptionError();
-    setOptions(Object.assign(defaultOptions, initOptions));
-    setConfig(Object.assign(defaultConfig, options.config));
+    setOptions(Object.assign({}, defaultOptions, initOptions));
+    setConfig(Object.assign({}, defaultConfig, options.config));
     setIsDebug(options.debug);
     resetImageCache();
     resetNicoScripts();
+    resetRangePointers();
     let renderer = _renderer;
     if (renderer instanceof HTMLCanvasElement) {
-      renderer = new CanvasRenderer(renderer, options.video);
+      renderer = createRenderer(renderer, options.video);
     } else if (options.video) {
       console.warn(
         "options.video is ignored because renderer is not HTMLCanvasElement",
@@ -99,6 +176,7 @@ class NiconiComments {
     }
 
     this.renderer = renderer;
+    logger(`renderer: ${renderer.rendererName}`);
     this.renderer.setLineWidth(getConfig(config.contextLineWidth, false));
     const rendererSize = this.renderer.getSize();
     this.renderer.setScale(
@@ -135,17 +213,45 @@ class NiconiComments {
 
     this.timeline = {};
     this.collision = {
-      ue: [],
-      shita: [],
-      left: [],
-      right: [],
+      ue: {},
+      shita: {},
+      left: {},
+      right: {},
     };
     this.lastVpos = -1;
+    this.commentArrayIndexMap = new WeakMap();
     this.processedCommentIndex = -1;
 
     this.comments = this.preRendering(parsedData);
+    this._rebuildCommentArrayIndex(this.comments);
+    this.activeInstanceRegistered = true;
+    activeInstanceCount += 1;
 
     logger(`constructor complete: ${performance.now() - constructorStart}ms`);
+  }
+
+  /**
+   * Releases this instance's module-scoped registration.
+   * Call this when the instance is no longer used to avoid
+   * spurious multi-instance warnings on future constructions.
+   */
+  public destroy() {
+    if (!this.activeInstanceRegistered) {
+      return;
+    }
+    this.activeInstanceRegistered = false;
+    if (activeInstanceCount > 0) {
+      activeInstanceCount -= 1;
+    }
+  }
+
+  private _rebuildCommentArrayIndex(comments: IComment[]) {
+    this.commentArrayIndexMap = new WeakMap();
+    for (let i = 0, n = comments.length; i < n; i++) {
+      const comment = comments[i];
+      if (!comment) continue;
+      this.commentArrayIndexMap.set(comment, i);
+    }
   }
 
   /**
@@ -178,7 +284,7 @@ class NiconiComments {
         if (pluginInstance.transformComments) {
           instances = pluginInstance.transformComments(instances);
         }
-      } catch (e) {
+      } catch (_e) {
         console.error("Failed to init plugin");
       }
     }
@@ -196,8 +302,12 @@ class NiconiComments {
    */
   private getCommentPos(data: IComment[], end: number, lazy = false) {
     const getCommentPosStart = performance.now();
-    if (this.processedCommentIndex + 1 >= end) return;
-    for (const comment of data.slice(this.processedCommentIndex + 1, end)) {
+    const startIndex = this.processedCommentIndex + 1;
+    if (startIndex >= end) return;
+    for (let i = startIndex; i < end; i++) {
+      const comment = data[i];
+      if (!comment) continue;
+      this.processedCommentIndex = i;
       if (comment.invisible || (comment.posY > -1 && !lazy)) continue;
       if (comment.loc === "naka") {
         processMovableComment(comment, this.collision, this.timeline, lazy);
@@ -209,10 +319,9 @@ class NiconiComments {
           lazy,
         );
       }
-      this.processedCommentIndex = comment.index;
     }
     if (lazy) {
-      this.processedCommentIndex = 0;
+      this.processedCommentIndex = -1;
     }
     logger(
       `getCommentPos complete: ${performance.now() - getCommentPosStart}ms`,
@@ -227,16 +336,9 @@ class NiconiComments {
     for (const vpos of Object.keys(this.timeline)) {
       const item = this.timeline[Number(vpos)];
       if (!item) continue;
-      const owner: IComment[] = [];
-      const user: IComment[] = [];
-      for (const comment of item) {
-        if (comment?.owner) {
-          owner.push(comment);
-        } else {
-          user.push(comment);
-        }
-      }
-      this.timeline[Number(vpos)] = user.concat(owner);
+      item.sort(
+        (a, b) => Number(a.owner) - Number(b.owner) || a.index - b.index,
+      );
     }
     logger(`parseData complete: ${performance.now() - sortCommentStart}ms`);
   }
@@ -247,6 +349,7 @@ class NiconiComments {
    * @param rawComments コメントデータ
    */
   public addComments(...rawComments: FormattedComment[]) {
+    resetRangePointers();
     const comments = rawComments.reduce<IComment[]>((pv, val, index) => {
       pv.push(
         createCommentInstance(val, this.renderer, this.comments.length + index),
@@ -272,6 +375,31 @@ class NiconiComments {
         );
       }
     }
+    this.comments.push(...comments);
+    const baseOffset = this.comments.length - comments.length;
+    for (let i = 0, n = comments.length; i < n; i++) {
+      const comment = comments[i];
+      if (!comment) continue;
+      this.commentArrayIndexMap.set(comment, baseOffset + i);
+    }
+    if (!options.lazy) {
+      // Resolve any outstanding historical range before advancing the pointer,
+      // then skip the newly-added resolved range to avoid redundant rescans.
+      const prePushTail = baseOffset - 1;
+      if (this.processedCommentIndex < prePushTail) {
+        this.getCommentPos(this.comments, prePushTail + 1);
+      }
+      this.processedCommentIndex = Math.max(
+        this.processedCommentIndex,
+        this.comments.length - 1,
+      );
+    } else {
+      // Lazy mode may still contain historical comments with unresolved posY.
+      // Advancing to the tail here can skip those unresolved entries forever.
+      // Keep processedCommentIndex unchanged so draw-time resolution can catch up.
+    }
+    this.sortTimelineComment();
+    this._cachedSplit = null;
   }
 
   /**
@@ -286,41 +414,100 @@ class NiconiComments {
     forceRendering = false,
     cursor?: Position,
   ): boolean {
+    const profile: DrawCanvasProfile | undefined = isDebug
+      ? {
+          triggerHandler: 0,
+          drawVideo: 0,
+          drawPlugins: 0,
+          drawCollision: 0,
+          drawComments: 0,
+          drawFPS: 0,
+          drawCommentCount: 0,
+          flush: 0,
+          total: 0,
+        }
+      : undefined;
+    const setProfile = <K extends keyof DrawCanvasProfile>(
+      key: K,
+      start: number,
+    ) => {
+      if (profile) {
+        profile[key] = performance.now() - start;
+      }
+    };
+
     const vposInt = Math.floor(vpos);
     const drawCanvasStart = performance.now();
     if (this.lastVpos === vpos && !forceRendering) return false;
+    const triggerHandlerStart = profile ? performance.now() : 0;
     triggerHandler(vposInt, this.lastVposInt);
-    const timelineRange = this.timeline[vposInt];
+    setProfile("triggerHandler", triggerHandlerStart);
+    const timelineRange = this.timeline[vposInt] ?? EMPTY_TIMELINE;
+    const lastTimelineRange = this.timeline[this.lastVposInt] ?? EMPTY_TIMELINE;
+    const currentHasNaka = hasNakaComment(timelineRange);
+    const lastHasNaka =
+      this._cachedSplit?.vpos === this.lastVposInt
+        ? this._cachedSplit.hasNaka
+        : hasNakaComment(lastTimelineRange);
+    this._cachedSplit = { vpos: vposInt, hasNaka: currentHasNaka };
     if (
       !forceRendering &&
       plugins.length === 0 &&
-      timelineRange?.filter((item) => item.loc === "naka").length === 0 &&
-      this.timeline[this.lastVposInt]?.filter((item) => item.loc === "naka")
-        ?.length === 0
+      !currentHasNaka &&
+      !lastHasNaka
     ) {
-      const current = timelineRange.filter((item) => item.loc !== "naka");
-      const last =
-        this.timeline[this.lastVposInt]?.filter(
-          (item) => item.loc !== "naka",
-        ) ?? [];
-      if (arrayEqual(current, last)) return false;
+      if (arrayEqual(timelineRange, lastTimelineRange)) return false;
     }
     this.renderer.clearRect(0, 0, config.canvasWidth, config.canvasHeight);
     this.lastVpos = vpos;
+
+    const drawVideoStart = profile ? performance.now() : 0;
     this._drawVideo();
+    setProfile("drawVideo", drawVideoStart);
+
+    const drawPluginsStart = profile ? performance.now() : 0;
     for (const plugin of plugins) {
       try {
-        plugin.instance.draw?.(vpos);
+        const isUpdated = plugin.instance.draw?.(vpos);
+        if (isUpdated !== false) {
+          this.renderer.invalidateImage(plugin.canvas);
+        }
         this.renderer.drawImage(plugin.canvas, 0, 0);
       } catch (e) {
         console.error("Failed to draw comments", e);
       }
     }
+    setProfile("drawPlugins", drawPluginsStart);
+
+    const drawCollisionStart = profile ? performance.now() : 0;
     this._drawCollision(vposInt);
-    this._drawComments(timelineRange, vpos, cursor);
+    setProfile("drawCollision", drawCollisionStart);
+
+    const drawCommentsStart = profile ? performance.now() : 0;
+    const drawnCount = this._drawComments(timelineRange, vpos, cursor);
+    setProfile("drawComments", drawCommentsStart);
+
+    const drawFPSStart = profile ? performance.now() : 0;
     this._drawFPS(drawCanvasStart);
-    this._drawCommentCount(timelineRange?.length);
-    logger(`drawCanvas complete: ${performance.now() - drawCanvasStart}ms`);
+    setProfile("drawFPS", drawFPSStart);
+
+    const drawCommentCountStart = profile ? performance.now() : 0;
+    // Count reflects actually rendered comments (post-filter/non-invisible).
+    this._drawCommentCount(drawnCount);
+    setProfile("drawCommentCount", drawCommentCountStart);
+
+    const flushStart = profile ? performance.now() : 0;
+    this.renderer.flush();
+    setProfile("flush", flushStart);
+
+    if (profile) {
+      profile.total = performance.now() - drawCanvasStart;
+      logger(
+        `drawCanvas profile: trigger=${profile.triggerHandler.toFixed(2)}ms, video=${profile.drawVideo.toFixed(2)}ms, plugins=${profile.drawPlugins.toFixed(2)}ms, collision=${profile.drawCollision.toFixed(2)}ms, comments=${profile.drawComments.toFixed(2)}ms, fps=${profile.drawFPS.toFixed(2)}ms, count=${profile.drawCommentCount.toFixed(2)}ms, flush=${profile.flush.toFixed(2)}ms, total=${profile.total.toFixed(2)}ms`,
+      );
+    } else {
+      logger(`drawCanvas complete: ${performance.now() - drawCanvasStart}ms`);
+    }
     return true;
   }
 
@@ -336,30 +523,108 @@ class NiconiComments {
    * @param timelineRange 指定されたvposに存在するコメント
    * @param vpos vpos
    * @param cursor カーソルの位置
+   * @returns 描画したコメント数
    */
   private _drawComments(
-    timelineRange: IComment[] | undefined,
+    timelineRange: readonly IComment[],
     vpos: number,
     cursor?: Position,
-  ) {
-    if (timelineRange) {
-      const targetComment = (() => {
-        if (config.commentLimit === undefined) {
-          return timelineRange;
-        }
-        if (config.hideCommentOrder === "asc") {
-          return timelineRange.slice(-config.commentLimit);
-        }
-        return timelineRange.slice(0, config.commentLimit);
-      })();
-      for (const comment of targetComment) {
-        if (comment.invisible) {
-          continue;
-        }
-        this.getCommentPos(this.comments, comment.index + 1);
-        comment.draw(vpos, this.showCollision, cursor);
+  ): number {
+    let startIndex = 0;
+    let endIndex = timelineRange.length;
+    if (config.commentLimit !== undefined) {
+      if (config.hideCommentOrder === "asc") {
+        ({ startIndex, endIndex } = getSliceBounds(
+          timelineRange.length,
+          -config.commentLimit,
+        ));
+      } else {
+        ({ startIndex, endIndex } = getSliceBounds(
+          timelineRange.length,
+          0,
+          config.commentLimit,
+        ));
       }
     }
+    const frameActiveState: FrameActiveState = {
+      banActive: isBanActive(vpos),
+      reverseActiveOwner: isReverseActive(vpos, true),
+      reverseActiveViewer: isReverseActive(vpos, false),
+    };
+    if (frameActiveState.banActive && !options.lazy) return 0;
+    let maxCommentOffset = -1;
+    let requiresFullScan = false;
+    for (let i = startIndex; i < endIndex; i++) {
+      const comment = timelineRange[i];
+      if (!comment || comment.invisible) continue;
+      const commentOffset = this.commentArrayIndexMap.get(comment);
+      if (commentOffset === undefined) {
+        requiresFullScan = true;
+        break;
+      }
+      if (maxCommentOffset < commentOffset) {
+        maxCommentOffset = commentOffset;
+      }
+    }
+    if (frameActiveState.banActive) {
+      // Lazy mode: keep position resolution incremental during ban to avoid a
+      // large catch-up spike on the first non-ban frame.
+      const resolutionEnd =
+        this.processedCommentIndex + 1 + BAN_FRAME_POSITION_RESOLUTION_BUDGET;
+      if (
+        requiresFullScan &&
+        this.processedCommentIndex < this.comments.length - 1
+      ) {
+        this.getCommentPos(
+          this.comments,
+          Math.min(this.comments.length, resolutionEnd),
+        );
+      } else if (
+        maxCommentOffset >= 0 &&
+        this.processedCommentIndex < maxCommentOffset
+      ) {
+        this.getCommentPos(
+          this.comments,
+          Math.min(maxCommentOffset + 1, resolutionEnd),
+        );
+      }
+      return 0;
+    }
+    if (
+      requiresFullScan &&
+      this.processedCommentIndex < this.comments.length - 1
+    ) {
+      this.getCommentPos(this.comments, this.comments.length);
+    } else if (requiresFullScan) {
+      logger(
+        "_drawComments: requiresFullScan with no unprocessed comments — possible plugin side-effect",
+      );
+    } else if (
+      maxCommentOffset >= 0 &&
+      this.processedCommentIndex < maxCommentOffset
+    ) {
+      this.getCommentPos(this.comments, maxCommentOffset + 1);
+    }
+    const guardUnregisteredUnresolved = requiresFullScan;
+    let drawnCount = 0;
+    for (let i = startIndex; i < endIndex; i++) {
+      const comment = timelineRange[i];
+      if (!comment || comment.invisible) {
+        continue;
+      }
+      if (guardUnregisteredUnresolved) {
+        const commentOffset = this.commentArrayIndexMap.get(comment);
+        if (commentOffset === undefined && comment.posY < 0) {
+          logger(
+            "_drawComments: skip unresolved unregistered comment (possible plugin-injected entry)",
+          );
+          continue;
+        }
+      }
+      comment.draw(vpos, this.showCollision, cursor, frameActiveState);
+      drawnCount += 1;
+    }
+    return drawnCount;
   }
 
   /**
@@ -480,8 +745,9 @@ class NiconiComments {
   public click(vpos: number, pos: Position) {
     const _comments = this.timeline[vpos];
     if (!_comments) return;
-    const comments = [..._comments].reverse();
-    for (const comment of comments) {
+    for (let i = _comments.length - 1; i >= 0; i--) {
+      const comment = _comments[i];
+      if (!comment) continue;
       if (comment.isHovered(pos)) {
         const newComment = buildAtButtonComment(comment.comment, vpos);
         if (!newComment) continue;

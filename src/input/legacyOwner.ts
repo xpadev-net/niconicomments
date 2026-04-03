@@ -1,5 +1,4 @@
-import type { InputParser } from "@/@types";
-import type { FormattedComment } from "@/@types";
+import type { FormattedComment, InputParser } from "@/@types";
 import { InvalidFormatError } from "@/errors";
 import typeGuard from "@/typeGuard";
 
@@ -45,7 +44,7 @@ const fromLegacyOwner = (data: string): FormattedComment[] => {
       is_my_post: false,
     };
     if (commentData[1]) {
-      tmpParam.mail = commentData[1].split(/[\s+]/g);
+      tmpParam.mail = commentData[1].split(/\s+/g);
     }
     if (tmpParam.content.startsWith("/")) {
       tmpParam.mail.push("invisible");

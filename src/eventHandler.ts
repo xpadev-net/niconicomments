@@ -83,13 +83,13 @@ const processCommentDisableScript = (vpos: number, lastVpos: number) => {
     if (vposInRange && !lastVposInRange) {
       executeEvents("commentDisable", {
         type: "commentDisable",
-        timeStamp: new Date().getTime(),
+        timeStamp: Date.now(),
         vpos: vpos,
       });
     } else if (!vposInRange && lastVposInRange) {
       executeEvents("commentEnable", {
         type: "commentEnable",
-        timeStamp: new Date().getTime(),
+        timeStamp: Date.now(),
         vpos: vpos,
       });
     }
@@ -109,13 +109,13 @@ const processSeekDisableScript = (vpos: number, lastVpos: number) => {
     if (vposInRange && !lastVposInRange) {
       executeEvents("seekDisable", {
         type: "seekDisable",
-        timeStamp: new Date().getTime(),
+        timeStamp: Date.now(),
         vpos: vpos,
       });
     } else if (!vposInRange && lastVposInRange) {
       executeEvents("seekEnable", {
         type: "seekEnable",
-        timeStamp: new Date().getTime(),
+        timeStamp: Date.now(),
         vpos: vpos,
       });
     }
@@ -136,7 +136,7 @@ const processJumpScript = (vpos: number, lastVpos: number) => {
     if (vposInRange && !lastVposInRange) {
       executeEvents("jump", {
         type: "jump",
-        timeStamp: new Date().getTime(),
+        timeStamp: Date.now(),
         vpos: vpos,
         to: range.to,
         message: range.message,

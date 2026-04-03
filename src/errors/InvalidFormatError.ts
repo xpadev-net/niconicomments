@@ -7,4 +7,5 @@ class InvalidFormatError extends Error {
   }
 }
 InvalidFormatError.prototype.name = "InvalidFormatError";
+
 export { InvalidFormatError };

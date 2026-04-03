@@ -23,17 +23,17 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v5
         name: Install pnpm
         with:
-          version: 9
+          version: 10
           run_install: false
 
       - name: Install Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 24
           cache: 'pnpm'
@@ -46,10 +46,6 @@ jobs:
         run: rm ./docs/type/* -rf
       - name: update .gitignore
         run: sed -i -e '/\/docs\/type/d' .gitignore
-      - name: update sample.html
-        run: |
-          sed --in-place --expression='s/..\/..\/dist\/bundle.js/https:\/\/cdn.jsdelivr.net\/npm\/@xpadev-net\/niconicomments@latest\/dist\/bundle.min.js/' docs/sample/index.html
-          sed --in-place --expression='s/..\/..\/..\/niwango\/dist\/bundle.js/https:\/\/xpadev-net.github.io\/niwango.js\/niwango.js/' docs/sample/index.html
       - name: generate typedoc
         run: pnpm typedoc
       - name: generate dev build

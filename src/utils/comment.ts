@@ -25,6 +25,57 @@ import typeGuard from "@/typeGuard";
 import { arrayPush } from "./array";
 import { getConfig } from "./config";
 
+const RE_QUOTE_START = /^["'\u300c]$/;
+const RE_QUOTE_END = /^["']$/;
+const RE_WHITESPACE = /^\s+$/;
+const RE_NICOSCRIPT = /^[@\uff20](\S+)(?:\s(.+))?/;
+const RE_REVERSE =
+  /^[@\uff20]\u9006(?:\s+)?(\u5168|\u30b3\u30e1|\u6295\u30b3\u30e1)?/;
+const RE_JUMP =
+  /\s*((?:sm|so|nm|\uff53\uff4d|\uff53\uff4f|\uff4e\uff4d)?[1-9\uff11-\uff19][0-9\uff11-\uff19]*|#[0-9]+:[0-9]+(?:\.[0-9]+)?)\s+(.*)/;
+const RE_BUTTON_CONTENT =
+  /^(?:(?<before>.*?)\[)?(?<body>.*?)(?:\](?<after>[^\]]*?))?$/su;
+const RE_LONG = /^[@\uff20]([0-9.]+)/;
+const RE_STROKE = /^nico:stroke:(.+)$/;
+const RE_WAKU = /^nico:waku:(.+)$/;
+const RE_FILL = /^nico:fill:(.+)$/;
+const RE_OPACITY = /^nico:opacity:(.+)$/;
+const RE_COLOR_CODE = /^#(?:[0-9a-z]{3}|[0-9a-z]{6})$/;
+
+const ACTIVE_CACHE_MAX_SIZE = 4096;
+
+// nicoScripts and active-state caches are intentionally module-scoped.
+// resetRangePointers() clears them process-wide, so this library assumes
+// a single active renderer instance per runtime.
+const reverseActiveOwnerCache = new Map<number, boolean>();
+const reverseActiveViewerCache = new Map<number, boolean>();
+const banActiveCache = new Map<number, boolean>();
+
+const resetRangePointers = () => {
+  reverseActiveOwnerCache.clear();
+  reverseActiveViewerCache.clear();
+  banActiveCache.clear();
+};
+
+const setCachedActiveState = (
+  cache: Map<number, boolean>,
+  vpos: number,
+  result: boolean,
+) => {
+  // Bounded FIFO: evict the oldest (insertion-order) entry at capacity.
+  // This favors continuous playback locality. After large seeks, old vpos keys
+  // may survive until naturally evicted, but results remain correct.
+  // Cache-hit paths return before this helper; insertion order is not refreshed.
+  // Frequent seeks can evict previously hot keys; this is a FIFO trade-off.
+  if (cache.size >= ACTIVE_CACHE_MAX_SIZE) {
+    const oldestKey = cache.keys().next().value;
+    if (oldestKey !== undefined) {
+      cache.delete(oldestKey);
+    }
+  }
+  cache.set(vpos, result);
+};
+
 /**
  * 改行リサイズが発生するか
  * @param comment 判定対象のコメント
@@ -44,13 +95,21 @@ const isLineBreakResize = (comment: MeasureTextInput) => {
  * @returns コメントの初期設定
  */
 const getDefaultCommand = (vpos: number): DefaultCommand => {
-  nicoScripts.default = nicoScripts.default.filter(
-    (item) => !item.long || item.start + item.long >= vpos,
-  );
-  let color = undefined;
-  let size: CommentSize | undefined = undefined;
-  let font = undefined;
-  let loc: CommentLoc | undefined = undefined;
+  {
+    let writeIdx = 0;
+    for (let i = 0; i < nicoScripts.default.length; i++) {
+      const item = nicoScripts.default[i];
+      if (!item) continue;
+      if (item.long === undefined || item.start + item.long >= vpos) {
+        nicoScripts.default[writeIdx++] = item;
+      }
+    }
+    nicoScripts.default.length = writeIdx;
+  }
+  let color: string | undefined;
+  let size: CommentSize | undefined;
+  let font: CommentFont | undefined;
+  let loc: CommentLoc | undefined;
   for (const item of nicoScripts.default) {
     if (item.loc) {
       loc = item.loc;
@@ -98,9 +157,17 @@ const applyNicoScriptReplace = (
   comment: FormattedComment,
   commands: ParsedCommand,
 ) => {
-  nicoScripts.replace = nicoScripts.replace.filter(
-    (item) => !item.long || item.start + item.long >= comment.vpos,
-  );
+  {
+    let writeIdx = 0;
+    for (let i = 0; i < nicoScripts.replace.length; i++) {
+      const item = nicoScripts.replace[i];
+      if (!item) continue;
+      if (item.long === undefined || item.start + item.long >= comment.vpos) {
+        nicoScripts.replace[writeIdx++] = item;
+      }
+    }
+    nicoScripts.replace.length = writeIdx;
+  }
   for (const item of nicoScripts.replace) {
     if (nicoscriptReplaceIgnoreable(comment, item)) continue;
     if (item.range === "\u5358") {
@@ -169,10 +236,10 @@ const parseBrackets = (input: string) => {
   let lastChar = "";
   let string = "";
   for (const i of content) {
-    if (RegExp(/^["'\u300c]$/).exec(i) && quote === "") {
+    if (RE_QUOTE_START.test(i) && quote === "") {
       //["'「]
       quote = i;
-    } else if (RegExp(/^["']$/).exec(i) && quote === i && lastChar !== "\\") {
+    } else if (RE_QUOTE_END.test(i) && quote === i && lastChar !== "\\") {
       result.push(string.replaceAll("\\n", "\n"));
       quote = "";
       string = "";
@@ -181,7 +248,7 @@ const parseBrackets = (input: string) => {
       result.push(string);
       quote = "";
       string = "";
-    } else if (quote === "" && RegExp(/^\s+$/).exec(i)) {
+    } else if (quote === "" && RE_WHITESPACE.test(i)) {
       if (string) {
         result.push(string);
         string = "";
@@ -257,7 +324,7 @@ const processNicoscript = (
   comment: FormattedComment,
   commands: ParsedCommand,
 ) => {
-  const nicoscript = RegExp(/^[@\uff20](\S+)(?:\s(.+))?/).exec(comment.content);
+  const nicoscript = RE_NICOSCRIPT.exec(comment.content);
   if (!nicoscript) return;
   if (nicoscript[1] === "\u30dc\u30bf\u30f3" && nicoscript[2]) {
     //ボタン
@@ -326,9 +393,7 @@ const processReverseScript = (
   comment: FormattedComment,
   commands: ParsedCommand,
 ) => {
-  const reverse = RegExp(
-    /^[@\uff20]\u9006(?:\s+)?(\u5168|\u30b3\u30e1|\u6295\u30b3\u30e1)?/,
-  ).exec(comment.content);
+  const reverse = RE_REVERSE.exec(comment.content);
   const target = typeGuard.nicoScript.range.target(reverse?.[1])
     ? reverse?.[1]
     : "全";
@@ -340,6 +405,8 @@ const processReverseScript = (
     end: comment.vpos + commands.long * 100,
     target,
   });
+  reverseActiveOwnerCache.clear();
+  reverseActiveViewerCache.clear();
 };
 
 /**
@@ -358,6 +425,7 @@ const processBanScript = (
     start: comment.vpos,
     end: comment.vpos + commands.long * 100,
   });
+  banActiveCache.clear();
 };
 
 /**
@@ -389,9 +457,7 @@ const processJumpScript = (
   commands: ParsedCommand,
   input: string,
 ) => {
-  const options = RegExp(
-    /\s*((?:sm|so|nm|\uff53\uff4d|\uff53\uff4f|\uff4e\uff4d)?[1-9\uff11-\uff19][0-9\uff11-\uff19]*|#[0-9]+:[0-9]+(?:\.[0-9]+)?)\s+(.*)/,
-  ).exec(input);
+  const options = RE_JUMP.exec(input);
   if (!options?.[1]) return;
   const end =
     commands.long === undefined
@@ -417,9 +483,7 @@ const processAtButton = (
   const args = parseBrackets(comment.content);
   if (args[1] === undefined) return;
   commands.invisible = false;
-  const content = RegExp(
-    /^(?:(?<before>.*?)\[)?(?<body>.*?)(?:\](?<after>[^\]]*?))?$/su,
-  ).exec(args[1]) as {
+  const content = RE_BUTTON_CONTENT.exec(args[1]) as {
     groups: { before?: string; body?: string; after?: string };
   };
   const message = {
@@ -484,27 +548,27 @@ const parseCommand = (
   isFlash: boolean,
 ) => {
   const command = _command.toLowerCase();
-  const long = RegExp(/^[@\uff20]([0-9.]+)/).exec(command);
+  const long = RE_LONG.exec(command);
   if (long) {
     result.long = Number(long[1]);
     return;
   }
-  const strokeColor = getColor(RegExp(/^nico:stroke:(.+)$/).exec(command));
+  const strokeColor = getColor(RE_STROKE.exec(command));
   if (strokeColor) {
     result.strokeColor ??= strokeColor;
     return;
   }
-  const rectColor = getColor(RegExp(/^nico:waku:(.+)$/).exec(command));
+  const rectColor = getColor(RE_WAKU.exec(command));
   if (rectColor) {
     result.wakuColor ??= rectColor;
     return;
   }
-  const fillColor = getColor(RegExp(/^nico:fill:(.+)$/).exec(command));
+  const fillColor = getColor(RE_FILL.exec(command));
   if (fillColor) {
     result.fillColor ??= fillColor;
     return;
   }
-  const opacity = getOpacity(RegExp(/^nico:opacity:(.+)$/).exec(command));
+  const opacity = getOpacity(RE_OPACITY.exec(command));
   if (typeof opacity === "number") {
     result.opacity ??= opacity;
     return;
@@ -522,7 +586,7 @@ const parseCommand = (
     result.color ??= config.colors[command];
     return;
   }
-  const colorCode = RegExp(/^#(?:[0-9a-z]{3}|[0-9a-z]{6})$/).exec(command);
+  const colorCode = RE_COLOR_CODE.exec(command);
   if (colorCode && comment.premium) {
     result.color ??= colorCode[0].toUpperCase();
     return;
@@ -590,6 +654,10 @@ const isFlashComment = (comment: FormattedComment): boolean =>
  * @returns 逆コマンド適用対象かどうか
  */
 const isReverseActive = (vpos: number, isOwner: boolean): boolean => {
+  const cache = isOwner ? reverseActiveOwnerCache : reverseActiveViewerCache;
+  const cached = cache.get(vpos);
+  if (cached !== undefined) return cached;
+  let result = false;
   for (const range of nicoScripts.reverse) {
     if (
       (range.target === "コメ" && isOwner) ||
@@ -597,10 +665,12 @@ const isReverseActive = (vpos: number, isOwner: boolean): boolean => {
     )
       continue;
     if (range.start < vpos && vpos < range.end) {
-      return true;
+      result = true;
+      break;
     }
   }
-  return false;
+  setCachedActiveState(cache, vpos, result);
+  return result;
 };
 
 /**
@@ -609,10 +679,17 @@ const isReverseActive = (vpos: number, isOwner: boolean): boolean => {
  * @returns コメント禁止コマンド適用対象かどうか
  */
 const isBanActive = (vpos: number): boolean => {
+  const cached = banActiveCache.get(vpos);
+  if (cached !== undefined) return cached;
+  let result = false;
   for (const range of nicoScripts.ban) {
-    if (range.start < vpos && vpos < range.end) return true;
+    if (range.start < vpos && vpos < range.end) {
+      result = true;
+      break;
+    }
   }
-  return false;
+  setCachedActiveState(banActiveCache, vpos, result);
+  return result;
 };
 
 /**
@@ -628,13 +705,17 @@ const processFixedComment = (
   timeline: Timeline,
   lazy = false,
 ) => {
+  const commentVpos = comment.vpos;
+  const commentLong = comment.long;
+  const collisionEnd = Math.max(commentLong - 20, 0);
   const posY = lazy ? -1 : getFixedPosY(comment, collision);
-  for (let j = 0; j < comment.long; j++) {
-    const vpos = comment.vpos + j;
+  for (let j = 0; j < commentLong; j++) {
+    const vpos = commentVpos + j;
     if (timeline[vpos]?.includes(comment)) continue;
     arrayPush(timeline, vpos, comment);
-    if (j > comment.long - 20) continue;
-    arrayPush(collision, vpos, comment);
+    if (j <= collisionEnd) {
+      arrayPush(collision, vpos, comment);
+    }
   }
   comment.posY = posY;
 };
@@ -652,25 +733,38 @@ const processMovableComment = (
   timeline: Timeline,
   lazy = false,
 ) => {
+  const commentWidth = comment.width;
+  const commentLong = comment.long;
+  const commentVpos = comment.vpos;
+  const speed =
+    (config.commentDrawRange + commentWidth * config.nakaCommentSpeedOffset) /
+    (commentLong + 100);
+  const drawPadding = config.commentDrawPadding;
+  const drawRange = config.commentDrawRange;
+  const collisionPadding = config.collisionPadding;
+  const collisionRight = config.collisionRange.right;
+  const collisionLeft = config.collisionRange.left;
+
   const beforeVpos =
-    Math.round(-288 / ((1632 + comment.width) / (comment.long + 125))) - 100;
-  const posY = lazy ? -1 : getMovablePosY(comment, collision, beforeVpos);
-  for (let j = beforeVpos, n = comment.long + 125; j < n; j++) {
-    const vpos = comment.vpos + j;
-    const leftPos = getPosX(comment.comment, vpos);
+    Math.round(-288 / ((1632 + commentWidth) / (commentLong + 125))) - 100;
+  const posY = lazy
+    ? -1
+    : getMovablePosY(comment, collision, beforeVpos, speed);
+  const n = commentLong + 125;
+  for (let j = beforeVpos; j < n; j++) {
+    const vpos = commentVpos + j;
+    const leftPos = drawPadding + drawRange - (j + 100) * speed;
     if (timeline[vpos]?.includes(comment)) continue;
     arrayPush(timeline, vpos, comment);
     if (
-      leftPos + comment.width + config.collisionPadding >=
-        config.collisionRange.right &&
-      leftPos <= config.collisionRange.right
+      leftPos + commentWidth + collisionPadding >= collisionRight &&
+      leftPos <= collisionRight
     ) {
       arrayPush(collision.right, vpos, comment);
     }
     if (
-      leftPos + comment.width + config.collisionPadding >=
-        config.collisionRange.left &&
-      leftPos <= config.collisionRange.left
+      leftPos + commentWidth + collisionPadding >= collisionLeft &&
+      leftPos <= collisionLeft
     ) {
       arrayPush(collision.left, vpos, comment);
     }
@@ -679,16 +773,20 @@ const processMovableComment = (
 };
 
 const getFixedPosY = (comment: IComment, collision: CollisionItem) => {
+  const commentLong = comment.long;
+  const commentVpos = comment.vpos;
   let posY = 0;
   let isChanged = true;
   let count = 0;
   while (isChanged && count < 10) {
     isChanged = false;
     count++;
-    for (let j = 0; j < comment.long; j++) {
-      const result = getPosY(posY, comment, collision[comment.vpos + j]);
+    for (let j = 0; j < commentLong; j++) {
+      const result = getPosY(posY, comment, collision[commentVpos + j]);
       posY = result.currentPos;
-      isChanged = result.isChanged;
+      // ||= で累積: 途中のスロットで衝突が解決されても、後続スロットの
+      // false で上書きされないようにし、外側whileで再走査を保証する
+      isChanged ||= result.isChanged;
       if (result.isBreak) break;
     }
   }
@@ -699,41 +797,56 @@ const getMovablePosY = (
   comment: IComment,
   collision: Collision,
   beforeVpos: number,
+  speed: number = (config.commentDrawRange +
+    comment.width * config.nakaCommentSpeedOffset) /
+    (comment.long + 100),
 ) => {
-  if (config.canvasHeight < comment.height) {
-    return (comment.height - config.canvasHeight) / -2;
+  const canvasHeight = config.canvasHeight;
+  const commentHeight = comment.height;
+  if (canvasHeight < commentHeight) {
+    return (commentHeight - canvasHeight) / -2;
   }
+  const commentWidth = comment.width;
+  const commentLong = comment.long;
+  const commentVpos = comment.vpos;
+  const drawPadding = config.commentDrawPadding;
+  const drawRange = config.commentDrawRange;
+  const collisionRight = config.collisionRange.right;
+  const collisionLeft = config.collisionRange.left;
+  const n = commentLong + 125;
+
   let posY = 0;
   let isChanged = true;
-  let lastUpdatedIndex: number | undefined = undefined;
-  while (isChanged) {
+  let count = 0;
+  let lastUpdatedIndex: number | undefined;
+  while (isChanged && count < 10) {
     isChanged = false;
-    for (let j = beforeVpos, n = comment.long + 125; j < n; j += 5) {
-      const vpos = comment.vpos + j;
-      const leftPos = getPosX(comment.comment, vpos);
+    count++;
+    for (let j = beforeVpos; j < n; j += 5) {
+      const vpos = commentVpos + j;
+      const leftPos = drawPadding + drawRange - (j + 100) * speed;
       let isBreak = false;
       if (lastUpdatedIndex !== undefined && lastUpdatedIndex === vpos) {
         return posY;
       }
       if (
-        leftPos + comment.width >= config.collisionRange.right &&
-        leftPos <= config.collisionRange.right
+        leftPos + commentWidth >= collisionRight &&
+        leftPos <= collisionRight
       ) {
         const result = getPosY(posY, comment, collision.right[vpos]);
         posY = result.currentPos;
         isChanged ||= result.isChanged;
         if (result.isChanged) lastUpdatedIndex = vpos;
-        isBreak = result.isBreak;
+        // ||= で累積: right側のbreakがleft側のfalseで上書きされるのを防止
+        isBreak ||= result.isBreak;
       }
-      if (
-        leftPos + comment.width >= config.collisionRange.left &&
-        leftPos <= config.collisionRange.left
-      ) {
+      if (leftPos + commentWidth >= collisionLeft && leftPos <= collisionLeft) {
         const result = getPosY(posY, comment, collision.left[vpos]);
         posY = result.currentPos;
         isChanged ||= result.isChanged;
         if (result.isChanged) lastUpdatedIndex = vpos;
-        isBreak = result.isBreak;
+        // ||= で累積: left側のfalseがright側のtrueをリセットしない
+        isBreak ||= result.isBreak;
       }
       if (isBreak) return posY;
     }
@@ -746,52 +859,56 @@ const getMovablePosY = (
  * @param _currentPos 現在のy座標
  * @param targetComment 対象コメント
  * @param collision 当たり判定
- * @param _isChanged 位置が変更されたか
  * @returns 現在地、更新されたか、終了すべきか
  */
 const getPosY = (
   _currentPos: number,
   targetComment: IComment,
   collision: IComment[] | undefined,
-  _isChanged = false,
 ): { currentPos: number; isChanged: boolean; isBreak: boolean } => {
-  let isBreak = false;
   if (!collision)
-    return { currentPos: _currentPos, isChanged: _isChanged, isBreak };
+    return { currentPos: _currentPos, isChanged: false, isBreak: false };
   let currentPos = _currentPos;
-  let isChanged = _isChanged;
-  for (const collisionItem of collision) {
-    if (collisionItem.index === targetComment.index || collisionItem.posY < 0)
-      continue;
-    if (
-      collisionItem.owner === targetComment.owner &&
-      collisionItem.layer === targetComment.layer &&
-      currentPos < collisionItem.posY + collisionItem.height &&
-      currentPos + targetComment.height > collisionItem.posY
-    ) {
-      if (collisionItem.posY + collisionItem.height > currentPos) {
-        currentPos = collisionItem.posY + collisionItem.height;
+  let isChanged = false;
+  const targetIndex = targetComment.index;
+  const targetOwner = targetComment.owner;
+  const targetLayer = targetComment.layer;
+  const targetHeight = targetComment.height;
+  const canvasHeight = config.canvasHeight;
+  const len = collision.length;
+  // 再帰の代わりに外側ループで衝突発見時にリスタート
+  restart: while (true) {
+    for (let i = 0; i < len; i++) {
+      const item = collision[i] as IComment;
+      if (item.index === targetIndex || item.posY < 0) continue;
+      if (
+        item.owner === targetOwner &&
+        item.layer === targetLayer &&
+        currentPos < item.posY + item.height &&
+        currentPos + targetHeight > item.posY
+      ) {
+        currentPos = item.posY + item.height;
         isChanged = true;
-      }
-      if (currentPos + targetComment.height > config.canvasHeight) {
-        if (config.canvasHeight < targetComment.height) {
-          if (targetComment.mail.includes("naka")) {
-            currentPos = (targetComment.height - config.canvasHeight) / -2;
+        if (currentPos + targetHeight > canvasHeight) {
+          if (canvasHeight < targetHeight) {
+            if (targetComment.mail.includes("naka")) {
+              currentPos = (targetHeight - canvasHeight) / -2;
+            } else {
+              currentPos = 0;
+            }
           } else {
-            currentPos = 0;
+            currentPos = Math.floor(
+              Math.random() * (canvasHeight - targetHeight),
+            );
           }
-        } else {
-          currentPos = Math.floor(
-            Math.random() * (config.canvasHeight - targetComment.height),
-          );
+          return { currentPos, isChanged: true, isBreak: true };
         }
-        isBreak = true;
-        break;
+        continue restart;
       }
-      return getPosY(currentPos, targetComment, collision, true);
     }
+    break;
   }
-  return { currentPos, isChanged, isBreak };
+  return { currentPos, isChanged, isBreak: false };
 };
 /**
  * コメントのvposと現在のvposから左右の位置を返す
@@ -846,12 +963,15 @@ export {
   getMovablePosY,
   getPosX,
   getPosY,
+  // Kept for compatibility and non-render call sites.
   isBanActive,
   isFlashComment,
   isLineBreakResize,
+  // Kept for compatibility and non-render call sites.
   isReverseActive,
   parseCommandAndNicoScript,
   parseFont,
   processFixedComment,
   processMovableComment,
+  resetRangePointers,
 };

@@ -1,26 +1,29 @@
 {
   "name": "@xpadev-net/niconicomments",
-  "version": "0.2.76",
+  "version": "0.2.77",
   "description": "NiconiComments is a comment drawing library that is somewhat compatible with the official Nico Nico Douga player.",
   "main": "dist/bundle.js",
   "types": "dist/bundle.d.ts",
+  "sideEffects": false,
   "scripts": {
     "build": "npx rimraf dist&&npm run build:ts&&npm run build:dts",
-    "build:ts": "rollup -c rollup.config.mjs",
-    "build:dts": "npx copyfiles -u 2 src/@types/*.d.ts dist/dts/@types/&&node ./util/resolve-path-alias.js&&rollup -c rollup.config.dts.mjs",
-    "watch": "rollup -c rollup.config.mjs -w",
+    "build:ts": "rolldown -c rolldown.config.mjs",
+    "build:dts": "rolldown -c rolldown.config.dts.mjs",
+    "watch": "rolldown -c rolldown.config.mjs -w",
     "typedoc": "typedoc --entryPointStrategy Expand --out ./docs/type/ ./src/",
     "prepublishOnly": "npm run build",
-    "check-types": "npx tsc --noEmit --jsx react",
+    "check-types": "tsc --noEmit --jsx react --types node --project tsconfig.json",
     "eslint": "biome lint src",
     "eslint:fix": "biome lint --write src",
     "format": "biome format src",
     "format:fix": "biome format --write src",
     "lint": "biome check src",
-    "lint:fix": "biome check --apply-unsafe src",
+    "lint:fix": "biome check --write --unsafe src",
     "prepare": "lefthook install",
     "test": "docker-compose run --rm pw",
-    "test-server": "http-server"
+    "test-server": "http-server",
+    "test:unit": "vitest run",
+    "bench": "vitest bench --run"
   },
   "repository": {
     "type": "git",
@@ -45,30 +48,29 @@
   "homepage": "https://xpadev-net.github.io/niconicomments/",
   "license": "MIT",
   "devDependencies": {
-    "@babel/core": "^7.27.4",
-    "@babel/preset-env": "^7.27.2",
-    "@biomejs/biome": "^1.9.4",
-    "@playwright/test": "^1.53.1",
-    "@rollup/plugin-babel": "^6.0.4",
-    "@rollup/plugin-commonjs": "^28.0.6",
-    "@rollup/plugin-json": "^6.1.0",
-    "@rollup/plugin-node-resolve": "^15.3.1",
-    "@rollup/plugin-typescript": "^11.1.6",
-    "@types/node": "^22.15.32",
-    "copyfiles": "^2.4.1",
+    "@biomejs/biome": "^2.4.9",
+    "@codspeed/vitest-plugin": "^5.2.0",
+    "@playwright/test": "^1.58.2",
+    "@types/node": "^24.12.0",
     "http-server": "^14.1.1",
-    "lefthook": "^1.11.14",
-    "rimraf": "^6.0.1",
-    "rollup": "^4.44.0",
-    "rollup-plugin-dts": "^6.2.1",
-    "rollup-plugin-typescript-paths": "^1.5.0",
+    "lefthook": "^2.1.4",
+    "rimraf": "^6.1.3",
+    "rolldown": "1.0.0-rc.12",
+    "rolldown-plugin-dts": "^0.23.2",
     "tslib": "^2.8.1",
-    "typedoc": "^0.26.11",
-    "typedoc-plugin-missing-exports": "^3.1.0",
-    "typescript": "^5.8.3",
-    "valibot": "^1.1.0"
+    "typedoc": "^0.28.18",
+    "typedoc-plugin-missing-exports": "^4.1.2",
+    "typescript": "^6.0.2",
+    "valibot": "^1.3.1",
+    "vitest": "^4.1.1"
   },
   "engines": {
     "node": ">=20.0.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@biomejs/biome",
+      "lefthook"
+    ]
   }
 }

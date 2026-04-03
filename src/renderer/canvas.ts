@@ -1,5 +1,6 @@
 import type { IRenderer } from "@/@types/";
 import { CanvasRenderingContext2DError } from "@/errors";
+import { canvasPool } from "@/renderer/canvasPool";
 
 /**
  * Canvasを使ったレンダラー
@@ -8,6 +9,7 @@ import { CanvasRenderingContext2DError } from "@/errors";
  * @param video レンダリングするVideo(任意)
  */
 class CanvasRenderer implements IRenderer {
+  public readonly rendererName = "CanvasRenderer";
   public readonly canvas: HTMLCanvasElement;
   public readonly video?: HTMLVideoElement;
   private readonly context: CanvasRenderingContext2D;
@@ -16,12 +18,25 @@ class CanvasRenderer implements IRenderer {
   private width = 0;
   private height = 0;
 
+  /**
+   * measureText 結果のキャッシュ
+   * キー: "font\0text" → 値: TextMetrics
+   * Canvas2D の measureText() は同じ (font, text) ペアに対して決定論的なので安全にキャッシュできる
+   * エントリ数が _MT_CACHE_MAX_SIZE に達した場合はそれ以上追加しない（既存エントリは維持）
+   */
+  private static readonly _MT_CACHE_MAX_SIZE = 5000;
+  private static _mtCache = new Map<string, TextMetrics>();
+
+  /** プールから取得した canvas かどうか (destroy 時にプールに返却するため) */
+  private readonly pooled: boolean;
+
   constructor(
     canvas?: HTMLCanvasElement,
     video?: HTMLVideoElement,
     padding = 0,
   ) {
-    this.canvas = canvas ?? document.createElement("canvas");
+    this.pooled = !canvas;
+    this.canvas = canvas ?? canvasPool.acquire();
     const context = this.canvas.getContext("2d");
     if (!context) throw new CanvasRenderingContext2DError();
     this.context = context;
@@ -40,7 +55,7 @@ class CanvasRenderer implements IRenderer {
   }
 
   drawVideo(enableLegacyPip: boolean) {
-    if (this.video) {
+    if (this.video && this.video.videoWidth > 0 && this.video.videoHeight > 0) {
       let scale: number;
       const height = this.canvas.height / this.video.videoHeight;
       const width = this.canvas.width / this.video.videoWidth;
@@ -81,12 +96,6 @@ class CanvasRenderer implements IRenderer {
     width?: number,
     height?: number,
   ) {
-    if (!(image instanceof CanvasRenderer)) {
-      throw new TypeError(
-        "CanvasRenderer.drawImage: 'image' argument must be an instance of CanvasRenderer.",
-      );
-    }
-
     if (width === undefined || height === undefined)
       this.context.drawImage(image.canvas, x, y);
     else this.context.drawImage(image.canvas, x, y, width, height);
@@ -144,7 +153,18 @@ class CanvasRenderer implements IRenderer {
   }
 
   measureText(text: string): TextMetrics {
-    return this.context.measureText(text);
+    const key = `${this.context.font}\0${text}`;
+    const cached = CanvasRenderer._mtCache.get(key);
+    if (cached !== undefined) return cached;
+    const result = this.context.measureText(text);
+    if (CanvasRenderer._mtCache.size < CanvasRenderer._MT_CACHE_MAX_SIZE) {
+      CanvasRenderer._mtCache.set(key, result);
+    }
+    return result;
+  }
+
+  static resetMeasureTextCache(): void {
+    CanvasRenderer._mtCache.clear();
   }
   beginPath(): void {
     this.context.beginPath();
@@ -171,8 +191,19 @@ class CanvasRenderer implements IRenderer {
     return new CanvasRenderer(undefined, undefined, padding);
   }
 
+  flush(): void {
+    // Canvas 2Dでは即時描画のため何もしない
+  }
+
+  invalidateImage(_image: IRenderer): void {
+    // Canvas 2Dではテクスチャキャッシュがないため何もしない
+  }
+
   destroy() {
-    //for override
+    if (this.pooled) {
+      canvasPool.release(this.canvas);
+    }
   }
 }
+
 export { CanvasRenderer };

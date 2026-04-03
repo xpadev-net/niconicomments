@@ -5,6 +5,12 @@ import type {
   Position,
 } from "@/@types/";
 
+export type FrameActiveState = {
+  banActive: boolean;
+  reverseActiveOwner: boolean;
+  reverseActiveViewer: boolean;
+};
+
 export interface IComment {
   comment: FormattedCommentWithSize;
   invisible: boolean;
@@ -21,6 +27,11 @@ export interface IComment {
   mail: string[];
   content: string;
   image?: IRenderer | null;
-  draw: (vpos: number, showCollision: boolean, cursor?: Position) => void;
+  draw: (
+    vpos: number,
+    showCollision: boolean,
+    cursor?: Position,
+    frameActiveState?: FrameActiveState,
+  ) => void;
   isHovered: (cursor?: Position, posX?: number, posY?: number) => boolean;
 }

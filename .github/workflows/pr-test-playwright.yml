@@ -11,18 +11,19 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         node-version: [20, 22, 24]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v5
         name: Install pnpm
         with:
-          version: 9
+          version: 10
           run_install: false
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           cache: 'pnpm'
           node-version: "${{ matrix.node-version }}"
@@ -40,9 +41,23 @@ jobs:
           pnpm build
       - name: Run Playwright tests
         run: pnpm playwright test
-      - uses: actions/upload-artifact@v4
-        if: always()
+      - uses: actions/upload-artifact@v7
+        if: ${{ !cancelled() }}
         with:
-          name: test-results
+          name: test-results-node-${{ matrix.node-version }}
           path: test-results/
           retention-days: 30
+
+  save-pr-info:
+    if: ${{ github.event_name == 'pull_request' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Save PR info
+        run: |
+          mkdir -p pr-info
+          echo '${{ github.event.pull_request.number }}' > pr-info/number
+      - uses: actions/upload-artifact@v7
+        with:
+          name: pr-info
+          path: pr-info/
+          overwrite: true

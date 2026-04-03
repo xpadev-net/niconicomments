@@ -449,8 +449,8 @@ const updateCanvas = () => {
   const sec = vpos / 100;
   if (!seekDragging) {
     vcSeekElement.value = String(sec);
+    vcTimeElement.textContent = `${formatTime(sec)} / ${formatTime(duration)}`;
   }
-  vcTimeElement.textContent = `${formatTime(sec)} / ${formatTime(duration)}`;
 };
 
 const resize = () => {
@@ -535,11 +535,12 @@ const loadNicoVideo = (nicoId) => {
       if (e.origin !== "https://embed.nicovideo.jp") return;
       if (e.data.eventName === "loadComplete") {
         vcPlayPauseElement.disabled = false;
+        window.removeEventListener("message", messageHandler);
         resolve();
-      } else {
-        reject();
+      } else if (e.data.eventName === "loadError") {
+        window.removeEventListener("message", messageHandler);
+        reject(new Error("niconico loadError"));
       }
-      window.removeEventListener("message", messageHandler);
     };
     window.addEventListener("message", messageHandler);
   });

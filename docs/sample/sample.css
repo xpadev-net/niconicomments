@@ -1,11 +1,15 @@
+:root {
+  --controls-height: 44px;
+}
+
 .wrapper {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  bottom: 44px;
+  bottom: var(--controls-height);
   aspect-ratio: 16/9;
-  height: calc(100vh - 44px);
+  height: calc(100vh - var(--controls-height));
   width: 100vw;
   z-index: 0;
   background-color: #333333;
@@ -141,7 +145,7 @@ html {
   left: 0;
   right: 0;
   z-index: 2;
-  height: 44px;
+  height: var(--controls-height);
   background-color: rgba(0, 0, 0, 0.9);
   display: flex;
   align-items: center;

@@ -9,6 +9,10 @@ on:
 
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.repository }}-dev-build
+  cancel-in-progress: true
+
 jobs:
   dev-build:
     runs-on: ubuntu-latest

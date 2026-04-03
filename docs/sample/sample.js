@@ -2,7 +2,12 @@ const NC_DEV_URL =
   "https://cdn.jsdelivr.net/gh/xpadev-net/niconicomments@dev-build/dist/bundle.js";
 const NIWANGO_DEV_URL =
   "https://cdn.jsdelivr.net/gh/xpadev-net/niwango.js@dev-build/dist/bundle.js";
-const CONTROLS_BAR_HEIGHT = 44;
+const CONTROLS_BAR_HEIGHT =
+  parseInt(
+    getComputedStyle(document.documentElement).getPropertyValue(
+      "--controls-height",
+    ),
+  ) || 44;
 
 const urlParams = new URLSearchParams(window.location.search);
 let video = Number(urlParams.get("video") || 0),
@@ -34,6 +39,7 @@ const getNiwangoUrl = (v) =>
     : `https://cdn.jsdelivr.net/npm/@xpadev-net/niwango@${v}/dist/bundle.js`;
 
 let resolveScripts;
+let scriptsLoadError = null;
 const scriptsLoaded = new Promise((resolve) => {
   resolveScripts = resolve;
 });
@@ -41,7 +47,20 @@ Promise.all([
   loadScript(getNCUrl(ncVersion)),
   loadScript(getPluginUrl(pluginVersion)),
   loadScript(getNiwangoUrl(niwangoVersion)),
-]).then(resolveScripts, resolveScripts);
+])
+  .then(resolveScripts)
+  .catch((err) => {
+    console.error("Failed to load scripts:", err, {
+      ncVersion,
+      ncUrl: getNCUrl(ncVersion),
+      pluginVersion,
+      pluginUrl: getPluginUrl(pluginVersion),
+      niwangoVersion,
+      niwangoUrl: getNiwangoUrl(niwangoVersion),
+    });
+    scriptsLoadError = err;
+    resolveScripts();
+  });
 
 // --- Video data ---
 const videos = [
@@ -369,6 +388,15 @@ niwangoVersionElement.onchange = (e) =>
   reloadWithVersion("niwangoVersion", e.target.value);
 
 // --- Helper functions ---
+const showScriptError = () => {
+  const el = document.createElement("div");
+  el.style.cssText =
+    "position:fixed;top:0;left:0;right:0;z-index:100;background:#c00;" +
+    "color:#fff;padding:12px 16px;font-family:monospace;font-size:13px;";
+  el.textContent = `Script load failed (ncVersion=${ncVersion}, pluginVersion=${pluginVersion}, niwangoVersion=${niwangoVersion}). Check version selectors.`;
+  document.body.appendChild(el);
+};
+
 const formatTime = (sec) => {
   const m = Math.floor(sec / 60);
   const s = Math.floor(sec % 60);
@@ -377,6 +405,7 @@ const formatTime = (sec) => {
 
 const updatePlayPauseButton = () => {
   vcPlayPauseElement.textContent = isPaused ? "▶" : "⏸";
+  vcPlayPauseElement.setAttribute("aria-label", isPaused ? "Play" : "Pause");
 };
 
 const getById = (array, id) => {
@@ -522,6 +551,8 @@ const loadYTVideo = (ytId) => {
       videoId: ytId,
       suggestedQuality: "large",
     });
+    vcSeekElement.disabled = false;
+    vcPlayPauseElement.disabled = false;
     return;
   }
   return new Promise((resolve) => {
@@ -544,7 +575,6 @@ const loadYTVideo = (ytId) => {
           resolve(e);
         },
         onStateChange: (e) => {
-          console.log(e);
           currentTime = player.getCurrentTime();
           isPaused = e.data !== YT.PlayerState.PLAYING;
           updateTime(currentTime, isPaused);
@@ -584,7 +614,7 @@ const seekTo = (time_) => {
 
 const togglePlayback = () => {
   if (player?.getPlayerState) {
-    if (isPaused) {
+    if (player.getPlayerState() !== YT.PlayerState.PLAYING) {
       player.playVideo();
     } else {
       player.pauseVideo();
@@ -614,6 +644,9 @@ vcSeekElement.addEventListener("touchstart", () => {
   seekDragging = true;
 });
 vcSeekElement.addEventListener("touchend", () => {
+  seekDragging = false;
+});
+vcSeekElement.addEventListener("touchcancel", () => {
   seekDragging = false;
 });
 vcSeekElement.oninput = (e) => {
@@ -688,6 +721,11 @@ window.addEventListener("message", (e) => {
 // --- Main initialization ---
 const onYouTubeIframeAPIReady = async () => {
   await scriptsLoaded;
+  if (scriptsLoadError) {
+    showScriptError();
+    controlWrapper.style.display = "flex";
+    return;
+  }
   for (const group of videos) {
     const groupElement = document.createElement("optgroup");
     groupElement.label = group.title;
@@ -711,6 +749,10 @@ const onYouTubeIframeAPIReady = async () => {
 
 if (noVideo) {
   scriptsLoaded.then(() => {
+    if (scriptsLoadError) {
+      showScriptError();
+      return;
+    }
     void loadComments();
     const elem = document.createElement("div");
     elem.id = "inited";

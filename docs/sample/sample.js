@@ -506,6 +506,7 @@ const resetVideoControls = () => {
   vcSeekElement.max = "100";
   vcSeekElement.disabled = true;
   vcPlayPauseElement.disabled = true;
+  vcTimeElement.textContent = "0:00 / 0:00";
   updatePlayPauseButton();
 };
 
@@ -637,7 +638,7 @@ vcPlayPauseElement.onclick = togglePlayback;
 vcSeekElement.addEventListener("mousedown", () => {
   seekDragging = true;
 });
-vcSeekElement.addEventListener("mouseup", () => {
+document.addEventListener("mouseup", () => {
   seekDragging = false;
 });
 vcSeekElement.addEventListener("touchstart", () => {

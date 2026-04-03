@@ -534,7 +534,6 @@ const loadNicoVideo = (nicoId) => {
     const messageHandler = (e) => {
       if (e.origin !== "https://embed.nicovideo.jp") return;
       if (e.data.eventName === "loadComplete") {
-        vcSeekElement.disabled = false;
         vcPlayPauseElement.disabled = false;
         resolve();
       } else {
@@ -552,6 +551,8 @@ const loadYTVideo = (ytId) => {
       videoId: ytId,
       suggestedQuality: "large",
     });
+    duration = 0;
+    vcSeekElement.max = "100";
     vcSeekElement.disabled = false;
     vcPlayPauseElement.disabled = false;
     return;
@@ -710,6 +711,7 @@ window.addEventListener("message", (e) => {
     if (e.data.data.duration != null) {
       duration = e.data.data.duration / 1000;
       vcSeekElement.max = String(duration);
+      vcSeekElement.disabled = false;
     }
     updateTime(currentTime, isPaused);
   } else if (e.data.eventName === "playerStatusChange") {

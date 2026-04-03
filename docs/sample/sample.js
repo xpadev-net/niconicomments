@@ -293,7 +293,9 @@ let player,
   isPaused = true,
   duration = 0,
   seekDragging = false,
-  interval = null;
+  interval = null,
+  loadGeneration = 0,
+  nicoLoadId = 0;
 
 // --- DOM references ---
 /** @type {HTMLDivElement} */
@@ -478,10 +480,14 @@ const resize = () => {
 };
 
 const loadComments = async () => {
+  const gen = ++loadGeneration;
   const videoItem = getVideoItem();
-  canvasElement.style.transform = `scale(${(videoItem.scale || 100) - 1}%)`;
+  if (!videoItem) return;
+  canvasElement.style.transform = `scale(${videoItem.scale ?? 100}%)`;
   const req = await fetch(`./commentdata/${video}.json`);
+  if (!req.ok) throw new Error(`Failed to load comment data: ${req.status}`);
   const res = await req.json();
+  if (gen !== loadGeneration) return;
   const renderer = NiconiComments.internal.renderer.createRenderer(canvasElement);
   nico = new NiconiComments(renderer, res, {
     mode: mode,
@@ -495,6 +501,7 @@ const loadComments = async () => {
         : [],
     },
   });
+  document.getElementById("loaded")?.remove();
   const elem = document.createElement("div");
   elem.id = "loaded";
   document.body.appendChild(elem);
@@ -507,14 +514,16 @@ const loadComments = async () => {
   if (!interval) {
     interval = setInterval(updateCanvas, 1);
   }
-  const handler = (e) => {
-    console.log(e);
-  };
-  nico.addEventListener("commentDisable", handler);
-  nico.addEventListener("commentEnable", handler);
-  nico.addEventListener("seekDisable", handler);
-  nico.addEventListener("seekEnable", handler);
-  nico.addEventListener("jump", handler);
+  if (debug) {
+    const handler = (e) => {
+      console.log(e);
+    };
+    nico.addEventListener("commentDisable", handler);
+    nico.addEventListener("commentEnable", handler);
+    nico.addEventListener("seekDisable", handler);
+    nico.addEventListener("seekEnable", handler);
+    nico.addEventListener("jump", handler);
+  }
 };
 
 const resetVideoControls = () => {
@@ -529,10 +538,13 @@ const resetVideoControls = () => {
 
 const loadVideo = async () => {
   const videoItem = getVideoItem();
+  if (!videoItem) return;
   currentTime = 0;
   isPaused = true;
   videoMicroSec = false;
   nico = undefined;
+  clearInterval(interval);
+  interval = null;
   resetVideoControls();
   if (videoItem.yt) {
     await loadYTVideo(videoItem.yt);
@@ -544,19 +556,34 @@ const loadVideo = async () => {
 const loadNicoVideo = (nicoId) => {
   player?.destroy();
   player = undefined;
+  const myLoadId = ++nicoLoadId;
   document.getElementById("player").innerHTML =
     `<iframe src="https://embed.nicovideo.jp/watch/${nicoId}?jsapi=1&playerId=a" id="nico-iframe" width="1920" height="1080"></iframe>`;
   nicoIframe = document.getElementById("nico-iframe");
   return new Promise((resolve, reject) => {
+    const cleanup = (err) => {
+      clearTimeout(timeoutId);
+      window.removeEventListener("message", messageHandler);
+      if (err) reject(err);
+      else resolve();
+    };
+    const timeoutId = setTimeout(() => {
+      nicoIframe = null;
+      cleanup(new Error("niconico load timeout"));
+    }, 30000);
     const messageHandler = (e) => {
       if (e.origin !== "https://embed.nicovideo.jp") return;
+      if (myLoadId !== nicoLoadId) {
+        cleanup();
+        return;
+      }
       if (e.data.eventName === "loadComplete") {
         vcPlayPauseElement.disabled = false;
-        window.removeEventListener("message", messageHandler);
-        resolve();
+        vcSeekElement.disabled = false;
+        cleanup();
       } else if (e.data.eventName === "loadError") {
-        window.removeEventListener("message", messageHandler);
-        reject(new Error("niconico loadError"));
+        nicoIframe = null;
+        cleanup(new Error("niconico loadError"));
       }
     };
     window.addEventListener("message", messageHandler);
@@ -564,6 +591,7 @@ const loadNicoVideo = (nicoId) => {
 };
 
 const loadYTVideo = (ytId) => {
+  nicoIframe = null;
   if (player) {
     player.loadVideoById({
       videoId: ytId,
@@ -571,6 +599,7 @@ const loadYTVideo = (ytId) => {
     });
     duration = 0;
     vcSeekElement.max = "100";
+    vcSeekElement.disabled = false;
     vcPlayPauseElement.disabled = false;
     return Promise.resolve();
   }
@@ -614,6 +643,7 @@ const loadYTVideo = (ytId) => {
 };
 
 const seekTo = (time_) => {
+  currentTime = time_;
   if (player) {
     player.seekTo(time_, true);
   } else {
@@ -653,19 +683,13 @@ const togglePlayback = () => {
 // --- Video control event handlers ---
 vcPlayPauseElement.onclick = togglePlayback;
 
-vcSeekElement.addEventListener("mousedown", () => {
+vcSeekElement.addEventListener("pointerdown", () => {
   seekDragging = true;
 });
-document.addEventListener("mouseup", () => {
+document.addEventListener("pointerup", () => {
   seekDragging = false;
 });
-vcSeekElement.addEventListener("touchstart", () => {
-  seekDragging = true;
-});
-vcSeekElement.addEventListener("touchend", () => {
-  seekDragging = false;
-});
-vcSeekElement.addEventListener("touchcancel", () => {
+document.addEventListener("pointercancel", () => {
   seekDragging = false;
 });
 vcSeekElement.oninput = (e) => {
@@ -678,9 +702,14 @@ vcSeekElement.onchange = (e) => {
 // --- Settings control event handlers ---
 if (!noVideo) {
   controlVideoElement.onchange = async (e) => {
-    video = e.target.value;
+    video = Number(e.target.value);
     const videoItem = getVideoItem();
-    await loadVideo();
+    try {
+      await loadVideo();
+    } catch (err) {
+      console.error("Failed to load video:", err);
+      return;
+    }
     await loadComments();
     urlParams.set("video", video);
     document.title = `${videoItem.title}(${videoItem.nc}) - niconicomments sample`;
@@ -691,13 +720,16 @@ if (!noVideo) {
     );
   };
   controlShowFPSElement.onchange = (e) => {
-    nico.showFPS = showFPS = e.target.checked;
+    showFPS = e.target.checked;
+    if (nico) nico.showFPS = showFPS;
   };
   controlShowCollisionElement.onchange = (e) => {
-    nico.showCollision = showCollision = e.target.checked;
+    showCollision = e.target.checked;
+    if (nico) nico.showCollision = showCollision;
   };
   controlShowCommentCountElement.onchange = (e) => {
-    nico.showCommentCount = showCommentCount = e.target.checked;
+    showCommentCount = e.target.checked;
+    if (nico) nico.showCommentCount = showCommentCount;
   };
   controlModeElement.onchange = (e) => {
     mode = e.target.value;
@@ -723,6 +755,7 @@ if (!noVideo) {
 // --- Message events from embedded players ---
 window.addEventListener("message", (e) => {
   if (e.origin !== "https://embed.nicovideo.jp") return;
+  if (e.source !== nicoIframe?.contentWindow) return;
   if (e.data.eventName === "playerMetadataChange") {
     currentTime = e.data.data.currentTime / 1000;
     if (e.data.data.duration != null) {
@@ -733,7 +766,7 @@ window.addEventListener("message", (e) => {
     updateTime(currentTime, isPaused);
   } else if (e.data.eventName === "playerStatusChange") {
     isPaused = e.data.data.playerStatus !== 2;
-    videoMicroSec = false;
+    updateTime(currentTime, isPaused);
     updatePlayPauseButton();
   }
 });
@@ -760,26 +793,41 @@ const onYouTubeIframeAPIReady = async () => {
     }
     controlVideoElement.appendChild(groupElement);
   }
-  await loadVideo();
+  try {
+    await loadVideo();
+  } catch (err) {
+    console.error("Failed to load video:", err);
+    controlWrapper.style.display = "flex";
+    return;
+  }
   controlWrapper.style.display = "flex";
   const videoItem = getVideoItem();
-  document.title = `${videoItem.title}(${videoItem.nc}) - niconicomments sample`;
+  if (videoItem) {
+    document.title = `${videoItem.title}(${videoItem.nc}) - niconicomments sample`;
+  }
   await loadComments();
+  const initedElem = document.createElement("div");
+  initedElem.id = "inited";
+  document.body.appendChild(initedElem);
 };
 
 if (noVideo) {
-  scriptsLoaded.then(() => {
+  document.getElementById("video-controls").style.display = "none";
+  scriptsLoaded.then(async () => {
     if (scriptsLoadError) {
       showScriptError();
+      controlWrapper.style.display = "flex";
       return;
     }
-    void loadComments();
+    await loadComments();
+    controlWrapper.style.display = "flex";
     const elem = document.createElement("div");
     elem.id = "inited";
     document.body.appendChild(elem);
   });
 } else {
   window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
+  loadScript("https://www.youtube.com/iframe_api");
 }
 window.onresize = resize;
 window.onload = resize;

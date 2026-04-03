@@ -41,5 +41,5 @@ i18next.use(i18nextBrowserLanguageDetector).init({
 });
 const i18nList = document.querySelectorAll("[data-i18n]");
 i18nList.forEach(function (v) {
-  v.innerText = i18next.t(v.dataset.i18n);
+  v.textContent = i18next.t(v.dataset.i18n);
 });

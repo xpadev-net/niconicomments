@@ -7,8 +7,6 @@
   top: 0;
   left: 0;
   right: 0;
-  bottom: var(--controls-height);
-  aspect-ratio: 16/9;
   height: calc(100vh - var(--controls-height));
   width: 100vw;
   z-index: 0;

@@ -554,8 +554,6 @@ const loadYTVideo = (ytId) => {
     });
     duration = 0;
     vcSeekElement.max = "100";
-    vcSeekElement.disabled = false;
-    vcPlayPauseElement.disabled = false;
     return;
   }
   return new Promise((resolve) => {
@@ -572,9 +570,9 @@ const loadYTVideo = (ytId) => {
           if (d > 0) {
             duration = d;
             vcSeekElement.max = String(d);
+            vcSeekElement.disabled = false;
+            vcPlayPauseElement.disabled = false;
           }
-          vcSeekElement.disabled = false;
-          vcPlayPauseElement.disabled = false;
           resolve(e);
         },
         onStateChange: (e) => {

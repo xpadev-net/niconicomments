@@ -3,7 +3,7 @@ const NC_DEV_URL =
 const NIWANGO_DEV_URL =
   "https://cdn.jsdelivr.net/gh/xpadev-net/niwango.js@dev-build/dist/bundle.js";
 const CONTROLS_BAR_HEIGHT =
-  parseInt(
+  parseFloat(
     getComputedStyle(document.documentElement).getPropertyValue(
       "--controls-height",
     ),
@@ -554,7 +554,7 @@ const loadYTVideo = (ytId) => {
     });
     duration = 0;
     vcSeekElement.max = "100";
-    return;
+    return Promise.resolve();
   }
   return new Promise((resolve) => {
     player = new YT.Player("player", {

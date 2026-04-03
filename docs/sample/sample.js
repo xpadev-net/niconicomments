@@ -295,7 +295,8 @@ let player,
   seekDragging = false,
   interval = null,
   loadGeneration = 0,
-  nicoLoadId = 0;
+  nicoLoadId = 0,
+  videoChangeGeneration = 0;
 
 // --- DOM references ---
 /** @type {HTMLDivElement} */
@@ -598,9 +599,6 @@ const loadYTVideo = (ytId) => {
       suggestedQuality: "large",
     });
     duration = 0;
-    vcSeekElement.max = "100";
-    vcSeekElement.disabled = false;
-    vcPlayPauseElement.disabled = false;
     return Promise.resolve();
   }
   return new Promise((resolve) => {
@@ -702,6 +700,7 @@ vcSeekElement.onchange = (e) => {
 // --- Settings control event handlers ---
 if (!noVideo) {
   controlVideoElement.onchange = async (e) => {
+    const gen = ++videoChangeGeneration;
     video = Number(e.target.value);
     const videoItem = getVideoItem();
     try {
@@ -710,9 +709,13 @@ if (!noVideo) {
       console.error("Failed to load video:", err);
       return;
     }
+    if (gen !== videoChangeGeneration) return;
     await loadComments();
+    if (gen !== videoChangeGeneration) return;
     urlParams.set("video", video);
-    document.title = `${videoItem.title}(${videoItem.nc}) - niconicomments sample`;
+    if (videoItem) {
+      document.title = `${videoItem.title}(${videoItem.nc}) - niconicomments sample`;
+    }
     history.pushState(
       "",
       "",

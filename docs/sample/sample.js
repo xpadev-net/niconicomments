@@ -2,12 +2,12 @@ const NC_DEV_URL =
   "https://cdn.jsdelivr.net/gh/xpadev-net/niconicomments@dev-build/dist/bundle.js";
 const NIWANGO_DEV_URL =
   "https://cdn.jsdelivr.net/gh/xpadev-net/niwango.js@dev-build/dist/bundle.js";
-const CONTROLS_BAR_HEIGHT =
+const getControlsBarHeight = () =>
   parseFloat(
     getComputedStyle(document.documentElement).getPropertyValue(
       "--controls-height",
     ),
-  ) || 44;
+  ) || 0;
 
 const urlParams = new URLSearchParams(window.location.search);
 let video = Number(urlParams.get("video") || 0),
@@ -474,7 +474,7 @@ const updateCanvas = () => {
 
 const resize = () => {
   const width = document.body.clientWidth / 1920,
-    height = (document.body.clientHeight - CONTROLS_BAR_HEIGHT) / 1080;
+    height = (document.body.clientHeight - getControlsBarHeight()) / 1080;
   container.style.transform = `translate(-50%,-50%) scale(${
     Math.min(height, width) * 100
   }%)`;

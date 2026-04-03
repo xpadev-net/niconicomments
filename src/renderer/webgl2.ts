@@ -654,7 +654,10 @@ class WebGL2Renderer implements IRenderer {
   }
 
   getCanvas(padding = 0): IRenderer {
-    return new CanvasRenderer(undefined, undefined, padding);
+    const inner = new CanvasRenderer(undefined, undefined, padding, () => {
+      this.invalidateImage(inner);
+    });
+    return inner;
   }
 
   /* ═══ IRenderer: Drawing ═══ */

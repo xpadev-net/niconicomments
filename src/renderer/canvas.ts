@@ -29,13 +29,16 @@ class CanvasRenderer implements IRenderer {
 
   /** プールから取得した canvas かどうか (destroy 時にプールに返却するため) */
   private readonly pooled: boolean;
+  private readonly _onDestroy?: () => void;
 
   constructor(
     canvas?: HTMLCanvasElement,
     video?: HTMLVideoElement,
     padding = 0,
+    onDestroy?: () => void,
   ) {
     this.pooled = !canvas;
+    this._onDestroy = onDestroy;
     this.canvas = canvas ?? canvasPool.acquire();
     const context = this.canvas.getContext("2d");
     if (!context) throw new CanvasRenderingContext2DError();
@@ -200,6 +203,7 @@ class CanvasRenderer implements IRenderer {
   }
 
   destroy() {
+    this._onDestroy?.();
     if (this.pooled) {
       canvasPool.release(this.canvas);
     }

@@ -1,7 +1,7 @@
 name: publish package
 
 permissions:
-  contents: read
+  contents: write
   id-token: write
 
 on:
@@ -28,7 +28,6 @@ jobs:
         with:
           node-version: '24'
           registry-url: https://registry.npmjs.org
-          always-auth: true
           scope: '@xpadev-net'
           cache: 'pnpm'
 
@@ -37,9 +36,7 @@ jobs:
           pnpm install
 
       - name: Publish package
-        run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --provenance
 
       - name: Create GitHub release
         uses: softprops/action-gh-release@v2

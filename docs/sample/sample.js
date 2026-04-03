@@ -580,7 +580,6 @@ const loadNicoVideo = (nicoId) => {
       }
       if (e.data.eventName === "loadComplete") {
         vcPlayPauseElement.disabled = false;
-        vcSeekElement.disabled = false;
         cleanup();
       } else if (e.data.eventName === "loadError") {
         nicoIframe = null;
@@ -816,6 +815,7 @@ const onYouTubeIframeAPIReady = async () => {
 
 if (noVideo) {
   document.getElementById("video-controls").style.display = "none";
+  document.documentElement.style.setProperty("--controls-height", "0px");
   scriptsLoaded.then(async () => {
     if (scriptsLoadError) {
       showScriptError();

@@ -68,9 +68,9 @@
     "node": ">=20.0.0"
   },
   "pnpm": {
-    "onlyBuiltDependencies": [
-      "@biomejs/biome",
-      "lefthook"
-    ]
+    "allowBuilds": {
+      "esbuild": true,
+      "lefthook": true
+    }
   }
 }

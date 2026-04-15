@@ -70,6 +70,7 @@
   "pnpm": {
     "onlyBuiltDependencies": [
       "@biomejs/biome",
+      "esbuild",
       "lefthook"
     ]
   }

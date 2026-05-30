@@ -14,7 +14,6 @@ import type {
 import { FlashComment } from "@/comments/";
 import type { CommentInstanceContext } from "@/contexts/";
 import { createNicoScripts, ImageCacheContext } from "@/contexts/";
-import { isDebug, setIsDebug } from "@/contexts/debug";
 import { defaultConfig, defaultOptions } from "@/definition/config";
 import { initConfig } from "@/definition/initConfig";
 import { InvalidOptionError } from "@/errors/";
@@ -147,11 +146,9 @@ class NiconiComments {
 
     const options = Object.assign({}, defaultOptions, initOptions);
     const config = Object.assign({}, defaultConfig, options.config);
-    setIsDebug(options.debug);
 
     const nicoScripts = createNicoScripts();
     const imageCache = new ImageCacheContext();
-    imageCache.reset();
     const rangeCache = new RangeCacheContext();
 
     this.ctx = { config, options, nicoScripts, imageCache, rangeCache };
@@ -167,7 +164,7 @@ class NiconiComments {
     }
 
     this.renderer = renderer;
-    logger(`renderer: ${renderer.rendererName}`);
+    this._log(`renderer: ${renderer.rendererName}`);
     this.renderer.setLineWidth(getConfig(config.contextLineWidth, false));
     const rendererSize = this.renderer.getSize();
     this.renderer.setScale(
@@ -216,7 +213,9 @@ class NiconiComments {
     this.comments = this.preRendering(parsedData);
     this._rebuildCommentArrayIndex(this.comments);
 
-    logger(`constructor complete: ${performance.now() - constructorStart}ms`);
+    this._log(
+      `constructor complete: ${performance.now() - constructorStart}ms`,
+    );
   }
 
   public destroy() {
@@ -268,7 +267,9 @@ class NiconiComments {
     }
 
     this.plugins = plugins;
-    logger(`preRendering complete: ${performance.now() - preRenderingStart}ms`);
+    this._log(
+      `preRendering complete: ${performance.now() - preRenderingStart}ms`,
+    );
     return instances;
   }
 
@@ -308,7 +309,7 @@ class NiconiComments {
     if (lazy) {
       this.processedCommentIndex = -1;
     }
-    logger(
+    this._log(
       `getCommentPos complete: ${performance.now() - getCommentPosStart}ms`,
     );
   }
@@ -325,7 +326,7 @@ class NiconiComments {
         (a, b) => Number(a.owner) - Number(b.owner) || a.index - b.index,
       );
     }
-    logger(`parseData complete: ${performance.now() - sortCommentStart}ms`);
+    this._log(`parseData complete: ${performance.now() - sortCommentStart}ms`);
   }
 
   /**
@@ -406,7 +407,7 @@ class NiconiComments {
     forceRendering = false,
     cursor?: Position,
   ): boolean {
-    const profile: DrawCanvasProfile | undefined = isDebug
+    const profile: DrawCanvasProfile | undefined = this.ctx.options.debug
       ? {
           triggerHandler: 0,
           drawVideo: 0,
@@ -498,11 +499,13 @@ class NiconiComments {
 
     if (profile) {
       profile.total = performance.now() - drawCanvasStart;
-      logger(
+      this._log(
         `drawCanvas profile: trigger=${profile.triggerHandler.toFixed(2)}ms, video=${profile.drawVideo.toFixed(2)}ms, plugins=${profile.drawPlugins.toFixed(2)}ms, collision=${profile.drawCollision.toFixed(2)}ms, comments=${profile.drawComments.toFixed(2)}ms, fps=${profile.drawFPS.toFixed(2)}ms, count=${profile.drawCommentCount.toFixed(2)}ms, flush=${profile.flush.toFixed(2)}ms, total=${profile.total.toFixed(2)}ms`,
       );
     } else {
-      logger(`drawCanvas complete: ${performance.now() - drawCanvasStart}ms`);
+      this._log(
+        `drawCanvas complete: ${performance.now() - drawCanvasStart}ms`,
+      );
     }
     return true;
   }
@@ -596,7 +599,7 @@ class NiconiComments {
     ) {
       this.getCommentPos(this.comments, this.comments.length);
     } else if (requiresFullScan) {
-      logger(
+      this._log(
         "_drawComments: requiresFullScan with no unprocessed comments — possible plugin side-effect",
       );
     } else if (
@@ -615,7 +618,7 @@ class NiconiComments {
       if (guardUnregisteredUnresolved) {
         const commentOffset = this.commentArrayIndexMap.get(comment);
         if (commentOffset === undefined && comment.posY < 0) {
-          logger(
+          this._log(
             "_drawComments: skip unresolved unregistered comment (possible plugin-injected entry)",
           );
           continue;
@@ -758,11 +761,11 @@ class NiconiComments {
       }
     }
   }
-}
 
-const logger = (msg: string) => {
-  if (isDebug) console.debug(msg);
-};
+  private _log(msg: string) {
+    if (this.ctx.options.debug) console.debug(msg);
+  }
+}
 
 export default NiconiComments;
 export type * from "@/@types";

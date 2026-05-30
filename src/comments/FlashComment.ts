@@ -1,4 +1,5 @@
 import type {
+  BaseConfig,
   ButtonParams,
   CommentContentItem,
   CommentSize,
@@ -30,6 +31,11 @@ import {
 
 import { BaseComment } from "./BaseComment";
 
+const flashScriptCharRegexCache = new WeakMap<
+  BaseConfig,
+  { super: RegExp; sub: RegExp }
+>();
+
 class FlashComment extends BaseComment {
   private _globalScale: number;
   private readonly _flashScriptCharRegex: { super: RegExp; sub: RegExp };
@@ -43,10 +49,15 @@ class FlashComment extends BaseComment {
   ) {
     super(comment, renderer, index, ctx);
     this._globalScale ??= getConfig(this.config.commentScale, true);
-    this._flashScriptCharRegex = {
-      super: new RegExp(ctx.config.flashScriptChar.super, "g"),
-      sub: new RegExp(ctx.config.flashScriptChar.sub, "g"),
-    };
+    let scriptRegex = flashScriptCharRegexCache.get(ctx.config);
+    if (!scriptRegex) {
+      scriptRegex = {
+        super: new RegExp(ctx.config.flashScriptChar.super, "g"),
+        sub: new RegExp(ctx.config.flashScriptChar.sub, "g"),
+      };
+      flashScriptCharRegexCache.set(ctx.config, scriptRegex);
+    }
+    this._flashScriptCharRegex = scriptRegex;
     this.buttonImage = renderer.getCanvas();
   }
 

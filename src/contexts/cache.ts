@@ -1,5 +1,4 @@
 import type { IRenderer } from "@/@types/";
-import { CanvasRenderer } from "@/renderer/canvas";
 
 class ImageCacheContext {
   private _cache: {
@@ -24,7 +23,6 @@ class ImageCacheContext {
       entry.image.destroy();
     }
     this._cache = {};
-    CanvasRenderer.resetMeasureTextCache();
   }
 }
 

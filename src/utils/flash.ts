@@ -12,12 +12,24 @@ import type {
 import { getConfig } from "@/utils/config";
 import { nativeSort } from "@/utils/sort";
 
-const getFlashCharRegex = (config: BaseConfig) => ({
-  simsunStrong: new RegExp(config.flashChar.simsunStrong),
-  simsunWeak: new RegExp(config.flashChar.simsunWeak),
-  gulim: new RegExp(config.flashChar.gulim),
-  gothic: new RegExp(config.flashChar.gothic),
-});
+const flashCharRegexCache = new WeakMap<
+  BaseConfig,
+  { simsunStrong: RegExp; simsunWeak: RegExp; gulim: RegExp; gothic: RegExp }
+>();
+
+const getFlashCharRegex = (config: BaseConfig) => {
+  let cached = flashCharRegexCache.get(config);
+  if (!cached) {
+    cached = {
+      simsunStrong: new RegExp(config.flashChar.simsunStrong),
+      simsunWeak: new RegExp(config.flashChar.simsunWeak),
+      gulim: new RegExp(config.flashChar.gulim),
+      gothic: new RegExp(config.flashChar.gothic),
+    };
+    flashCharRegexCache.set(config, cached);
+  }
+  return cached;
+};
 
 /**
  * コメントの内容からフォント情報を取得する

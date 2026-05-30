@@ -12,7 +12,6 @@ import type {
   Position,
 } from "@/@types/";
 import type { CommentInstanceContext } from "@/contexts";
-import { isDebug } from "@/contexts/debug";
 import { NotImplementedError } from "@/errors/";
 import { getPosX, isBanActive, isReverseActive, parseFont } from "@/utils";
 
@@ -269,7 +268,7 @@ class BaseComment implements IComment {
    * @param posY 描画位置
    */
   protected _drawDebugInfo(posX: number, posY: number) {
-    if (isDebug) {
+    if (this.ctx.options.debug) {
       this.renderer.save();
       this.renderer.setFont(parseFont("defont", 30, this.config));
       this.renderer.setFillStyle("#ff00ff");

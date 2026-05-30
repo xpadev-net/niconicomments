@@ -9,11 +9,10 @@ import type {
   MeasureTextInput,
   MeasureTextResult,
 } from "@/@types/";
-import { config, options } from "@/definition/config";
+import type { CommentInstanceContext } from "@/contexts/";
 import { TypeGuardError } from "@/errors/TypeGuardError";
 import typeGuard from "@/typeGuard";
 import {
-  addHTML5PartToResult,
   getCharSize,
   getConfig,
   getFontSizeAndScale,
@@ -24,6 +23,7 @@ import {
   parseCommandAndNicoScript,
   parseFont,
 } from "@/utils";
+import { addHTML5PartToResult } from "@/utils/niconico";
 
 import { BaseComment } from "./BaseComment";
 
@@ -31,8 +31,13 @@ const MAX_RESIZE_ITERATIONS = 20;
 
 class HTML5Comment extends BaseComment {
   override readonly pluginName: string = "HTML5Comment";
-  constructor(comment: FormattedComment, context: IRenderer, index: number) {
-    super(comment, context, index);
+  constructor(
+    comment: FormattedComment,
+    context: IRenderer,
+    index: number,
+    ctx: CommentInstanceContext,
+  ) {
+    super(comment, context, index, ctx);
     this.posY = -1;
   }
 
@@ -76,34 +81,36 @@ class HTML5Comment extends BaseComment {
       };
     }
     this.renderer.save();
-    this.renderer.setFont(parseFont(parsedData.font, parsedData.fontSize));
-    const measure = this.measureText({ ...parsedData, scale: 1 });
-    if (options.scale !== 1 && parsedData.layer === -1) {
-      measure.height *= options.scale;
-      measure.width *= options.scale;
-      measure.fontSize *= options.scale;
+    this.renderer.setFont(
+      parseFont(parsedData.font, parsedData.fontSize, this.config),
+    );
+    const meas = this.measureText({ ...parsedData, scale: 1 });
+    if (this.ctx.options.scale !== 1 && parsedData.layer === -1) {
+      meas.height *= this.ctx.options.scale;
+      meas.width *= this.ctx.options.scale;
+      meas.fontSize *= this.ctx.options.scale;
     }
     this.renderer.restore();
     return {
       ...parsedData,
-      height: measure.height,
-      width: measure.width,
-      lineHeight: measure.lineHeight,
-      fontSize: measure.fontSize,
-      resized: measure.resized,
-      resizedX: measure.resizedX,
-      resizedY: measure.resizedY,
-      charSize: measure.charSize,
-      content: measure.content,
-      scaleX: measure.scaleX,
-      scale: measure.scale,
+      height: meas.height,
+      width: meas.width,
+      lineHeight: meas.lineHeight,
+      fontSize: meas.fontSize,
+      resized: meas.resized,
+      resizedX: meas.resizedX,
+      resizedY: meas.resizedY,
+      charSize: meas.charSize,
+      content: meas.content,
+      scaleX: meas.scaleX,
+      scale: meas.scale,
     };
   }
 
   override parseCommandAndNicoscript(
     comment: FormattedComment,
   ): FormattedCommentWithFont {
-    const data = parseCommandAndNicoScript(comment);
+    const data = parseCommandAndNicoScript(comment, this.ctx);
     const { content, lineCount, lineOffset } = this.parseContent(
       comment.content,
       data.font as HTML5Fonts,
@@ -120,7 +127,7 @@ class HTML5Comment extends BaseComment {
 
   override parseContent(input: string, font?: HTML5Fonts) {
     const content: CommentContentItemText[] = [];
-    addHTML5PartToResult(content, input, font ?? "defont");
+    addHTML5PartToResult(content, input, this.config, font ?? "defont");
     const lineCount = input.split("\n").length;
     const lineOffset = 0;
     return {
@@ -131,19 +138,27 @@ class HTML5Comment extends BaseComment {
   }
 
   override measureText(comment: MeasureTextInput): MeasureTextResult {
-    const scale = getConfig(config.commentScale, false);
-    const configFontSize = getConfig(config.fontSize, false);
-    const lineHeight = getLineHeight(comment.size, false);
-    const charSize = getCharSize(comment.size, false);
+    const scale = getConfig(this.config.commentScale, false);
+    const configFontSize = getConfig(this.config.fontSize, false);
+    const lineHeight = getLineHeight(comment.size, false, this.config);
+    const charSize = getCharSize(comment.size, false, this.config);
     if (!comment.lineHeight) comment.lineHeight = lineHeight;
     if (!comment.charSize) comment.charSize = charSize;
     comment.fontSize = comment.charSize * 0.8;
-    this.renderer.setFont(parseFont(comment.font, comment.fontSize));
-    if (isLineBreakResize(comment)) {
+    this.renderer.setFont(
+      parseFont(comment.font, comment.fontSize, this.config),
+    );
+    if (isLineBreakResize(comment, this.config)) {
       comment.fontSize = configFontSize[comment.size].resized;
-      const lineHeight = getLineHeight(comment.size, false, true);
-      comment.charSize = comment.charSize * (lineHeight / comment.lineHeight);
-      comment.lineHeight = lineHeight;
+      const newLineHeight = getLineHeight(
+        comment.size,
+        false,
+        this.config,
+        true,
+      );
+      comment.charSize =
+        comment.charSize * (newLineHeight / comment.lineHeight);
+      comment.lineHeight = newLineHeight;
       comment.resized = true;
       comment.resizedY = true;
     }
@@ -174,11 +189,11 @@ class HTML5Comment extends BaseComment {
   }
 
   private _measureComment(comment: MeasureTextInput) {
-    const widthLimit = getConfig(config.commentStageSize, false)[
+    const widthLimit = getConfig(this.config.commentStageSize, false)[
       comment.full ? "fullWidth" : "width"
     ];
     if (!typeGuard.internal.MeasureInput(comment)) throw new TypeGuardError();
-    const measureResult = measure(comment, this.renderer);
+    const measureResult = measure(comment, this.renderer, this.config);
     if (comment.loc !== "naka" && measureResult.width > widthLimit) {
       return this._processResizeX(comment, measureResult.width);
     }
@@ -186,19 +201,16 @@ class HTML5Comment extends BaseComment {
   }
 
   private _processResizeX(comment: MeasureTextInput, width: number) {
-    const widthLimit = getConfig(config.commentStageSize, false)[
+    const widthLimit = getConfig(this.config.commentStageSize, false)[
       comment.full ? "fullWidth" : "width"
     ];
-    const lineHeight = getLineHeight(comment.size, false);
-    const charSize = getCharSize(comment.size, false);
+    const lineHeight = getLineHeight(comment.size, false, this.config);
+    const charSize = getCharSize(comment.size, false, this.config);
     const scale = widthLimit / width;
     comment.resizedX = true;
     const baseCharSize = Math.max(1, (comment.charSize ?? 0) * scale);
     const baseLineHeight = Math.max(1, (comment.lineHeight ?? 0) * scale);
 
-    // ワーキングオブジェクトを一度だけ生成し、ループ内で再利用する
-    // typeGuard は構造の検証なので、数値フィールドのみ変更する場合は
-    // 初回検証のみで十分
     const workComment: MeasureTextInput = {
       ...comment,
       charSize: baseCharSize,
@@ -213,7 +225,7 @@ class HTML5Comment extends BaseComment {
       workComment.charSize = nextCharSize;
       workComment.lineHeight = baseLineHeight * (nextCharSize / baseCharSize);
       workComment.fontSize = nextCharSize * 0.8;
-      return measure(workComment, this.renderer);
+      return measure(workComment, this.renderer, this.config);
     };
 
     let low = Math.max(1, Math.floor(baseCharSize * 0.5));
@@ -221,7 +233,6 @@ class HTML5Comment extends BaseComment {
     let best = baseCharSize;
     let bestResult = getMeasured(baseCharSize);
     if (bestResult.width > widthLimit) {
-      // baseCharSize は既に超過確定なので upper bound として使う（無駄な探索を省く）
       high = baseCharSize;
       let remainingIterations = MAX_RESIZE_ITERATIONS;
       while (remainingIterations-- > 0) {
@@ -271,14 +282,17 @@ class HTML5Comment extends BaseComment {
       comment.lineHeight = baseLineHeight * (best / baseCharSize);
     }
     comment.fontSize = (comment.charSize ?? 0) * 0.8;
-    // charSize / lineHeight は上で必ず代入済みなので MeasureInput として安全
-    return measure(comment as MeasureTextInput & MeasureInput, this.renderer);
+    return measure(
+      comment as MeasureTextInput & MeasureInput,
+      this.renderer,
+      this.config,
+    );
   }
 
   override _drawCollision(posX: number, posY: number, showCollision: boolean) {
     if (showCollision) {
       this.renderer.save();
-      const scale = getConfig(config.commentScale, false);
+      const scale = getConfig(this.config.commentScale, false);
       this.renderer.setStrokeStyle("rgba(0,255,255,1)");
       this.renderer.strokeRect(
         posX,
@@ -293,7 +307,7 @@ class HTML5Comment extends BaseComment {
           (this.comment.lineHeight * (i + 1) +
             (this.comment.charSize - this.comment.lineHeight) / 2 +
             this.comment.lineHeight * -0.16 +
-            (config.fonts.html5[this.comment.font]?.offset || 0)) *
+            (this.config.fonts.html5[this.comment.font]?.offset || 0)) *
           scale;
         this.renderer.setStrokeStyle("rgba(255,255,0,0.5)");
         this.renderer.strokeRect(
@@ -308,21 +322,24 @@ class HTML5Comment extends BaseComment {
   }
 
   override _generateTextImage(): IRenderer {
-    const { fontSize, scale } = getFontSizeAndScale(this.comment.charSize);
+    const { fontSize, scale } = getFontSizeAndScale(
+      this.comment.charSize,
+      this.config,
+    );
     const paddingTop =
       (10 - scale * 10) *
-      ((this.comment.lineCount + 1) / config.html5HiResCommentCorrection);
+      ((this.comment.lineCount + 1) / this.config.html5HiResCommentCorrection);
     const drawScale =
-      getConfig(config.commentScale, false) *
+      getConfig(this.config.commentScale, false) *
       scale *
-      (this.comment.layer === -1 ? options.scale : 1);
+      (this.comment.layer === -1 ? this.ctx.options.scale : 1);
     const DEFAULT_COMMENT_PADDING = 4;
     const image = this.renderer.getCanvas(DEFAULT_COMMENT_PADDING);
     image.setSize(this.comment.width, this.comment.height);
-    image.setStrokeStyle(getStrokeColor(this.comment));
+    image.setStrokeStyle(getStrokeColor(this.comment, this.config));
     image.setFillStyle(this.comment.color);
-    image.setLineWidth(getConfig(config.contextLineWidth, false));
-    image.setFont(parseFont(this.comment.font, fontSize));
+    image.setLineWidth(getConfig(this.config.contextLineWidth, false));
+    image.setFont(parseFont(this.comment.font, fontSize, this.config));
     image.setScale(drawScale);
     let lineCount = 0;
     if (!typeGuard.internal.HTML5Fonts(this.comment.font))
@@ -330,7 +347,7 @@ class HTML5Comment extends BaseComment {
     const offsetY =
       (this.comment.charSize - this.comment.lineHeight) / 2 +
       this.comment.lineHeight * -0.16 +
-      (config.fonts.html5[this.comment.font]?.offset || 0);
+      (this.config.fonts.html5[this.comment.font]?.offset || 0);
     for (const item of this.comment.content) {
       if (item?.type === "spacer") {
         lineCount += item.count * item.charWidth * this.comment.fontSize;

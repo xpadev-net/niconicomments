@@ -1,5 +1,4 @@
-import type { FormattedComment } from "@/@types";
-import { config } from "@/definition/config";
+import type { BaseConfig, FormattedComment } from "@/@types";
 
 const RE_CA_FILTER = /@[\d.]+|184|device:.+|patissier|ca/;
 
@@ -22,11 +21,15 @@ type GroupedByTimeItem = {
 /**
  * CAと思われるコメントのレイヤーを分離する
  * @param rawData コメントデータ
+ * @param config インスタンス設定
  * @returns レイヤー分離後のコメントデータ
  */
-const changeCALayer = (rawData: FormattedComment[]): FormattedComment[] => {
+const changeCALayer = (
+  rawData: FormattedComment[],
+  config: BaseConfig,
+): FormattedComment[] => {
   const userScoreList = getUsersScore(rawData);
-  const filteredComments = removeDuplicateCommentArt(rawData);
+  const filteredComments = removeDuplicateCommentArt(rawData, config);
   const commentArts = filteredComments.filter(
     (comment) =>
       (userScoreList[comment.user_id] ?? 0) >= config.sameCAMinScore &&
@@ -35,6 +38,7 @@ const changeCALayer = (rawData: FormattedComment[]): FormattedComment[] => {
   const commentArtsGroupedByUser = groupCommentsByUser(commentArts);
   const commentArtsGroupedByTimes = groupCommentsByTime(
     commentArtsGroupedByUser,
+    config,
   );
   updateLayerId(commentArtsGroupedByTimes);
   return filteredComments;
@@ -73,9 +77,13 @@ const getUsersScore = (
 /**
  * 重複するコメントアートを削除する
  * @param comments コメントデータ
+ * @param config インスタンス設定
  * @returns 重複を排除したコメントデータ
  */
-const removeDuplicateCommentArt = (comments: FormattedComment[]) => {
+const removeDuplicateCommentArt = (
+  comments: FormattedComment[],
+  config: BaseConfig,
+) => {
   const index: { [key: string]: FormattedComment } = {};
   return comments.filter((comment) => {
     const key = `${comment.content}@@${[...comment.mail]
@@ -138,14 +146,15 @@ const groupCommentsByUser = (comments: FormattedComment[]): GroupedByUser => {
 /**
  * ユーザーごとにグループ化されたコメントを時間ごとにグループ化する
  * @param comments ユーザーごとにグループ化されたコメントデータ
+ * @param config インスタンス設定
  * @returns 時間ごとにグループ化されたコメントデータ
  */
-const groupCommentsByTime = (comments: GroupedByUser) => {
+const groupCommentsByTime = (comments: GroupedByUser, config: BaseConfig) => {
   return comments.reduce<GroupedByTime>((result, user) => {
     result.push({
       userId: user.userId,
       comments: user.comments.reduce<GroupedByTimeItem[]>((result, comment) => {
-        const time = getTime(comment.date, result);
+        const time = getTime(comment.date, result, config);
         time.comments.push(comment);
         time.range.start = Math.min(time.range.start, comment.date);
         time.range.end = Math.max(time.range.end, comment.date);
@@ -160,11 +169,13 @@ const groupCommentsByTime = (comments: GroupedByUser) => {
  * 時間配列から該当の時間の参照を取得する
  * @param time 探す対象の時間
  * @param times 時間配列
+ * @param config インスタンス設定
  * @returns 該当の時間の参照
  */
 const getTime = (
   time: number,
   times: GroupedByTimeItem[],
+  config: BaseConfig,
 ): GroupedByTimeItem => {
   const timeObj = times.find(
     (timeObj) =>

@@ -1,3 +1,3 @@
 export * from "./cache";
+export * from "./instanceContext";
 export * from "./nicoscript";
-export * from "./plugins";

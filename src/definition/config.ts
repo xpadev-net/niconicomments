@@ -30,31 +30,4 @@ const defaultOptions: BaseOptions = {
   lazy: false,
 };
 
-let config: BaseConfig;
-let options: BaseOptions;
-
-/**
- * 設定を更新する
- * @param value 更新後の設定
- */
-const setConfig = (value: BaseConfig) => {
-  config = value;
-};
-
-/**
- * 設定を更新する
- * @param value 更新後の設定
- */
-const setOptions = (value: BaseOptions) => {
-  options = value;
-};
-
-export {
-  config,
-  defaultConfig,
-  defaultOptions,
-  options,
-  setConfig,
-  setOptions,
-  updateConfig,
-};
+export { defaultConfig, defaultOptions, updateConfig };

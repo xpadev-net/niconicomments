@@ -1,4 +1,5 @@
 import type {
+  BaseConfig,
   ButtonPartLeft,
   ButtonPartMiddle,
   CommentContentIndex,
@@ -8,37 +9,39 @@ import type {
   FormattedComment,
   FormattedCommentWithSize,
 } from "@/@types";
-import { config } from "@/definition/config";
 import { getConfig } from "@/utils/config";
 import { nativeSort } from "@/utils/sort";
 
-let flashCharRegexConfig: typeof config | null = null;
-let flashCharRegex: {
-  simsunStrong: RegExp;
-  simsunWeak: RegExp;
-  gulim: RegExp;
-  gothic: RegExp;
-} | null = null;
-const getFlashCharRegex = () => {
-  if (flashCharRegex === null || flashCharRegexConfig !== config) {
-    flashCharRegexConfig = config;
-    flashCharRegex = {
+const flashCharRegexCache = new WeakMap<
+  BaseConfig,
+  { simsunStrong: RegExp; simsunWeak: RegExp; gulim: RegExp; gothic: RegExp }
+>();
+
+const getFlashCharRegex = (config: BaseConfig) => {
+  let cached = flashCharRegexCache.get(config);
+  if (!cached) {
+    cached = {
       simsunStrong: new RegExp(config.flashChar.simsunStrong),
       simsunWeak: new RegExp(config.flashChar.simsunWeak),
       gulim: new RegExp(config.flashChar.gulim),
       gothic: new RegExp(config.flashChar.gothic),
     };
+    flashCharRegexCache.set(config, cached);
   }
-  return flashCharRegex;
+  return cached;
 };
 
 /**
  * コメントの内容からフォント情報を取得する
  * @param part コメントの内容
+ * @param config インスタンス設定
  * @returns フォント情報
  */
-const getFlashFontIndex = (part: string): CommentContentIndex[] => {
-  const regex = getFlashCharRegex();
+const getFlashFontIndex = (
+  part: string,
+  config: BaseConfig,
+): CommentContentIndex[] => {
+  const regex = getFlashCharRegex(config);
   const index: CommentContentIndex[] = [];
   let match = regex.simsunStrong.exec(part);
   if (match !== null) {
@@ -73,13 +76,14 @@ const getFlashFontName = (font: CommentFlashFontParsed): CommentFlashFont => {
 /**
  * コメントの内容をパースする
  * @param content コメントの内容
+ * @param config インスタンス設定
  * @returns パースしたコメントの内容
  */
-const parseContent = (content: string) => {
+const parseContent = (content: string, config: BaseConfig) => {
   const results: CommentContentItem[] = [];
   const lines = Array.from(content.match(/\n|[^\n]+/g) ?? []);
   for (const line of lines) {
-    const lineContent = parseLine(line);
+    const lineContent = parseLine(line, config);
     const firstContent = lineContent[0];
     const defaultFont = firstContent?.font;
     if (defaultFont) {
@@ -106,17 +110,18 @@ const parseContent = (content: string) => {
 /**
  * 1行分のコメントの内容をパースする
  * @param line 1行分のコメントの内容
+ * @param config インスタンス設定
  * @returns パースしたコメントの内容
  */
-const parseLine = (line: string) => {
+const parseLine = (line: string, config: BaseConfig) => {
   const parts = Array.from(line.match(/[ -~｡-ﾟ]+|[^ -~｡-ﾟ]+/g) ?? []);
   const lineContent: CommentContentItem[] = [];
   for (const part of parts) {
     if (part.match(/[ -~｡-ﾟ]+/g) !== null) {
-      addPartToResult(lineContent, part, "defont");
+      addPartToResult(lineContent, part, config, "defont");
       continue;
     }
-    parseFullWidthPart(part, lineContent);
+    parseFullWidthPart(part, lineContent, config);
   }
   return lineContent;
 };
@@ -125,11 +130,13 @@ const parseLine = (line: string) => {
  * スペースの補正を行った上で結果を追加する
  * @param lineContent 結果格納用の配列
  * @param part 追加する文字列
+ * @param config インスタンス設定
  * @param font フォント
  */
 const addPartToResult = (
   lineContent: CommentContentItem[],
   part: string,
+  config: BaseConfig,
   font?: CommentFlashFont,
 ) => {
   if (part === "") return;
@@ -138,7 +145,7 @@ const addPartToResult = (
     if (!spacerWidth) continue;
     const compatIndex = part.indexOf(key);
     if (compatIndex >= 0) {
-      addPartToResult(lineContent, part.slice(0, compatIndex), font);
+      addPartToResult(lineContent, part.slice(0, compatIndex), config, font);
       let i = compatIndex;
       for (; i < part.length && part[i] === key; i++) {
         /* empty */
@@ -150,7 +157,7 @@ const addPartToResult = (
         font,
         count: i - compatIndex,
       });
-      addPartToResult(lineContent, part.slice(i), font);
+      addPartToResult(lineContent, part.slice(i), config, font);
       return;
     }
   }
@@ -166,18 +173,20 @@ const addPartToResult = (
  * 全角文字の部分をパースする
  * @param part 全角文字の部分
  * @param lineContent 1行分のコメントの内容
+ * @param config インスタンス設定
  */
 const parseFullWidthPart = (
   part: string,
   lineContent: CommentContentItem[],
+  config: BaseConfig,
 ) => {
-  const index = getFlashFontIndex(part);
+  const index = getFlashFontIndex(part, config);
   if (index.length === 0) {
-    addPartToResult(lineContent, part);
+    addPartToResult(lineContent, part, config);
   } else if (index.length === 1 && index[0]) {
-    addPartToResult(lineContent, part, getFlashFontName(index[0].font));
+    addPartToResult(lineContent, part, config, getFlashFontName(index[0].font));
   } else {
-    parseMultiFontFullWidthPart(part, index, lineContent);
+    parseMultiFontFullWidthPart(part, index, lineContent, config);
   }
 };
 
@@ -186,11 +195,13 @@ const parseFullWidthPart = (
  * @param part 全角文字の部分
  * @param index フォントのインデックス
  * @param lineContent 1行分のコメントの内容
+ * @param config インスタンス設定
  */
 const parseMultiFontFullWidthPart = (
   part: string,
   index: CommentContentIndex[],
   lineContent: CommentContentItem[],
+  config: BaseConfig,
 ) => {
   index.sort(nativeSort((val) => val.index));
   if (config.flashMode === "xp") {
@@ -200,39 +211,56 @@ const parseMultiFontFullWidthPart = (
       const lastVal = index[i - 1];
       if (currentVal === undefined || lastVal === undefined) continue;
       const content = part.slice(offset, currentVal.index);
-      addPartToResult(lineContent, content, getFlashFontName(lastVal.font));
+      addPartToResult(
+        lineContent,
+        content,
+        config,
+        getFlashFontName(lastVal.font),
+      );
       offset = currentVal.index;
     }
     const val = index[index.length - 1];
     if (val) {
       const content = part.slice(offset);
-      addPartToResult(lineContent, content, getFlashFontName(val.font));
+      addPartToResult(lineContent, content, config, getFlashFontName(val.font));
     }
     return;
   }
   const firstVal = index[0];
   const secondVal = index[1];
   if (!firstVal || !secondVal) {
-    addPartToResult(lineContent, part);
+    addPartToResult(lineContent, part, config);
     return;
   }
   if (firstVal.font !== "gothic") {
-    addPartToResult(lineContent, part, getFlashFontName(firstVal.font));
+    addPartToResult(lineContent, part, config, getFlashFontName(firstVal.font));
     return;
   }
   const firstContent = part.slice(0, secondVal.index);
   const secondContent = part.slice(secondVal.index);
-  addPartToResult(lineContent, firstContent, getFlashFontName(firstVal.font));
-  addPartToResult(lineContent, secondContent, getFlashFontName(secondVal.font));
+  addPartToResult(
+    lineContent,
+    firstContent,
+    config,
+    getFlashFontName(firstVal.font),
+  );
+  addPartToResult(
+    lineContent,
+    secondContent,
+    config,
+    getFlashFontName(secondVal.font),
+  );
 };
 
 /**
  * コメントのボタンのパーツを取得する
  * @param comment コメント
+ * @param config インスタンス設定
  * @returns ボタンのデータを追加したコメント
  */
 const getButtonParts = (
   comment: FormattedCommentWithSize,
+  config: BaseConfig,
 ): FormattedCommentWithSize => {
   let leftParts: ButtonPartLeft | undefined;
   const parts: ButtonPartMiddle[] = [];

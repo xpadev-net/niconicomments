@@ -1,11 +1,11 @@
 import type {
+  BaseConfig,
   CommentContentItem,
   CommentHTML5Font,
   CommentSize,
   IRenderer,
   MeasureInput,
 } from "@/@types";
-import { config } from "@/definition/config";
 import { TypeGuardError } from "@/errors/TypeGuardError";
 
 import { parseFont } from "./comment";
@@ -15,12 +15,14 @@ import { getConfig } from "./config";
  * 各サイズの行高を返す
  * @param fontSize コメントサイズ
  * @param isFlash Flashかどうか
+ * @param config インスタンス設定
  * @param resized リサイズされているか
  * @returns 行高
  */
 const getLineHeight = (
   fontSize: CommentSize,
   isFlash: boolean,
+  config: BaseConfig,
   resized = false,
 ) => {
   const lineCounts = getConfig(config.html5LineCounts, isFlash);
@@ -43,9 +45,14 @@ const getLineHeight = (
  * 各サイズのフォントサイズを返す
  * @param fontSize コメントサイズ
  * @param isFlash Flashかどうか
+ * @param config インスタンス設定
  * @returns フォントサイズ
  */
-const getCharSize = (fontSize: CommentSize, isFlash: boolean): number => {
+const getCharSize = (
+  fontSize: CommentSize,
+  isFlash: boolean,
+  config: BaseConfig,
+): number => {
   const lineCounts = getConfig(config.html5LineCounts, isFlash);
   const commentStageSize = getConfig(config.commentStageSize, isFlash);
   return commentStageSize.height / lineCounts.doubleResized[fontSize];
@@ -55,10 +62,15 @@ const getCharSize = (fontSize: CommentSize, isFlash: boolean): number => {
  * コメントのサイズを計測する
  * @param comment コメント
  * @param renderer 計測対象のレンダラーインスタンス
+ * @param config インスタンス設定
  * @returns 計測結果
  */
-const measure = (comment: MeasureInput, renderer: IRenderer) => {
-  const width = measureWidth(comment, renderer);
+const measure = (
+  comment: MeasureInput,
+  renderer: IRenderer,
+  config: BaseConfig,
+) => {
+  const width = measureWidth(comment, renderer, config);
   return {
     ...width,
     height: comment.lineHeight * (comment.lineCount - 1) + comment.charSize,
@@ -68,6 +80,7 @@ const measure = (comment: MeasureInput, renderer: IRenderer) => {
 const addHTML5PartToResult = (
   lineContent: CommentContentItem[],
   part: string,
+  config: BaseConfig,
   _font?: CommentHTML5Font,
 ) => {
   if (part === "") return;
@@ -77,7 +90,12 @@ const addHTML5PartToResult = (
     if (!spacerWidth) continue;
     const compatIndex = part.indexOf(key);
     if (compatIndex >= 0) {
-      addHTML5PartToResult(lineContent, part.slice(0, compatIndex), font);
+      addHTML5PartToResult(
+        lineContent,
+        part.slice(0, compatIndex),
+        config,
+        font,
+      );
       let i = compatIndex;
       for (; i < part.length && part[i] === key; i++) {
         /* empty */
@@ -88,7 +106,7 @@ const addHTML5PartToResult = (
         charWidth: spacerWidth,
         count: i - compatIndex,
       });
-      addHTML5PartToResult(lineContent, part.slice(i), font);
+      addHTML5PartToResult(lineContent, part.slice(i), config, font);
       return;
     }
   }
@@ -103,13 +121,18 @@ const addHTML5PartToResult = (
  * コメントの幅を計測する
  * @param comment コメント
  * @param renderer 計測対象のレンダラーインスタンス
+ * @param config インスタンス設定
  * @returns 計測結果
  */
-const measureWidth = (comment: MeasureInput, renderer: IRenderer) => {
-  const { fontSize, scale } = getFontSizeAndScale(comment.charSize);
+const measureWidth = (
+  comment: MeasureInput,
+  renderer: IRenderer,
+  config: BaseConfig,
+) => {
+  const { fontSize, scale } = getFontSizeAndScale(comment.charSize, config);
   const lineWidth: number[] = [];
   const itemWidth: number[][] = [];
-  const initialFont = parseFont(comment.font, fontSize);
+  const initialFont = parseFont(comment.font, fontSize, config);
   renderer.setFont(initialFont);
   let lastFont = initialFont;
   let currentWidth = 0;
@@ -121,7 +144,7 @@ const measureWidth = (comment: MeasureInput, renderer: IRenderer) => {
       continue;
     }
     const lines = item.content.split("\n");
-    const font = parseFont(item.font ?? comment.font, fontSize);
+    const font = parseFont(item.font ?? comment.font, fontSize, config);
     if (font !== lastFont) {
       renderer.setFont(font);
       lastFont = font;
@@ -151,9 +174,10 @@ const measureWidth = (comment: MeasureInput, renderer: IRenderer) => {
 /**
  * フォントサイズとスケールを返す
  * @param _charSize 文字サイズ
+ * @param config インスタンス設定
  * @returns フォントサイズとスケール
  */
-const getFontSizeAndScale = (_charSize: number) => {
+const getFontSizeAndScale = (_charSize: number, config: BaseConfig) => {
   let charSize = _charSize;
   charSize *= 0.8;
   if (charSize < config.html5MinFontSize) {

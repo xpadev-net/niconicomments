@@ -1,4 +1,5 @@
 import type {
+  BaseConfig,
   FormattedComment,
   FormattedCommentWithFont,
   FormattedCommentWithSize,
@@ -10,9 +11,7 @@ import type {
   ParseContentResult,
   Position,
 } from "@/@types/";
-import { imageCache } from "@/contexts";
-import { isDebug } from "@/contexts/debug";
-import { config } from "@/definition/config";
+import type { CommentInstanceContext } from "@/contexts";
 import { NotImplementedError } from "@/errors/";
 import { getPosX, isBanActive, isReverseActive, parseFont } from "@/utils";
 
@@ -21,6 +20,8 @@ import { getPosX, isBanActive, isReverseActive, parseFont } from "@/utils";
  */
 class BaseComment implements IComment {
   protected readonly renderer: IRenderer;
+  protected readonly config: BaseConfig;
+  protected readonly ctx: CommentInstanceContext;
   protected cacheKey: string;
   public comment: FormattedCommentWithSize;
   public pos: {
@@ -38,12 +39,20 @@ class BaseComment implements IComment {
    * @param comment 処理対象のコメント
    * @param renderer 描画対象のレンダラークラス
    * @param index コメントのインデックス
+   * @param ctx インスタンスコンテキスト
    */
-  constructor(comment: FormattedComment, renderer: IRenderer, index: number) {
+  constructor(
+    comment: FormattedComment,
+    renderer: IRenderer,
+    index: number,
+    ctx: CommentInstanceContext,
+  ) {
     this.renderer = renderer;
+    this.ctx = ctx;
+    this.config = ctx.config;
     this.posY = -1;
     this.pos = { x: 0, y: 0 };
-    comment.content = comment.content.replace(/\t/g, "\u2003\u2003");
+    comment.content = comment.content.replace(/\t/g, "  ");
     this.comment = this.convertComment(comment);
     this.cacheKey = this.getCacheKey();
     this.index = index;
@@ -158,15 +167,19 @@ class BaseComment implements IComment {
     cursor?: Position,
     frameActiveState?: FrameActiveState,
   ) {
-    const banActive = frameActiveState?.banActive ?? isBanActive(vpos);
+    const { nicoScripts, rangeCache } = this.ctx;
+    const banActive =
+      frameActiveState?.banActive ?? isBanActive(vpos, nicoScripts, rangeCache);
     if (banActive) return;
     const reverse = this.comment.owner
-      ? (frameActiveState?.reverseActiveOwner ?? isReverseActive(vpos, true))
-      : (frameActiveState?.reverseActiveViewer ?? isReverseActive(vpos, false));
-    const posX = getPosX(this.comment, vpos, reverse);
+      ? (frameActiveState?.reverseActiveOwner ??
+        isReverseActive(vpos, true, nicoScripts, rangeCache))
+      : (frameActiveState?.reverseActiveViewer ??
+        isReverseActive(vpos, false, nicoScripts, rangeCache));
+    const posX = getPosX(this.comment, vpos, this.config, reverse);
     const posY =
       this.comment.loc === "shita"
-        ? config.canvasHeight - this.posY - this.comment.height
+        ? this.config.canvasHeight - this.posY - this.comment.height
         : this.posY;
     this.pos = {
       x: posX,
@@ -194,7 +207,7 @@ class BaseComment implements IComment {
         typeof this.comment.opacity === "number"
           ? this.comment.opacity
           : this.comment._live
-            ? config.contextFillLiveOpacity
+            ? this.config.contextFillLiveOpacity
             : 1;
       if (effectiveAlpha !== 1) {
         this.renderer.save();
@@ -255,9 +268,9 @@ class BaseComment implements IComment {
    * @param posY 描画位置
    */
   protected _drawDebugInfo(posX: number, posY: number) {
-    if (isDebug) {
+    if (this.ctx.options.debug) {
       this.renderer.save();
-      this.renderer.setFont(parseFont("defont", 30));
+      this.renderer.setFont(parseFont("defont", 30, this.config));
       this.renderer.setFillStyle("#ff00ff");
       this.renderer.fillText(this.comment.mail.join(","), posX, posY + 30);
       this.renderer.restore();
@@ -293,7 +306,8 @@ class BaseComment implements IComment {
     )
       return null;
     const key = this.cacheKey;
-    const cache = imageCache[key];
+    const { imageCache, config } = this.ctx;
+    const cache = imageCache.get(key);
     if (cache) {
       this.image = cache.image;
       window.setTimeout(
@@ -305,8 +319,8 @@ class BaseComment implements IComment {
       clearTimeout(cache.timeout);
       cache.timeout = window.setTimeout(
         () => {
-          imageCache[key]?.image.destroy();
-          delete imageCache[key];
+          imageCache.get(key)?.image.destroy();
+          imageCache.delete(key);
         },
         this.comment.long * 10 + config.cacheAge,
       );
@@ -332,6 +346,7 @@ class BaseComment implements IComment {
    */
   protected _cacheImage(image: IRenderer) {
     const key = this.cacheKey;
+    const { imageCache, config } = this.ctx;
     this.image = image;
     window.setTimeout(
       () => {
@@ -339,16 +354,16 @@ class BaseComment implements IComment {
       },
       this.comment.long * 10 + config.cacheAge,
     );
-    imageCache[key] = {
+    imageCache.set(key, {
       timeout: window.setTimeout(
         () => {
-          imageCache[key]?.image.destroy();
-          delete imageCache[key];
+          imageCache.get(key)?.image.destroy();
+          imageCache.delete(key);
         },
         this.comment.long * 10 + config.cacheAge,
       ),
       image,
-    };
+    });
   }
 
   protected getButtonImage(

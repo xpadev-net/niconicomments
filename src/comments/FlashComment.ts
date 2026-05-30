@@ -38,7 +38,6 @@ const flashScriptCharRegexCache = new WeakMap<
 
 class FlashComment extends BaseComment {
   private _globalScale: number;
-  private readonly _flashScriptCharRegex: { super: RegExp; sub: RegExp };
   override readonly pluginName: string = "FlashComment";
   override buttonImage: IRenderer;
   constructor(
@@ -49,16 +48,19 @@ class FlashComment extends BaseComment {
   ) {
     super(comment, renderer, index, ctx);
     this._globalScale ??= getConfig(this.config.commentScale, true);
-    let scriptRegex = flashScriptCharRegexCache.get(ctx.config);
-    if (!scriptRegex) {
-      scriptRegex = {
-        super: new RegExp(ctx.config.flashScriptChar.super, "g"),
-        sub: new RegExp(ctx.config.flashScriptChar.sub, "g"),
-      };
-      flashScriptCharRegexCache.set(ctx.config, scriptRegex);
-    }
-    this._flashScriptCharRegex = scriptRegex;
     this.buttonImage = renderer.getCanvas();
+  }
+
+  private get _flashScriptCharRegex(): { super: RegExp; sub: RegExp } {
+    let cached = flashScriptCharRegexCache.get(this.ctx.config);
+    if (!cached) {
+      cached = {
+        super: new RegExp(this.ctx.config.flashScriptChar.super, "g"),
+        sub: new RegExp(this.ctx.config.flashScriptChar.sub, "g"),
+      };
+      flashScriptCharRegexCache.set(this.ctx.config, cached);
+    }
+    return cached;
   }
 
   override get content() {

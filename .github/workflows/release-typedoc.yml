@@ -57,7 +57,7 @@ jobs:
         run: tar -czf typedoc-artifacts.tgz .gitignore docs/type dist/bundle.js
 
       - name: Upload generated artifacts
-        uses: actions/upload-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: typedoc-artifacts
           path: typedoc-artifacts.tgz

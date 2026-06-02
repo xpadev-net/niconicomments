@@ -25,7 +25,8 @@ jobs:
             const repo = context.repo.repo;
             const run = context.payload.workflow_run;
             const prs = Array.isArray(run.pull_requests) ? run.pull_requests : [];
-            const allowedArtifactPattern = /^test-results-node-(22|24|26)$/;
+            const artifactDownloadPattern = /^test-results-node-.+$/;
+            const allowedArtifactPattern = /^test-results-node-(\d+)$/;
             const maxArtifactDirectories = 3;
             const maxArtifactBytes = 50 * 1024 * 1024;
 
@@ -90,17 +91,34 @@ jobs:
                 per_page: 100,
               }
             );
-            const testResultArtifacts = artifacts.filter(artifact => allowedArtifactPattern.test(artifact.name));
-            const artifactBytes = testResultArtifacts.reduce((sum, artifact) => sum + (artifact.size_in_bytes ?? 0), 0);
+            const candidateArtifacts = artifacts.filter(artifact => artifactDownloadPattern.test(artifact.name));
+            const invalidArtifacts = candidateArtifacts.filter(artifact => !allowedArtifactPattern.test(artifact.name));
+            const artifactBytes = candidateArtifacts.reduce((sum, artifact) => sum + (artifact.size_in_bytes ?? 0), 0);
+            const expectedArtifactNames = candidateArtifacts
+              .map(artifact => artifact.name)
+              .sort();
 
-            if (testResultArtifacts.length > maxArtifactDirectories) {
+            if (invalidArtifacts.length > 0) {
               return result(true, 'trusted', {
                 prNumber,
                 runHeadSha,
                 branchName: '_playwright-artifacts',
-                testResultsArtifactCount: testResultArtifacts.length,
+                testResultsArtifactCount: candidateArtifacts.length,
+                expectedArtifactNames,
                 artifactDisposition: 'rejected',
-                artifactError: `Unexpected test result artifact count: ${testResultArtifacts.length}`,
+                artifactError: `Unexpected artifact names: ${invalidArtifacts.map(artifact => artifact.name).join(', ')}`,
+              });
+            }
+
+            if (candidateArtifacts.length > maxArtifactDirectories) {
+              return result(true, 'trusted', {
+                prNumber,
+                runHeadSha,
+                branchName: '_playwright-artifacts',
+                testResultsArtifactCount: candidateArtifacts.length,
+                expectedArtifactNames,
+                artifactDisposition: 'rejected',
+                artifactError: `Unexpected test result artifact count: ${candidateArtifacts.length}`,
               });
             }
 
@@ -109,7 +127,8 @@ jobs:
                 prNumber,
                 runHeadSha,
                 branchName: '_playwright-artifacts',
-                testResultsArtifactCount: testResultArtifacts.length,
+                testResultsArtifactCount: candidateArtifacts.length,
+                expectedArtifactNames,
                 artifactDisposition: 'rejected',
                 artifactError: `Test result artifacts exceed byte limit: ${artifactBytes}`,
               });
@@ -119,8 +138,9 @@ jobs:
               prNumber,
               runHeadSha,
               branchName: '_playwright-artifacts',
-              testResultsArtifactCount: testResultArtifacts.length,
-              artifactDisposition: testResultArtifacts.length === 0 ? 'none' : 'download',
+              testResultsArtifactCount: candidateArtifacts.length,
+              expectedArtifactNames,
+              artifactDisposition: candidateArtifacts.length === 0 ? 'none' : 'download',
             });
 
       - name: Download test results
@@ -135,8 +155,8 @@ jobs:
           merge-multiple: false
         continue-on-error: true
 
-      - name: Post failure screenshots to PR
-        if: ${{ github.event.workflow_run.conclusion == 'failure' && fromJSON(steps.pr-context.outputs.result).trusted }}
+      - name: Sync failure screenshots comment
+        if: ${{ fromJSON(steps.pr-context.outputs.result).trusted }}
         uses: actions/github-script@v9
         env:
           DOWNLOAD_OUTCOME: ${{ steps.test-results.outcome }}
@@ -149,16 +169,23 @@ jobs:
             const owner = context.repo.owner;
             const repo = context.repo.repo;
             const runId = context.payload.workflow_run.id;
+            const conclusion = context.payload.workflow_run.conclusion;
             const marker = '<!-- playwright-failure-screenshots -->';
             const prContext = JSON.parse(process.env.PR_CONTEXT);
             const prNumber = prContext.prNumber;
             const branchName = prContext.branchName;
-            const artifactDisposition = prContext.artifactDisposition ?? 'download';
+            const artifactDisposition = prContext.artifactDisposition ?? 'rejected';
             const artifactError = prContext.artifactError ?? '';
             const downloadOutcome = process.env.DOWNLOAD_OUTCOME;
             const artifactsDir = path.join(process.cwd(), 'all-test-results');
-            const allowedNodeVersions = new Set(['22', '24', '26']);
-            const maxArtifactDirectories = allowedNodeVersions.size;
+            const expectedArtifactNames = Array.isArray(prContext.expectedArtifactNames) ? prContext.expectedArtifactNames : [];
+            const expectedArtifactNamesSet = new Set(expectedArtifactNames);
+            const expectedNodeVersions = new Set(
+              expectedArtifactNames
+                .map(name => name.match(/^test-results-node-(\d+)$/)?.[1])
+                .filter(Boolean)
+            );
+            const maxArtifactDirectories = expectedArtifactNames.length;
             const maxTestDirectoriesPerArtifact = 200;
             const maxFailures = 20;
             const maxFileBytes = 5 * 1024 * 1024;
@@ -247,10 +274,25 @@ jobs:
             const failures = [];
             const treePathOwners = new Map();
 
+            if (conclusion === 'success') {
+              await removeStaleComment();
+              return;
+            }
+
+            if (conclusion !== 'failure') {
+              console.log(`Skipping comment sync for workflow conclusion ${conclusion}`);
+              return;
+            }
+
             if (artifactDisposition === 'none') {
               console.log('No matching screenshot artifacts were uploaded for this run');
               await removeStaleComment();
               return;
+            }
+
+            if (!['download', 'none', 'rejected'].includes(artifactDisposition)) {
+              await removeStaleComment();
+              throw new Error(`Unknown artifact disposition: ${artifactDisposition}`);
             }
 
             if (artifactDisposition === 'rejected') {
@@ -269,19 +311,19 @@ jobs:
             ensureDirectory(artifactsDir, 'Artifact root');
             const artifactDirs = fs.readdirSync(artifactsDir);
 
-            if (artifactDirs.length > maxArtifactDirectories) {
+            if (artifactDirs.length !== maxArtifactDirectories) {
               throw new Error(`Unexpected artifact directory count: ${artifactDirs.length}`);
             }
 
             for (const artifactDir of artifactDirs) {
-              const match = artifactDir.match(/^test-results-node-(\d+)$/);
-              if (!match) {
+              if (!expectedArtifactNamesSet.has(artifactDir)) {
                 throw new Error(`Unexpected artifact directory name: ${artifactDir}`);
               }
 
-              const nodeVersion = match[1];
-              if (!allowedNodeVersions.has(nodeVersion)) {
-                throw new Error(`Unexpected node version artifact: ${nodeVersion}`);
+              const match = artifactDir.match(/^test-results-node-(\d+)$/);
+              const nodeVersion = match?.[1];
+              if (!nodeVersion || !expectedNodeVersions.has(nodeVersion)) {
+                throw new Error(`Unexpected node version artifact: ${artifactDir}`);
               }
 
               const artifactPath = path.join(artifactsDir, artifactDir);
@@ -523,37 +565,4 @@ jobs:
                 owner, repo, issue_number: prNumber, body,
               });
               console.log('Created new comment');
-            }
-
-      - name: Remove stale failure comment
-        if: ${{ github.event.workflow_run.conclusion == 'success' && fromJSON(steps.pr-context.outputs.result).trusted }}
-        uses: actions/github-script@v9
-        env:
-          PR_CONTEXT: ${{ steps.pr-context.outputs.result }}
-        with:
-          script: |
-            const owner = context.repo.owner;
-            const repo = context.repo.repo;
-            const prContext = JSON.parse(process.env.PR_CONTEXT);
-            const prNumber = prContext.prNumber;
-            const marker = '<!-- playwright-failure-screenshots -->';
-
-            const comments = await github.paginate(
-              github.rest.issues.listComments,
-              { owner, repo, issue_number: prNumber, per_page: 100 },
-            );
-            const existing = comments.find(comment =>
-              Boolean(
-                comment.body &&
-                comment.body.includes(marker) &&
-                comment.user?.type === 'Bot' &&
-                comment.user?.login === 'github-actions[bot]'
-              )
-            );
-
-            if (existing) {
-              await github.rest.issues.deleteComment({
-                owner, repo, comment_id: existing.id,
-              });
-              console.log(`Deleted stale comment ${existing.id}`);
             }

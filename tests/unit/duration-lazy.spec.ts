@@ -264,4 +264,31 @@ describe("duration bounds and lazy timeline expansion", () => {
     expect(keys).not.toContain(farVpos);
     expect(keys.at(-1)).toBeLessThan(farVpos);
   });
+
+  test("addComments keeps hostile durations bounded on the production path", () => {
+    const instance = new NiconiComments(new FakeRenderer(), [], {
+      format: "formatted",
+      lazy: true,
+      mode: "html5",
+    });
+    const state = instance as unknown as {
+      comments: { long: number }[];
+      timeline: Record<number, unknown[]>;
+    };
+
+    expect(() =>
+      instance.addComments(
+        createComment({ id: 1, vpos: 100, mail: ["ue", HUGE_DURATION] }),
+        createComment({ id: 2, vpos: 500, mail: [HUGE_DURATION] }),
+        createComment({ id: 3, vpos: 1000, mail: [OVERFLOW_DURATION] }),
+      ),
+    ).not.toThrow();
+
+    expect(state.comments[0]?.long).toBe(MAX_COMMENT_LONG);
+    expect(state.comments[1]?.long).toBe(MAX_COMMENT_LONG);
+    expect(state.comments[2]?.long).toBe(300);
+    expect(Object.keys(state.timeline).length).toBeLessThan(
+      MAX_COMMENT_LONG * 3,
+    );
+  });
 });

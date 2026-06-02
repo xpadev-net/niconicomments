@@ -5,18 +5,16 @@ import typeGuard from "@/typeGuard";
 export const XmlDocumentParser: InputParser = {
   key: ["XMLDocument", "niconicome"],
   parse: (input: unknown): FormattedComment[] => {
-    let isXmlDocument = false;
     if (typeof input === "object" && input !== null) {
       try {
-        isXmlDocument = typeGuard.xmlDocument(input);
-      } catch {
-        isXmlDocument = false;
+        if (typeGuard.xmlDocument(input)) {
+          return parseXMLDocument(input);
+        }
+      } catch (error) {
+        if (!(error instanceof TypeError)) throw error;
       }
     }
-    if (!isXmlDocument) {
-      throw new InvalidFormatError();
-    }
-    return parseXMLDocument(input as XMLDocument);
+    throw new InvalidFormatError();
   },
 };
 

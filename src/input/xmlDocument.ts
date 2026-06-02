@@ -2,11 +2,33 @@ import type { FormattedComment, InputParser } from "@/@types";
 import { InvalidFormatError } from "@/errors";
 import typeGuard from "@/typeGuard";
 
+export const assignUserId = (
+  userIdMap: Map<string, number>,
+  userId: string,
+): number => {
+  const existingUserId = userIdMap.get(userId);
+  if (existingUserId !== undefined) return existingUserId;
+
+  const nextUserId = userIdMap.size;
+  userIdMap.set(userId, nextUserId);
+  return nextUserId;
+};
+
 export const XmlDocumentParser: InputParser = {
-  key: ["formatted", "niconicome"],
+  key: ["XMLDocument", "niconicome"],
   parse: (input: unknown): FormattedComment[] => {
-    if (!typeGuard.xmlDocument(input)) throw new InvalidFormatError();
-    return parseXMLDocument(input);
+    let isXmlDocument = false;
+    if (typeof input === "object" && input !== null) {
+      try {
+        isXmlDocument = typeGuard.xmlDocument(input);
+      } catch (error) {
+        if (!(error instanceof TypeError)) throw error;
+      }
+    }
+    if (isXmlDocument) {
+      return parseXMLDocument(input as XMLDocument);
+    }
+    throw new InvalidFormatError();
   },
 };
 
@@ -17,7 +39,7 @@ export const XmlDocumentParser: InputParser = {
  */
 const parseXMLDocument = (data: XMLDocument): FormattedComment[] => {
   const data_: FormattedComment[] = [];
-  const userList: string[] = [];
+  const userIdMap = new Map<string, number>();
   let index = Array.from(data.documentElement.children).length;
   for (const item of Array.from(data.documentElement.children)) {
     if (item.nodeName !== "chat") continue;
@@ -40,14 +62,10 @@ const parseXMLDocument = (data: XMLDocument): FormattedComment[] => {
     if (tmpParam.content.startsWith("/") && tmpParam.owner) {
       tmpParam.mail.push("invisible");
     }
-    const userId = item.getAttribute("user_id") ?? "";
-    const isUserExist = userList.indexOf(userId);
-    if (isUserExist === -1) {
-      tmpParam.user_id = userList.length;
-      userList.push(userId);
-    } else {
-      tmpParam.user_id = isUserExist;
-    }
+    tmpParam.user_id = assignUserId(
+      userIdMap,
+      item.getAttribute("user_id") ?? "",
+    );
     data_.push(tmpParam);
   }
   return data_;

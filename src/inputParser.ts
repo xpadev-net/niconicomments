@@ -1,3 +1,5 @@
+import { ValiError } from "valibot";
+
 import type { FormattedComment, InputFormatType } from "@/@types/";
 import { InvalidFormatError } from "@/errors";
 import { parsers } from "@/input";
@@ -12,9 +14,24 @@ const convert2formattedComment = (
   data: unknown,
   type: InputFormatType,
 ): FormattedComment[] => {
-  const parser = parsers.find((parser) => parser.key.includes(type));
-  if (!parser) throw new InvalidFormatError();
-  return sort(parser.parse(data));
+  const targetParsers = parsers.filter((parser) => parser.key.includes(type));
+  if (targetParsers.length === 0) throw new InvalidFormatError();
+
+  let firstError: unknown;
+  for (const parser of targetParsers) {
+    try {
+      return sort(parser.parse(data));
+    } catch (error) {
+      if (
+        !(error instanceof InvalidFormatError || error instanceof ValiError)
+      ) {
+        throw error;
+      }
+      firstError ??= error;
+    }
+  }
+
+  throw firstError ?? new InvalidFormatError();
 };
 
 /**

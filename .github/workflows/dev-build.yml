@@ -51,6 +51,7 @@ jobs:
   push-dev-build:
     needs: build
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop'
     permissions:
       contents: write
     steps:

@@ -2,6 +2,29 @@ const NC_DEV_URL =
   "https://cdn.jsdelivr.net/gh/xpadev-net/niconicomments@dev-build/dist/bundle.js";
 const NIWANGO_DEV_URL =
   "https://cdn.jsdelivr.net/gh/xpadev-net/niwango.js@dev-build/dist/bundle.js";
+const DEFAULT_NC_VERSION = "dev";
+const DEFAULT_PLUGIN_VERSION = "latest";
+const DEFAULT_NIWANGO_VERSION = "dev-build";
+const MAX_VERSION_LENGTH = 64;
+const VERSION_PARAM_CONFIG = {
+  ncVersion: {
+    aliases: new Set([DEFAULT_NC_VERSION]),
+    defaultValue: DEFAULT_NC_VERSION,
+  },
+  pluginVersion: {
+    aliases: new Set([DEFAULT_PLUGIN_VERSION]),
+    defaultValue: DEFAULT_PLUGIN_VERSION,
+  },
+  niwangoVersion: {
+    aliases: new Set([DEFAULT_NIWANGO_VERSION]),
+    defaultValue: DEFAULT_NIWANGO_VERSION,
+  },
+};
+const SIMPLE_SEMVER_RANGE_RE =
+  /^(?:[~^]|>=|<=|>|<|=)?v?(?:0|[1-9]\d*|[xX*])(?:\.(?:0|[1-9]\d*|[xX*])){0,2}(?:-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/;
+const SAFE_VERSION_CHARS_RE = /^[0-9A-Za-z.*^~<>=-]+$/;
+const RAW_BLOCKED_VERSION_CHARS_RE = /[%/?#\\]/;
+const BLOCKED_VERSION_CHARS_RE = /[@:/?#\\]/;
 const getControlsBarHeight = () =>
   parseFloat(
     getComputedStyle(document.documentElement).getPropertyValue(
@@ -10,12 +33,79 @@ const getControlsBarHeight = () =>
   ) || 0;
 
 const urlParams = new URLSearchParams(window.location.search);
+const rawQueryString = window.location.search.startsWith("?")
+  ? window.location.search.slice(1)
+  : "";
+
+const getRawQueryParamValue = (name) => {
+  const encodedName = encodeURIComponent(name);
+  for (const pair of rawQueryString.split("&")) {
+    if (!pair) continue;
+    const separatorIndex = pair.indexOf("=");
+    const rawName =
+      separatorIndex === -1 ? pair : pair.slice(0, separatorIndex);
+    if (rawName !== encodedName) continue;
+    return separatorIndex === -1 ? "" : pair.slice(separatorIndex + 1);
+  }
+  return null;
+};
+
+const invalidVersionParams = [];
+const markInvalidVersionParam = (paramName, reason) => {
+  invalidVersionParams.push({
+    paramName,
+    reason,
+  });
+  return VERSION_PARAM_CONFIG[paramName].defaultValue;
+};
+
+const isSafeVersionValue = (value, aliases) => {
+  if (aliases.has(value)) return true;
+  if (!value || value.length > MAX_VERSION_LENGTH) return false;
+  if (!SAFE_VERSION_CHARS_RE.test(value)) return false;
+  if (BLOCKED_VERSION_CHARS_RE.test(value)) return false;
+  return SIMPLE_SEMVER_RANGE_RE.test(value);
+};
+
+const readVersionParam = (paramName) => {
+  const rawValue = getRawQueryParamValue(paramName);
+  if (rawValue == null) {
+    return VERSION_PARAM_CONFIG[paramName].defaultValue;
+  }
+  if (
+    rawValue.length === 0 ||
+    rawValue.length > MAX_VERSION_LENGTH ||
+    RAW_BLOCKED_VERSION_CHARS_RE.test(rawValue)
+  ) {
+    return markInvalidVersionParam(paramName, "unsafe raw value");
+  }
+  const decodedValue = urlParams.get(paramName);
+  if (
+    decodedValue == null ||
+    !isSafeVersionValue(decodedValue, VERSION_PARAM_CONFIG[paramName].aliases)
+  ) {
+    return markInvalidVersionParam(paramName, "unsafe decoded value");
+  }
+  return decodedValue;
+};
+
 let video = Number(urlParams.get("video") || 0),
   noVideo = !!urlParams.get("novideo"),
   time = Number(urlParams.get("time") || -1);
-const ncVersion = urlParams.get("ncVersion") || "dev";
-const pluginVersion = urlParams.get("pluginVersion") || "latest";
-const niwangoVersion = urlParams.get("niwangoVersion") || "dev-build";
+const ncVersion = readVersionParam("ncVersion");
+const pluginVersion = readVersionParam("pluginVersion");
+const niwangoVersion = readVersionParam("niwangoVersion");
+
+for (const { paramName } of invalidVersionParams) {
+  urlParams.set(paramName, VERSION_PARAM_CONFIG[paramName].defaultValue);
+}
+if (invalidVersionParams.length > 0) {
+  const sanitizedSearch = urlParams.toString();
+  const nextUrl = `${window.location.pathname}${
+    sanitizedSearch ? `?${sanitizedSearch}` : ""
+  }${window.location.hash}`;
+  window.history.replaceState(null, "", nextUrl);
+}
 
 // --- Dynamic script loading ---
 const loadScript = (src) =>
@@ -27,16 +117,17 @@ const loadScript = (src) =>
     document.head.appendChild(s);
   });
 
+const encodeVersionForUrl = (value) => encodeURIComponent(value);
 const getNCUrl = (v) =>
   v === "dev"
     ? NC_DEV_URL
-    : `https://cdn.jsdelivr.net/npm/@xpadev-net/niconicomments@${v}/dist/bundle.min.js`;
+    : `https://cdn.jsdelivr.net/npm/@xpadev-net/niconicomments@${encodeVersionForUrl(v)}/dist/bundle.min.js`;
 const getPluginUrl = (v) =>
-  `https://cdn.jsdelivr.net/npm/@xpadev-net/niconicomments-plugin-niwango@${v}/dist/bundle.min.js`;
+  `https://cdn.jsdelivr.net/npm/@xpadev-net/niconicomments-plugin-niwango@${encodeVersionForUrl(v)}/dist/bundle.min.js`;
 const getNiwangoUrl = (v) =>
   v === "dev-build"
     ? NIWANGO_DEV_URL
-    : `https://cdn.jsdelivr.net/npm/@xpadev-net/niwango@${v}/dist/bundle.js`;
+    : `https://cdn.jsdelivr.net/npm/@xpadev-net/niwango@${encodeVersionForUrl(v)}/dist/bundle.js`;
 
 let resolveScripts;
 let scriptsLoadError = null;
@@ -416,6 +507,24 @@ const showScriptError = (message) => {
     `Script load failed (ncVersion=${ncVersion}, pluginVersion=${pluginVersion}, niwangoVersion=${niwangoVersion}). Check version selectors.`;
   document.body.appendChild(el);
 };
+
+let versionWarningShown = false;
+const showVersionWarning = () => {
+  if (versionWarningShown || invalidVersionParams.length === 0) return;
+  versionWarningShown = true;
+  const el = document.createElement("div");
+  el.style.cssText =
+    "position:fixed;top:0;left:0;right:0;z-index:99;background:#8a4b00;" +
+    "color:#fff;padding:12px 16px;font-family:monospace;font-size:13px;";
+  const invalidParamNames = invalidVersionParams.map(
+    ({ paramName }) => paramName,
+  );
+  el.textContent =
+    `Ignored unsafe version query parameter${invalidParamNames.length > 1 ? "s" : ""}: ` +
+    `${invalidParamNames.join(", ")}. Using safe defaults instead.`;
+  document.body.appendChild(el);
+};
+showVersionWarning();
 
 const formatTime = (sec) => {
   const h = Math.floor(sec / 3600);

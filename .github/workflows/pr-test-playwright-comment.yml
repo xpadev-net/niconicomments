@@ -25,7 +25,7 @@ jobs:
             const repo = context.repo.repo;
             const run = context.payload.workflow_run;
             const prs = Array.isArray(run.pull_requests) ? run.pull_requests : [];
-            const artifactDownloadPattern = /^test-results-node-.+$/;
+            const artifactDownloadPattern = /^test-results-node-.*$/;
             const allowedArtifactPattern = /^test-results-node-(\d+)$/;
             const maxArtifactDirectories = 3;
             const maxArtifactBytes = 50 * 1024 * 1024;

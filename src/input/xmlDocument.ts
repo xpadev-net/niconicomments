@@ -3,9 +3,15 @@ import { InvalidFormatError } from "@/errors";
 import typeGuard from "@/typeGuard";
 
 export const XmlDocumentParser: InputParser = {
-  key: ["formatted", "niconicome"],
+  key: ["XMLDocument", "niconicome"],
   parse: (input: unknown): FormattedComment[] => {
-    if (!typeGuard.xmlDocument(input)) throw new InvalidFormatError();
+    if (
+      typeof input !== "object" ||
+      input === null ||
+      !typeGuard.xmlDocument(input)
+    ) {
+      throw new InvalidFormatError();
+    }
     return parseXMLDocument(input);
   },
 };
@@ -17,7 +23,7 @@ export const XmlDocumentParser: InputParser = {
  */
 const parseXMLDocument = (data: XMLDocument): FormattedComment[] => {
   const data_: FormattedComment[] = [];
-  const userList: string[] = [];
+  const userIdMap = new Map<string, number>();
   let index = Array.from(data.documentElement.children).length;
   for (const item of Array.from(data.documentElement.children)) {
     if (item.nodeName !== "chat") continue;
@@ -41,12 +47,12 @@ const parseXMLDocument = (data: XMLDocument): FormattedComment[] => {
       tmpParam.mail.push("invisible");
     }
     const userId = item.getAttribute("user_id") ?? "";
-    const isUserExist = userList.indexOf(userId);
-    if (isUserExist === -1) {
-      tmpParam.user_id = userList.length;
-      userList.push(userId);
+    const existingUserId = userIdMap.get(userId);
+    if (existingUserId === undefined) {
+      tmpParam.user_id = userIdMap.size;
+      userIdMap.set(userId, tmpParam.user_id);
     } else {
-      tmpParam.user_id = isUserExist;
+      tmpParam.user_id = existingUserId;
     }
     data_.push(tmpParam);
   }

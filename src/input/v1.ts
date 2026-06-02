@@ -18,7 +18,7 @@ export const V1Parser: InputParser = {
  */
 const fromV1 = (data: V1Thread[]): FormattedComment[] => {
   const data_: FormattedComment[] = [];
-  const userList: string[] = [];
+  const userIdMap = new Map<string, number>();
   for (const item of data) {
     const val = item.comments;
     const forkName = item.fork;
@@ -39,12 +39,12 @@ const fromV1 = (data: V1Thread[]): FormattedComment[] => {
       if (tmpParam.content.startsWith("/") && tmpParam.owner) {
         tmpParam.mail.push("invisible");
       }
-      const isUserExist = userList.indexOf(value.userId);
-      if (isUserExist === -1) {
-        tmpParam.user_id = userList.length;
-        userList.push(value.userId);
+      const existingUserId = userIdMap.get(value.userId);
+      if (existingUserId === undefined) {
+        tmpParam.user_id = userIdMap.size;
+        userIdMap.set(value.userId, tmpParam.user_id);
       } else {
-        tmpParam.user_id = isUserExist;
+        tmpParam.user_id = existingUserId;
       }
       data_.push(tmpParam);
     }

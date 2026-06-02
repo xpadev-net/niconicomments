@@ -22,7 +22,7 @@ export const LegacyParser: InputParser = {
  */
 const fromLegacy = (data: RawApiResponse[]): FormattedComment[] => {
   const data_: FormattedComment[] = [];
-  const userList: string[] = [];
+  const userIdMap = new Map<string, number>();
   for (const _val of data) {
     const val = safeParse(ZApiChat, _val.chat);
     if (!val.success) continue;
@@ -47,12 +47,12 @@ const fromLegacy = (data: RawApiResponse[]): FormattedComment[] => {
       if (value.content.startsWith("/") && !value.user_id) {
         tmpParam.mail.push("invisible");
       }
-      const isUserExist = userList.indexOf(value.user_id);
-      if (isUserExist === -1) {
-        tmpParam.user_id = userList.length;
-        userList.push(value.user_id);
+      const existingUserId = userIdMap.get(value.user_id);
+      if (existingUserId === undefined) {
+        tmpParam.user_id = userIdMap.size;
+        userIdMap.set(value.user_id, tmpParam.user_id);
       } else {
-        tmpParam.user_id = isUserExist;
+        tmpParam.user_id = existingUserId;
       }
       data_.push(tmpParam);
     }

@@ -234,7 +234,7 @@ jobs:
                 .replace(/^_+|_+$/g, '')
                 .slice(0, 120);
 
-              if (!sanitized) {
+              if (!sanitized || /^\.+$/.test(sanitized)) {
                 throw new Error(`Unable to sanitize path segment: ${s}`);
               }
 

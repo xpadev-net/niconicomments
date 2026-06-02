@@ -20,11 +20,10 @@ const VERSION_PARAM_CONFIG = {
     defaultValue: DEFAULT_NIWANGO_VERSION,
   },
 };
-const SIMPLE_SEMVER_RANGE_RE =
-  /^(?:[~^]|>=|<=|>|<|=)?v?(?:0|[1-9]\d*|[xX*])(?:\.(?:0|[1-9]\d*|[xX*])){0,2}(?:-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/;
-const SAFE_VERSION_CHARS_RE = /^[0-9A-Za-z.*^~<>=-]+$/;
+const EXACT_SEMVER_RE =
+  /^v?(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/;
+const SAFE_VERSION_CHARS_RE = /^[0-9A-Za-z.-]+$/;
 const RAW_BLOCKED_VERSION_CHARS_RE = /[%/?#\\]/;
-const BLOCKED_VERSION_CHARS_RE = /[@:/?#\\]/;
 const getControlsBarHeight = () =>
   parseFloat(
     getComputedStyle(document.documentElement).getPropertyValue(
@@ -63,8 +62,7 @@ const isSafeVersionValue = (value, aliases) => {
   if (aliases.has(value)) return true;
   if (!value || value.length > MAX_VERSION_LENGTH) return false;
   if (!SAFE_VERSION_CHARS_RE.test(value)) return false;
-  if (BLOCKED_VERSION_CHARS_RE.test(value)) return false;
-  return SIMPLE_SEMVER_RANGE_RE.test(value);
+  return EXACT_SEMVER_RE.test(value);
 };
 
 const readVersionParam = (paramName) => {
@@ -510,7 +508,13 @@ const showScriptError = (message) => {
 
 let versionWarningShown = false;
 const showVersionWarning = () => {
-  if (versionWarningShown || invalidVersionParams.length === 0) return;
+  if (
+    versionWarningShown ||
+    invalidVersionParams.length === 0 ||
+    !document.body
+  ) {
+    return;
+  }
   versionWarningShown = true;
   const el = document.createElement("div");
   el.style.cssText =
@@ -524,7 +528,13 @@ const showVersionWarning = () => {
     `${invalidParamNames.join(", ")}. Using safe defaults instead.`;
   document.body.appendChild(el);
 };
-showVersionWarning();
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", showVersionWarning, {
+    once: true,
+  });
+} else {
+  showVersionWarning();
+}
 
 const formatTime = (sec) => {
   const h = Math.floor(sec / 3600);

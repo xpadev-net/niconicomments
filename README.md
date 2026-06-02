@@ -16,7 +16,7 @@ npm： https://www.npmjs.com/package/@xpadev-net/niconicomments
 ## Installation
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@xpadev-net/niconicomments@latest/dist/bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@xpadev-net/niconicomments@0.2.78/dist/bundle.min.js"></script>
 ```
 
 or
@@ -48,4 +48,4 @@ setInterval(
 ### このライブラリを使用される方へ
 
 このライブラリを使用するかどうかに関わらず、リアルタイムでコメントを取得、画面を描画、コメントの投稿という一連の流れを実装した場合、ニコニコの特許を侵害する可能性があります  
-詳しくはこちら[ニコニコが保有する特許について](https://github.com/xpadev-net/niconicomments/blob/develop/ABOUT_PATENT.md)を参照してください  
+詳しくはこちら[ニコニコが保有する特許について](https://github.com/xpadev-net/niconicomments/blob/develop/ABOUT_PATENT.md)を参照してください

@@ -219,5 +219,16 @@ describe("convert2formattedComment", () => {
     expect(() => convert2formattedComment(null, "XMLDocument")).toThrow(
       InvalidFormatError,
     );
+    expect(() =>
+      convert2formattedComment(
+        {
+          documentElement: {
+            nodeName: "packet",
+            children: [{ nodeName: "chat" }],
+          },
+        } as XMLDocument,
+        "XMLDocument",
+      ),
+    ).toThrow(InvalidFormatError);
   });
 });

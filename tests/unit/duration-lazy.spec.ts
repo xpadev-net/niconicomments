@@ -173,7 +173,7 @@ describe("duration bounds and lazy timeline expansion", () => {
     expect(infinityLike.long).toBeLessThanOrEqual(MAX_COMMENT_LONG);
   });
 
-  test("bounds NicoScript ban/reverse ranges and neutralizes explicit bad durations", () => {
+  test("bounds NicoScript ban/reverse ranges and falls back to defaults for invalid durations", () => {
     const banContext = createContext();
     parseCommandAndNicoScript(
       createComment({
@@ -201,31 +201,63 @@ describe("duration bounds and lazy timeline expansion", () => {
         reverseContext.nicoScripts.reverse[0]?.start,
     ).toBe(MAX_COMMENT_LONG);
 
-    const neutralizedBanContext = createContext();
+    const defaultBanRange = 30 * 100;
+
+    const zeroBanContext = createContext();
     parseCommandAndNicoScript(
       createComment({
         owner: true,
         content: "@コメント禁止",
         mail: ["@0"],
       }),
-      neutralizedBanContext,
+      zeroBanContext,
     );
-    expect(neutralizedBanContext.nicoScripts.ban[0]?.end).toBe(
-      neutralizedBanContext.nicoScripts.ban[0]?.start,
-    );
+    expect(
+      zeroBanContext.nicoScripts.ban[0]?.end -
+        zeroBanContext.nicoScripts.ban[0]?.start,
+    ).toBe(defaultBanRange);
 
-    const neutralizedReverseContext = createContext();
+    const overflowBanContext = createContext();
+    parseCommandAndNicoScript(
+      createComment({
+        owner: true,
+        content: "@コメント禁止",
+        mail: [OVERFLOW_DURATION],
+      }),
+      overflowBanContext,
+    );
+    expect(
+      overflowBanContext.nicoScripts.ban[0]?.end -
+        overflowBanContext.nicoScripts.ban[0]?.start,
+    ).toBe(defaultBanRange);
+
+    const zeroReverseContext = createContext();
     parseCommandAndNicoScript(
       createComment({
         owner: true,
         content: "@逆 全",
         mail: ["@0"],
       }),
-      neutralizedReverseContext,
+      zeroReverseContext,
     );
-    expect(neutralizedReverseContext.nicoScripts.reverse[0]?.end).toBe(
-      neutralizedReverseContext.nicoScripts.reverse[0]?.start,
+    expect(
+      zeroReverseContext.nicoScripts.reverse[0]?.end -
+        zeroReverseContext.nicoScripts.reverse[0]?.start,
+    ).toBe(defaultBanRange);
+
+    const overflowReverseContext = createContext();
+    parseCommandAndNicoScript(
+      createComment({
+        owner: true,
+        content: "@逆 全",
+        mail: [OVERFLOW_DURATION],
+      }),
+      overflowReverseContext,
     );
+    expect(
+      overflowReverseContext.nicoScripts.reverse[0]?.end -
+        overflowReverseContext.nicoScripts.reverse[0]?.start,
+    ).toBe(defaultBanRange);
   });
 
   test("lazy constructor defers timeline expansion until the visible window", () => {

@@ -70,7 +70,7 @@ const normalizeParsedCommandLong = (value: number | undefined) => {
     return undefined;
   }
   if (!Number.isFinite(value) || value <= 0) {
-    return 0;
+    return undefined;
   }
   return Math.min(value, MAX_COMMENT_LONG / 100);
 };

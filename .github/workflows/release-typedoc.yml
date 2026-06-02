@@ -62,6 +62,7 @@ jobs:
           name: typedoc-artifacts
           path: typedoc-artifacts.tgz
           if-no-files-found: error
+          retention-days: 1
 
   push-typedoc:
     needs: typedoc

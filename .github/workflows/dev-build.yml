@@ -47,6 +47,7 @@ jobs:
           name: dev-build-artifacts
           path: dev-build-artifacts.tgz
           if-no-files-found: error
+          retention-days: 1
 
   push-dev-build:
     needs: build

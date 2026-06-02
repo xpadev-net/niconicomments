@@ -8,6 +8,8 @@ import {
   ZRawApiResponse,
 } from "@/@types";
 
+import { assignUserId } from "./xmlDocument";
+
 export const LegacyParser: InputParser = {
   key: ["legacy"],
   parse: (input) => {
@@ -47,13 +49,7 @@ const fromLegacy = (data: RawApiResponse[]): FormattedComment[] => {
       if (value.content.startsWith("/") && !value.user_id) {
         tmpParam.mail.push("invisible");
       }
-      const existingUserId = userIdMap.get(value.user_id);
-      if (existingUserId === undefined) {
-        tmpParam.user_id = userIdMap.size;
-        userIdMap.set(value.user_id, tmpParam.user_id);
-      } else {
-        tmpParam.user_id = existingUserId;
-      }
+      tmpParam.user_id = assignUserId(userIdMap, value.user_id);
       data_.push(tmpParam);
     }
   }

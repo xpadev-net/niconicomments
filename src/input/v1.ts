@@ -3,6 +3,8 @@ import { array, parse } from "valibot";
 import type { InputParser } from "@/@types";
 import { type FormattedComment, type V1Thread, ZV1Thread } from "@/@types";
 
+import { assignUserId } from "./xmlDocument";
+
 export const V1Parser: InputParser = {
   key: ["v1"],
   parse: (input: unknown) => {
@@ -39,13 +41,7 @@ const fromV1 = (data: V1Thread[]): FormattedComment[] => {
       if (tmpParam.content.startsWith("/") && tmpParam.owner) {
         tmpParam.mail.push("invisible");
       }
-      const existingUserId = userIdMap.get(value.userId);
-      if (existingUserId === undefined) {
-        tmpParam.user_id = userIdMap.size;
-        userIdMap.set(value.userId, tmpParam.user_id);
-      } else {
-        tmpParam.user_id = existingUserId;
-      }
+      tmpParam.user_id = assignUserId(userIdMap, value.userId);
       data_.push(tmpParam);
     }
   }

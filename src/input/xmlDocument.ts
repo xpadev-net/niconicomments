@@ -2,17 +2,31 @@ import type { FormattedComment, InputParser } from "@/@types";
 import { InvalidFormatError } from "@/errors";
 import typeGuard from "@/typeGuard";
 
+export const assignUserId = (
+  userIdMap: Map<string, number>,
+  userId: string,
+): number => {
+  const existingUserId = userIdMap.get(userId);
+  if (existingUserId !== undefined) return existingUserId;
+
+  const nextUserId = userIdMap.size;
+  userIdMap.set(userId, nextUserId);
+  return nextUserId;
+};
+
 export const XmlDocumentParser: InputParser = {
   key: ["XMLDocument", "niconicome"],
   parse: (input: unknown): FormattedComment[] => {
+    let isXmlDocument = false;
     if (typeof input === "object" && input !== null) {
       try {
-        if (typeGuard.xmlDocument(input)) {
-          return parseXMLDocument(input);
-        }
+        isXmlDocument = typeGuard.xmlDocument(input);
       } catch (error) {
         if (!(error instanceof TypeError)) throw error;
       }
+    }
+    if (isXmlDocument) {
+      return parseXMLDocument(input as XMLDocument);
     }
     throw new InvalidFormatError();
   },
@@ -48,14 +62,10 @@ const parseXMLDocument = (data: XMLDocument): FormattedComment[] => {
     if (tmpParam.content.startsWith("/") && tmpParam.owner) {
       tmpParam.mail.push("invisible");
     }
-    const userId = item.getAttribute("user_id") ?? "";
-    const existingUserId = userIdMap.get(userId);
-    if (existingUserId === undefined) {
-      tmpParam.user_id = userIdMap.size;
-      userIdMap.set(userId, tmpParam.user_id);
-    } else {
-      tmpParam.user_id = existingUserId;
-    }
+    tmpParam.user_id = assignUserId(
+      userIdMap,
+      item.getAttribute("user_id") ?? "",
+    );
     data_.push(tmpParam);
   }
   return data_;

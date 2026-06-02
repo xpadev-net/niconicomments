@@ -1,8 +1,10 @@
 # This is a basic workflow to help you get started with Actions
 
 name: TypeDoc
-permissions:
-  contents: write
+
+concurrency:
+  group: ${{ github.repository }}-typedoc
+  cancel-in-progress: true
 
 # Controls when the workflow will run
 on:
@@ -19,21 +21,25 @@ jobs:
   typedoc:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          persist-credentials: false
 
 
-      - uses: pnpm/action-setup@v6
+      - uses: pnpm/action-setup@ac6db6d3c1f721f886538a378a2d73e85697340a
         name: Install pnpm
         with:
           version: 11
           run_install: false
 
       - name: Install Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
         with:
           node-version: 24
           cache: 'pnpm'
@@ -51,13 +57,44 @@ jobs:
       - name: generate dev build
         run: pnpm build
 
+      - name: Package generated artifacts
+        run: tar -czf typedoc-artifacts.tgz .gitignore docs/type dist/bundle.js
+
+      - name: Upload generated artifacts
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: typedoc-artifacts
+          path: typedoc-artifacts.tgz
+          if-no-files-found: error
+          retention-days: 1
+
+  push-typedoc:
+    needs: typedoc
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          persist-credentials: false
+
+      - name: Download generated artifacts
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: typedoc-artifacts
+          path: ${{ runner.temp }}/typedoc-artifacts
+
       - name: Create new Branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.email "github-actions@xpadev.net"
           git config user.name "github-actions"
+          git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           git checkout -b typedoc
+          git rm -rf . --quiet || true
+          tar -xzf "${RUNNER_TEMP}/typedoc-artifacts/typedoc-artifacts.tgz"
           cp -f ./dist/bundle.js ./docs/
           git add .
           git commit -m "auto generate" -n

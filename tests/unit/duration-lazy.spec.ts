@@ -1,0 +1,267 @@
+import { beforeAll, beforeEach, describe, expect, test } from "vitest";
+
+import type { FormattedComment, IRenderer } from "@/@types/";
+import type { CommentInstanceContext } from "@/contexts";
+import { createNicoScripts, ImageCacheContext } from "@/contexts";
+import { defaultConfig, defaultOptions } from "@/definition/config";
+import { initConfig } from "@/definition/initConfig";
+import NiconiComments from "@/main";
+import {
+  MAX_COMMENT_LONG,
+  MAX_LAZY_COMMENT_LOOKAHEAD,
+  parseCommandAndNicoScript,
+} from "@/utils/comment";
+import { RangeCacheContext } from "@/utils/rangeCache";
+
+class HTMLCanvasElementMock {}
+
+const HUGE_DURATION = "@9999";
+const OVERFLOW_DURATION = `@${"9".repeat(400)}`;
+
+const emptyTextMetrics = (width: number): TextMetrics =>
+  ({
+    width,
+    actualBoundingBoxLeft: 0,
+    actualBoundingBoxRight: width,
+    actualBoundingBoxAscent: 0,
+    actualBoundingBoxDescent: 0,
+    alphabeticBaseline: 0,
+    hangingBaseline: 0,
+    emHeightAscent: 0,
+    emHeightDescent: 0,
+    fontBoundingBoxAscent: 0,
+    fontBoundingBoxDescent: 0,
+    ideographicBaseline: 0,
+  }) as TextMetrics;
+
+class FakeRenderer implements IRenderer {
+  public readonly rendererName = "FakeRenderer";
+  public readonly canvas = {} as HTMLCanvasElement;
+  private font = "";
+  private size = { width: 1920, height: 1080 };
+
+  destroy() {}
+  drawVideo() {}
+  getFont() {
+    return this.font;
+  }
+  getFillStyle() {
+    return "#000000";
+  }
+  setScale() {}
+  fillRect() {}
+  strokeRect() {}
+  fillText() {}
+  strokeText() {}
+  quadraticCurveTo() {}
+  clearRect() {}
+  setFont(font: string) {
+    this.font = font;
+  }
+  setFillStyle() {}
+  setStrokeStyle() {}
+  setLineWidth() {}
+  setGlobalAlpha() {}
+  setSize(width: number, height: number) {
+    this.size = { width, height };
+  }
+  getSize() {
+    return this.size;
+  }
+  measureText(_text: string) {
+    return emptyTextMetrics(300);
+  }
+  beginPath() {}
+  closePath() {}
+  moveTo() {}
+  lineTo() {}
+  stroke() {}
+  save() {}
+  restore() {}
+  getCanvas() {
+    return this;
+  }
+  drawImage() {}
+  flush() {}
+  invalidateImage() {}
+}
+
+const createComment = (
+  overrides: Partial<FormattedComment> = {},
+): FormattedComment => ({
+  id: overrides.id ?? 1,
+  vpos: overrides.vpos ?? 0,
+  content: overrides.content ?? "test comment",
+  date: overrides.date ?? 1,
+  date_usec: overrides.date_usec ?? 0,
+  owner: overrides.owner ?? false,
+  premium: overrides.premium ?? false,
+  mail: overrides.mail ?? [],
+  user_id: overrides.user_id ?? 1,
+  layer: overrides.layer ?? -1,
+  is_my_post: overrides.is_my_post ?? false,
+});
+
+const createContext = (): CommentInstanceContext => {
+  initConfig();
+  return {
+    config: { ...defaultConfig },
+    options: { ...defaultOptions, mode: "html5" },
+    nicoScripts: createNicoScripts(),
+    imageCache: new ImageCacheContext(),
+    rangeCache: new RangeCacheContext(),
+  };
+};
+
+describe("duration bounds and lazy timeline expansion", () => {
+  beforeAll(() => {
+    if (typeof HTMLCanvasElement === "undefined") {
+      Object.defineProperty(globalThis, "HTMLCanvasElement", {
+        value: HTMLCanvasElementMock,
+        configurable: true,
+      });
+    }
+    if (typeof window === "undefined") {
+      Object.defineProperty(globalThis, "window", {
+        value: globalThis,
+        configurable: true,
+      });
+    }
+  });
+
+  beforeEach(() => {
+    initConfig();
+  });
+
+  test("caps huge fixed comment durations without creating enormous timeline keys", () => {
+    const startVpos = 100;
+    const instance = new NiconiComments(
+      new FakeRenderer(),
+      [createComment({ vpos: startVpos, mail: ["ue", HUGE_DURATION] })],
+      { format: "formatted", mode: "html5" },
+    );
+    const state = instance as unknown as {
+      comments: { long: number }[];
+      timeline: Record<number, unknown[]>;
+    };
+    const keys = Object.keys(state.timeline)
+      .map(Number)
+      .sort((a, b) => a - b);
+
+    expect(state.comments[0]?.long).toBe(MAX_COMMENT_LONG);
+    expect(keys).toHaveLength(MAX_COMMENT_LONG);
+    expect(keys[0]).toBe(startVpos);
+    expect(keys.at(-1)).toBe(startVpos + MAX_COMMENT_LONG - 1);
+  });
+
+  test("caps huge moving durations and neutralizes overflow-like values", () => {
+    const defaultMoving = parseCommandAndNicoScript(
+      createComment(),
+      createContext(),
+    );
+    const moving = parseCommandAndNicoScript(
+      createComment({ mail: [HUGE_DURATION] }),
+      createContext(),
+    );
+    expect(moving.long).toBe(MAX_COMMENT_LONG);
+
+    const infinityLike = parseCommandAndNicoScript(
+      createComment({ mail: [OVERFLOW_DURATION] }),
+      createContext(),
+    );
+    expect(infinityLike.long).toBe(defaultMoving.long);
+    expect(infinityLike.long).toBeLessThanOrEqual(MAX_COMMENT_LONG);
+  });
+
+  test("bounds NicoScript ban/reverse ranges and neutralizes explicit bad durations", () => {
+    const banContext = createContext();
+    parseCommandAndNicoScript(
+      createComment({
+        owner: true,
+        content: "@コメント禁止",
+        mail: [HUGE_DURATION],
+      }),
+      banContext,
+    );
+    expect(
+      banContext.nicoScripts.ban[0]?.end - banContext.nicoScripts.ban[0]?.start,
+    ).toBe(MAX_COMMENT_LONG);
+
+    const reverseContext = createContext();
+    parseCommandAndNicoScript(
+      createComment({
+        owner: true,
+        content: "@逆 全",
+        mail: [HUGE_DURATION],
+      }),
+      reverseContext,
+    );
+    expect(
+      reverseContext.nicoScripts.reverse[0]?.end -
+        reverseContext.nicoScripts.reverse[0]?.start,
+    ).toBe(MAX_COMMENT_LONG);
+
+    const neutralizedBanContext = createContext();
+    parseCommandAndNicoScript(
+      createComment({
+        owner: true,
+        content: "@コメント禁止",
+        mail: ["@0"],
+      }),
+      neutralizedBanContext,
+    );
+    expect(neutralizedBanContext.nicoScripts.ban[0]?.end).toBe(
+      neutralizedBanContext.nicoScripts.ban[0]?.start,
+    );
+
+    const neutralizedReverseContext = createContext();
+    parseCommandAndNicoScript(
+      createComment({
+        owner: true,
+        content: "@逆 全",
+        mail: ["@0"],
+      }),
+      neutralizedReverseContext,
+    );
+    expect(neutralizedReverseContext.nicoScripts.reverse[0]?.end).toBe(
+      neutralizedReverseContext.nicoScripts.reverse[0]?.start,
+    );
+  });
+
+  test("lazy constructor defers timeline expansion until the visible window", () => {
+    const farVpos = MAX_LAZY_COMMENT_LOOKAHEAD + MAX_COMMENT_LONG + 500;
+    const instance = new NiconiComments(
+      new FakeRenderer(),
+      [
+        createComment({ id: 1, vpos: 0, mail: ["ue"] }),
+        createComment({
+          id: 2,
+          vpos: MAX_LAZY_COMMENT_LOOKAHEAD,
+          mail: ["ue"],
+        }),
+        createComment({ id: 3, vpos: farVpos, mail: ["ue"] }),
+      ],
+      { format: "formatted", lazy: true, mode: "html5" },
+    );
+    const state = instance as unknown as {
+      comments: { posY: number }[];
+      processedCommentIndex: number;
+      timeline: Record<number, unknown[]>;
+    };
+
+    expect(Object.keys(state.timeline)).toHaveLength(0);
+    expect(state.processedCommentIndex).toBe(-1);
+
+    instance.drawCanvas(0, true);
+    const keys = Object.keys(state.timeline)
+      .map(Number)
+      .sort((a, b) => a - b);
+
+    expect(state.processedCommentIndex).toBe(1);
+    expect(state.comments[0]?.posY).not.toBe(-1);
+    expect(state.comments[1]?.posY).not.toBe(-1);
+    expect(state.comments[2]?.posY).toBe(-1);
+    expect(keys).not.toContain(farVpos);
+    expect(keys.at(-1)).toBeLessThan(farVpos);
+  });
+});

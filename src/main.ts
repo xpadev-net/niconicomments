@@ -34,6 +34,7 @@ import {
   processFixedComment,
   processMovableComment,
 } from "@/utils";
+import { MAX_LAZY_COMMENT_LOOKAHEAD } from "@/utils/comment";
 import { createCommentInstance } from "@/utils/plugins";
 import { RangeCacheContext } from "@/utils/rangeCache";
 
@@ -41,6 +42,8 @@ import * as internal from "./internal";
 
 const EMPTY_TIMELINE = Object.freeze([]) as readonly IComment[];
 const BAN_FRAME_POSITION_RESOLUTION_BUDGET = 256;
+const TIMELINE_COMMENT_SORT = (a: IComment, b: IComment) =>
+  Number(a.owner) - Number(b.owner) || a.index - b.index;
 
 const toIntegerOrInfinity = (value: number) => {
   if (Number.isNaN(value) || value === 0) return 0;
@@ -246,8 +249,10 @@ class NiconiComments {
       pv.push(createCommentInstance(val, this.renderer, index, this.ctx));
       return pv;
     }, []);
-    this.getCommentPos(instances, instances.length, this.ctx.options.lazy);
-    this.sortTimelineComment();
+    if (!this.ctx.options.lazy) {
+      this.getCommentPos(instances, instances.length);
+      this.sortTimelineComment();
+    }
 
     const plugins: IPluginList = [];
     for (const plugin of this.ctx.config.plugins) {
@@ -314,6 +319,35 @@ class NiconiComments {
     );
   }
 
+  private resolveLazyCommentWindow(vpos: number) {
+    if (!this.ctx.options.lazy) return false;
+    const startIndex = this.processedCommentIndex + 1;
+    const resolveUntil = vpos + MAX_LAZY_COMMENT_LOOKAHEAD;
+    let endIndex = startIndex;
+    while (endIndex < this.comments.length) {
+      const comment = this.comments[endIndex];
+      if (!comment) {
+        endIndex++;
+        continue;
+      }
+      if (comment.vpos > resolveUntil) {
+        break;
+      }
+      endIndex++;
+    }
+    if (endIndex <= startIndex) {
+      return false;
+    }
+    this.getCommentPos(this.comments, endIndex);
+    return true;
+  }
+
+  private sortTimelineRange(vpos: number) {
+    const item = this.timeline[vpos];
+    item?.sort(TIMELINE_COMMENT_SORT);
+    return item ?? EMPTY_TIMELINE;
+  }
+
   /**
    * 投稿者コメントを前に移動
    */
@@ -322,9 +356,7 @@ class NiconiComments {
     for (const vpos of Object.keys(this.timeline)) {
       const item = this.timeline[Number(vpos)];
       if (!item) continue;
-      item.sort(
-        (a, b) => Number(a.owner) - Number(b.owner) || a.index - b.index,
-      );
+      item.sort(TIMELINE_COMMENT_SORT);
     }
     this._log(`parseData complete: ${performance.now() - sortCommentStart}ms`);
   }
@@ -435,8 +467,15 @@ class NiconiComments {
     const triggerHandlerStart = profile ? performance.now() : 0;
     this.eventHandler.trigger(vposInt, this.lastVposInt, this.ctx.nicoScripts);
     setProfile("triggerHandler", triggerHandlerStart);
-    const timelineRange = this.timeline[vposInt] ?? EMPTY_TIMELINE;
-    const lastTimelineRange = this.timeline[this.lastVposInt] ?? EMPTY_TIMELINE;
+    const resolvedLazyWindow = this.resolveLazyCommentWindow(vposInt);
+    const timelineRange =
+      resolvedLazyWindow || this.ctx.options.lazy
+        ? this.sortTimelineRange(vposInt)
+        : (this.timeline[vposInt] ?? EMPTY_TIMELINE);
+    const lastTimelineRange =
+      resolvedLazyWindow || this.ctx.options.lazy
+        ? this.sortTimelineRange(this.lastVposInt)
+        : (this.timeline[this.lastVposInt] ?? EMPTY_TIMELINE);
     const currentHasNaka = hasNakaComment(timelineRange);
     const lastHasNaka =
       this._cachedSplit?.vpos === this.lastVposInt

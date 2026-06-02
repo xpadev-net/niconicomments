@@ -45,6 +45,49 @@ const RE_WAKU = /^nico:waku:(.+)$/;
 const RE_FILL = /^nico:fill:(.+)$/;
 const RE_OPACITY = /^nico:opacity:(.+)$/;
 const RE_COLOR_CODE = /^#(?:[0-9a-z]{3}|[0-9a-z]{6})$/;
+const DEFAULT_COMMENT_LONG = 300;
+const DEFAULT_NICOSCRIPT_LONG = 30 * 100;
+export const MAX_COMMENT_LONG = 120 * 100;
+export const MAX_LAZY_COMMENT_LOOKAHEAD =
+  Math.ceil((288 * (MAX_COMMENT_LONG + 125)) / 1632) + 100;
+
+const normalizeLongCentiseconds = (value: number) => {
+  if (!Number.isFinite(value) || value <= 0) {
+    return 0;
+  }
+  return Math.min(Math.floor(value), MAX_COMMENT_LONG);
+};
+
+const normalizeCommentLong = (value: number | undefined) => {
+  if (value === undefined) {
+    return DEFAULT_COMMENT_LONG;
+  }
+  return normalizeLongCentiseconds(value * 100) || DEFAULT_COMMENT_LONG;
+};
+
+const normalizeParsedCommandLong = (value: number | undefined) => {
+  if (value === undefined) {
+    return undefined;
+  }
+  if (!Number.isFinite(value) || value <= 0) {
+    return 0;
+  }
+  return Math.min(value, MAX_COMMENT_LONG / 100);
+};
+
+const normalizeOptionalLong = (value: number | undefined) => {
+  if (value === undefined) {
+    return undefined;
+  }
+  return normalizeLongCentiseconds(value * 100);
+};
+
+const normalizeNicoscriptLong = (value: number | undefined) => {
+  if (value === undefined) {
+    return DEFAULT_NICOSCRIPT_LONG;
+  }
+  return normalizeLongCentiseconds(value * 100);
+};
 
 /**
  * 改行リサイズが発生するか
@@ -177,6 +220,7 @@ const parseCommandAndNicoScript = (
   const { config, options, nicoScripts, rangeCache } = ctx;
   const isFlash = isFlashComment(comment, config, options);
   const commands = parseCommands(comment, config, options);
+  commands.long = normalizeParsedCommandLong(commands.long);
   processNicoscript(comment, commands, nicoScripts, rangeCache);
   const defaultCommand = getDefaultCommand(comment.vpos, nicoScripts);
   applyNicoScriptReplace(comment, commands, nicoScripts);
@@ -187,7 +231,7 @@ const parseCommandAndNicoScript = (
     color: commands.color ?? defaultCommand.color ?? "#FFFFFF",
     font: commands.font ?? defaultCommand.font ?? "defont",
     fontSize: getConfig(config.fontSize, isFlash)[size].default,
-    long: commands.long ? Math.floor(Number(commands.long) * 100) : 300,
+    long: normalizeCommentLong(commands.long),
     flash: isFlash,
     full: commands.full,
     ender: commands.ender,
@@ -265,8 +309,7 @@ const addNicoscriptReplace = (
     return;
   nicoScripts.replace.unshift({
     start: comment.vpos,
-    long:
-      commands.long === undefined ? undefined : Math.floor(commands.long * 100),
+    long: normalizeOptionalLong(commands.long),
     keyword: result[0],
     replace: result[1] ?? "",
     range: result[2] ?? "単", //単
@@ -361,8 +404,7 @@ const processDefaultScript = (
 ) => {
   nicoScripts.default.unshift({
     start: comment.vpos,
-    long:
-      commands.long === undefined ? undefined : Math.floor(commands.long * 100),
+    long: normalizeOptionalLong(commands.long),
     color: commands.color,
     size: commands.size,
     font: commands.font,
@@ -387,12 +429,10 @@ const processReverseScript = (
   const target = typeGuard.nicoScript.range.target(reverse?.[1])
     ? reverse?.[1]
     : "全";
-  if (commands.long === undefined) {
-    commands.long = 30;
-  }
+  const long = normalizeNicoscriptLong(commands.long);
   nicoScripts.reverse.unshift({
     start: comment.vpos,
-    end: comment.vpos + commands.long * 100,
+    end: comment.vpos + long,
     target,
   });
   rangeCache.reverseActiveOwner.clear();
@@ -412,12 +452,10 @@ const processBanScript = (
   nicoScripts: NicoScript,
   rangeCache: RangeCacheContext,
 ) => {
-  if (commands.long === undefined) {
-    commands.long = 30;
-  }
+  const long = normalizeNicoscriptLong(commands.long);
   nicoScripts.ban.unshift({
     start: comment.vpos,
-    end: comment.vpos + commands.long * 100,
+    end: comment.vpos + long,
   });
   rangeCache.banActive.clear();
 };
@@ -433,12 +471,10 @@ const processSeekDisableScript = (
   commands: ParsedCommand,
   nicoScripts: NicoScript,
 ) => {
-  if (commands.long === undefined) {
-    commands.long = 30;
-  }
+  const long = normalizeNicoscriptLong(commands.long);
   nicoScripts.seekDisable.unshift({
     start: comment.vpos,
-    end: comment.vpos + commands.long * 100,
+    end: comment.vpos + long,
   });
 };
 
@@ -457,10 +493,8 @@ const processJumpScript = (
 ) => {
   const jumpOptions = RE_JUMP.exec(input);
   if (!jumpOptions?.[1]) return;
-  const end =
-    commands.long === undefined
-      ? undefined
-      : commands.long * 100 + comment.vpos;
+  const long = normalizeOptionalLong(commands.long);
+  const end = long === undefined ? undefined : long + comment.vpos;
   nicoScripts.jump.unshift({
     start: comment.vpos,
     end,

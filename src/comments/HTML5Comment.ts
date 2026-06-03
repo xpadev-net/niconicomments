@@ -51,14 +51,19 @@ const clampHTML5Content = (input: string) => {
   };
 };
 
-const isWithinImageBounds = (width: number, height: number) =>
-  Number.isFinite(width) &&
-  Number.isFinite(height) &&
-  width > 0 &&
-  height > 0 &&
-  width <= MAX_HTML5_COMMENT_IMAGE_WIDTH &&
-  height <= MAX_HTML5_COMMENT_IMAGE_HEIGHT &&
-  width * height <= MAX_HTML5_COMMENT_IMAGE_AREA;
+const isWithinImageBounds = (width: number, height: number) => {
+  const paddedWidth = width + HTML5_COMMENT_IMAGE_PADDING * 2;
+  const paddedHeight = height + HTML5_COMMENT_IMAGE_PADDING * 2;
+  return (
+    Number.isFinite(width) &&
+    Number.isFinite(height) &&
+    width > 0 &&
+    height > 0 &&
+    width <= MAX_HTML5_COMMENT_IMAGE_WIDTH &&
+    height <= MAX_HTML5_COMMENT_IMAGE_HEIGHT &&
+    paddedWidth * paddedHeight <= MAX_HTML5_COMMENT_IMAGE_AREA
+  );
+};
 
 class HTML5Comment extends BaseComment {
   override readonly pluginName: string = "HTML5Comment";

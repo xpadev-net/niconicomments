@@ -98,6 +98,12 @@ class TestHTML5Comment extends HTML5Comment {
   exposeCacheKey() {
     return this.cacheKey;
   }
+  exposeCurrentImage() {
+    return this.image;
+  }
+  drawBodyForTest() {
+    this._draw(0, 0);
+  }
 }
 
 const formattedComment = (
@@ -214,6 +220,7 @@ describe("HTML5 comment resource bounds", () => {
     expect(longContentComment.exposeCacheKey()).not.toContain("x".repeat(1000));
 
     const cacheKeys: string[] = [];
+    let firstComment: TestHTML5Comment | undefined;
     let firstImage: RecordingRenderer | undefined;
     for (let i = 0; i < 1050; i++) {
       const renderer = new RecordingRenderer();
@@ -226,6 +233,7 @@ describe("HTML5 comment resource bounds", () => {
       cacheKeys.push(comment.exposeCacheKey());
       const image = comment.exposeTextImage() as RecordingRenderer | null;
       expect(image).not.toBeNull();
+      firstComment ??= comment;
       firstImage ??= image ?? undefined;
     }
 
@@ -233,7 +241,12 @@ describe("HTML5 comment resource bounds", () => {
     expect(cachedCount).toBeGreaterThan(0);
     expect(cachedCount).toBeLessThanOrEqual(1024);
     expect(cachedCount).toBeLessThan(cacheKeys.length);
-    expect(firstImage?.destroyed).toBe(false);
+    expect(firstImage?.destroyed).toBe(true);
+
+    firstComment?.drawBodyForTest();
+
+    expect(firstComment?.exposeCurrentImage()).not.toBe(firstImage);
+    expect(firstComment?.exposeCurrentImage()).toBeTruthy();
   });
 
   test("clamps backing canvas dimensions including padding", () => {
@@ -257,5 +270,6 @@ describe("HTML5 comment resource bounds", () => {
     expect(canvas.height).toBeLessThanOrEqual(8192);
     expect(renderer.getSize().width).toBe(canvas.width - 8);
     expect(renderer.getSize().height).toBe(canvas.height - 8);
+    expect(context.translate).toHaveBeenCalledTimes(2);
   });
 });

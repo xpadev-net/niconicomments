@@ -19,6 +19,7 @@ const MAX_CACHE_KEY_CONTENT_LENGTH = 512;
 const MAX_CACHE_KEY_EDGE_LENGTH = 256;
 const MAX_IMAGE_CACHE_ENTRIES = 1024;
 const imageCacheEntries = new WeakMap<object, Map<string, number>>();
+const destroyedTextImages = new WeakSet<IRenderer>();
 
 const hashString = (input: string) => {
   let hash = 2166136261;
@@ -218,6 +219,9 @@ class BaseComment implements IComment {
    * @param cursor カーソルの位置
    */
   protected _draw(posX: number, posY: number, cursor?: Position) {
+    if (this.image && destroyedTextImages.has(this.image)) {
+      this.image = undefined;
+    }
     if (this.image === undefined) {
       this.image = this.getTextImage();
     }
@@ -346,6 +350,7 @@ class BaseComment implements IComment {
       cache.timeout = window.setTimeout(
         () => {
           if (imageCache.get(key)?.image === cachedImage) {
+            destroyedTextImages.add(cachedImage);
             cachedImage.destroy();
             imageCache.delete(key);
             imageCacheEntries.get(imageCache)?.delete(key);
@@ -387,11 +392,17 @@ class BaseComment implements IComment {
     }
     this.image = image;
     if (!entries.has(key) && entries.size >= MAX_IMAGE_CACHE_ENTRIES) {
-      window.setTimeout(() => {
-        if (this.image === image) this.image = undefined;
-        image.destroy();
-      }, lifetime);
-      return;
+      const oldestKey = entries.keys().next().value;
+      if (oldestKey !== undefined) {
+        const oldest = imageCache.get(oldestKey);
+        if (oldest) {
+          clearTimeout(oldest.timeout);
+          destroyedTextImages.add(oldest.image);
+          oldest.image.destroy();
+        }
+        imageCache.delete(oldestKey);
+        entries.delete(oldestKey);
+      }
     }
     window.setTimeout(() => {
       this.image = undefined;
@@ -399,6 +410,7 @@ class BaseComment implements IComment {
     imageCache.set(key, {
       timeout: window.setTimeout(() => {
         if (imageCache.get(key)?.image === image) {
+          destroyedTextImages.add(image);
           image.destroy();
           imageCache.delete(key);
           imageCacheEntries.get(imageCache)?.delete(key);

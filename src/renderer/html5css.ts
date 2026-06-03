@@ -47,7 +47,7 @@ class HTML5CSSRenderer implements IRenderer {
     this.canvas.width = this.width;
     this.canvas.height = this.height;
     this.canvas.style.display = "none";
-    this.helper = new CanvasRenderer(undefined, undefined);
+    this.helper = new CanvasRenderer(undefined, this.video);
     this.helper.setSize(this.width, this.height);
 
     const computedStyle = this.root.ownerDocument.defaultView?.getComputedStyle(
@@ -82,6 +82,7 @@ class HTML5CSSRenderer implements IRenderer {
 
     this.root.appendChild(this.canvas);
     this.root.appendChild(this.layer);
+    this.setupHelperCanvas();
     this.updateObjectFitContain();
     if (typeof ResizeObserver !== "undefined") {
       this.resizeObserver = new ResizeObserver(() => {
@@ -93,6 +94,7 @@ class HTML5CSSRenderer implements IRenderer {
 
   destroy(): void {
     this.resizeObserver?.disconnect();
+    this.teardownHelperCanvas();
     this.helper.destroy();
     this.nodes.length = 0;
     this.layer.remove();
@@ -140,13 +142,25 @@ class HTML5CSSRenderer implements IRenderer {
   }
 
   strokeRect(x: number, y: number, width: number, height: number): void {
+    let nx = x;
+    let ny = y;
+    let nw = width;
+    let nh = height;
+    if (nw < 0) {
+      nx += nw;
+      nw = -nw;
+    }
+    if (nh < 0) {
+      ny += nh;
+      nh = -nh;
+    }
     const node = this.getNode("div");
     node.style.background = "transparent";
     node.style.border = `${this.state.lineWidth * this.state.scaleX}px solid ${
       this.state.strokeStyle
     }`;
     node.style.boxSizing = "border-box";
-    this.positionNode(node, x, y, width, height);
+    this.positionNode(node, nx, ny, nw, nh);
   }
 
   fillText(text: string, x: number, y: number): void {
@@ -208,9 +222,11 @@ class HTML5CSSRenderer implements IRenderer {
     this.layer.style.width = `${width}px`;
     this.layer.style.height = `${height}px`;
     this.updateObjectFitContain();
+    this.teardownHelperCanvas();
     this.helper.destroy();
-    this.helper = new CanvasRenderer(undefined, undefined);
+    this.helper = new CanvasRenderer(undefined, this.video);
     this.helper.setSize(width, height);
+    this.setupHelperCanvas();
     this.stateStack.length = 0;
     this.state = {
       alpha: 1,
@@ -307,14 +323,7 @@ class HTML5CSSRenderer implements IRenderer {
 
   flush(): void {
     if (this.helperDirty) {
-      this.invalidateImage(this.helper);
-      this.drawImage(
-        this.helper,
-        0,
-        0,
-        this.canvas.width / this.state.scaleX,
-        this.canvas.height / this.state.scaleY,
-      );
+      this.layer.appendChild(this.helper.canvas);
       this.helperDirty = false;
     }
     for (let i = this.nodeCursor, n = this.nodes.length; i < n; i++) {
@@ -348,7 +357,6 @@ class HTML5CSSRenderer implements IRenderer {
       node.style.maxWidth = "none";
       node.style.maxHeight = "none";
       this.nodes[this.nodeCursor] = node;
-      this.layer.appendChild(node);
     }
     this.layer.appendChild(node);
     node.style.display = "block";
@@ -373,6 +381,15 @@ class HTML5CSSRenderer implements IRenderer {
   }
 
   private updateObjectFitContain(): void {
+    if (
+      this.width <= 0 ||
+      this.height <= 0 ||
+      !Number.isFinite(this.width) ||
+      !Number.isFinite(this.height)
+    ) {
+      this.layer.style.transform = "translate(0px, 0px) scale(1)";
+      return;
+    }
     const rect = this.root.getBoundingClientRect();
     const containerWidth = rect.width || this.width;
     const containerHeight = rect.height || this.height;
@@ -383,6 +400,26 @@ class HTML5CSSRenderer implements IRenderer {
     const offsetX = (containerWidth - this.width * scale) / 2;
     const offsetY = (containerHeight - this.height * scale) / 2;
     this.layer.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${scale})`;
+  }
+
+  private setupHelperCanvas(): void {
+    const { style } = this.helper.canvas;
+    style.position = "absolute";
+    style.left = "0";
+    style.top = "0";
+    style.width = `${this.width}px`;
+    style.height = `${this.height}px`;
+    style.pointerEvents = "none";
+    style.margin = "0";
+    style.padding = "0";
+    style.maxWidth = "none";
+    style.maxHeight = "none";
+    this.layer.appendChild(this.helper.canvas);
+  }
+
+  private teardownHelperCanvas(): void {
+    this.helper.canvas.remove();
+    this.helper.canvas.removeAttribute("style");
   }
 
   private getInitialSize(root: HTMLElement) {

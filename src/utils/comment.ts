@@ -45,8 +45,8 @@ const RE_WAKU = /^nico:waku:(.+)$/;
 const RE_FILL = /^nico:fill:(.+)$/;
 const RE_OPACITY = /^nico:opacity:(.+)$/;
 const RE_COLOR_CODE = /^#(?:[0-9a-z]{3}|[0-9a-z]{6})$/;
-const DEFAULT_COMMENT_LONG = 300;
-const DEFAULT_NICOSCRIPT_LONG = 30 * 100;
+export const DEFAULT_COMMENT_LONG = 300;
+export const DEFAULT_NICOSCRIPT_LONG = 30 * 100;
 export const MAX_COMMENT_LONG = 120 * 100;
 export const MAX_LAZY_COMMENT_LOOKAHEAD =
   Math.ceil((288 * (MAX_COMMENT_LONG + 125)) / 1632) + 100;

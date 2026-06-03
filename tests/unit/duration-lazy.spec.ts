@@ -7,6 +7,8 @@ import { defaultConfig, defaultOptions } from "@/definition/config";
 import { initConfig } from "@/definition/initConfig";
 import NiconiComments from "@/main";
 import {
+  DEFAULT_COMMENT_LONG,
+  DEFAULT_NICOSCRIPT_LONG,
   MAX_COMMENT_LONG,
   MAX_LAZY_COMMENT_LOOKAHEAD,
   parseCommandAndNicoScript,
@@ -201,8 +203,6 @@ describe("duration bounds and lazy timeline expansion", () => {
         reverseContext.nicoScripts.reverse[0]?.start,
     ).toBe(MAX_COMMENT_LONG);
 
-    const defaultBanRange = 30 * 100;
-
     const zeroBanContext = createContext();
     parseCommandAndNicoScript(
       createComment({
@@ -215,7 +215,7 @@ describe("duration bounds and lazy timeline expansion", () => {
     expect(
       zeroBanContext.nicoScripts.ban[0]?.end -
         zeroBanContext.nicoScripts.ban[0]?.start,
-    ).toBe(defaultBanRange);
+    ).toBe(DEFAULT_NICOSCRIPT_LONG);
 
     const overflowBanContext = createContext();
     parseCommandAndNicoScript(
@@ -229,7 +229,7 @@ describe("duration bounds and lazy timeline expansion", () => {
     expect(
       overflowBanContext.nicoScripts.ban[0]?.end -
         overflowBanContext.nicoScripts.ban[0]?.start,
-    ).toBe(defaultBanRange);
+    ).toBe(DEFAULT_NICOSCRIPT_LONG);
 
     const zeroReverseContext = createContext();
     parseCommandAndNicoScript(
@@ -243,7 +243,7 @@ describe("duration bounds and lazy timeline expansion", () => {
     expect(
       zeroReverseContext.nicoScripts.reverse[0]?.end -
         zeroReverseContext.nicoScripts.reverse[0]?.start,
-    ).toBe(defaultBanRange);
+    ).toBe(DEFAULT_NICOSCRIPT_LONG);
 
     const overflowReverseContext = createContext();
     parseCommandAndNicoScript(
@@ -257,7 +257,7 @@ describe("duration bounds and lazy timeline expansion", () => {
     expect(
       overflowReverseContext.nicoScripts.reverse[0]?.end -
         overflowReverseContext.nicoScripts.reverse[0]?.start,
-    ).toBe(defaultBanRange);
+    ).toBe(DEFAULT_NICOSCRIPT_LONG);
   });
 
   test("lazy constructor defers timeline expansion until the visible window", () => {
@@ -318,7 +318,7 @@ describe("duration bounds and lazy timeline expansion", () => {
 
     expect(state.comments[0]?.long).toBe(MAX_COMMENT_LONG);
     expect(state.comments[1]?.long).toBe(MAX_COMMENT_LONG);
-    expect(state.comments[2]?.long).toBe(300);
+    expect(state.comments[2]?.long).toBe(DEFAULT_COMMENT_LONG);
     expect(Object.keys(state.timeline).length).toBeLessThan(
       MAX_COMMENT_LONG * 3,
     );

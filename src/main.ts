@@ -115,6 +115,7 @@ class NiconiComments {
     hasNaka: boolean;
   } | null = null;
   private lazyCommentOrderSortedByVpos: boolean;
+  private nextUnprocessedCommentIndex: number;
   private commentArrayIndexMap: WeakMap<IComment, number>;
   private processedCommentIndex: number;
   private comments: IComment[];
@@ -212,11 +213,13 @@ class NiconiComments {
     };
     this.lastVpos = -1;
     this.lazyCommentOrderSortedByVpos = true;
+    this.nextUnprocessedCommentIndex = 0;
     this.commentArrayIndexMap = new WeakMap();
     this.processedCommentIndex = -1;
 
     this.comments = this.preRendering(parsedData);
     this._rebuildCommentArrayIndex(this.comments);
+    this._advanceNextUnprocessedCommentIndex();
 
     this._log(
       `constructor complete: ${performance.now() - constructorStart}ms`,
@@ -234,6 +237,17 @@ class NiconiComments {
       if (!comment) continue;
       this.commentArrayIndexMap.set(comment, i);
     }
+  }
+
+  private _advanceNextUnprocessedCommentIndex(comments = this.comments) {
+    while (this.nextUnprocessedCommentIndex < comments.length) {
+      const comment = comments[this.nextUnprocessedCommentIndex];
+      if (comment && !comment.invisible && comment.posY < 0) {
+        break;
+      }
+      this.nextUnprocessedCommentIndex++;
+    }
+    return this.nextUnprocessedCommentIndex;
   }
 
   /**
@@ -322,6 +336,11 @@ class NiconiComments {
         );
       }
     }
+    this.nextUnprocessedCommentIndex = Math.max(
+      this.nextUnprocessedCommentIndex,
+      this.processedCommentIndex + 1,
+    );
+    this._advanceNextUnprocessedCommentIndex(data);
     this._log(
       `getCommentPos complete: ${performance.now() - getCommentPosStart}ms`,
     );
@@ -329,12 +348,15 @@ class NiconiComments {
 
   private resolveLazyCommentWindow(vpos: number) {
     if (!this.ctx.options.lazy) return false;
-    const startIndex = this.processedCommentIndex + 1;
+    const startIndex = this._advanceNextUnprocessedCommentIndex();
     const resolveUntil = vpos + MAX_LAZY_COMMENT_LOOKAHEAD;
     let endIndex = startIndex - 1;
-    for (let i = startIndex; i < this.comments.length; i++) {
+    const scanLimit = this.lazyCommentOrderSortedByVpos
+      ? this.comments.length
+      : Math.min(this.comments.length, startIndex + MAX_LAZY_COMMENT_LOOKAHEAD);
+    for (let i = startIndex; i < scanLimit; i++) {
       const comment = this.comments[i];
-      if (!comment || comment.posY > -1) {
+      if (!comment || comment.invisible || comment.posY > -1) {
         continue;
       }
       if (comment.vpos <= resolveUntil) {
@@ -410,6 +432,10 @@ class NiconiComments {
       }
     }
     this.comments.push(...comments);
+    this.nextUnprocessedCommentIndex = Math.min(
+      this.nextUnprocessedCommentIndex,
+      this.comments.length - comments.length,
+    );
     const baseOffset = this.comments.length - comments.length;
     for (let i = 0, n = comments.length; i < n; i++) {
       const comment = comments[i];
@@ -426,6 +452,7 @@ class NiconiComments {
         this.comments.length - 1,
       );
     }
+    this._advanceNextUnprocessedCommentIndex();
     this.sortTimelineComment();
     this._cachedSplit = null;
   }

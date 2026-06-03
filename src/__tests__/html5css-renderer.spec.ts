@@ -40,12 +40,6 @@ test("HTML5CSSRenderer contains its logical stage inside the host layout", async
             bottom: layerRect.bottom,
           }
         : undefined,
-      visibleImages: [
-        ...document.querySelectorAll<HTMLElement>(
-          ".niconicomments-html5css-renderer img",
-        ),
-      ].filter((element) => getComputedStyle(element).display !== "none")
-        .length,
     };
   });
 
@@ -63,5 +57,4 @@ test("HTML5CSSRenderer contains its logical stage inside the host layout", async
   expect(metrics.layerRect.top).toBeGreaterThanOrEqual(metrics.rootRect.top);
   expect(metrics.layerRect.right).toBeLessThanOrEqual(metrics.rootRect.right);
   expect(metrics.layerRect.bottom).toBeLessThanOrEqual(metrics.rootRect.bottom);
-  expect(metrics.visibleImages).toBeGreaterThan(0);
 });

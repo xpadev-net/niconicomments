@@ -215,10 +215,17 @@ class HTML5CSSRenderer implements IRenderer {
     node.style.borderTop = `${borderY} solid ${this.state.strokeStyle}`;
     node.style.borderBottom = `${borderY} solid ${this.state.strokeStyle}`;
     node.style.boxSizing = "border-box";
-    node.style.left = `${nx * this.state.scaleX - borderWidthX / 2}px`;
-    node.style.top = `${ny * this.state.scaleY - borderWidthY / 2}px`;
-    node.style.width = `${nw * this.state.scaleX + borderWidthX}px`;
-    node.style.height = `${nh * this.state.scaleY + borderWidthY}px`;
+    this.positionNode(
+      node,
+      nx,
+      ny,
+      nw,
+      nh,
+      -borderWidthX / 2,
+      -borderWidthY / 2,
+      borderWidthX,
+      borderWidthY,
+    );
   }
 
   fillText(text: string, x: number, y: number): void {
@@ -416,6 +423,11 @@ class HTML5CSSRenderer implements IRenderer {
       const node = this.nodes[i];
       if (node) node.style.display = "none";
     }
+    if (this.stateStack.length > 0) {
+      console.warn(
+        "HTML5CSSRenderer: save()/restore() calls are imbalanced at flush().",
+      );
+    }
   }
 
   invalidateImage(image: IRenderer): void {
@@ -458,13 +470,17 @@ class HTML5CSSRenderer implements IRenderer {
     y: number,
     width: number,
     height: number,
+    offsetX = 0,
+    offsetY = 0,
+    extraWidth = 0,
+    extraHeight = 0,
   ) {
     const scaleX = this.state.scaleX;
     const scaleY = this.state.scaleY;
-    node.style.left = `${x * scaleX}px`;
-    node.style.top = `${y * scaleY}px`;
-    node.style.width = `${width * scaleX}px`;
-    node.style.height = `${height * scaleY}px`;
+    node.style.left = `${x * scaleX + offsetX}px`;
+    node.style.top = `${y * scaleY + offsetY}px`;
+    node.style.width = `${width * scaleX + extraWidth}px`;
+    node.style.height = `${height * scaleY + extraHeight}px`;
   }
 
   private updateObjectFitContain(): void {

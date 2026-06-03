@@ -114,6 +114,7 @@ class NiconiComments {
     vpos: number;
     hasNaka: boolean;
   } | null = null;
+  private lazyCommentOrderSortedByVpos: boolean;
   private commentArrayIndexMap: WeakMap<IComment, number>;
   private processedCommentIndex: number;
   private comments: IComment[];
@@ -210,6 +211,7 @@ class NiconiComments {
       right: {},
     };
     this.lastVpos = -1;
+    this.lazyCommentOrderSortedByVpos = true;
     this.commentArrayIndexMap = new WeakMap();
     this.processedCommentIndex = -1;
 
@@ -272,6 +274,16 @@ class NiconiComments {
     }
 
     this.plugins = plugins;
+    this.lazyCommentOrderSortedByVpos = instances.every(
+      (comment, index, comments) => {
+        const previousComment = comments[index - 1];
+        return (
+          index === 0 ||
+          previousComment === undefined ||
+          previousComment.vpos <= comment.vpos
+        );
+      },
+    );
     this._log(
       `preRendering complete: ${performance.now() - preRenderingStart}ms`,
     );
@@ -327,6 +339,8 @@ class NiconiComments {
       }
       if (comment.vpos <= resolveUntil) {
         endIndex = i;
+      } else if (this.lazyCommentOrderSortedByVpos) {
+        break;
       }
     }
     if (endIndex < startIndex) {

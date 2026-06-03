@@ -49,6 +49,15 @@ export const DEFAULT_COMMENT_LONG = 300;
 export const DEFAULT_NICOSCRIPT_LONG = 30 * 100;
 export const MAX_COMMENT_LONG = 120 * 100;
 export const MAX_NICOSCRIPT_LONG = 60 * 60 * 100;
+export const MAX_AT_BUTTON_COMMAND_CHARS = 16_384;
+export const MAX_AT_BUTTON_TEXT_CHARS = 4096;
+export const MAX_AT_BUTTON_MAIL_ENTRIES = 16;
+export const MAX_AT_BUTTON_MAIL_CHARS = 64;
+export const MAX_AT_BUTTON_LIMIT = 100;
+export const MAX_PARSED_COMMAND_MAIL_ENTRIES = 64;
+export const MAX_PARSED_COMMAND_MAIL_CHARS = 128;
+export const MAX_NICOSCRIPT_COMMAND_CHARS = 16_384;
+export const MAX_NICOSCRIPT_TEXT_CHARS = 4096;
 const LAZY_LOOKAHEAD_LEAD_IN = 288;
 const LAZY_LOOKAHEAD_MOTION_MARGIN = 125;
 const LAZY_LOOKAHEAD_SAFETY_BUFFER = 100;
@@ -122,6 +131,43 @@ const normalizeNicoscriptLong = (value: number | undefined) => {
     normalizeLongCentiseconds(value * 100, MAX_NICOSCRIPT_LONG) ||
     DEFAULT_NICOSCRIPT_LONG
   );
+};
+
+const clampString = (value: string, maxLength: number) =>
+  value.length > maxLength ? value.slice(0, maxLength) : value;
+
+const takeButtonText = (
+  value: string | undefined,
+  remaining: { value: number },
+) => {
+  if (!value || remaining.value <= 0) return "";
+  const text = clampString(value, remaining.value);
+  remaining.value -= text.length;
+  return text;
+};
+
+const normalizeAtButtonLimit = (value: string | undefined) => {
+  const limit = Number(value ?? 1);
+  if (!Number.isFinite(limit) || limit <= 0) {
+    return 0;
+  }
+  return Math.min(Math.floor(limit), MAX_AT_BUTTON_LIMIT);
+};
+
+const normalizeAtButtonMail = (value: string | undefined) => {
+  if (!value) return [];
+  return value
+    .split(",", MAX_AT_BUTTON_MAIL_ENTRIES)
+    .map((command) => clampString(command, MAX_AT_BUTTON_MAIL_CHARS))
+    .filter((command) => command.length > 0);
+};
+
+const hasParsedMailCommand = (commands: string[], target: string) => {
+  const len = Math.min(commands.length, MAX_PARSED_COMMAND_MAIL_ENTRIES);
+  for (let i = 0; i < len; i++) {
+    if (commands[i] === target) return true;
+  }
+  return false;
 };
 
 const processedTimelineComments = new WeakMap<IComment, WeakSet<Timeline>>();
@@ -343,9 +389,10 @@ const addNicoscriptReplace = (
   comment: FormattedComment,
   commands: ParsedCommand,
   nicoScripts: NicoScript,
+  commandInput: string,
 ) => {
   //@置換
-  const result = parseBrackets(comment.content.slice(4));
+  const result = parseBrackets(commandInput.slice(4));
   if (
     result[0] === undefined ||
     (result[2] !== undefined &&
@@ -359,8 +406,8 @@ const addNicoscriptReplace = (
   nicoScripts.replace.unshift({
     start: comment.vpos,
     long: normalizeOptionalNicoscriptLong(commands.long),
-    keyword: result[0],
-    replace: result[1] ?? "",
+    keyword: clampString(result[0], MAX_NICOSCRIPT_TEXT_CHARS),
+    replace: clampString(result[1] ?? "", MAX_NICOSCRIPT_TEXT_CHARS),
     range: result[2] ?? "単", //単
     target: result[3] ?? "コメ", //コメ
     condition: result[4] ?? "部分一致", //部分一致
@@ -400,10 +447,15 @@ const processNicoscript = (
   nicoScripts: NicoScript,
   rangeCache: RangeCacheContext,
 ) => {
-  const nicoscript = RE_NICOSCRIPT.exec(comment.content);
+  const nicoscriptInput = clampString(
+    comment.content,
+    MAX_NICOSCRIPT_COMMAND_CHARS,
+  );
+  const nicoscript = RE_NICOSCRIPT.exec(nicoscriptInput);
   if (!nicoscript) return;
   if (nicoscript[1] === "ボタン" && nicoscript[2]) {
     //ボタン
+    if (hasParsedMailCommand(comment.mail, "from_button")) return;
     processAtButton(comment, commands);
     return;
   }
@@ -436,7 +488,7 @@ const processNicoscript = (
   }
   if (nicoscript[1] === "置換") {
     //置換
-    addNicoscriptReplace(comment, commands, nicoScripts);
+    addNicoscriptReplace(comment, commands, nicoScripts, nicoscriptInput);
   }
 };
 
@@ -561,26 +613,31 @@ const processAtButton = (
   comment: FormattedComment,
   commands: ParsedCommand,
 ) => {
-  const args = parseBrackets(comment.content);
+  const args = parseBrackets(
+    clampString(comment.content, MAX_AT_BUTTON_COMMAND_CHARS),
+  );
   if (args[1] === undefined) return;
   commands.invisible = false;
   const content = RE_BUTTON_CONTENT.exec(args[1]) as {
     groups: { before?: string; body?: string; after?: string };
   };
+  const remainingText = { value: MAX_AT_BUTTON_TEXT_CHARS };
   const message = {
-    before: content.groups?.before ?? "",
-    body: content.groups?.body ?? "",
-    after: content.groups?.after ?? "",
+    before: takeButtonText(content.groups?.before, remainingText),
+    body: takeButtonText(content.groups?.body, remainingText),
+    after: takeButtonText(content.groups?.after, remainingText),
   };
   commands.button = {
     message,
-    commentMessage:
+    commentMessage: clampString(
       args[2] ?? `${message.before}${message.body}${message.after}`,
+      MAX_AT_BUTTON_TEXT_CHARS,
+    ),
     commentVisible: args[3] !== "非表示",
-    commentMail: args[4]?.split(",") ?? [],
-    limit: Number(args[5] ?? 1),
-    local: comment.mail.includes("local"),
-    hidden: comment.mail.includes("hidden"),
+    commentMail: normalizeAtButtonMail(args[4]),
+    limit: normalizeAtButtonLimit(args[5]),
+    local: hasParsedMailCommand(comment.mail, "local"),
+    hidden: hasParsedMailCommand(comment.mail, "hidden"),
   };
 };
 
@@ -596,7 +653,6 @@ const parseCommands = (
   config: BaseConfig,
   options: BaseOptions,
 ): ParsedCommand => {
-  const commands = comment.mail;
   const isFlash = isFlashComment(comment, config, options);
   const result: ParsedCommand = {
     loc: undefined,
@@ -612,7 +668,11 @@ const parseCommands = (
     invisible: false,
     long: undefined,
   };
-  for (const command of commands) {
+  const len = Math.min(comment.mail.length, MAX_PARSED_COMMAND_MAIL_ENTRIES);
+  for (let i = 0; i < len; i++) {
+    const command = comment.mail[i];
+    if (command === undefined) continue;
+    if (command.length > MAX_PARSED_COMMAND_MAIL_CHARS) continue;
     parseCommand(comment, command, result, isFlash, config);
   }
   if (comment.content.startsWith("/")) {
@@ -735,12 +795,12 @@ const isFlashComment = (
   options.mode === "flash" ||
   (options.mode === "default" &&
     !(
-      comment.mail.includes("gothic") ||
-      comment.mail.includes("defont") ||
-      comment.mail.includes("mincho")
+      hasParsedMailCommand(comment.mail, "gothic") ||
+      hasParsedMailCommand(comment.mail, "defont") ||
+      hasParsedMailCommand(comment.mail, "mincho")
     ) &&
     (comment.date < config.flashThreshold ||
-      comment.mail.includes("nico:flash")));
+      hasParsedMailCommand(comment.mail, "nico:flash")));
 
 /**
  * コメントが逆コマンド適用対象かを返す

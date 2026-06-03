@@ -143,7 +143,7 @@ const measureWidth = (
       lineWidth.push(Math.ceil(currentWidth * scale));
       continue;
     }
-    const lines = item.slicedContent;
+    const lines = item.slicedContent ?? item.content.split("\n");
     const font = parseFont(item.font ?? comment.font, fontSize, config);
     if (font !== lastFont) {
       renderer.setFont(font);

@@ -170,11 +170,12 @@ class CanvasRenderer implements IRenderer {
     this.context.globalAlpha = alpha;
   }
   setSize(width: number, height: number) {
-    const size = clampCanvasSize(width, height);
-    this.width = size.width;
-    this.height = size.height;
-    this.canvas.width = size.width + this.padding * 2;
-    this.canvas.height = size.height + this.padding * 2;
+    const paddingSize = this.padding * 2;
+    const size = clampCanvasSize(width + paddingSize, height + paddingSize);
+    this.width = Math.max(0, size.width - paddingSize);
+    this.height = Math.max(0, size.height - paddingSize);
+    this.canvas.width = size.width;
+    this.canvas.height = size.height;
   }
 
   getSize(): { width: number; height: number } {

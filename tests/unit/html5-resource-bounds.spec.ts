@@ -5,6 +5,7 @@ import { HTML5Comment } from "@/comments";
 import { createNicoScripts, ImageCacheContext } from "@/contexts";
 import { defaultConfig } from "@/definition/config";
 import { initConfig } from "@/definition/initConfig";
+import { CanvasRenderer } from "@/renderer/canvas";
 import { RangeCacheContext } from "@/utils";
 
 const textMetrics = (width: number): TextMetrics =>
@@ -95,7 +96,7 @@ class TestHTML5Comment extends HTML5Comment {
     return this.getTextImage();
   }
   exposeCacheKey() {
-    return this.getCacheKey();
+    return this.cacheKey;
   }
 }
 
@@ -140,10 +141,8 @@ const createContext = () => ({
   rangeCache: new RangeCacheContext(),
 });
 
-const cacheSize = (imageCache: ImageCacheContext) =>
-  Object.keys(
-    (imageCache as unknown as { _cache: Record<string, unknown> })._cache,
-  ).length;
+const cachedKeyCount = (imageCache: ImageCacheContext, keys: string[]) =>
+  keys.filter((key) => imageCache.get(key)).length;
 
 describe("HTML5 comment resource bounds", () => {
   beforeEach(() => {
@@ -214,6 +213,7 @@ describe("HTML5 comment resource bounds", () => {
     expect(longContentComment.exposeCacheKey().length).toBeLessThan(600);
     expect(longContentComment.exposeCacheKey()).not.toContain("x".repeat(1000));
 
+    const cacheKeys: string[] = [];
     let firstImage: RecordingRenderer | undefined;
     for (let i = 0; i < 1050; i++) {
       const renderer = new RecordingRenderer();
@@ -223,12 +223,39 @@ describe("HTML5 comment resource bounds", () => {
         i,
         ctx,
       );
+      cacheKeys.push(comment.exposeCacheKey());
       const image = comment.exposeTextImage() as RecordingRenderer | null;
       expect(image).not.toBeNull();
       firstImage ??= image ?? undefined;
     }
 
-    expect(cacheSize(ctx.imageCache)).toBeLessThanOrEqual(1024);
-    expect(firstImage?.destroyed).toBe(true);
+    const cachedCount = cachedKeyCount(ctx.imageCache, cacheKeys);
+    expect(cachedCount).toBeGreaterThan(0);
+    expect(cachedCount).toBeLessThanOrEqual(1024);
+    expect(cachedCount).toBeLessThan(cacheKeys.length);
+    expect(firstImage?.destroyed).toBe(false);
+  });
+
+  test("clamps backing canvas dimensions including padding", () => {
+    const context = {
+      textAlign: "start",
+      textBaseline: "alphabetic",
+      lineJoin: "round",
+      translate: vi.fn(),
+      measureText: vi.fn(() => textMetrics(1)),
+    };
+    const canvas = {
+      width: 0,
+      height: 0,
+      getContext: vi.fn(() => context),
+    } as unknown as HTMLCanvasElement;
+    const renderer = new CanvasRenderer(canvas, undefined, 4);
+
+    renderer.setSize(10_000, 10_000);
+
+    expect(canvas.width).toBeLessThanOrEqual(8192);
+    expect(canvas.height).toBeLessThanOrEqual(8192);
+    expect(renderer.getSize().width).toBe(canvas.width - 8);
+    expect(renderer.getSize().height).toBe(canvas.height - 8);
   });
 });

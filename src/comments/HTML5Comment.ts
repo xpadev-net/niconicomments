@@ -30,8 +30,9 @@ import { BaseComment } from "./BaseComment";
 const MAX_RESIZE_ITERATIONS = 20;
 const MAX_HTML5_COMMENT_CHARS = 16_384;
 const MAX_HTML5_COMMENT_LINES = 256;
-const MAX_HTML5_COMMENT_IMAGE_WIDTH = 8192;
-const MAX_HTML5_COMMENT_IMAGE_HEIGHT = 8192;
+const HTML5_COMMENT_IMAGE_PADDING = 4;
+const MAX_HTML5_COMMENT_IMAGE_WIDTH = 8192 - HTML5_COMMENT_IMAGE_PADDING * 2;
+const MAX_HTML5_COMMENT_IMAGE_HEIGHT = 8192 - HTML5_COMMENT_IMAGE_PADDING * 2;
 const MAX_HTML5_COMMENT_IMAGE_AREA = 16_777_216;
 
 const clampHTML5Content = (input: string) => {
@@ -373,8 +374,7 @@ class HTML5Comment extends BaseComment {
       getConfig(this.config.commentScale, false) *
       scale *
       (this.comment.layer === -1 ? this.ctx.options.scale : 1);
-    const DEFAULT_COMMENT_PADDING = 4;
-    const image = this.renderer.getCanvas(DEFAULT_COMMENT_PADDING);
+    const image = this.renderer.getCanvas(HTML5_COMMENT_IMAGE_PADDING);
     image.setSize(this.comment.width, this.comment.height);
     image.setStrokeStyle(getStrokeColor(this.comment, this.config));
     image.setFillStyle(this.comment.color);

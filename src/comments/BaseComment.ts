@@ -16,6 +16,7 @@ import { NotImplementedError } from "@/errors/";
 import { getPosX, isBanActive, isReverseActive, parseFont } from "@/utils";
 
 const MAX_CACHE_KEY_CONTENT_LENGTH = 512;
+const MAX_CACHE_KEY_EDGE_LENGTH = 256;
 const MAX_IMAGE_CACHE_ENTRIES = 1024;
 const imageCacheEntries = new WeakMap<object, Map<string, number>>();
 
@@ -30,7 +31,7 @@ const hashString = (input: string) => {
 
 const boundedCachePart = (input: string) => {
   if (input.length <= MAX_CACHE_KEY_CONTENT_LENGTH) return input;
-  return `${input.slice(0, MAX_CACHE_KEY_CONTENT_LENGTH)}\0${input.length}\0${hashString(input)}`;
+  return `${input.slice(0, MAX_CACHE_KEY_EDGE_LENGTH)}\0${input.slice(-MAX_CACHE_KEY_EDGE_LENGTH)}\0${input.length}\0${hashString(input)}`;
 };
 
 /**
@@ -375,41 +376,34 @@ class BaseComment implements IComment {
   protected _cacheImage(image: IRenderer) {
     const key = this.cacheKey;
     const { imageCache, config } = this.ctx;
+    const lifetime = this.comment.long * 10 + config.cacheAge;
     let entries = imageCacheEntries.get(imageCache);
     if (!entries) {
       entries = new Map();
       imageCacheEntries.set(imageCache, entries);
     }
-    if (!entries.has(key) && entries.size >= MAX_IMAGE_CACHE_ENTRIES) {
-      const oldestKey = entries.keys().next().value;
-      if (oldestKey !== undefined) {
-        const oldest = imageCache.get(oldestKey);
-        if (oldest) {
-          clearTimeout(oldest.timeout);
-          oldest.image.destroy();
-        }
-        imageCache.delete(oldestKey);
-        entries.delete(oldestKey);
-      }
+    for (const entryKey of entries.keys()) {
+      if (!imageCache.get(entryKey)) entries.delete(entryKey);
     }
     this.image = image;
-    window.setTimeout(
-      () => {
-        this.image = undefined;
-      },
-      this.comment.long * 10 + config.cacheAge,
-    );
+    if (!entries.has(key) && entries.size >= MAX_IMAGE_CACHE_ENTRIES) {
+      window.setTimeout(() => {
+        if (this.image === image) this.image = undefined;
+        image.destroy();
+      }, lifetime);
+      return;
+    }
+    window.setTimeout(() => {
+      this.image = undefined;
+    }, lifetime);
     imageCache.set(key, {
-      timeout: window.setTimeout(
-        () => {
-          if (imageCache.get(key)?.image === image) {
-            image.destroy();
-            imageCache.delete(key);
-            imageCacheEntries.get(imageCache)?.delete(key);
-          }
-        },
-        this.comment.long * 10 + config.cacheAge,
-      ),
+      timeout: window.setTimeout(() => {
+        if (imageCache.get(key)?.image === image) {
+          image.destroy();
+          imageCache.delete(key);
+          imageCacheEntries.get(imageCache)?.delete(key);
+        }
+      }, lifetime),
       image,
     });
     entries.delete(key);

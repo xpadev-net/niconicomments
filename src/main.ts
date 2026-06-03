@@ -298,6 +298,12 @@ class NiconiComments {
         );
       },
     );
+    if (this.ctx.options.lazy && !this.lazyCommentOrderSortedByVpos) {
+      // Lazy resolution assumes constructor input is vpos-ordered. Preserve
+      // correctness for unsorted input by resolving all comments eagerly once.
+      this.getCommentPos(instances, instances.length);
+      this.sortTimelineComment();
+    }
     this._log(
       `preRendering complete: ${performance.now() - preRenderingStart}ms`,
     );
@@ -351,10 +357,7 @@ class NiconiComments {
     const startIndex = this._advanceNextUnprocessedCommentIndex();
     const resolveUntil = vpos + MAX_LAZY_COMMENT_LOOKAHEAD;
     let endIndex = startIndex - 1;
-    const scanLimit = this.lazyCommentOrderSortedByVpos
-      ? this.comments.length
-      : Math.min(this.comments.length, startIndex + MAX_LAZY_COMMENT_LOOKAHEAD);
-    for (let i = startIndex; i < scanLimit; i++) {
+    for (let i = startIndex; i < this.comments.length; i++) {
       const comment = this.comments[i];
       if (!comment || comment.invisible || comment.posY > -1) {
         continue;

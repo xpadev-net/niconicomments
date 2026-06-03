@@ -1,6 +1,6 @@
 import { beforeAll, beforeEach, describe, expect, test } from "vitest";
 
-import type { FormattedComment, IRenderer } from "@/@types/";
+import type { FormattedComment, IComment, IRenderer } from "@/@types/";
 import type { CommentInstanceContext } from "@/contexts";
 import { createNicoScripts, ImageCacheContext } from "@/contexts";
 import { defaultConfig, defaultOptions } from "@/definition/config";
@@ -87,6 +87,20 @@ class FakeRenderer implements IRenderer {
   drawImage() {}
   flush() {}
   invalidateImage() {}
+}
+
+class ReverseCommentsPlugin {
+  static readonly id = "reverse-comments-plugin";
+
+  constructor(_canvas: IRenderer, _comments: IComment[]) {}
+
+  draw() {
+    return false;
+  }
+
+  transformComments(comments: IComment[]) {
+    return [...comments].reverse();
+  }
 }
 
 const createComment = (
@@ -311,6 +325,32 @@ describe("duration bounds and lazy timeline expansion", () => {
     expect(state.comments[2]?.posY).toBe(-1);
     expect(keys).not.toContain(farVpos);
     expect(keys.at(-1)).toBeLessThan(farVpos);
+  });
+
+  test("lazy constructor falls back to eager resolution for plugin-reordered input", () => {
+    const instance = new NiconiComments(
+      new FakeRenderer(),
+      [
+        createComment({ id: 1, vpos: 100000, mail: ["ue"] }),
+        createComment({ id: 2, vpos: 0, mail: ["ue"] }),
+      ],
+      {
+        format: "formatted",
+        lazy: true,
+        mode: "html5",
+        config: { plugins: [ReverseCommentsPlugin] },
+      },
+    );
+    const state = instance as unknown as {
+      comments: { posY: number }[];
+      processedCommentIndex: number;
+      timeline: Record<number, unknown[]>;
+    };
+
+    expect(state.processedCommentIndex).toBe(state.comments.length - 1);
+    expect(state.comments[0]?.posY).not.toBe(-1);
+    expect(state.comments[1]?.posY).not.toBe(-1);
+    expect(state.timeline[0]).toBeDefined();
   });
 
   test("addComments keeps hostile durations bounded on the production path", () => {

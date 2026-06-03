@@ -348,10 +348,10 @@ class HTML5CSSRenderer implements IRenderer {
   }
 
   measureText(text: string): TextMetrics {
-    this.helper.save();
+    const font = this.helper.getFont();
     this.helper.setFont(this.state.font);
     const result = this.helper.measureText(text);
-    this.helper.restore();
+    this.helper.setFont(font);
     return result;
   }
 

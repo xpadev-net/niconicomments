@@ -46,7 +46,6 @@ class HTML5CSSRenderer implements IRenderer {
   private width = 0;
   private height = 0;
   private state: CssRenderState = { ...DEFAULT_CSS_RENDER_STATE };
-  private frameStartState: CssRenderState = { ...DEFAULT_CSS_RENDER_STATE };
   private readonly stateStack: SavedCssRenderState[] = [];
   private readonly imageUrlCache = new WeakMap<HTMLCanvasElement, string>();
   private readonly failedImageUrlCache = new WeakSet<HTMLCanvasElement>();
@@ -286,7 +285,6 @@ class HTML5CSSRenderer implements IRenderer {
     this.restoreFrameStartState();
     for (const node of this.nodes) this.hideNode(node);
     this.trimHelperSurfaces();
-    this.frameStartState = { ...this.state };
     this.helper = this.prepareHelperSurface(0);
     this.helper.canvas.style.display = "none";
     if (this.videoSurface) {
@@ -717,7 +715,6 @@ class HTML5CSSRenderer implements IRenderer {
   private resetState(): void {
     this.stateStack.length = 0;
     this.state = { ...DEFAULT_CSS_RENDER_STATE };
-    this.frameStartState = { ...DEFAULT_CSS_RENDER_STATE };
   }
 
   private restoreFrameStartState(): void {
@@ -726,7 +723,7 @@ class HTML5CSSRenderer implements IRenderer {
     for (let i = this.stateStack.length - 1; i >= 0; i--) {
       this.stateStack[i]?.helper.restore();
     }
-    this.state = { ...this.frameStartState };
+    this.state = this.toRenderState(frameStartState);
     this.stateStack.length = 0;
   }
 

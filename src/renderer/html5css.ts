@@ -21,6 +21,7 @@ class HTML5CSSRenderer implements IRenderer {
   private helper: CanvasRenderer;
   private helperDirty = false;
   private helperCursor = 0;
+  private pathActive = false;
   private readonly helperSurfaces: CanvasRenderer[] = [];
   private readonly videoSurface?: CanvasRenderer;
   private width = 0;
@@ -256,6 +257,7 @@ class HTML5CSSRenderer implements IRenderer {
   clearRect(x: number, y: number, width: number, height: number): void {
     this.nodeCursor = 0;
     this.helperCursor = 0;
+    this.pathActive = false;
     for (const node of this.nodes) {
       node.style.display = "none";
     }
@@ -300,6 +302,7 @@ class HTML5CSSRenderer implements IRenderer {
     this.width = width;
     this.height = height;
     this.nodeCursor = 0;
+    this.pathActive = false;
     for (const node of this.nodes) {
       node.style.display = "none";
     }
@@ -349,6 +352,7 @@ class HTML5CSSRenderer implements IRenderer {
   }
 
   beginPath(): void {
+    this.pathActive = true;
     this.helper.beginPath();
   }
 
@@ -372,6 +376,7 @@ class HTML5CSSRenderer implements IRenderer {
     this.helper.stroke();
     this.helper.restore();
     this.helperDirty = true;
+    this.pathActive = false;
   }
 
   save(): void {
@@ -443,6 +448,11 @@ class HTML5CSSRenderer implements IRenderer {
   }
 
   private getNode(tagName: "div" | "img"): HTMLElement {
+    if (this.pathActive) {
+      console.warn(
+        "HTML5CSSRenderer: DOM drawing interrupted an active path before stroke().",
+      );
+    }
     this.commitHelperSurface();
     let node = this.nodes[this.nodeCursor];
     if (!node || node.tagName.toLowerCase() !== tagName) {
@@ -501,6 +511,15 @@ class HTML5CSSRenderer implements IRenderer {
     containerWidth: number,
     containerHeight: number,
   ): void {
+    if (
+      this.width <= 0 ||
+      this.height <= 0 ||
+      !Number.isFinite(this.width) ||
+      !Number.isFinite(this.height)
+    ) {
+      this.layer.style.transform = "translate(0px, 0px) scale(1)";
+      return;
+    }
     const fitWidth = containerWidth || this.width;
     const fitHeight = containerHeight || this.height;
     const scale = Math.min(fitWidth / this.width, fitHeight / this.height);

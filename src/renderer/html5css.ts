@@ -89,7 +89,10 @@ class HTML5CSSRenderer implements IRenderer {
       this.root.style.position === "" ||
       this.root.style.position === "static"
     ) {
-      this.root.style.position = "relative";
+      const computedPosition = computedStyle?.position;
+      if (!computedPosition || computedPosition === "static") {
+        this.root.style.position = "relative";
+      }
     }
 
     this.layer = this.root.ownerDocument.createElement("div");
@@ -202,15 +205,20 @@ class HTML5CSSRenderer implements IRenderer {
     }
     const node = this.getNode("div");
     node.style.background = "transparent";
-    const borderX = `${this.state.lineWidth * this.state.scaleX}px`;
-    const borderY = `${this.state.lineWidth * this.state.scaleY}px`;
+    const borderWidthX = this.state.lineWidth * this.state.scaleX;
+    const borderWidthY = this.state.lineWidth * this.state.scaleY;
+    const borderX = `${borderWidthX}px`;
+    const borderY = `${borderWidthY}px`;
     node.style.border = "0";
     node.style.borderLeft = `${borderX} solid ${this.state.strokeStyle}`;
     node.style.borderRight = `${borderX} solid ${this.state.strokeStyle}`;
     node.style.borderTop = `${borderY} solid ${this.state.strokeStyle}`;
     node.style.borderBottom = `${borderY} solid ${this.state.strokeStyle}`;
     node.style.boxSizing = "border-box";
-    this.positionNode(node, nx, ny, nw, nh);
+    node.style.left = `${nx * this.state.scaleX - borderWidthX / 2}px`;
+    node.style.top = `${ny * this.state.scaleY - borderWidthY / 2}px`;
+    node.style.width = `${nw * this.state.scaleX + borderWidthX}px`;
+    node.style.height = `${nh * this.state.scaleY + borderWidthY}px`;
   }
 
   fillText(text: string, x: number, y: number): void {
@@ -241,6 +249,9 @@ class HTML5CSSRenderer implements IRenderer {
   clearRect(x: number, y: number, width: number, height: number): void {
     this.nodeCursor = 0;
     this.helperCursor = 0;
+    for (const node of this.nodes) {
+      node.style.display = "none";
+    }
     for (let i = 1, n = this.helperSurfaces.length; i < n; i++) {
       const helper = this.helperSurfaces[i];
       if (!helper) continue;
@@ -532,13 +543,45 @@ class HTML5CSSRenderer implements IRenderer {
   }
 
   private applyHelperScale(scaleX: number, scaleY: number): void {
-    const ratioX =
-      this.state.scaleX === 0 ? scaleX : scaleX / this.state.scaleX;
-    const ratioY =
-      this.state.scaleY === 0 ? scaleY : scaleY / this.state.scaleY;
+    const currentScaleX = this.state.scaleX;
+    const currentScaleY = this.state.scaleY;
+    if (
+      currentScaleX === 0 ||
+      currentScaleY === 0 ||
+      scaleX === 0 ||
+      scaleY === 0 ||
+      !Number.isFinite(currentScaleX) ||
+      !Number.isFinite(currentScaleY) ||
+      !Number.isFinite(scaleX) ||
+      !Number.isFinite(scaleY)
+    ) {
+      this.recreateCurrentHelperSurface(scaleX, scaleY);
+      return;
+    }
+    const ratioX = scaleX / this.state.scaleX;
+    const ratioY = scaleY / this.state.scaleY;
     if (ratioX === 1 && ratioY === 1) return;
     if (Number.isFinite(ratioX) && Number.isFinite(ratioY)) {
       this.helper.setScale(ratioX, ratioY);
+    }
+  }
+
+  private recreateCurrentHelperSurface(scaleX: number, scaleY: number): void {
+    this.teardownSurfaceCanvas(this.helper);
+    this.helper.destroy();
+    const helper = new CanvasRenderer(undefined, undefined);
+    this.helperSurfaces[this.helperCursor] = helper;
+    this.helper = helper;
+    helper.setSize(this.width, this.height);
+    this.setupSurfaceCanvas(helper);
+    helper.canvas.style.display = "none";
+    if (
+      scaleX !== 0 &&
+      scaleY !== 0 &&
+      Number.isFinite(scaleX) &&
+      Number.isFinite(scaleY)
+    ) {
+      helper.setScale(scaleX, scaleY);
     }
   }
 

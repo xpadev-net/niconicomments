@@ -165,6 +165,46 @@ test("HTML5CSSRenderer discards imbalanced saved state on clearRect", async ({
   expect(rectWidth).toBe("20px");
 });
 
+test("HTML5CSSRenderer restores helper drawing after zero scale", async ({
+  page,
+}) => {
+  await loadCssSample(page);
+
+  const paintedPixels = await page.evaluate(() => {
+    const root = document.createElement("div");
+    root.dataset.width = "100";
+    root.dataset.height = "100";
+    document.body.appendChild(root);
+    const global = window as typeof window & {
+      NiconiComments: typeof import("@/main").default;
+    };
+    const renderer =
+      new global.NiconiComments.internal.renderer.HTML5CSSRenderer(root);
+    renderer.setScale(2);
+    renderer.save();
+    renderer.setScale(0);
+    renderer.restore();
+    renderer.setFont("20px sans-serif");
+    renderer.fillText("x", 5, 20);
+    renderer.flush();
+    const canvases = Array.from(root.querySelectorAll("canvas")).filter(
+      (canvas) => getComputedStyle(canvas).display !== "none",
+    );
+    const canvas = canvases.at(-1);
+    const pixels = canvas?.getContext("2d")?.getImageData(0, 0, 100, 100).data;
+    renderer.destroy();
+    root.remove();
+    if (!pixels) return 0;
+    let count = 0;
+    for (let i = 3; i < pixels.length; i += 4) {
+      if (pixels[i]) count++;
+    }
+    return count;
+  });
+
+  expect(paintedPixels).toBeGreaterThan(0);
+});
+
 test("HTML5CSSRenderer keeps an active path across DOM-backed drawing", async ({
   page,
 }) => {

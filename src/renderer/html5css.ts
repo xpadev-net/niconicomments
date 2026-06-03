@@ -3,6 +3,7 @@ import { CanvasRenderer } from "@/renderer/canvas";
 
 const TRANSPARENT_IMAGE_URL =
   "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
+const MAX_HELPER_SURFACES = 8;
 
 type CssRenderState = {
   alpha: number;
@@ -192,6 +193,7 @@ class HTML5CSSRenderer implements IRenderer {
     const node = this.getNode("div");
     node.style.background = this.state.fillStyle;
     node.style.border = "0";
+    node.style.boxSizing = "content-box";
     this.positionNode(node, nx, ny, nw, nh);
   }
 
@@ -269,6 +271,7 @@ class HTML5CSSRenderer implements IRenderer {
     for (const node of this.nodes) {
       node.style.display = "none";
     }
+    this.trimHelperSurfaces();
     for (let i = 1, n = this.helperSurfaces.length; i < n; i++) {
       const helper = this.helperSurfaces[i];
       if (!helper) continue;
@@ -370,12 +373,10 @@ class HTML5CSSRenderer implements IRenderer {
   }
 
   stroke(): void {
-    this.helper.save();
     this.helper.setStrokeStyle(this.state.strokeStyle);
     this.helper.setLineWidth(this.state.lineWidth);
     this.helper.setGlobalAlpha(this.state.alpha);
     this.helper.stroke();
-    this.helper.restore();
     if (this.pathActive) {
       this.helperDirty = true;
     }
@@ -656,6 +657,15 @@ class HTML5CSSRenderer implements IRenderer {
     surface.canvas.removeAttribute("style");
   }
 
+  private trimHelperSurfaces(): void {
+    while (this.helperSurfaces.length > MAX_HELPER_SURFACES) {
+      const helper = this.helperSurfaces.pop();
+      if (!helper) continue;
+      this.teardownSurfaceCanvas(helper);
+      helper.destroy();
+    }
+  }
+
   private resetState(): void {
     this.stateStack.length = 0;
     this.state = {
@@ -701,7 +711,7 @@ class HTML5CSSRenderer implements IRenderer {
     const match = value.match(/^\s*(\d+(?:\.\d+)?)(?:px)?\s*$/);
     if (!match) return undefined;
     const number = Number.parseFloat(match[1] ?? "");
-    return Number.isFinite(number) && number > 0 ? number : undefined;
+    return Number.isFinite(number) && number >= 0 ? number : undefined;
   }
 }
 

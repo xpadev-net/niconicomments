@@ -1,6 +1,9 @@
 import type { IRenderer } from "@/@types/";
 import { CanvasRenderer } from "@/renderer/canvas";
 
+const TRANSPARENT_IMAGE_URL =
+  "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
+
 type CssRenderState = {
   alpha: number;
   fillStyle: string;
@@ -387,6 +390,9 @@ class HTML5CSSRenderer implements IRenderer {
     const inner = new CanvasRenderer(undefined, undefined, padding, () => {
       this.invalidateImage(inner);
     });
+    if (this.state.scaleX !== 1 || this.state.scaleY !== 1) {
+      inner.setScale(this.state.scaleX, this.state.scaleY);
+    }
     return inner;
   }
 
@@ -434,7 +440,16 @@ class HTML5CSSRenderer implements IRenderer {
   private getImageUrl(source: HTMLCanvasElement): string {
     const cached = this.imageUrlCache.get(source);
     if (cached) return cached;
-    const url = source.toDataURL();
+    let url: string;
+    try {
+      url = source.toDataURL();
+    } catch (error) {
+      console.warn(
+        "HTML5CSSRenderer: failed to serialize a canvas image.",
+        error,
+      );
+      url = TRANSPARENT_IMAGE_URL;
+    }
     this.imageUrlCache.set(source, url);
     return url;
   }
@@ -631,19 +646,30 @@ class HTML5CSSRenderer implements IRenderer {
   }
 
   private getInitialSize(root: HTMLElement) {
+    const computedStyle =
+      root.ownerDocument.defaultView?.getComputedStyle(root);
+    const rect = root.getBoundingClientRect();
     const width =
       this.getNumber(root.dataset.width) ??
       this.getNumber(root.getAttribute("width")) ??
       (root instanceof HTMLCanvasElement ? root.width : undefined) ??
       this.getNumber(root.style.width) ??
+      this.getNumber(computedStyle?.width) ??
+      this.getPositiveNumber(rect.width) ??
       0;
     const height =
       this.getNumber(root.dataset.height) ??
       this.getNumber(root.getAttribute("height")) ??
       (root instanceof HTMLCanvasElement ? root.height : undefined) ??
       this.getNumber(root.style.height) ??
+      this.getNumber(computedStyle?.height) ??
+      this.getPositiveNumber(rect.height) ??
       0;
     return { width, height };
+  }
+
+  private getPositiveNumber(value: number): number | undefined {
+    return Number.isFinite(value) && value > 0 ? value : undefined;
   }
 
   private getNumber(value: string | null | undefined): number | undefined {

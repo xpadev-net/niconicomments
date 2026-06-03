@@ -66,3 +66,44 @@ test("HTML5CSSRenderer contains its logical stage inside the host layout", async
   expect(metrics.layerRect.right).toBeLessThanOrEqual(metrics.rootRect.right);
   expect(metrics.layerRect.bottom).toBeLessThanOrEqual(metrics.rootRect.bottom);
 });
+
+test("HTML5CSSRenderer uses computed CSS dimensions as its initial logical size", async ({
+  page,
+}) => {
+  await page.goto(
+    "http://localhost:8080/docs/sample/test.html?renderer=css&time=20&video=0",
+  );
+  await page.waitForSelector("div#loaded", { state: "attached" });
+
+  const metrics = await page.evaluate(() => {
+    const root = document.createElement("div");
+    root.style.width = "320px";
+    root.style.height = "180px";
+    document.body.appendChild(root);
+    const global = window as typeof window & {
+      NiconiComments: typeof import("@/main").default;
+    };
+    const renderer =
+      new global.NiconiComments.internal.renderer.HTML5CSSRenderer(root);
+    const size = renderer.getSize();
+    const layer = root.querySelector<HTMLElement>("div");
+    const layerStyle = layer ? getComputedStyle(layer) : undefined;
+    const layerWidth = layerStyle?.width;
+    const layerHeight = layerStyle?.height;
+    renderer.destroy();
+    root.remove();
+    return {
+      width: size.width,
+      height: size.height,
+      layerWidth,
+      layerHeight,
+    };
+  });
+
+  expect(metrics).toEqual({
+    width: 320,
+    height: 180,
+    layerWidth: "320px",
+    layerHeight: "180px",
+  });
+});

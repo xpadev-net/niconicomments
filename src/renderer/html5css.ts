@@ -380,7 +380,9 @@ class HTML5CSSRenderer implements IRenderer {
     this.helper.setGlobalAlpha(this.state.alpha);
     this.helper.stroke();
     this.helper.restore();
-    this.helperDirty = true;
+    if (this.pathActive) {
+      this.helperDirty = true;
+    }
     this.pathActive = false;
   }
 
@@ -543,8 +545,8 @@ class HTML5CSSRenderer implements IRenderer {
       this.layer.style.transform = "translate(0px, 0px) scale(1)";
       return;
     }
-    const fitWidth = containerWidth || this.width;
-    const fitHeight = containerHeight || this.height;
+    const fitWidth = containerWidth > 0 ? containerWidth : this.width;
+    const fitHeight = containerHeight > 0 ? containerHeight : this.height;
     const scale = Math.min(fitWidth / this.width, fitHeight / this.height);
     const offsetX = (fitWidth - this.width * scale) / 2;
     const offsetY = (fitHeight - this.height * scale) / 2;

@@ -48,21 +48,28 @@ const RE_COLOR_CODE = /^#(?:[0-9a-z]{3}|[0-9a-z]{6})$/;
 export const DEFAULT_COMMENT_LONG = 300;
 export const DEFAULT_NICOSCRIPT_LONG = 30 * 100;
 export const MAX_COMMENT_LONG = 120 * 100;
+export const MAX_NICOSCRIPT_LONG = 60 * 60 * 100;
+// Derived from the maximum naka comment lead-in distance:
+// 288px off-screen travel, 1632px total travel width, plus 125cs motion margin
+// and a 100cs safety buffer to populate the lazy timeline before draw time.
 export const MAX_LAZY_COMMENT_LOOKAHEAD =
   Math.ceil((288 * (MAX_COMMENT_LONG + 125)) / 1632) + 100;
 
-const normalizeLongCentiseconds = (value: number) => {
+const normalizeLongCentiseconds = (value: number, max: number) => {
   if (!Number.isFinite(value) || value <= 0) {
     return 0;
   }
-  return Math.min(Math.floor(value), MAX_COMMENT_LONG);
+  return Math.min(Math.floor(value), max);
 };
 
 const normalizeCommentLong = (value: number | undefined) => {
   if (value === undefined) {
     return DEFAULT_COMMENT_LONG;
   }
-  return normalizeLongCentiseconds(value * 100) || DEFAULT_COMMENT_LONG;
+  return (
+    normalizeLongCentiseconds(value * 100, MAX_COMMENT_LONG) ||
+    DEFAULT_COMMENT_LONG
+  );
 };
 
 const normalizeParsedCommandLong = (value: number | undefined) => {
@@ -72,21 +79,24 @@ const normalizeParsedCommandLong = (value: number | undefined) => {
   if (!Number.isFinite(value) || value <= 0) {
     return undefined;
   }
-  return Math.min(value, MAX_COMMENT_LONG / 100);
+  return value;
 };
 
-const normalizeOptionalLong = (value: number | undefined) => {
+const normalizeOptionalNicoscriptLong = (value: number | undefined) => {
   if (value === undefined) {
     return undefined;
   }
-  return normalizeLongCentiseconds(value * 100);
+  return normalizeLongCentiseconds(value * 100, MAX_NICOSCRIPT_LONG);
 };
 
 const normalizeNicoscriptLong = (value: number | undefined) => {
   if (value === undefined) {
     return DEFAULT_NICOSCRIPT_LONG;
   }
-  return normalizeLongCentiseconds(value * 100);
+  return (
+    normalizeLongCentiseconds(value * 100, MAX_NICOSCRIPT_LONG) ||
+    DEFAULT_NICOSCRIPT_LONG
+  );
 };
 
 /**
@@ -309,7 +319,7 @@ const addNicoscriptReplace = (
     return;
   nicoScripts.replace.unshift({
     start: comment.vpos,
-    long: normalizeOptionalLong(commands.long),
+    long: normalizeOptionalNicoscriptLong(commands.long),
     keyword: result[0],
     replace: result[1] ?? "",
     range: result[2] ?? "単", //単
@@ -404,7 +414,7 @@ const processDefaultScript = (
 ) => {
   nicoScripts.default.unshift({
     start: comment.vpos,
-    long: normalizeOptionalLong(commands.long),
+    long: normalizeOptionalNicoscriptLong(commands.long),
     color: commands.color,
     size: commands.size,
     font: commands.font,
@@ -493,7 +503,7 @@ const processJumpScript = (
 ) => {
   const jumpOptions = RE_JUMP.exec(input);
   if (!jumpOptions?.[1]) return;
-  const long = normalizeOptionalLong(commands.long);
+  const long = normalizeOptionalNicoscriptLong(commands.long);
   const end = long === undefined ? undefined : long + comment.vpos;
   nicoScripts.jump.unshift({
     start: comment.vpos,

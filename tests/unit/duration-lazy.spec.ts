@@ -11,6 +11,7 @@ import {
   DEFAULT_NICOSCRIPT_LONG,
   MAX_COMMENT_LONG,
   MAX_LAZY_COMMENT_LOOKAHEAD,
+  MAX_NICOSCRIPT_LONG,
   parseCommandAndNicoScript,
 } from "@/utils/comment";
 import { RangeCacheContext } from "@/utils/rangeCache";
@@ -176,6 +177,21 @@ describe("duration bounds and lazy timeline expansion", () => {
   });
 
   test("bounds NicoScript ban/reverse ranges and falls back to defaults for invalid durations", () => {
+    const preservedNicoscriptDuration = "@300";
+    const preservedBanContext = createContext();
+    parseCommandAndNicoScript(
+      createComment({
+        owner: true,
+        content: "@コメント禁止",
+        mail: [preservedNicoscriptDuration],
+      }),
+      preservedBanContext,
+    );
+    expect(
+      preservedBanContext.nicoScripts.ban[0]?.end -
+        preservedBanContext.nicoScripts.ban[0]?.start,
+    ).toBe(300 * 100);
+
     const banContext = createContext();
     parseCommandAndNicoScript(
       createComment({
@@ -187,7 +203,7 @@ describe("duration bounds and lazy timeline expansion", () => {
     );
     expect(
       banContext.nicoScripts.ban[0]?.end - banContext.nicoScripts.ban[0]?.start,
-    ).toBe(MAX_COMMENT_LONG);
+    ).toBe(MAX_NICOSCRIPT_LONG);
 
     const reverseContext = createContext();
     parseCommandAndNicoScript(
@@ -201,7 +217,7 @@ describe("duration bounds and lazy timeline expansion", () => {
     expect(
       reverseContext.nicoScripts.reverse[0]?.end -
         reverseContext.nicoScripts.reverse[0]?.start,
-    ).toBe(MAX_COMMENT_LONG);
+    ).toBe(MAX_NICOSCRIPT_LONG);
 
     const zeroBanContext = createContext();
     parseCommandAndNicoScript(

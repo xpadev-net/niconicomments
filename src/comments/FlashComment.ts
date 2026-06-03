@@ -13,14 +13,17 @@ import type {
 } from "@/@types/";
 import type { CommentInstanceContext } from "@/contexts/";
 import { TypeGuardError } from "@/errors/TypeGuardError";
+import { MAX_CANVAS_AREA } from "@/renderer/canvas";
 import typeGuard from "@/typeGuard";
 import {
+  clampFlashContent,
   getButtonParts,
   getConfig,
   getStrokeColor,
   isLineBreakResize,
+  MAX_FLASH_CONTENT_ITEMS,
   parseCommandAndNicoScript,
-  parseContent,
+  parseContent as parseFlashContent,
   parseFont,
 } from "@/utils";
 import {
@@ -35,6 +38,27 @@ const flashScriptCharRegexCache = new WeakMap<
   BaseConfig,
   { super: RegExp; sub: RegExp }
 >();
+const MAX_FLASH_COMMENT_IMAGE_WIDTH = 8192;
+const MAX_FLASH_COMMENT_IMAGE_HEIGHT = 8192;
+
+const isWithinFlashImageBounds = (width: number, height: number) => {
+  return (
+    Number.isFinite(width) &&
+    Number.isFinite(height) &&
+    width > 0 &&
+    height > 0 &&
+    width <= MAX_FLASH_COMMENT_IMAGE_WIDTH &&
+    height <= MAX_FLASH_COMMENT_IMAGE_HEIGHT &&
+    width * height <= MAX_CANVAS_AREA
+  );
+};
+
+const takeFlashDisplayPart = (value: string, remaining: { value: string }) => {
+  if (!value || !remaining.value) return "";
+  const part = remaining.value.slice(0, value.length);
+  remaining.value = remaining.value.slice(part.length);
+  return part;
+};
 
 class FlashComment extends BaseComment {
   private _globalScale: number;
@@ -168,22 +192,43 @@ class FlashComment extends BaseComment {
   }
 
   override parseContent(input: string, button?: ButtonParams) {
-    const content: CommentContentItem[] = button
-      ? [
-          ...parseContent(button.message.before, this.config),
-          ...parseContent(button.message.body, this.config).map((val) => {
-            val.isButton = true;
-            return val;
-          }),
-          ...parseContent(button.message.after, this.config),
-        ]
-      : parseContent(input, this.config);
-    const lineCount = (input.match(/\n/g)?.length ?? 0) + 1;
+    const content: CommentContentItem[] = [];
+    const appendContent = (value: string, isButton = false) => {
+      const remaining = MAX_FLASH_CONTENT_ITEMS - content.length;
+      if (remaining <= 0) return;
+      const parsed = parseFlashContent(value, this.config).slice(0, remaining);
+      if (isButton) {
+        for (const val of parsed) {
+          val.isButton = true;
+        }
+      }
+      content.push(...parsed);
+    };
+    const displayText = button
+      ? `${button.message.before}${button.message.body}${button.message.after}`
+      : input;
+    const clamped = clampFlashContent(displayText);
+    if (button) {
+      const remainingDisplayText = { value: clamped.content };
+      appendContent(
+        takeFlashDisplayPart(button.message.before, remainingDisplayText),
+      );
+      appendContent(
+        takeFlashDisplayPart(button.message.body, remainingDisplayText),
+        true,
+      );
+      appendContent(
+        takeFlashDisplayPart(button.message.after, remainingDisplayText),
+      );
+    } else {
+      appendContent(clamped.content);
+    }
+    const lineCount = clamped.lineCount;
     const lineOffset =
-      (input.match(this._flashScriptCharRegex.super)?.length ?? 0) *
+      (clamped.content.match(this._flashScriptCharRegex.super)?.length ?? 0) *
         -1 *
         this.config.flashScriptCharOffset +
-      (input.match(this._flashScriptCharRegex.sub)?.length ?? 0) *
+      (clamped.content.match(this._flashScriptCharRegex.sub)?.length ?? 0) *
         this.config.flashScriptCharOffset;
     return {
       content,
@@ -439,6 +484,16 @@ class FlashComment extends BaseComment {
       isLastButton = !!item.isButton;
     }
     return renderer;
+  }
+
+  protected override canGenerateTextImage(): boolean {
+    const atButtonPadding = this.comment.button
+      ? getConfig(this.config.atButtonPadding, true) * 2
+      : 0;
+    return isWithinFlashImageBounds(
+      this.comment.width,
+      this.comment.height + atButtonPadding,
+    );
   }
 
   override getButtonImage(posX: number, posY: number, cursor?: Position) {

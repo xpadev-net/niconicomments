@@ -1,5 +1,5 @@
 import type { IRenderer } from "@/@types/";
-import { CanvasRenderer } from "@/renderer/canvas";
+import { CanvasRenderer, clampCanvasSize } from "@/renderer/canvas";
 
 const TRANSPARENT_IMAGE_URL =
   "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
@@ -57,7 +57,7 @@ class HTML5CSSRenderer implements IRenderer {
   constructor(root: HTMLElement, video?: HTMLVideoElement) {
     this.root = root;
     this.video = video;
-    const size = this.getInitialSize(root);
+    const size = this.normalizeSize(this.getInitialSize(root));
     this.width = size.width;
     this.height = size.height;
     this.canvas = this.root.ownerDocument.createElement("canvas");
@@ -262,15 +262,14 @@ class HTML5CSSRenderer implements IRenderer {
     this.helper.quadraticCurveTo(cpx, cpy, x, y);
   }
 
+  // NOTE: DOM-backed frames are rebuilt as a full logical stage. This matches
+  // current callers, which always clear the whole renderer before drawing.
   clearRect(_x: number, _y: number, _width: number, _height: number): void {
     this.nodeCursor = 0;
     this.helperCursor = 0;
     this.pathActive = false;
     this.textDrawnBeforeDom = false;
-    this.resetState();
-    for (const node of this.nodes) {
-      node.style.display = "none";
-    }
+    for (const node of this.nodes) this.hideNode(node);
     this.trimHelperSurfaces();
     for (let i = 1, n = this.helperSurfaces.length; i < n; i++) {
       const helper = this.helperSurfaces[i];
@@ -310,18 +309,17 @@ class HTML5CSSRenderer implements IRenderer {
   }
 
   setSize(width: number, height: number): void {
-    this.width = width;
-    this.height = height;
+    const size = this.normalizeSize({ width, height });
+    this.width = size.width;
+    this.height = size.height;
     this.nodeCursor = 0;
     this.pathActive = false;
     this.textDrawnBeforeDom = false;
-    for (const node of this.nodes) {
-      node.style.display = "none";
-    }
-    this.canvas.width = width;
-    this.canvas.height = height;
-    this.layer.style.width = `${width}px`;
-    this.layer.style.height = `${height}px`;
+    for (const node of this.nodes) this.hideNode(node);
+    this.canvas.width = size.width;
+    this.canvas.height = size.height;
+    this.layer.style.width = `${size.width}px`;
+    this.layer.style.height = `${size.height}px`;
     this.updateObjectFitContain();
     for (const helper of this.helperSurfaces) {
       this.teardownSurfaceCanvas(helper);
@@ -331,7 +329,7 @@ class HTML5CSSRenderer implements IRenderer {
     this.helperCursor = 0;
     if (this.videoSurface) {
       this.teardownSurfaceCanvas(this.videoSurface);
-      this.videoSurface.setSize(width, height);
+      this.videoSurface.setSize(size.width, size.height);
       this.setupVideoCanvas();
     }
     this.resetState();
@@ -440,7 +438,7 @@ class HTML5CSSRenderer implements IRenderer {
     this.commitHelperSurface();
     for (let i = this.nodeCursor, n = this.nodes.length; i < n; i++) {
       const node = this.nodes[i];
-      if (node) node.style.display = "none";
+      if (node) this.hideNode(node);
     }
     if (this.stateStack.length > 0) {
       console.warn(
@@ -677,6 +675,17 @@ class HTML5CSSRenderer implements IRenderer {
       scaleX: 1,
       scaleY: 1,
     };
+  }
+
+  private normalizeSize(size: { width: number; height: number }) {
+    return clampCanvasSize(size.width, size.height);
+  }
+
+  private hideNode(node: HTMLElement) {
+    node.style.display = "none";
+    if (node.tagName.toLowerCase() === "img") {
+      node.removeAttribute("src");
+    }
   }
 
   private getInitialSize(root: HTMLElement) {

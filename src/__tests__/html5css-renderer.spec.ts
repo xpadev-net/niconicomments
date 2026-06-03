@@ -102,6 +102,36 @@ test("HTML5CSSRenderer commits direct canvas drawing into its DOM layer", async 
   expect(renderedChildren).toBeGreaterThan(0);
 });
 
+test("HTML5CSSRenderer preserves persistent scale across clearRect", async ({
+  page,
+}) => {
+  await loadCssSample(page);
+
+  const rectWidth = await page.evaluate(() => {
+    const root = document.createElement("div");
+    root.dataset.width = "200";
+    root.dataset.height = "100";
+    document.body.appendChild(root);
+    const global = window as typeof window & {
+      NiconiComments: typeof import("@/main").default;
+    };
+    const renderer =
+      new global.NiconiComments.internal.renderer.HTML5CSSRenderer(root);
+    renderer.setScale(2);
+    renderer.clearRect(0, 0, 200, 100);
+    renderer.fillRect(1, 1, 10, 10);
+    renderer.flush();
+    const layer = root.querySelector<HTMLElement>("div");
+    const node = layer?.firstElementChild;
+    const width = node ? getComputedStyle(node).width : undefined;
+    renderer.destroy();
+    root.remove();
+    return width;
+  });
+
+  expect(rectWidth).toBe("20px");
+});
+
 test("HTML5CSSRenderer keeps an active path across DOM-backed drawing", async ({
   page,
 }) => {
@@ -147,7 +177,7 @@ test("HTML5CSSRenderer keeps an active path across DOM-backed drawing", async ({
   );
 });
 
-test("HTML5CSSRenderer refreshes drawImage snapshots after sub-renderer changes", async ({
+test("HTML5CSSRenderer refreshes drawImage snapshots after sub-renderer clears", async ({
   page,
 }) => {
   await loadCssSample(page);
@@ -172,8 +202,6 @@ test("HTML5CSSRenderer refreshes drawImage snapshots after sub-renderer changes"
 
     renderer.clearRect(0, 0, 100, 100);
     image.clearRect(0, 0, 10, 10);
-    image.setFillStyle("#0000ff");
-    image.fillRect(0, 0, 10, 10);
     renderer.drawImage(image, 0, 0);
     renderer.flush();
     const second = root.querySelector<HTMLImageElement>("img")?.src;
@@ -187,6 +215,91 @@ test("HTML5CSSRenderer refreshes drawImage snapshots after sub-renderer changes"
   expect(sources.first).toBeDefined();
   expect(sources.second).toBeDefined();
   expect(sources.first).not.toBe(sources.second);
+});
+
+test("HTML5CSSRenderer refreshes drawImage snapshots after sub-renderer resize", async ({
+  page,
+}) => {
+  await loadCssSample(page);
+
+  const metrics = await page.evaluate(() => {
+    const root = document.createElement("div");
+    root.dataset.width = "100";
+    root.dataset.height = "100";
+    document.body.appendChild(root);
+    const global = window as typeof window & {
+      NiconiComments: typeof import("@/main").default;
+    };
+    const renderer =
+      new global.NiconiComments.internal.renderer.HTML5CSSRenderer(root);
+    const image = renderer.getCanvas();
+    image.setSize(10, 10);
+    image.setFillStyle("#ff0000");
+    image.fillRect(0, 0, 10, 10);
+    renderer.drawImage(image, 0, 0);
+    renderer.flush();
+    const firstSrc = root.querySelector<HTMLImageElement>("img")?.src;
+
+    renderer.clearRect(0, 0, 100, 100);
+    image.setSize(20, 5);
+    renderer.drawImage(image, 0, 0);
+    renderer.flush();
+    const img = root.querySelector<HTMLImageElement>("img");
+    const secondSrc = img?.src;
+    const width = img ? getComputedStyle(img).width : undefined;
+    const height = img ? getComputedStyle(img).height : undefined;
+
+    image.destroy();
+    renderer.destroy();
+    root.remove();
+    return { firstSrc, secondSrc, width, height };
+  });
+
+  expect(metrics.firstSrc).toBeDefined();
+  expect(metrics.secondSrc).toBeDefined();
+  expect(metrics.firstSrc).not.toBe(metrics.secondSrc);
+  expect(metrics.width).toBe("20px");
+  expect(metrics.height).toBe("5px");
+});
+
+test("HTML5CSSRenderer uses clamped canvas dimensions consistently", async ({
+  page,
+}) => {
+  await loadCssSample(page);
+
+  const metrics = await page.evaluate(() => {
+    const root = document.createElement("div");
+    document.body.appendChild(root);
+    const global = window as typeof window & {
+      NiconiComments: typeof import("@/main").default;
+    };
+    const renderer =
+      new global.NiconiComments.internal.renderer.HTML5CSSRenderer(root);
+    renderer.setSize(10000, 10000);
+    const size = renderer.getSize();
+    const layer = root.querySelector<HTMLElement>("div");
+    const layerStyle = layer ? getComputedStyle(layer) : undefined;
+    const canvas = root.querySelector("canvas");
+    renderer.destroy();
+    root.remove();
+    return {
+      width: size.width,
+      height: size.height,
+      layerWidth: layerStyle?.width,
+      layerHeight: layerStyle?.height,
+      canvasWidth: canvas?.width,
+      canvasHeight: canvas?.height,
+    };
+  });
+
+  expect(metrics).toEqual({
+    width: 4096,
+    height: 4096,
+    layerWidth: "4096px",
+    layerHeight: "4096px",
+    canvasWidth: 4096,
+    canvasHeight: 4096,
+  });
 });
 
 test("HTML5CSSRenderer uses computed CSS dimensions as its initial logical size", async ({

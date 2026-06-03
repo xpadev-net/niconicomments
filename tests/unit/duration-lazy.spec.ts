@@ -9,6 +9,7 @@ import NiconiComments from "@/main";
 import {
   DEFAULT_COMMENT_LONG,
   DEFAULT_NICOSCRIPT_LONG,
+  getLazyCommentLookahead,
   MAX_COMMENT_LONG,
   MAX_LAZY_COMMENT_LOOKAHEAD,
   MAX_NICOSCRIPT_LONG,
@@ -288,6 +289,26 @@ describe("duration bounds and lazy timeline expansion", () => {
       overflowReverseContext.nicoScripts.reverse[0]?.end -
         overflowReverseContext.nicoScripts.reverse[0]?.start,
     ).toBe(DEFAULT_NICOSCRIPT_LONG);
+
+    const subCentisecondJumpContext = createContext();
+    parseCommandAndNicoScript(
+      createComment({
+        owner: true,
+        content: "@ジャンプ sm9",
+        mail: ["@0.005"],
+      }),
+      subCentisecondJumpContext,
+    );
+    expect(subCentisecondJumpContext.nicoScripts.jump[0]?.end).toBeUndefined();
+  });
+
+  test("widens lazy lookahead for narrower canvas widths", () => {
+    expect(getLazyCommentLookahead(defaultConfig.canvasWidth)).toBe(
+      MAX_LAZY_COMMENT_LOOKAHEAD,
+    );
+    expect(
+      getLazyCommentLookahead(defaultConfig.canvasWidth / 2),
+    ).toBeGreaterThan(MAX_LAZY_COMMENT_LOOKAHEAD);
   });
 
   test("lazy constructor defers timeline expansion until the visible window", () => {

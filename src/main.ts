@@ -34,7 +34,7 @@ import {
   processFixedComment,
   processMovableComment,
 } from "@/utils";
-import { MAX_LAZY_COMMENT_LOOKAHEAD } from "@/utils/comment";
+import { getLazyCommentLookahead } from "@/utils/comment";
 import { createCommentInstance } from "@/utils/plugins";
 import { RangeCacheContext } from "@/utils/rangeCache";
 
@@ -355,7 +355,8 @@ class NiconiComments {
   private resolveLazyCommentWindow(vpos: number) {
     if (!this.ctx.options.lazy) return false;
     const startIndex = this._advanceNextUnprocessedCommentIndex();
-    const resolveUntil = vpos + MAX_LAZY_COMMENT_LOOKAHEAD;
+    const resolveUntil =
+      vpos + getLazyCommentLookahead(this.ctx.config.canvasWidth);
     let endIndex = startIndex - 1;
     for (let i = startIndex; i < this.comments.length; i++) {
       const comment = this.comments[i];

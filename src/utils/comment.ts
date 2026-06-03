@@ -49,11 +49,34 @@ export const DEFAULT_COMMENT_LONG = 300;
 export const DEFAULT_NICOSCRIPT_LONG = 30 * 100;
 export const MAX_COMMENT_LONG = 120 * 100;
 export const MAX_NICOSCRIPT_LONG = 60 * 60 * 100;
+const LAZY_LOOKAHEAD_LEAD_IN = 288;
+const LAZY_LOOKAHEAD_MOTION_MARGIN = 125;
+const LAZY_LOOKAHEAD_SAFETY_BUFFER = 100;
+const STANDARD_LAZY_LOOKAHEAD_CANVAS_WIDTH = 1920;
+const STANDARD_LAZY_LOOKAHEAD_TRAVEL_WIDTH = 1632;
 // Derived from the maximum naka comment lead-in distance:
 // 288px off-screen travel, 1632px total travel width, plus 125cs motion margin
 // and a 100cs safety buffer to populate the lazy timeline before draw time.
 export const MAX_LAZY_COMMENT_LOOKAHEAD =
-  Math.ceil((288 * (MAX_COMMENT_LONG + 125)) / 1632) + 100;
+  Math.ceil(
+    (LAZY_LOOKAHEAD_LEAD_IN *
+      (MAX_COMMENT_LONG + LAZY_LOOKAHEAD_MOTION_MARGIN)) /
+      STANDARD_LAZY_LOOKAHEAD_TRAVEL_WIDTH,
+  ) + LAZY_LOOKAHEAD_SAFETY_BUFFER;
+
+export const getLazyCommentLookahead = (canvasWidth: number) => {
+  if (!Number.isFinite(canvasWidth) || canvasWidth <= 0) {
+    return MAX_LAZY_COMMENT_LOOKAHEAD;
+  }
+  return (
+    Math.ceil(
+      (LAZY_LOOKAHEAD_LEAD_IN *
+        (MAX_COMMENT_LONG + LAZY_LOOKAHEAD_MOTION_MARGIN) *
+        (STANDARD_LAZY_LOOKAHEAD_CANVAS_WIDTH / canvasWidth)) /
+        STANDARD_LAZY_LOOKAHEAD_TRAVEL_WIDTH,
+    ) + LAZY_LOOKAHEAD_SAFETY_BUFFER
+  );
+};
 
 const normalizeLongCentiseconds = (value: number, max: number) => {
   if (!Number.isFinite(value) || value <= 0) {
@@ -86,7 +109,9 @@ const normalizeOptionalNicoscriptLong = (value: number | undefined) => {
   if (value === undefined) {
     return undefined;
   }
-  return normalizeLongCentiseconds(value * 100, MAX_NICOSCRIPT_LONG);
+  return (
+    normalizeLongCentiseconds(value * 100, MAX_NICOSCRIPT_LONG) || undefined
+  );
 };
 
 const normalizeNicoscriptLong = (value: number | undefined) => {

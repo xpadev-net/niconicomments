@@ -132,6 +132,39 @@ test("HTML5CSSRenderer preserves persistent scale across clearRect", async ({
   expect(rectWidth).toBe("20px");
 });
 
+test("HTML5CSSRenderer discards imbalanced saved state on clearRect", async ({
+  page,
+}) => {
+  await loadCssSample(page);
+
+  const rectWidth = await page.evaluate(() => {
+    const root = document.createElement("div");
+    root.dataset.width = "200";
+    root.dataset.height = "100";
+    document.body.appendChild(root);
+    const global = window as typeof window & {
+      NiconiComments: typeof import("@/main").default;
+    };
+    const renderer =
+      new global.NiconiComments.internal.renderer.HTML5CSSRenderer(root);
+    renderer.setScale(2);
+    renderer.save();
+    renderer.setScale(3);
+    renderer.flush();
+    renderer.clearRect(0, 0, 200, 100);
+    renderer.fillRect(1, 1, 10, 10);
+    renderer.flush();
+    const layer = root.querySelector<HTMLElement>("div");
+    const node = layer?.firstElementChild;
+    const width = node ? getComputedStyle(node).width : undefined;
+    renderer.destroy();
+    root.remove();
+    return width;
+  });
+
+  expect(rectWidth).toBe("20px");
+});
+
 test("HTML5CSSRenderer keeps an active path across DOM-backed drawing", async ({
   page,
 }) => {
@@ -175,6 +208,48 @@ test("HTML5CSSRenderer keeps an active path across DOM-backed drawing", async ({
   expect(warnings).toContain(
     "HTML5CSSRenderer: DOM drawing interleaved with an active path before stroke().",
   );
+});
+
+test("HTML5CSSRenderer keeps the video surface below DOM and text layers", async ({
+  page,
+}) => {
+  await loadCssSample(page);
+
+  const order = await page.evaluate(() => {
+    const root = document.createElement("div");
+    root.dataset.width = "100";
+    root.dataset.height = "100";
+    document.body.appendChild(root);
+    const video = document.createElement("video");
+    const global = window as typeof window & {
+      NiconiComments: typeof import("@/main").default;
+    };
+    const renderer =
+      new global.NiconiComments.internal.renderer.HTML5CSSRenderer(root, video);
+    renderer.drawVideo(false);
+    renderer.setFillStyle("#ff0000");
+    renderer.fillRect(0, 0, 10, 10);
+    renderer.fillText("x", 20, 20);
+    renderer.flush();
+    const layer = root.querySelector<HTMLElement>("div");
+    const children = layer ? Array.from(layer.children) : [];
+    const result = {
+      firstTag: children.at(0)?.tagName.toLowerCase(),
+      secondTag: children.at(1)?.tagName.toLowerCase(),
+      lastTag: children.at(-1)?.tagName.toLowerCase(),
+      length: children.length,
+    };
+    renderer.destroy();
+    root.remove();
+    return result;
+  });
+
+  expect(order).toEqual({
+    firstTag: "canvas",
+    secondTag: "div",
+    lastTag: "canvas",
+    length: 3,
+  });
 });
 
 test("HTML5CSSRenderer refreshes drawImage snapshots after sub-renderer clears", async ({

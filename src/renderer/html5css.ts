@@ -269,6 +269,7 @@ class HTML5CSSRenderer implements IRenderer {
     this.helperCursor = 0;
     this.pathActive = false;
     this.textDrawnBeforeDom = false;
+    this.restoreFrameStartState();
     for (const node of this.nodes) this.hideNode(node);
     this.trimHelperSurfaces();
     for (let i = 1, n = this.helperSurfaces.length; i < n; i++) {
@@ -440,6 +441,7 @@ class HTML5CSSRenderer implements IRenderer {
 
   flush(): void {
     this.commitHelperSurface();
+    this.keepVideoSurfaceFirst();
     for (let i = this.nodeCursor, n = this.nodes.length; i < n; i++) {
       const node = this.nodes[i];
       if (node) this.hideNode(node);
@@ -590,6 +592,11 @@ class HTML5CSSRenderer implements IRenderer {
     this.helper = this.prepareHelperSurface(this.helperCursor);
   }
 
+  private keepVideoSurfaceFirst(): void {
+    if (!this.videoSurface) return;
+    this.layer.insertBefore(this.videoSurface.canvas, this.layer.firstChild);
+  }
+
   private setupVideoCanvas(): void {
     if (!this.videoSurface) return;
     this.setupSurfaceCanvas(this.videoSurface);
@@ -681,6 +688,13 @@ class HTML5CSSRenderer implements IRenderer {
       scaleX: 1,
       scaleY: 1,
     };
+  }
+
+  private restoreFrameStartState(): void {
+    const frameStartState = this.stateStack[0];
+    if (!frameStartState) return;
+    this.state = { ...frameStartState };
+    this.stateStack.length = 0;
   }
 
   private normalizeSize(size: { width: number; height: number }) {

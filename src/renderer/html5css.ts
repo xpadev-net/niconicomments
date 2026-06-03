@@ -432,16 +432,16 @@ class HTML5CSSRenderer implements IRenderer {
     // WeakRef avoids retaining the parent where available. Older browsers fall
     // back to a strong reference so sub-renderer cache invalidation still works;
     // callers that keep sub-renderers alive should destroy them explicitly.
-    let inner: CanvasRenderer;
+    let inner: CanvasRenderer | undefined;
     const invalidate =
       typeof WeakRef === "undefined"
         ? () => {
-            this.invalidateImage(inner);
+            if (inner) this.invalidateImage(inner);
           }
         : (() => {
             const parentRef = new WeakRef(this);
             return () => {
-              parentRef.deref()?.invalidateImage(inner);
+              if (inner) parentRef.deref()?.invalidateImage(inner);
             };
           })();
     inner = new CanvasRenderer(

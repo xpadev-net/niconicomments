@@ -20,6 +20,9 @@ class HTML5CSSRenderer implements IRenderer {
 
   private helper: CanvasRenderer;
   private helperDirty = false;
+  private helperCursor = 0;
+  private readonly helperSurfaces: CanvasRenderer[] = [];
+  private readonly videoSurface?: CanvasRenderer;
   private width = 0;
   private height = 0;
   private state: CssRenderState = {
@@ -55,8 +58,11 @@ class HTML5CSSRenderer implements IRenderer {
     this.canvas.width = this.width;
     this.canvas.height = this.height;
     this.canvas.style.display = "none";
-    this.helper = new CanvasRenderer(undefined, this.video);
-    this.helper.setSize(this.width, this.height);
+    this.helper = this.getHelperSurface(0);
+    if (this.video) {
+      this.videoSurface = new CanvasRenderer(undefined, this.video);
+      this.videoSurface.setSize(this.width, this.height);
+    }
     this.originalRootStyle = {
       boxSizing: this.root.style.boxSizing,
       height: this.root.style.height,
@@ -98,7 +104,7 @@ class HTML5CSSRenderer implements IRenderer {
 
     this.root.appendChild(this.canvas);
     this.root.appendChild(this.layer);
-    this.setupHelperCanvas();
+    this.setupVideoCanvas();
     this.updateObjectFitContain();
     if (typeof ResizeObserver !== "undefined") {
       this.resizeObserver = new ResizeObserver(() => {
@@ -110,8 +116,14 @@ class HTML5CSSRenderer implements IRenderer {
 
   destroy(): void {
     this.resizeObserver?.disconnect();
-    this.teardownHelperCanvas();
-    this.helper.destroy();
+    for (const helper of this.helperSurfaces) {
+      this.teardownSurfaceCanvas(helper);
+      helper.destroy();
+    }
+    if (this.videoSurface) {
+      this.teardownSurfaceCanvas(this.videoSurface);
+      this.videoSurface.destroy();
+    }
     this.nodes.length = 0;
     this.layer.remove();
     this.canvas.remove();
@@ -125,9 +137,10 @@ class HTML5CSSRenderer implements IRenderer {
   }
 
   drawVideo(enableLegacyPip: boolean): void {
-    if (!this.video) return;
-    this.helper.drawVideo(enableLegacyPip);
-    this.helperDirty = true;
+    if (!this.videoSurface) return;
+    this.videoSurface.clearRect(0, 0, this.width, this.height);
+    this.videoSurface.drawVideo(enableLegacyPip);
+    this.videoSurface.canvas.style.display = "block";
   }
 
   getFont(): string {
@@ -212,7 +225,18 @@ class HTML5CSSRenderer implements IRenderer {
 
   clearRect(x: number, y: number, width: number, height: number): void {
     this.nodeCursor = 0;
-    this.helper.clearRect(x, y, width, height);
+    this.helperCursor = 0;
+    this.helperDirty = false;
+    for (const helper of this.helperSurfaces) {
+      helper.clearRect(x, y, width, height);
+      helper.canvas.style.display = "none";
+    }
+    this.helper = this.getHelperSurface(0);
+    if (this.videoSurface) {
+      this.videoSurface.clearRect(x, y, width, height);
+      this.videoSurface.canvas.style.display = "none";
+      this.layer.insertBefore(this.videoSurface.canvas, this.layer.firstChild);
+    }
     this.helperDirty = false;
   }
 
@@ -244,11 +268,18 @@ class HTML5CSSRenderer implements IRenderer {
     this.layer.style.width = `${width}px`;
     this.layer.style.height = `${height}px`;
     this.updateObjectFitContain();
-    this.teardownHelperCanvas();
-    this.helper.destroy();
-    this.helper = new CanvasRenderer(undefined, this.video);
-    this.helper.setSize(width, height);
-    this.setupHelperCanvas();
+    for (const helper of this.helperSurfaces) {
+      this.teardownSurfaceCanvas(helper);
+      helper.destroy();
+    }
+    this.helperSurfaces.length = 0;
+    this.helperCursor = 0;
+    this.helper = this.getHelperSurface(0);
+    if (this.videoSurface) {
+      this.teardownSurfaceCanvas(this.videoSurface);
+      this.videoSurface.setSize(width, height);
+      this.setupVideoCanvas();
+    }
     this.stateStack.length = 0;
     this.state = {
       alpha: 1,
@@ -344,10 +375,7 @@ class HTML5CSSRenderer implements IRenderer {
   }
 
   flush(): void {
-    if (this.helperDirty) {
-      this.layer.appendChild(this.helper.canvas);
-      this.helperDirty = false;
-    }
+    this.commitHelperSurface();
     for (let i = this.nodeCursor, n = this.nodes.length; i < n; i++) {
       const node = this.nodes[i];
       if (node) node.style.display = "none";
@@ -367,6 +395,7 @@ class HTML5CSSRenderer implements IRenderer {
   }
 
   private getNode(tagName: "div" | "img"): HTMLElement {
+    this.commitHelperSurface();
     let node = this.nodes[this.nodeCursor];
     if (!node || node.tagName.toLowerCase() !== tagName) {
       node?.remove();
@@ -424,8 +453,36 @@ class HTML5CSSRenderer implements IRenderer {
     this.layer.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${scale})`;
   }
 
-  private setupHelperCanvas(): void {
-    const { style } = this.helper.canvas;
+  private getHelperSurface(index: number): CanvasRenderer {
+    const helper =
+      this.helperSurfaces[index] ?? new CanvasRenderer(undefined, undefined);
+    if (!this.helperSurfaces[index]) {
+      helper.setSize(this.width, this.height);
+      this.setupSurfaceCanvas(helper);
+      this.helperSurfaces[index] = helper;
+    }
+    return helper;
+  }
+
+  private commitHelperSurface(): void {
+    if (!this.helperDirty) return;
+    this.helper.canvas.style.display = "block";
+    this.layer.appendChild(this.helper.canvas);
+    this.helperDirty = false;
+    this.helperCursor++;
+    this.helper = this.getHelperSurface(this.helperCursor);
+    this.helper.clearRect(0, 0, this.width, this.height);
+  }
+
+  private setupVideoCanvas(): void {
+    if (!this.videoSurface) return;
+    this.setupSurfaceCanvas(this.videoSurface);
+    this.videoSurface.canvas.style.display = "none";
+    this.layer.insertBefore(this.videoSurface.canvas, this.layer.firstChild);
+  }
+
+  private setupSurfaceCanvas(surface: IRenderer): void {
+    const { style } = surface.canvas;
     style.position = "absolute";
     style.left = "0";
     style.top = "0";
@@ -436,12 +493,11 @@ class HTML5CSSRenderer implements IRenderer {
     style.padding = "0";
     style.maxWidth = "none";
     style.maxHeight = "none";
-    this.layer.appendChild(this.helper.canvas);
   }
 
-  private teardownHelperCanvas(): void {
-    this.helper.canvas.remove();
-    this.helper.canvas.removeAttribute("style");
+  private teardownSurfaceCanvas(surface: IRenderer): void {
+    surface.canvas.remove();
+    surface.canvas.removeAttribute("style");
   }
 
   private getInitialSize(root: HTMLElement) {

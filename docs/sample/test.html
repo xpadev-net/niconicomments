@@ -20,16 +20,16 @@
     const rendererType = urlParams.get("renderer");
     const req = await fetch(`./commentdata/${video}.json`);
     const res = await req.json();
+    if (rendererType === "css") {
+      canvasElement.hidden = true;
+      cssRendererElement.hidden = false;
+    }
     const renderer =
       rendererType === "css"
         ? new NiconiComments.internal.renderer.HTML5CSSRenderer(
             cssRendererElement,
           )
         : canvasElement;
-    if (rendererType === "css") {
-      canvasElement.hidden = true;
-      cssRendererElement.hidden = false;
-    }
     const nico = new NiconiComments(renderer, res, {
       format: "formatted",
     });

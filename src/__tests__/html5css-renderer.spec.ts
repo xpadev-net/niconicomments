@@ -250,6 +250,40 @@ test("HTML5CSSRenderer keeps an active path across DOM-backed drawing", async ({
   );
 });
 
+test("HTML5CSSRenderer clears text-before-DOM warning state after flush", async ({
+  page,
+}) => {
+  await loadCssSample(page);
+  const warnings: string[] = [];
+  page.on("console", (message) => {
+    if (message.type() === "warning") {
+      warnings.push(message.text());
+    }
+  });
+
+  await page.evaluate(() => {
+    const root = document.createElement("div");
+    root.dataset.width = "100";
+    root.dataset.height = "100";
+    document.body.appendChild(root);
+    const global = window as typeof window & {
+      NiconiComments: typeof import("@/main").default;
+    };
+    const renderer =
+      new global.NiconiComments.internal.renderer.HTML5CSSRenderer(root);
+    renderer.fillText("x", 10, 20);
+    renderer.flush();
+    renderer.fillRect(0, 0, 10, 10);
+    renderer.flush();
+    renderer.destroy();
+    root.remove();
+  });
+
+  expect(warnings).not.toContain(
+    "HTML5CSSRenderer: text drawn before a DOM-backed draw may render below it.",
+  );
+});
+
 test("HTML5CSSRenderer reapplies helper context defaults after resizing surfaces", async ({
   page,
 }) => {

@@ -404,9 +404,7 @@ class HTML5CSSRenderer implements IRenderer {
     let inner: CanvasRenderer;
     const invalidate =
       typeof WeakRef === "undefined"
-        ? () => {
-            this.invalidateImage(inner);
-          }
+        ? undefined
         : (() => {
             const parentRef = new WeakRef(this);
             return () => {
@@ -454,6 +452,7 @@ class HTML5CSSRenderer implements IRenderer {
       const node = this.nodes[i];
       if (node) this.hideNode(node);
     }
+    this.textDrawnBeforeDom = false;
     if (this.stateStack.length > 0) {
       console.warn(
         "HTML5CSSRenderer: save()/restore() calls are imbalanced at flush().",

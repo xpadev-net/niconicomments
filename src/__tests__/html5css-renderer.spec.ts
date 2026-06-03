@@ -106,6 +106,12 @@ test("HTML5CSSRenderer keeps an active path across DOM-backed drawing", async ({
   page,
 }) => {
   await loadCssSample(page);
+  const warnings: string[] = [];
+  page.on("console", (message) => {
+    if (message.type() === "warning") {
+      warnings.push(message.text());
+    }
+  });
 
   const strokedPixel = await page.evaluate(() => {
     const root = document.createElement("div");
@@ -136,6 +142,9 @@ test("HTML5CSSRenderer keeps an active path across DOM-backed drawing", async ({
   });
 
   expect(strokedPixel?.[1]).toBeGreaterThan(0);
+  expect(warnings).toContain(
+    "HTML5CSSRenderer: DOM drawing interleaved with an active path before stroke().",
+  );
 });
 
 test("HTML5CSSRenderer uses computed CSS dimensions as its initial logical size", async ({

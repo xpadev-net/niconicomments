@@ -454,7 +454,7 @@ class HTML5CSSRenderer implements IRenderer {
     if (cached) return cached;
     let url: string;
     try {
-      url = source.toDataURL();
+      url = source.toDataURL("image/png");
     } catch (error) {
       console.warn(
         "HTML5CSSRenderer: failed to serialize a canvas image.",
@@ -558,12 +558,8 @@ class HTML5CSSRenderer implements IRenderer {
   }
 
   private getHelperSurface(index: number): CanvasRenderer {
-    const helper =
-      this.helperSurfaces[index] ?? new CanvasRenderer(undefined, undefined);
-    if (!this.helperSurfaces[index]) {
-      this.helperSurfaces[index] = helper;
-    }
-    return helper;
+    this.helperSurfaces[index] ??= new CanvasRenderer(undefined, undefined);
+    return this.helperSurfaces[index];
   }
 
   private prepareHelperSurface(index: number): CanvasRenderer {

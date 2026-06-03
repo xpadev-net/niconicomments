@@ -338,6 +338,7 @@ class HTML5CSSRenderer implements IRenderer {
     }
     this.resetState();
     this.helper = this.prepareHelperSurface(0);
+    this.helper.canvas.style.display = "none";
     this.helperDirty = false;
   }
 
@@ -466,9 +467,10 @@ class HTML5CSSRenderer implements IRenderer {
   }
 
   private getNode(tagName: "div" | "img"): HTMLElement {
-    if (this.pathActive) {
+    const deferHelperCommit = this.pathActive;
+    if (deferHelperCommit) {
       console.warn(
-        "HTML5CSSRenderer: DOM drawing interrupted an active path before stroke().",
+        "HTML5CSSRenderer: DOM drawing interleaved with an active path before stroke().",
       );
     }
     if (this.textDrawnBeforeDom) {
@@ -477,7 +479,9 @@ class HTML5CSSRenderer implements IRenderer {
       );
       this.textDrawnBeforeDom = false;
     }
-    this.commitHelperSurface();
+    if (!deferHelperCommit) {
+      this.commitHelperSurface();
+    }
     let node = this.nodes[this.nodeCursor];
     if (!node || node.tagName.toLowerCase() !== tagName) {
       node?.remove();

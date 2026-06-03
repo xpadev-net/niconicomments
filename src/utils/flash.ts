@@ -40,11 +40,10 @@ const clampFlashContent = (input: string) => {
   let end = 0;
   for (; end < input.length && end < MAX_FLASH_COMMENT_CHARS; end++) {
     if (input[end] === "\n") {
-      lineCount++;
       if (lineCount >= MAX_FLASH_COMMENT_LINES) {
-        end++;
         break;
       }
+      lineCount++;
     }
   }
   return {

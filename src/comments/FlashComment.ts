@@ -53,6 +53,13 @@ const isWithinFlashImageBounds = (width: number, height: number) => {
   );
 };
 
+const takeFlashDisplayPart = (value: string, remaining: { value: string }) => {
+  if (!value || !remaining.value) return "";
+  const part = remaining.value.slice(0, value.length);
+  remaining.value = remaining.value.slice(part.length);
+  return part;
+};
+
 class FlashComment extends BaseComment {
   private _globalScale: number;
   override readonly pluginName: string = "FlashComment";
@@ -200,14 +207,22 @@ class FlashComment extends BaseComment {
     const displayText = button
       ? `${button.message.before}${button.message.body}${button.message.after}`
       : input;
-    if (button) {
-      appendContent(button.message.before);
-      appendContent(button.message.body, true);
-      appendContent(button.message.after);
-    } else {
-      appendContent(input);
-    }
     const clamped = clampFlashContent(displayText);
+    if (button) {
+      const remainingDisplayText = { value: clamped.content };
+      appendContent(
+        takeFlashDisplayPart(button.message.before, remainingDisplayText),
+      );
+      appendContent(
+        takeFlashDisplayPart(button.message.body, remainingDisplayText),
+        true,
+      );
+      appendContent(
+        takeFlashDisplayPart(button.message.after, remainingDisplayText),
+      );
+    } else {
+      appendContent(clamped.content);
+    }
     const lineCount = clamped.lineCount;
     const lineOffset =
       (clamped.content.match(this._flashScriptCharRegex.super)?.length ?? 0) *

@@ -189,6 +189,25 @@ describe("Flash and at-button resource bounds", () => {
     );
   });
 
+  test("keeps the last allowed Flash line content when clamping", () => {
+    const renderer = new RecordingRenderer();
+    const comment = new TestFlashComment(
+      formattedComment(
+        `${"\n".repeat(MAX_FLASH_COMMENT_LINES - 1)}last-line-kept`,
+      ),
+      renderer,
+      0,
+      createContext(),
+    );
+
+    expect(comment.comment.lineCount).toBe(MAX_FLASH_COMMENT_LINES);
+    expect(
+      comment.comment.content.some(
+        (item) => item.type === "text" && item.content === "last-line-kept",
+      ),
+    ).toBe(true);
+  });
+
   test("preserves normal Flash multiline rendering", () => {
     const renderer = new RecordingRenderer();
     const comment = new TestFlashComment(
@@ -236,6 +255,27 @@ describe("Flash and at-button resource bounds", () => {
     );
     expect(comment.comment.lineCount).toBe(MAX_FLASH_COMMENT_LINES);
     expect(renderer.measureCalls).toBeLessThanOrEqual(
+      MAX_FLASH_COMMENT_LINES * 4,
+    );
+  });
+
+  test("caps combined at-button display parts to the Flash line budget", () => {
+    const renderer = new RecordingRenderer();
+    const comment = new TestFlashComment(
+      formattedComment(
+        `@ボタン "${"\n".repeat(100)}[${"\n".repeat(100)}]${"\n".repeat(100)}"`,
+      ),
+      renderer,
+      0,
+      createContext(),
+    );
+    const image = comment.exposeTextImage() as RecordingRenderer | null;
+
+    expect(comment.comment.lineCount).toBe(MAX_FLASH_COMMENT_LINES);
+    expect(renderer.measureCalls).toBeLessThanOrEqual(
+      MAX_FLASH_COMMENT_LINES * 4,
+    );
+    expect(image?.fillTextCalls ?? 0).toBeLessThanOrEqual(
       MAX_FLASH_COMMENT_LINES * 4,
     );
   });

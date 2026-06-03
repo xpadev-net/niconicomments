@@ -272,13 +272,6 @@ class HTML5CSSRenderer implements IRenderer {
     this.restoreFrameStartState();
     for (const node of this.nodes) this.hideNode(node);
     this.trimHelperSurfaces();
-    for (let i = 1, n = this.helperSurfaces.length; i < n; i++) {
-      const helper = this.helperSurfaces[i];
-      if (!helper) continue;
-      helper.setSize(this.width, this.height);
-      this.setupSurfaceCanvas(helper);
-      helper.canvas.style.display = "none";
-    }
     this.helper = this.prepareHelperSurface(0);
     this.helper.canvas.style.display = "none";
     if (this.videoSurface) {

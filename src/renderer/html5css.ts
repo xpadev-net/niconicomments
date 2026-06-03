@@ -401,10 +401,14 @@ class HTML5CSSRenderer implements IRenderer {
   getCanvas(padding = 0): IRenderer {
     // Sub-renderers are caller-owned, matching CanvasRenderer.getCanvas().
     // The change hook only keeps drawImage() snapshots fresh while they live.
+    // WeakRef avoids retaining the parent where available. Older browsers fall
+    // back to a strong reference so sub-renderer cache invalidation still works.
     let inner: CanvasRenderer;
     const invalidate =
       typeof WeakRef === "undefined"
-        ? undefined
+        ? () => {
+            this.invalidateImage(inner);
+          }
         : (() => {
             const parentRef = new WeakRef(this);
             return () => {

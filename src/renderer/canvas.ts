@@ -2,6 +2,34 @@ import type { IRenderer } from "@/@types/";
 import { CanvasRenderingContext2DError } from "@/errors";
 import { canvasPool } from "@/renderer/canvasPool";
 
+const MAX_CANVAS_DIMENSION = 8192;
+export const MAX_CANVAS_AREA = 16_777_216;
+const MAX_MEASURE_TEXT_CACHE_TEXT_LENGTH = 512;
+
+const clampCanvasSize = (width: number, height: number) => {
+  let nextWidth = Number.isFinite(width) ? Math.max(0, Math.floor(width)) : 0;
+  let nextHeight = Number.isFinite(height)
+    ? Math.max(0, Math.floor(height))
+    : 0;
+  if (nextWidth > MAX_CANVAS_DIMENSION || nextHeight > MAX_CANVAS_DIMENSION) {
+    const scale = Math.min(
+      MAX_CANVAS_DIMENSION / Math.max(1, nextWidth),
+      MAX_CANVAS_DIMENSION / Math.max(1, nextHeight),
+    );
+    nextWidth = Math.floor(nextWidth * scale);
+    nextHeight = Math.floor(nextHeight * scale);
+  }
+  if (nextWidth * nextHeight > MAX_CANVAS_AREA) {
+    const scale = Math.sqrt(MAX_CANVAS_AREA / (nextWidth * nextHeight));
+    nextWidth = Math.floor(nextWidth * scale);
+    nextHeight = Math.floor(nextHeight * scale);
+  }
+  return {
+    width: nextWidth,
+    height: nextHeight,
+  };
+};
+
 /**
  * Canvasを使ったレンダラー
  * dom/canvas周りのAPIを切り出したもの
@@ -142,10 +170,12 @@ class CanvasRenderer implements IRenderer {
     this.context.globalAlpha = alpha;
   }
   setSize(width: number, height: number) {
-    this.width = width;
-    this.height = height;
-    this.canvas.width = width + this.padding * 2;
-    this.canvas.height = height + this.padding * 2;
+    const paddingSize = this.padding * 2;
+    const size = clampCanvasSize(width + paddingSize, height + paddingSize);
+    this.width = Math.max(0, size.width - paddingSize);
+    this.height = Math.max(0, size.height - paddingSize);
+    this.canvas.width = size.width;
+    this.canvas.height = size.height;
   }
 
   getSize(): { width: number; height: number } {
@@ -156,6 +186,9 @@ class CanvasRenderer implements IRenderer {
   }
 
   measureText(text: string): TextMetrics {
+    if (text.length > MAX_MEASURE_TEXT_CACHE_TEXT_LENGTH) {
+      return this.context.measureText(text);
+    }
     const key = `${this.context.font}\0${text}`;
     const cached = CanvasRenderer._mtCache.get(key);
     if (cached !== undefined) return cached;

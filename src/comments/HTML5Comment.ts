@@ -11,6 +11,7 @@ import type {
 } from "@/@types/";
 import type { CommentInstanceContext } from "@/contexts/";
 import { TypeGuardError } from "@/errors/TypeGuardError";
+import { MAX_CANVAS_AREA } from "@/renderer/canvas";
 import typeGuard from "@/typeGuard";
 import {
   getCharSize,
@@ -28,6 +29,45 @@ import { addHTML5PartToResult } from "@/utils/niconico";
 import { BaseComment } from "./BaseComment";
 
 const MAX_RESIZE_ITERATIONS = 20;
+const MAX_HTML5_COMMENT_CHARS = 16_384;
+const MAX_HTML5_COMMENT_LINES = 256;
+const HTML5_COMMENT_IMAGE_PADDING = 4;
+const MAX_HTML5_COMMENT_IMAGE_WIDTH = 8192 - HTML5_COMMENT_IMAGE_PADDING * 2;
+const MAX_HTML5_COMMENT_IMAGE_HEIGHT = 8192 - HTML5_COMMENT_IMAGE_PADDING * 2;
+const MAX_HTML5_COMMENT_IMAGE_AREA = MAX_CANVAS_AREA;
+
+const clampHTML5Content = (input: string) => {
+  let lineCount = 1;
+  let end = 0;
+  for (; end < input.length && end < MAX_HTML5_COMMENT_CHARS; end++) {
+    if (input[end] === "\n") {
+      lineCount++;
+      if (lineCount >= MAX_HTML5_COMMENT_LINES) {
+        end++;
+        break;
+      }
+    }
+  }
+  const content = input.slice(0, end);
+  return {
+    content,
+    lineCount,
+  };
+};
+
+const isWithinImageBounds = (width: number, height: number) => {
+  const paddedWidth = width + HTML5_COMMENT_IMAGE_PADDING * 2;
+  const paddedHeight = height + HTML5_COMMENT_IMAGE_PADDING * 2;
+  return (
+    Number.isFinite(width) &&
+    Number.isFinite(height) &&
+    width > 0 &&
+    height > 0 &&
+    width <= MAX_HTML5_COMMENT_IMAGE_WIDTH &&
+    height <= MAX_HTML5_COMMENT_IMAGE_HEIGHT &&
+    paddedWidth * paddedHeight <= MAX_HTML5_COMMENT_IMAGE_AREA
+  );
+};
 
 class HTML5Comment extends BaseComment {
   override readonly pluginName: string = "HTML5Comment";
@@ -127,8 +167,14 @@ class HTML5Comment extends BaseComment {
 
   override parseContent(input: string, font?: HTML5Fonts) {
     const content: CommentContentItemText[] = [];
-    addHTML5PartToResult(content, input, this.config, font ?? "defont");
-    const lineCount = input.split("\n").length;
+    const clamped = clampHTML5Content(input);
+    addHTML5PartToResult(
+      content,
+      clamped.content,
+      this.config,
+      font ?? "defont",
+    );
+    const lineCount = clamped.lineCount;
     const lineOffset = 0;
     return {
       content,
@@ -321,6 +367,10 @@ class HTML5Comment extends BaseComment {
     }
   }
 
+  protected override canGenerateTextImage(): boolean {
+    return isWithinImageBounds(this.comment.width, this.comment.height);
+  }
+
   override _generateTextImage(): IRenderer {
     const { fontSize, scale } = getFontSizeAndScale(
       this.comment.charSize,
@@ -333,8 +383,7 @@ class HTML5Comment extends BaseComment {
       getConfig(this.config.commentScale, false) *
       scale *
       (this.comment.layer === -1 ? this.ctx.options.scale : 1);
-    const DEFAULT_COMMENT_PADDING = 4;
-    const image = this.renderer.getCanvas(DEFAULT_COMMENT_PADDING);
+    const image = this.renderer.getCanvas(HTML5_COMMENT_IMAGE_PADDING);
     image.setSize(this.comment.width, this.comment.height);
     image.setStrokeStyle(getStrokeColor(this.comment, this.config));
     image.setFillStyle(this.comment.color);

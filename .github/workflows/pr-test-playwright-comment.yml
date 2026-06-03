@@ -3,6 +3,7 @@ permissions:
   actions: read
   contents: write
   issues: write
+  pull-requests: read
 on:
   workflow_run:
     workflows: ["Playwright Tests"]
@@ -17,7 +18,7 @@ jobs:
     steps:
       - name: Resolve trusted PR context
         id: pr-context
-        uses: actions/github-script@v9
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
         with:
           result-encoding: string
           script: |
@@ -146,7 +147,7 @@ jobs:
       - name: Download test results
         id: test-results
         if: ${{ github.event.workflow_run.conclusion == 'failure' && fromJSON(steps.pr-context.outputs.result).trusted && fromJSON(steps.pr-context.outputs.result).artifactDisposition == 'download' && fromJSON(steps.pr-context.outputs.result).testResultsArtifactCount > 0 }}
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@974686ed5098c7f9c9289ec946b9058e496a2561
         with:
           pattern: test-results-node-*
           path: all-test-results/
@@ -157,7 +158,7 @@ jobs:
 
       - name: Sync failure screenshots comment
         if: ${{ fromJSON(steps.pr-context.outputs.result).trusted }}
-        uses: actions/github-script@v9
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
         env:
           DOWNLOAD_OUTCOME: ${{ steps.test-results.outcome }}
           PR_CONTEXT: ${{ steps.pr-context.outputs.result }}
@@ -301,6 +302,7 @@ jobs:
             }
 
             if (downloadOutcome !== 'success') {
+              await removeStaleComment();
               throw new Error(`Screenshot artifact download failed with outcome ${downloadOutcome}`);
             }
 

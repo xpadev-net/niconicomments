@@ -147,6 +147,48 @@ test("HTML5CSSRenderer keeps an active path across DOM-backed drawing", async ({
   );
 });
 
+test("HTML5CSSRenderer refreshes drawImage snapshots after sub-renderer changes", async ({
+  page,
+}) => {
+  await loadCssSample(page);
+
+  const sources = await page.evaluate(() => {
+    const root = document.createElement("div");
+    root.dataset.width = "100";
+    root.dataset.height = "100";
+    document.body.appendChild(root);
+    const global = window as typeof window & {
+      NiconiComments: typeof import("@/main").default;
+    };
+    const renderer =
+      new global.NiconiComments.internal.renderer.HTML5CSSRenderer(root);
+    const image = renderer.getCanvas();
+    image.setSize(10, 10);
+    image.setFillStyle("#ff0000");
+    image.fillRect(0, 0, 10, 10);
+    renderer.drawImage(image, 0, 0);
+    renderer.flush();
+    const first = root.querySelector<HTMLImageElement>("img")?.src;
+
+    renderer.clearRect(0, 0, 100, 100);
+    image.clearRect(0, 0, 10, 10);
+    image.setFillStyle("#0000ff");
+    image.fillRect(0, 0, 10, 10);
+    renderer.drawImage(image, 0, 0);
+    renderer.flush();
+    const second = root.querySelector<HTMLImageElement>("img")?.src;
+
+    image.destroy();
+    renderer.destroy();
+    root.remove();
+    return { first, second };
+  });
+
+  expect(sources.first).toBeDefined();
+  expect(sources.second).toBeDefined();
+  expect(sources.first).not.toBe(sources.second);
+});
+
 test("HTML5CSSRenderer uses computed CSS dimensions as its initial logical size", async ({
   page,
 }) => {

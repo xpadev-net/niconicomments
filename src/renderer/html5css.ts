@@ -27,7 +27,6 @@ class HTML5CSSRenderer implements IRenderer {
   private pathActive = false;
   private textDrawnBeforeDom = false;
   private readonly helperSurfaces: CanvasRenderer[] = [];
-  private readonly subRenderers = new Set<IRenderer>();
   private readonly videoSurface?: CanvasRenderer;
   private width = 0;
   private height = 0;
@@ -144,10 +143,6 @@ class HTML5CSSRenderer implements IRenderer {
       this.teardownSurfaceCanvas(this.videoSurface);
       this.videoSurface.destroy();
     }
-    for (const subRenderer of Array.from(this.subRenderers)) {
-      subRenderer.destroy();
-    }
-    this.subRenderers.clear();
     this.nodes.length = 0;
     this.layer.remove();
     this.canvas.remove();
@@ -400,11 +395,19 @@ class HTML5CSSRenderer implements IRenderer {
   }
 
   getCanvas(padding = 0): IRenderer {
-    const inner = new CanvasRenderer(undefined, undefined, padding, () => {
-      this.invalidateImage(inner);
-      this.subRenderers.delete(inner);
-    });
-    this.subRenderers.add(inner);
+    // Sub-renderers are caller-owned, matching CanvasRenderer.getCanvas().
+    // The change hook only keeps drawImage() snapshots fresh while they live.
+    const inner = new CanvasRenderer(
+      undefined,
+      undefined,
+      padding,
+      () => {
+        this.invalidateImage(inner);
+      },
+      () => {
+        this.invalidateImage(inner);
+      },
+    );
     return inner;
   }
 

@@ -124,6 +124,20 @@ const normalizeNicoscriptLong = (value: number | undefined) => {
   );
 };
 
+const processedTimelineComments = new WeakMap<IComment, WeakSet<Timeline>>();
+
+const isTimelineProcessed = (timeline: Timeline, comment: IComment) =>
+  processedTimelineComments.get(comment)?.has(timeline) ?? false;
+
+const markTimelineProcessed = (timeline: Timeline, comment: IComment) => {
+  const processed = processedTimelineComments.get(comment);
+  if (processed) {
+    processed.add(timeline);
+    return;
+  }
+  processedTimelineComments.set(comment, new WeakSet([timeline]));
+};
+
 /**
  * 改行リサイズが発生するか
  * @param comment 判定対象のコメント
@@ -802,18 +816,22 @@ const processFixedComment = (
   timeline: Timeline,
   lazy = false,
   config: BaseConfig,
+  touchedTimeline?: Set<number>,
 ) => {
   const commentVpos = comment.vpos;
   const commentLong = comment.long;
   const collisionEnd = Math.max(commentLong - 20, 0);
   const posY = lazy ? -1 : getFixedPosY(comment, collision, config);
-  for (let j = 0; j < commentLong; j++) {
-    const vpos = commentVpos + j;
-    if (timeline[vpos]?.includes(comment)) continue;
-    arrayPush(timeline, vpos, comment);
-    if (j <= collisionEnd) {
-      arrayPush(collision, vpos, comment);
+  if (!isTimelineProcessed(timeline, comment)) {
+    for (let j = 0; j < commentLong; j++) {
+      const vpos = commentVpos + j;
+      arrayPush(timeline, vpos, comment);
+      touchedTimeline?.add(vpos);
+      if (j <= collisionEnd) {
+        arrayPush(collision, vpos, comment);
+      }
     }
+    markTimelineProcessed(timeline, comment);
   }
   comment.posY = posY;
 };
@@ -832,6 +850,7 @@ const processMovableComment = (
   timeline: Timeline,
   lazy = false,
   config: BaseConfig,
+  touchedTimeline?: Set<number>,
 ) => {
   const commentWidth = comment.width;
   const commentLong = comment.long;
@@ -851,23 +870,26 @@ const processMovableComment = (
     ? -1
     : getMovablePosY(comment, collision, beforeVpos, config, speed);
   const n = commentLong + 125;
-  for (let j = beforeVpos; j < n; j++) {
-    const vpos = commentVpos + j;
-    const leftPos = drawPadding + drawRange - (j + 100) * speed;
-    if (timeline[vpos]?.includes(comment)) continue;
-    arrayPush(timeline, vpos, comment);
-    if (
-      leftPos + commentWidth + collisionPadding >= collisionRight &&
-      leftPos <= collisionRight
-    ) {
-      arrayPush(collision.right, vpos, comment);
+  if (!isTimelineProcessed(timeline, comment)) {
+    for (let j = beforeVpos; j < n; j++) {
+      const vpos = commentVpos + j;
+      const leftPos = drawPadding + drawRange - (j + 100) * speed;
+      arrayPush(timeline, vpos, comment);
+      touchedTimeline?.add(vpos);
+      if (
+        leftPos + commentWidth + collisionPadding >= collisionRight &&
+        leftPos <= collisionRight
+      ) {
+        arrayPush(collision.right, vpos, comment);
+      }
+      if (
+        leftPos + commentWidth + collisionPadding >= collisionLeft &&
+        leftPos <= collisionLeft
+      ) {
+        arrayPush(collision.left, vpos, comment);
+      }
     }
-    if (
-      leftPos + commentWidth + collisionPadding >= collisionLeft &&
-      leftPos <= collisionLeft
-    ) {
-      arrayPush(collision.left, vpos, comment);
-    }
+    markTimelineProcessed(timeline, comment);
   }
   comment.posY = posY;
 };

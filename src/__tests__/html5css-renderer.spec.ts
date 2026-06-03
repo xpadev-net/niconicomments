@@ -279,14 +279,16 @@ test("HTML5CSSRenderer uses clamped canvas dimensions consistently", async ({
     const size = renderer.getSize();
     const layer = root.querySelector<HTMLElement>("div");
     const layerStyle = layer ? getComputedStyle(layer) : undefined;
+    const layerWidth = layerStyle?.width;
+    const layerHeight = layerStyle?.height;
     const canvas = root.querySelector("canvas");
     renderer.destroy();
     root.remove();
     return {
       width: size.width,
       height: size.height,
-      layerWidth: layerStyle?.width,
-      layerHeight: layerStyle?.height,
+      layerWidth,
+      layerHeight,
       canvasWidth: canvas?.width,
       canvasHeight: canvas?.height,
     };

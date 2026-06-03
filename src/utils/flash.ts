@@ -12,6 +12,10 @@ import type {
 import { getConfig } from "@/utils/config";
 import { nativeSort } from "@/utils/sort";
 
+export const MAX_FLASH_COMMENT_CHARS = 16_384;
+export const MAX_FLASH_COMMENT_LINES = 256;
+export const MAX_FLASH_CONTENT_ITEMS = 2048;
+
 const flashCharRegexCache = new WeakMap<
   BaseConfig,
   { simsunStrong: RegExp; simsunWeak: RegExp; gulim: RegExp; gothic: RegExp }
@@ -29,6 +33,23 @@ const getFlashCharRegex = (config: BaseConfig) => {
     flashCharRegexCache.set(config, cached);
   }
   return cached;
+};
+
+const clampFlashContent = (input: string) => {
+  let lineCount = 1;
+  let end = 0;
+  for (; end < input.length && end < MAX_FLASH_COMMENT_CHARS; end++) {
+    if (input[end] === "\n") {
+      if (lineCount >= MAX_FLASH_COMMENT_LINES) {
+        break;
+      }
+      lineCount++;
+    }
+  }
+  return {
+    content: input.slice(0, end),
+    lineCount,
+  };
 };
 
 /**
@@ -81,14 +102,17 @@ const getFlashFontName = (font: CommentFlashFontParsed): CommentFlashFont => {
  */
 const parseContent = (content: string, config: BaseConfig) => {
   const results: CommentContentItem[] = [];
-  const lines = Array.from(content.match(/\n|[^\n]+/g) ?? []);
+  const clamped = clampFlashContent(content);
+  const lines = Array.from(clamped.content.match(/\n|[^\n]+/g) ?? []);
   for (const line of lines) {
     const lineContent = parseLine(line, config);
     const firstContent = lineContent[0];
+    const remainingItems = MAX_FLASH_CONTENT_ITEMS - results.length;
+    if (remainingItems <= 0) break;
     const defaultFont = firstContent?.font;
     if (defaultFont) {
       results.push(
-        ...lineContent.map((val) => {
+        ...lineContent.slice(0, remainingItems).map((val) => {
           val.font ??= defaultFont;
           if (val.type === "spacer") {
             const spacer = config.compatSpacer.flash[val.char];
@@ -101,7 +125,7 @@ const parseContent = (content: string, config: BaseConfig) => {
         }),
       );
     } else {
-      results.push(...lineContent);
+      results.push(...lineContent.slice(0, remainingItems));
     }
   }
   return results;
@@ -139,7 +163,7 @@ const addPartToResult = (
   config: BaseConfig,
   font?: CommentFlashFont,
 ) => {
-  if (part === "") return;
+  if (part === "" || lineContent.length >= MAX_FLASH_CONTENT_ITEMS) return;
   for (const key of Object.keys(config.compatSpacer.flash)) {
     const spacerWidth = config.compatSpacer.flash[key]?.[font ?? "defont"];
     if (!spacerWidth) continue;
@@ -379,6 +403,7 @@ const buildAtButtonComment = (
 
 export {
   buildAtButtonComment,
+  clampFlashContent,
   getButtonParts,
   getFlashFontIndex,
   getFlashFontName,

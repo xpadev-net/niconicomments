@@ -58,7 +58,7 @@ class HTML5CSSRenderer implements IRenderer {
     this.canvas.width = this.width;
     this.canvas.height = this.height;
     this.canvas.style.display = "none";
-    this.helper = this.getHelperSurface(0);
+    this.helper = this.prepareHelperSurface(0);
     if (this.video) {
       this.videoSurface = new CanvasRenderer(undefined, this.video);
       this.videoSurface.setSize(this.width, this.height);
@@ -226,12 +226,12 @@ class HTML5CSSRenderer implements IRenderer {
   clearRect(x: number, y: number, width: number, height: number): void {
     this.nodeCursor = 0;
     this.helperCursor = 0;
-    this.helperDirty = false;
     for (const helper of this.helperSurfaces) {
-      helper.clearRect(x, y, width, height);
+      helper.setSize(this.width, this.height);
+      this.setupSurfaceCanvas(helper);
       helper.canvas.style.display = "none";
     }
-    this.helper = this.getHelperSurface(0);
+    this.helper = this.prepareHelperSurface(0);
     if (this.videoSurface) {
       this.videoSurface.clearRect(x, y, width, height);
       this.videoSurface.canvas.style.display = "none";
@@ -274,7 +274,6 @@ class HTML5CSSRenderer implements IRenderer {
     }
     this.helperSurfaces.length = 0;
     this.helperCursor = 0;
-    this.helper = this.getHelperSurface(0);
     if (this.videoSurface) {
       this.teardownSurfaceCanvas(this.videoSurface);
       this.videoSurface.setSize(width, height);
@@ -290,6 +289,8 @@ class HTML5CSSRenderer implements IRenderer {
       scaleX: 1,
       scaleY: 1,
     };
+    this.helper = this.prepareHelperSurface(0);
+    this.helperDirty = false;
   }
 
   getSize(): { width: number; height: number } {
@@ -335,15 +336,14 @@ class HTML5CSSRenderer implements IRenderer {
 
   save(): void {
     this.stateStack.push({ ...this.state });
-    this.helper.save();
   }
 
   restore(): void {
     const state = this.stateStack.pop();
     if (state) {
+      this.applyHelperScale(state.scaleX, state.scaleY);
       this.state = state;
     }
-    this.helper.restore();
   }
 
   getCanvas(padding = 0): IRenderer {
@@ -362,7 +362,10 @@ class HTML5CSSRenderer implements IRenderer {
   ): void {
     const source = image.canvas;
     const node = this.getNode("img") as HTMLImageElement;
-    node.src = this.getImageUrl(source);
+    const url = this.getImageUrl(source);
+    if (node.src !== url) {
+      node.src = url;
+    }
     node.style.border = "0";
     node.style.background = "transparent";
     this.positionNode(
@@ -457,9 +460,17 @@ class HTML5CSSRenderer implements IRenderer {
     const helper =
       this.helperSurfaces[index] ?? new CanvasRenderer(undefined, undefined);
     if (!this.helperSurfaces[index]) {
-      helper.setSize(this.width, this.height);
-      this.setupSurfaceCanvas(helper);
       this.helperSurfaces[index] = helper;
+    }
+    return helper;
+  }
+
+  private prepareHelperSurface(index: number): CanvasRenderer {
+    const helper = this.getHelperSurface(index);
+    helper.setSize(this.width, this.height);
+    this.setupSurfaceCanvas(helper);
+    if (this.state.scaleX !== 1 || this.state.scaleY !== 1) {
+      helper.setScale(this.state.scaleX, this.state.scaleY);
     }
     return helper;
   }
@@ -470,8 +481,7 @@ class HTML5CSSRenderer implements IRenderer {
     this.layer.appendChild(this.helper.canvas);
     this.helperDirty = false;
     this.helperCursor++;
-    this.helper = this.getHelperSurface(this.helperCursor);
-    this.helper.clearRect(0, 0, this.width, this.height);
+    this.helper = this.prepareHelperSurface(this.helperCursor);
   }
 
   private setupVideoCanvas(): void {
@@ -493,6 +503,16 @@ class HTML5CSSRenderer implements IRenderer {
     style.padding = "0";
     style.maxWidth = "none";
     style.maxHeight = "none";
+  }
+
+  private applyHelperScale(scaleX: number, scaleY: number): void {
+    const ratioX =
+      this.state.scaleX === 0 ? scaleX : scaleX / this.state.scaleX;
+    const ratioY =
+      this.state.scaleY === 0 ? scaleY : scaleY / this.state.scaleY;
+    if (Number.isFinite(ratioX) && Number.isFinite(ratioY)) {
+      this.helper.setScale(ratioX, ratioY);
+    }
   }
 
   private teardownSurfaceCanvas(surface: IRenderer): void {

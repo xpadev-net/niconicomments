@@ -7,10 +7,7 @@ test("HTML5CSSRenderer contains its logical stage inside the host layout", async
   await page.goto(
     "http://localhost:8080/docs/sample/test.html?renderer=css&time=20&video=0",
   );
-  await Promise.all([
-    page.waitForSelector("div#loaded", { state: "attached" }),
-    page.waitForSelector("div#__bs_notify__", { state: "detached" }),
-  ]);
+  await page.waitForSelector("div#loaded", { state: "attached" });
 
   const metrics = await page.evaluate(() => {
     const root = document.querySelector<HTMLElement>(

@@ -1,0 +1,75 @@
+import { expect, test } from "@playwright/test";
+
+test("HTML5CSSRenderer contains its logical stage inside the host layout", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 360, height: 900 });
+  await page.goto(
+    "http://localhost:8080/docs/sample/test.html?renderer=css&time=20&video=0",
+  );
+  await Promise.all([
+    page.waitForSelector("div#loaded", { state: "attached" }),
+    page.waitForSelector("div#__bs_notify__", { state: "detached" }),
+  ]);
+
+  const metrics = await page.evaluate(() => {
+    const root = document.querySelector<HTMLElement>(
+      ".niconicomments-html5css-renderer",
+    );
+    const layer = root?.querySelector<HTMLElement>("div");
+    const rootStyle = root ? getComputedStyle(root) : undefined;
+    const layerStyle = layer ? getComputedStyle(layer) : undefined;
+    const rootRect = root?.getBoundingClientRect();
+    const layerRect = layer?.getBoundingClientRect();
+    return {
+      rootWidth: rootStyle?.width,
+      rootHeight: rootStyle?.height,
+      layerWidth: layerStyle?.width,
+      layerHeight: layerStyle?.height,
+      layerTransform: layerStyle?.transform,
+      rootRect: rootRect
+        ? {
+            left: rootRect.left,
+            top: rootRect.top,
+            right: rootRect.right,
+            bottom: rootRect.bottom,
+          }
+        : undefined,
+      layerRect: layerRect
+        ? {
+            left: layerRect.left,
+            top: layerRect.top,
+            right: layerRect.right,
+            bottom: layerRect.bottom,
+          }
+        : undefined,
+      visibleImages: [
+        ...document.querySelectorAll<HTMLElement>(
+          ".niconicomments-html5css-renderer img",
+        ),
+      ].filter((element) => getComputedStyle(element).display !== "none")
+        .length,
+    };
+  });
+
+  expect(metrics).toMatchObject({
+    rootWidth: "360px",
+    rootHeight: "900px",
+    layerWidth: "1920px",
+    layerHeight: "1080px",
+  });
+  expect(metrics.layerTransform).not.toBe("none");
+  expect(metrics.layerRect?.left).toBeGreaterThanOrEqual(
+    metrics.rootRect?.left ?? 0,
+  );
+  expect(metrics.layerRect?.top).toBeGreaterThanOrEqual(
+    metrics.rootRect?.top ?? 0,
+  );
+  expect(metrics.layerRect?.right).toBeLessThanOrEqual(
+    metrics.rootRect?.right ?? 0,
+  );
+  expect(metrics.layerRect?.bottom).toBeLessThanOrEqual(
+    metrics.rootRect?.bottom ?? 0,
+  );
+  expect(metrics.visibleImages).toBeGreaterThan(0);
+});

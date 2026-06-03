@@ -1,8 +1,9 @@
 import type { IRenderer } from "@/@types/";
 import { CanvasRenderer } from "./canvas";
+import { HTML5CSSRenderer } from "./html5css";
 import { WebGL2Renderer } from "./webgl2";
 
-export { CanvasRenderer, WebGL2Renderer };
+export { CanvasRenderer, HTML5CSSRenderer, WebGL2Renderer };
 
 export function createRenderer(
   canvas: HTMLCanvasElement,

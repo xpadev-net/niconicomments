@@ -510,9 +510,7 @@ jobs:
               }
             }
 
-            await pushWithRetry(blobResults);
-
-            // Phase 3: Build and post PR comment
+            // Phase 3: Build PR comment body before pushing blobs
             const baseUrl = `https://raw.githubusercontent.com/${owner}/${repo}/${branchName}`;
 
             let body = `${marker}\n## Playwright Visual Regression Test Failures\n\n`;
@@ -547,6 +545,8 @@ jobs:
             if (body.length > maxCommentLength) {
               throw new Error(`Generated comment body exceeded ${maxCommentLength} characters`);
             }
+
+            await pushWithRetry(blobResults);
 
             // Find existing comment (paginated)
             const comments = await github.paginate(

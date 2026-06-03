@@ -176,6 +176,9 @@ class CanvasRenderer implements IRenderer {
     this.height = Math.max(0, size.height - paddingSize);
     this.canvas.width = size.width;
     this.canvas.height = size.height;
+    this.context.textAlign = "start";
+    this.context.textBaseline = "alphabetic";
+    this.context.lineJoin = "round";
     if (this.padding > 0) {
       this.context.translate(this.padding, this.padding);
     }

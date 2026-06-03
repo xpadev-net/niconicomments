@@ -33,6 +33,7 @@ const MAX_HTML5_COMMENT_LINES = 256;
 const HTML5_COMMENT_IMAGE_PADDING = 4;
 const MAX_HTML5_COMMENT_IMAGE_WIDTH = 8192 - HTML5_COMMENT_IMAGE_PADDING * 2;
 const MAX_HTML5_COMMENT_IMAGE_HEIGHT = 8192 - HTML5_COMMENT_IMAGE_PADDING * 2;
+// Must match MAX_CANVAS_AREA in src/renderer/canvas.ts so accepted images are not downscaled.
 const MAX_HTML5_COMMENT_IMAGE_AREA = 16_777_216;
 
 const clampHTML5Content = (input: string) => {

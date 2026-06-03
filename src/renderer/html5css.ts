@@ -608,7 +608,9 @@ class HTML5CSSRenderer implements IRenderer {
 
   private getNumber(value: string | null | undefined): number | undefined {
     if (!value) return undefined;
-    const number = Number.parseFloat(value);
+    const match = value.match(/^\s*(\d+(?:\.\d+)?)(?:px)?\s*$/);
+    if (!match) return undefined;
+    const number = Number.parseFloat(match[1] ?? "");
     return Number.isFinite(number) && number > 0 ? number : undefined;
   }
 }

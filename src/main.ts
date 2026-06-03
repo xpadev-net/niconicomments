@@ -279,7 +279,12 @@ class NiconiComments {
    * @param end 終了インデックス
    * @param lazy 遅延処理を行うか
    */
-  private getCommentPos(data: IComment[], end: number, lazy = false) {
+  private getCommentPos(
+    data: IComment[],
+    end: number,
+    lazy = false,
+    touchedTimeline?: Set<number>,
+  ) {
     const getCommentPosStart = performance.now();
     const startIndex = this.processedCommentIndex + 1;
     if (startIndex >= end) return;
@@ -295,6 +300,7 @@ class NiconiComments {
           this.timeline,
           lazy,
           this.ctx.config,
+          touchedTimeline,
         );
       } else {
         processFixedComment(
@@ -303,6 +309,7 @@ class NiconiComments {
           this.timeline,
           lazy,
           this.ctx.config,
+          touchedTimeline,
         );
       }
     }
@@ -317,9 +324,10 @@ class NiconiComments {
   /**
    * 投稿者コメントを前に移動
    */
-  private sortTimelineComment() {
+  private sortTimelineComment(vposes?: Iterable<number | string>) {
     const sortCommentStart = performance.now();
-    for (const vpos of Object.keys(this.timeline)) {
+    const targetVposes = vposes ?? Object.keys(this.timeline);
+    for (const vpos of targetVposes) {
       const item = this.timeline[Number(vpos)];
       if (!item) continue;
       item.sort(
@@ -336,6 +344,7 @@ class NiconiComments {
    */
   public addComments(...rawComments: FormattedComment[]) {
     this.ctx.rangeCache.reset();
+    const touchedTimeline = new Set<number>();
     const comments = rawComments.reduce<IComment[]>((pv, val, index) => {
       pv.push(
         createCommentInstance(
@@ -363,6 +372,7 @@ class NiconiComments {
           this.timeline,
           false,
           this.ctx.config,
+          touchedTimeline,
         );
       } else {
         processFixedComment(
@@ -371,6 +381,7 @@ class NiconiComments {
           this.timeline,
           false,
           this.ctx.config,
+          touchedTimeline,
         );
       }
     }
@@ -384,14 +395,19 @@ class NiconiComments {
     if (!this.ctx.options.lazy) {
       const prePushTail = baseOffset - 1;
       if (this.processedCommentIndex < prePushTail) {
-        this.getCommentPos(this.comments, prePushTail + 1);
+        this.getCommentPos(
+          this.comments,
+          prePushTail + 1,
+          false,
+          touchedTimeline,
+        );
       }
       this.processedCommentIndex = Math.max(
         this.processedCommentIndex,
         this.comments.length - 1,
       );
     }
-    this.sortTimelineComment();
+    this.sortTimelineComment(touchedTimeline);
     this._cachedSplit = null;
   }
 

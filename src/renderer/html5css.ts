@@ -203,7 +203,7 @@ class HTML5CSSRenderer implements IRenderer {
       ny += nh;
       nh = -nh;
     }
-    if (this.shouldDrawDomRectOnHelper()) {
+    if (this.shouldDrawOnOverflowHelper()) {
       this.helper.save();
       this.helper.setFillStyle(this.state.fillStyle);
       this.helper.setGlobalAlpha(this.state.alpha);
@@ -232,7 +232,7 @@ class HTML5CSSRenderer implements IRenderer {
       ny += nh;
       nh = -nh;
     }
-    if (this.shouldDrawDomRectOnHelper()) {
+    if (this.shouldDrawOnOverflowHelper()) {
       this.helper.save();
       this.helper.setStrokeStyle(this.state.strokeStyle);
       this.helper.setLineWidth(this.state.lineWidth);
@@ -462,6 +462,18 @@ class HTML5CSSRenderer implements IRenderer {
     height?: number,
   ): void {
     const source = image.canvas;
+    if (this.shouldDrawOnOverflowHelper()) {
+      this.helper.save();
+      this.helper.setGlobalAlpha(this.state.alpha);
+      if (width === undefined || height === undefined) {
+        this.helper.drawImage(image, x, y);
+      } else {
+        this.helper.drawImage(image, x, y, width, height);
+      }
+      this.helper.restore();
+      this.helperDirty = true;
+      return;
+    }
     const node = this.getNode("img") as HTMLImageElement;
     const url = this.getImageUrl(source);
     if (node.src !== url) {
@@ -725,7 +737,7 @@ class HTML5CSSRenderer implements IRenderer {
     context.lineJoin = "round";
   }
 
-  private shouldDrawDomRectOnHelper(): boolean {
+  private shouldDrawOnOverflowHelper(): boolean {
     return (
       this.helperCursor + 1 >= MAX_HELPER_SURFACES &&
       this.helper.canvas.isConnected

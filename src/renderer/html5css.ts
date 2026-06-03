@@ -26,6 +26,7 @@ class HTML5CSSRenderer implements IRenderer {
   private helperCursor = 0;
   private pathActive = false;
   private readonly helperSurfaces: CanvasRenderer[] = [];
+  private readonly subRenderers = new Set<IRenderer>();
   private readonly videoSurface?: CanvasRenderer;
   private width = 0;
   private height = 0;
@@ -142,6 +143,10 @@ class HTML5CSSRenderer implements IRenderer {
       this.teardownSurfaceCanvas(this.videoSurface);
       this.videoSurface.destroy();
     }
+    for (const subRenderer of Array.from(this.subRenderers)) {
+      subRenderer.destroy();
+    }
+    this.subRenderers.clear();
     this.nodes.length = 0;
     this.layer.remove();
     this.canvas.remove();
@@ -389,7 +394,9 @@ class HTML5CSSRenderer implements IRenderer {
   getCanvas(padding = 0): IRenderer {
     const inner = new CanvasRenderer(undefined, undefined, padding, () => {
       this.invalidateImage(inner);
+      this.subRenderers.delete(inner);
     });
+    this.subRenderers.add(inner);
     return inner;
   }
 
@@ -554,6 +561,9 @@ class HTML5CSSRenderer implements IRenderer {
 
   private commitHelperSurface(): void {
     if (!this.helperDirty) return;
+    // Frame callers should follow clearRect() -> draw operations -> flush().
+    // Drawing again after flush() intentionally keeps the committed surface
+    // visible until the next clearRect() starts a fresh frame.
     this.helper.canvas.style.display = "block";
     this.layer.appendChild(this.helper.canvas);
     this.helperDirty = false;

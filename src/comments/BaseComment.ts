@@ -18,7 +18,7 @@ import { getPosX, isBanActive, isReverseActive, parseFont } from "@/utils";
 const MAX_CACHE_KEY_CONTENT_LENGTH = 512;
 const MAX_CACHE_KEY_EDGE_LENGTH = 256;
 const MAX_IMAGE_CACHE_ENTRIES = 1024;
-const imageCacheEntries = new WeakMap<object, Map<string, number>>();
+const imageCacheEntries = new WeakMap<object, Set<string>>();
 const destroyedTextImages = new WeakSet<IRenderer>();
 
 const hashString = (input: string) => {
@@ -334,9 +334,8 @@ class BaseComment implements IComment {
     const cache = imageCache.get(key);
     if (cache) {
       const entries = imageCacheEntries.get(imageCache);
-      if (entries?.has(key)) {
-        entries.delete(key);
-        entries.set(key, Date.now());
+      if (entries?.delete(key)) {
+        entries.add(key);
       }
       this.image = cache.image;
       window.setTimeout(
@@ -384,13 +383,15 @@ class BaseComment implements IComment {
     const lifetime = this.comment.long * 10 + config.cacheAge;
     let entries = imageCacheEntries.get(imageCache);
     if (!entries) {
-      entries = new Map();
+      entries = new Set();
       imageCacheEntries.set(imageCache, entries);
     }
-    for (const entryKey of entries.keys()) {
-      if (!imageCache.get(entryKey)) entries.delete(entryKey);
-    }
     this.image = image;
+    if (!entries.has(key) && entries.size >= MAX_IMAGE_CACHE_ENTRIES) {
+      for (const entryKey of entries) {
+        if (!imageCache.get(entryKey)) entries.delete(entryKey);
+      }
+    }
     if (!entries.has(key) && entries.size >= MAX_IMAGE_CACHE_ENTRIES) {
       const oldestKey = entries.keys().next().value;
       if (oldestKey !== undefined) {
@@ -419,7 +420,7 @@ class BaseComment implements IComment {
       image,
     });
     entries.delete(key);
-    entries.set(key, Date.now());
+    entries.add(key);
   }
 
   protected canGenerateTextImage(): boolean {

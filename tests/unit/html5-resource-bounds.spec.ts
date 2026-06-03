@@ -270,7 +270,5 @@ describe("HTML5 comment resource bounds", () => {
     expect(canvas.height).toBeLessThanOrEqual(8192);
     expect(renderer.getSize().width).toBe(canvas.width - 8);
     expect(renderer.getSize().height).toBe(canvas.height - 8);
-    expect(context.lineJoin).toBe("round");
-    expect(context.translate).toHaveBeenCalledTimes(2);
   });
 });

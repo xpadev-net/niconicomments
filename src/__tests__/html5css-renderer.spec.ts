@@ -1,13 +1,21 @@
+import type { Page } from "@playwright/test";
 import { expect, test } from "@playwright/test";
+
+const loadCssSample = async (page: Page) => {
+  await page.goto(
+    "http://localhost:8080/docs/sample/test.html?renderer=css&time=20&video=0",
+  );
+  await Promise.all([
+    page.waitForSelector("div#loaded", { state: "attached" }),
+    page.waitForSelector("div#__bs_notify__", { state: "detached" }),
+  ]);
+};
 
 test("HTML5CSSRenderer contains its logical stage inside the host layout", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 360, height: 900 });
-  await page.goto(
-    "http://localhost:8080/docs/sample/test.html?renderer=css&time=20&video=0",
-  );
-  await page.waitForSelector("div#loaded", { state: "attached" });
+  await loadCssSample(page);
 
   const metrics = await page.evaluate(() => {
     const root = document.querySelector<HTMLElement>(
@@ -62,10 +70,7 @@ test("HTML5CSSRenderer contains its logical stage inside the host layout", async
 test("HTML5CSSRenderer commits direct canvas drawing into its DOM layer", async ({
   page,
 }) => {
-  await page.goto(
-    "http://localhost:8080/docs/sample/test.html?renderer=css&time=20&video=0",
-  );
-  await page.waitForSelector("div#loaded", { state: "attached" });
+  await loadCssSample(page);
 
   const renderedChildren = await page.evaluate(() => {
     const root = document.createElement("div");
@@ -98,10 +103,7 @@ test("HTML5CSSRenderer commits direct canvas drawing into its DOM layer", async 
 test("HTML5CSSRenderer uses computed CSS dimensions as its initial logical size", async ({
   page,
 }) => {
-  await page.goto(
-    "http://localhost:8080/docs/sample/test.html?renderer=css&time=20&video=0",
-  );
-  await page.waitForSelector("div#loaded", { state: "attached" });
+  await loadCssSample(page);
 
   const metrics = await page.evaluate(() => {
     const root = document.createElement("div");

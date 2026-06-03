@@ -469,6 +469,7 @@ class HTML5CSSRenderer implements IRenderer {
       node.style.transformOrigin = "0 0";
       node.style.maxWidth = "none";
       node.style.maxHeight = "none";
+      if (tagName === "img") node.style.objectFit = "fill";
       this.nodes[this.nodeCursor] = node;
     }
     this.layer.appendChild(node);

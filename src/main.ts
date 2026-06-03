@@ -378,8 +378,9 @@ class NiconiComments {
     if (endIndex < startIndex) {
       return false;
     }
-    this.getCommentPos(this.comments, endIndex + 1);
-    this.sortTimelineComment();
+    const touchedTimeline = new Set<number>();
+    this.getCommentPos(this.comments, endIndex + 1, touchedTimeline);
+    this.sortTimelineComment(touchedTimeline);
     return true;
   }
 

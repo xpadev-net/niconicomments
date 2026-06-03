@@ -203,6 +203,15 @@ class HTML5CSSRenderer implements IRenderer {
       ny += nh;
       nh = -nh;
     }
+    if (this.shouldDrawDomRectOnHelper()) {
+      this.helper.save();
+      this.helper.setFillStyle(this.state.fillStyle);
+      this.helper.setGlobalAlpha(this.state.alpha);
+      this.helper.fillRect(nx, ny, nw, nh);
+      this.helper.restore();
+      this.helperDirty = true;
+      return;
+    }
     const node = this.getNode("div");
     node.style.background = this.state.fillStyle;
     node.style.border = "0";
@@ -222,6 +231,16 @@ class HTML5CSSRenderer implements IRenderer {
     if (nh < 0) {
       ny += nh;
       nh = -nh;
+    }
+    if (this.shouldDrawDomRectOnHelper()) {
+      this.helper.save();
+      this.helper.setStrokeStyle(this.state.strokeStyle);
+      this.helper.setLineWidth(this.state.lineWidth);
+      this.helper.setGlobalAlpha(this.state.alpha);
+      this.helper.strokeRect(nx, ny, nw, nh);
+      this.helper.restore();
+      this.helperDirty = true;
+      return;
     }
     const node = this.getNode("div");
     node.style.background = "transparent";
@@ -411,7 +430,8 @@ class HTML5CSSRenderer implements IRenderer {
     // Sub-renderers are caller-owned, matching CanvasRenderer.getCanvas().
     // The change hook only keeps drawImage() snapshots fresh while they live.
     // WeakRef avoids retaining the parent where available. Older browsers fall
-    // back to a strong reference so sub-renderer cache invalidation still works.
+    // back to a strong reference so sub-renderer cache invalidation still works;
+    // callers that keep sub-renderers alive should destroy them explicitly.
     let inner: CanvasRenderer;
     const invalidate =
       typeof WeakRef === "undefined"
@@ -610,9 +630,12 @@ class HTML5CSSRenderer implements IRenderer {
     // Drawing again after flush() intentionally keeps the committed surface
     // visible until the next clearRect() starts a fresh frame.
     this.helper.canvas.style.display = "block";
-    this.layer.appendChild(this.helper.canvas);
+    const isOverflowHelper = this.helperCursor + 1 >= MAX_HELPER_SURFACES;
+    if (!isOverflowHelper || !this.helper.canvas.isConnected) {
+      this.layer.appendChild(this.helper.canvas);
+    }
     this.helperDirty = false;
-    if (this.helperCursor + 1 >= MAX_HELPER_SURFACES) {
+    if (isOverflowHelper) {
       return;
     }
     this.helperCursor++;
@@ -700,6 +723,13 @@ class HTML5CSSRenderer implements IRenderer {
     context.textAlign = "start";
     context.textBaseline = "alphabetic";
     context.lineJoin = "round";
+  }
+
+  private shouldDrawDomRectOnHelper(): boolean {
+    return (
+      this.helperCursor + 1 >= MAX_HELPER_SURFACES &&
+      this.helper.canvas.isConnected
+    );
   }
 
   private trimHelperSurfaces(): void {

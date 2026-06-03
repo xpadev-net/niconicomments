@@ -258,6 +258,7 @@ class HTML5CSSRenderer implements IRenderer {
     this.nodeCursor = 0;
     this.helperCursor = 0;
     this.pathActive = false;
+    this.resetState();
     for (const node of this.nodes) {
       node.style.display = "none";
     }
@@ -322,16 +323,7 @@ class HTML5CSSRenderer implements IRenderer {
       this.videoSurface.setSize(width, height);
       this.setupVideoCanvas();
     }
-    this.stateStack.length = 0;
-    this.state = {
-      alpha: 1,
-      fillStyle: "#000000",
-      strokeStyle: "#000000",
-      lineWidth: 1,
-      font: "10px sans-serif",
-      scaleX: 1,
-      scaleY: 1,
-    };
+    this.resetState();
     this.helper = this.prepareHelperSurface(0);
     this.helperDirty = false;
   }
@@ -623,6 +615,19 @@ class HTML5CSSRenderer implements IRenderer {
   private teardownSurfaceCanvas(surface: IRenderer): void {
     surface.canvas.remove();
     surface.canvas.removeAttribute("style");
+  }
+
+  private resetState(): void {
+    this.stateStack.length = 0;
+    this.state = {
+      alpha: 1,
+      fillStyle: "#000000",
+      strokeStyle: "#000000",
+      lineWidth: 1,
+      font: "10px sans-serif",
+      scaleX: 1,
+      scaleY: 1,
+    };
   }
 
   private getInitialSize(root: HTMLElement) {

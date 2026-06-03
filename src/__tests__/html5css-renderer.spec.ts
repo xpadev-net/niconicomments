@@ -18,12 +18,19 @@ test("HTML5CSSRenderer contains its logical stage inside the host layout", async
     const layerStyle = layer ? getComputedStyle(layer) : undefined;
     const rootRect = root?.getBoundingClientRect();
     const layerRect = layer?.getBoundingClientRect();
+    const renderedChildren = layer
+      ? Array.from(layer.children).filter((child) => {
+          const style = getComputedStyle(child);
+          return style.display !== "none";
+        }).length
+      : 0;
     return {
       rootWidth: rootStyle?.width,
       rootHeight: rootStyle?.height,
       layerWidth: layerStyle?.width,
       layerHeight: layerStyle?.height,
       layerTransform: layerStyle?.transform,
+      renderedChildren,
       rootRect: rootRect
         ? {
             left: rootRect.left,
@@ -50,6 +57,7 @@ test("HTML5CSSRenderer contains its logical stage inside the host layout", async
     layerHeight: "1080px",
   });
   expect(metrics.layerTransform).not.toBe("none");
+  expect(metrics.renderedChildren).toBeGreaterThan(0);
   expect(metrics.rootRect).toBeDefined();
   expect(metrics.layerRect).toBeDefined();
   if (!metrics.rootRect || !metrics.layerRect) throw new Error("missing rect");

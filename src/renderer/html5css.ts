@@ -25,6 +25,7 @@ class HTML5CSSRenderer implements IRenderer {
   private helperDirty = false;
   private helperCursor = 0;
   private pathActive = false;
+  private textDrawnBeforeDom = false;
   private readonly helperSurfaces: CanvasRenderer[] = [];
   private readonly subRenderers = new Set<IRenderer>();
   private readonly videoSurface?: CanvasRenderer;
@@ -245,6 +246,7 @@ class HTML5CSSRenderer implements IRenderer {
     this.helper.fillText(text, x, y);
     this.helper.restore();
     this.helperDirty = true;
+    this.textDrawnBeforeDom = true;
   }
 
   strokeText(text: string, x: number, y: number): void {
@@ -256,16 +258,18 @@ class HTML5CSSRenderer implements IRenderer {
     this.helper.strokeText(text, x, y);
     this.helper.restore();
     this.helperDirty = true;
+    this.textDrawnBeforeDom = true;
   }
 
   quadraticCurveTo(cpx: number, cpy: number, x: number, y: number): void {
     this.helper.quadraticCurveTo(cpx, cpy, x, y);
   }
 
-  clearRect(x: number, y: number, width: number, height: number): void {
+  clearRect(_x: number, _y: number, _width: number, _height: number): void {
     this.nodeCursor = 0;
     this.helperCursor = 0;
     this.pathActive = false;
+    this.textDrawnBeforeDom = false;
     this.resetState();
     for (const node of this.nodes) {
       node.style.display = "none";
@@ -280,7 +284,7 @@ class HTML5CSSRenderer implements IRenderer {
     this.helper = this.prepareHelperSurface(0);
     this.helper.canvas.style.display = "none";
     if (this.videoSurface) {
-      this.videoSurface.clearRect(x, y, width, height);
+      this.videoSurface.clearRect(0, 0, this.width, this.height);
       this.videoSurface.canvas.style.display = "none";
       this.layer.insertBefore(this.videoSurface.canvas, this.layer.firstChild);
     }
@@ -312,6 +316,7 @@ class HTML5CSSRenderer implements IRenderer {
     this.height = height;
     this.nodeCursor = 0;
     this.pathActive = false;
+    this.textDrawnBeforeDom = false;
     for (const node of this.nodes) {
       node.style.display = "none";
     }
@@ -463,6 +468,12 @@ class HTML5CSSRenderer implements IRenderer {
       console.warn(
         "HTML5CSSRenderer: DOM drawing interrupted an active path before stroke().",
       );
+    }
+    if (this.textDrawnBeforeDom) {
+      console.warn(
+        "HTML5CSSRenderer: text drawn before a DOM-backed draw may render below it.",
+      );
+      this.textDrawnBeforeDom = false;
     }
     this.commitHelperSurface();
     let node = this.nodes[this.nodeCursor];

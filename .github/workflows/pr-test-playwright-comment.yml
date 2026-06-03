@@ -46,103 +46,108 @@ jobs:
               return result(false, 'invalid-pr-number');
             }
 
-            const { data: pr } = await github.rest.pulls.get({
-              owner,
-              repo,
-              pull_number: prNumber,
-            });
-
-            const baseRepo = pr.base.repo?.full_name ?? '';
-            const prHeadRepo = pr.head.repo?.full_name ?? '';
-            const runHeadRepo = run.head_repository?.full_name ?? '';
-            const runHeadSha = run.head_sha ?? '';
-            const isCurrentHead = pr.head.sha === runHeadSha;
-
-            if (pr.state !== 'open') {
-              core.info(`Skipping PR #${prNumber} because it is ${pr.state}`);
-              return result(false, 'pr-not-open', { prNumber });
-            }
-
-            if (baseRepo !== `${owner}/${repo}`) {
-              core.warning(`Unexpected base repo for PR #${prNumber}: ${baseRepo}`);
-              return result(false, 'unexpected-base-repo', { prNumber });
-            }
-
-            if (!runHeadRepo || runHeadRepo !== prHeadRepo) {
-              core.warning(`Head repository mismatch for PR #${prNumber}: workflow_run=${runHeadRepo} pr=${prHeadRepo}`);
-              return result(false, 'head-repo-mismatch', { prNumber });
-            }
-
-            if (!runHeadSha) {
-              core.warning('workflow_run.head_sha is missing');
-              return result(false, 'missing-head-sha', { prNumber });
-            }
-
-            if (!isCurrentHead) {
-              core.info(`Skipping stale run ${run.id}; PR #${prNumber} head is ${pr.head.sha}, run head is ${runHeadSha}`);
-              return result(false, 'stale-run', { prNumber, runHeadSha });
-            }
-
-            const artifacts = await github.paginate(
-              github.rest.actions.listWorkflowRunArtifacts,
-              {
+            try {
+              const { data: pr } = await github.rest.pulls.get({
                 owner,
                 repo,
-                run_id: run.id,
-                per_page: 100,
+                pull_number: prNumber,
+              });
+
+              const baseRepo = pr.base.repo?.full_name ?? '';
+              const prHeadRepo = pr.head.repo?.full_name ?? '';
+              const runHeadRepo = run.head_repository?.full_name ?? '';
+              const runHeadSha = run.head_sha ?? '';
+              const isCurrentHead = pr.head.sha === runHeadSha;
+
+              if (pr.state !== 'open') {
+                core.info(`Skipping PR #${prNumber} because it is ${pr.state}`);
+                return result(false, 'pr-not-open', { prNumber });
               }
-            );
-            const candidateArtifacts = artifacts.filter(artifact => artifactDownloadPattern.test(artifact.name));
-            const invalidArtifacts = candidateArtifacts.filter(artifact => !allowedArtifactPattern.test(artifact.name));
-            const artifactBytes = candidateArtifacts.reduce((sum, artifact) => sum + (artifact.size_in_bytes ?? 0), 0);
-            const expectedArtifactNames = candidateArtifacts
-              .map(artifact => artifact.name)
-              .sort();
 
-            if (invalidArtifacts.length > 0) {
+              if (baseRepo !== `${owner}/${repo}`) {
+                core.warning(`Unexpected base repo for PR #${prNumber}: ${baseRepo}`);
+                return result(false, 'unexpected-base-repo', { prNumber });
+              }
+
+              if (!runHeadRepo || runHeadRepo !== prHeadRepo) {
+                core.warning(`Head repository mismatch for PR #${prNumber}: workflow_run=${runHeadRepo} pr=${prHeadRepo}`);
+                return result(false, 'head-repo-mismatch', { prNumber });
+              }
+
+              if (!runHeadSha) {
+                core.warning('workflow_run.head_sha is missing');
+                return result(false, 'missing-head-sha', { prNumber });
+              }
+
+              if (!isCurrentHead) {
+                core.info(`Skipping stale run ${run.id}; PR #${prNumber} head is ${pr.head.sha}, run head is ${runHeadSha}`);
+                return result(false, 'stale-run', { prNumber, runHeadSha });
+              }
+
+              const artifacts = await github.paginate(
+                github.rest.actions.listWorkflowRunArtifacts,
+                {
+                  owner,
+                  repo,
+                  run_id: run.id,
+                  per_page: 100,
+                }
+              );
+              const candidateArtifacts = artifacts.filter(artifact => artifactDownloadPattern.test(artifact.name));
+              const invalidArtifacts = candidateArtifacts.filter(artifact => !allowedArtifactPattern.test(artifact.name));
+              const artifactBytes = candidateArtifacts.reduce((sum, artifact) => sum + (artifact.size_in_bytes ?? 0), 0);
+              const expectedArtifactNames = candidateArtifacts
+                .map(artifact => artifact.name)
+                .sort();
+
+              if (invalidArtifacts.length > 0) {
+                return result(true, 'trusted', {
+                  prNumber,
+                  runHeadSha,
+                  branchName: '_playwright-artifacts',
+                  testResultsArtifactCount: candidateArtifacts.length,
+                  expectedArtifactNames,
+                  artifactDisposition: 'rejected',
+                  artifactError: `Unexpected artifact names: ${invalidArtifacts.map(artifact => artifact.name).join(', ')}`,
+                });
+              }
+
+              if (candidateArtifacts.length > maxArtifactDirectories) {
+                return result(true, 'trusted', {
+                  prNumber,
+                  runHeadSha,
+                  branchName: '_playwright-artifacts',
+                  testResultsArtifactCount: candidateArtifacts.length,
+                  expectedArtifactNames,
+                  artifactDisposition: 'rejected',
+                  artifactError: `Unexpected test result artifact count: ${candidateArtifacts.length}`,
+                });
+              }
+
+              if (artifactBytes > maxArtifactBytes) {
+                return result(true, 'trusted', {
+                  prNumber,
+                  runHeadSha,
+                  branchName: '_playwright-artifacts',
+                  testResultsArtifactCount: candidateArtifacts.length,
+                  expectedArtifactNames,
+                  artifactDisposition: 'rejected',
+                  artifactError: `Test result artifacts exceed byte limit: ${artifactBytes}`,
+                });
+              }
+
               return result(true, 'trusted', {
                 prNumber,
                 runHeadSha,
                 branchName: '_playwright-artifacts',
                 testResultsArtifactCount: candidateArtifacts.length,
                 expectedArtifactNames,
-                artifactDisposition: 'rejected',
-                artifactError: `Unexpected artifact names: ${invalidArtifacts.map(artifact => artifact.name).join(', ')}`,
+                artifactDisposition: candidateArtifacts.length === 0 ? 'none' : 'download',
               });
+            } catch (error) {
+              core.warning(`Failed to resolve trusted PR context: ${error.message}`);
+              return result(false, 'api-error', { prNumber });
             }
-
-            if (candidateArtifacts.length > maxArtifactDirectories) {
-              return result(true, 'trusted', {
-                prNumber,
-                runHeadSha,
-                branchName: '_playwright-artifacts',
-                testResultsArtifactCount: candidateArtifacts.length,
-                expectedArtifactNames,
-                artifactDisposition: 'rejected',
-                artifactError: `Unexpected test result artifact count: ${candidateArtifacts.length}`,
-              });
-            }
-
-            if (artifactBytes > maxArtifactBytes) {
-              return result(true, 'trusted', {
-                prNumber,
-                runHeadSha,
-                branchName: '_playwright-artifacts',
-                testResultsArtifactCount: candidateArtifacts.length,
-                expectedArtifactNames,
-                artifactDisposition: 'rejected',
-                artifactError: `Test result artifacts exceed byte limit: ${artifactBytes}`,
-              });
-            }
-
-            return result(true, 'trusted', {
-              prNumber,
-              runHeadSha,
-              branchName: '_playwright-artifacts',
-              testResultsArtifactCount: candidateArtifacts.length,
-              expectedArtifactNames,
-              artifactDisposition: candidateArtifacts.length === 0 ? 'none' : 'download',
-            });
 
       - name: Download test results
         id: test-results

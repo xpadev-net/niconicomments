@@ -390,9 +390,6 @@ class HTML5CSSRenderer implements IRenderer {
     const inner = new CanvasRenderer(undefined, undefined, padding, () => {
       this.invalidateImage(inner);
     });
-    if (this.state.scaleX !== 1 || this.state.scaleY !== 1) {
-      inner.setScale(this.state.scaleX, this.state.scaleY);
-    }
     return inner;
   }
 

@@ -18,19 +18,12 @@ test("HTML5CSSRenderer contains its logical stage inside the host layout", async
     const layerStyle = layer ? getComputedStyle(layer) : undefined;
     const rootRect = root?.getBoundingClientRect();
     const layerRect = layer?.getBoundingClientRect();
-    const renderedChildren = layer
-      ? Array.from(layer.children).filter((child) => {
-          const style = getComputedStyle(child);
-          return style.display !== "none";
-        }).length
-      : 0;
     return {
       rootWidth: rootStyle?.width,
       rootHeight: rootStyle?.height,
       layerWidth: layerStyle?.width,
       layerHeight: layerStyle?.height,
       layerTransform: layerStyle?.transform,
-      renderedChildren,
       rootRect: rootRect
         ? {
             left: rootRect.left,
@@ -57,7 +50,6 @@ test("HTML5CSSRenderer contains its logical stage inside the host layout", async
     layerHeight: "1080px",
   });
   expect(metrics.layerTransform).not.toBe("none");
-  expect(metrics.renderedChildren).toBeGreaterThan(0);
   expect(metrics.rootRect).toBeDefined();
   expect(metrics.layerRect).toBeDefined();
   if (!metrics.rootRect || !metrics.layerRect) throw new Error("missing rect");
@@ -65,6 +57,42 @@ test("HTML5CSSRenderer contains its logical stage inside the host layout", async
   expect(metrics.layerRect.top).toBeGreaterThanOrEqual(metrics.rootRect.top);
   expect(metrics.layerRect.right).toBeLessThanOrEqual(metrics.rootRect.right);
   expect(metrics.layerRect.bottom).toBeLessThanOrEqual(metrics.rootRect.bottom);
+});
+
+test("HTML5CSSRenderer commits direct canvas drawing into its DOM layer", async ({
+  page,
+}) => {
+  await page.goto(
+    "http://localhost:8080/docs/sample/test.html?renderer=css&time=20&video=0",
+  );
+  await page.waitForSelector("div#loaded", { state: "attached" });
+
+  const renderedChildren = await page.evaluate(() => {
+    const root = document.createElement("div");
+    root.dataset.width = "100";
+    root.dataset.height = "100";
+    document.body.appendChild(root);
+    const global = window as typeof window & {
+      NiconiComments: typeof import("@/main").default;
+    };
+    const renderer =
+      new global.NiconiComments.internal.renderer.HTML5CSSRenderer(root);
+    renderer.setFillStyle("#ff0000");
+    renderer.fillRect(0, 0, 10, 10);
+    renderer.flush();
+    const layer = root.querySelector<HTMLElement>("div");
+    const visibleChildren = layer
+      ? Array.from(layer.children).filter((child) => {
+          const style = getComputedStyle(child);
+          return style.display !== "none";
+        }).length
+      : 0;
+    renderer.destroy();
+    root.remove();
+    return visibleChildren;
+  });
+
+  expect(renderedChildren).toBeGreaterThan(0);
 });
 
 test("HTML5CSSRenderer uses computed CSS dimensions as its initial logical size", async ({

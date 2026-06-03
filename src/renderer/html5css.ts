@@ -401,16 +401,24 @@ class HTML5CSSRenderer implements IRenderer {
   getCanvas(padding = 0): IRenderer {
     // Sub-renderers are caller-owned, matching CanvasRenderer.getCanvas().
     // The change hook only keeps drawImage() snapshots fresh while they live.
-    const inner = new CanvasRenderer(
+    let inner: CanvasRenderer;
+    const invalidate =
+      typeof WeakRef === "undefined"
+        ? () => {
+            this.invalidateImage(inner);
+          }
+        : (() => {
+            const parentRef = new WeakRef(this);
+            return () => {
+              parentRef.deref()?.invalidateImage(inner);
+            };
+          })();
+    inner = new CanvasRenderer(
       undefined,
       undefined,
       padding,
-      () => {
-        this.invalidateImage(inner);
-      },
-      () => {
-        this.invalidateImage(inner);
-      },
+      invalidate,
+      invalidate,
     );
     return inner;
   }
@@ -680,9 +688,9 @@ class HTML5CSSRenderer implements IRenderer {
   }
 
   private trimHelperSurfaces(): void {
-    // clearRect() resets helperCursor before trimming, so the current helper
-    // is surface 0 and it is safe to release unused surfaces from the end.
-    while (this.helperSurfaces.length > MAX_HELPER_SURFACES) {
+    // clearRect() resets helperCursor before trimming, so the new frame only
+    // needs surfaces through the current helper index.
+    while (this.helperSurfaces.length > this.helperCursor + 1) {
       const helper = this.helperSurfaces.pop();
       if (!helper) continue;
       this.teardownSurfaceCanvas(helper);

@@ -286,12 +286,10 @@ test("HTML5CSSRenderer keeps the video surface below DOM and text layers", async
   });
 });
 
-test("HTML5CSSRenderer caps helper surfaces within one frame", async ({
-  page,
-}) => {
+test("HTML5CSSRenderer caps and trims helper surfaces", async ({ page }) => {
   await loadCssSample(page);
 
-  const canvasCount = await page.evaluate(() => {
+  const counts = await page.evaluate(() => {
     const root = document.createElement("div");
     root.dataset.width = "100";
     root.dataset.height = "100";
@@ -307,17 +305,24 @@ test("HTML5CSSRenderer caps helper surfaces within one frame", async ({
     }
     renderer.flush();
     const layer = root.querySelector<HTMLElement>("div");
-    const result = layer
+    const beforeClear = layer
+      ? Array.from(layer.children).filter(
+          (child) => child.tagName.toLowerCase() === "canvas",
+        ).length
+      : 0;
+    renderer.clearRect(0, 0, 100, 100);
+    const afterClear = layer
       ? Array.from(layer.children).filter(
           (child) => child.tagName.toLowerCase() === "canvas",
         ).length
       : 0;
     renderer.destroy();
     root.remove();
-    return result;
+    return { beforeClear, afterClear };
   });
 
-  expect(canvasCount).toBeLessThanOrEqual(8);
+  expect(counts.beforeClear).toBeLessThanOrEqual(8);
+  expect(counts.afterClear).toBe(1);
 });
 
 test("HTML5CSSRenderer refreshes drawImage snapshots after sub-renderer clears", async ({

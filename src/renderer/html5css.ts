@@ -15,6 +15,10 @@ type CssRenderState = {
   scaleY: number;
 };
 
+type SavedCssRenderState = CssRenderState & {
+  helper: CanvasRenderer;
+};
+
 class HTML5CSSRenderer implements IRenderer {
   public readonly rendererName = "HTML5CSSRenderer";
   public readonly canvas: HTMLCanvasElement;
@@ -40,7 +44,7 @@ class HTML5CSSRenderer implements IRenderer {
     scaleX: 1,
     scaleY: 1,
   };
-  private readonly stateStack: CssRenderState[] = [];
+  private readonly stateStack: SavedCssRenderState[] = [];
   private readonly imageUrlCache = new WeakMap<HTMLCanvasElement, string>();
   private readonly nodes: HTMLElement[] = [];
   private readonly resizeObserver?: ResizeObserver;
@@ -380,15 +384,18 @@ class HTML5CSSRenderer implements IRenderer {
   }
 
   save(): void {
-    this.stateStack.push({ ...this.state });
+    this.helper.save();
+    this.stateStack.push({ ...this.state, helper: this.helper });
   }
 
   restore(): void {
-    const state = this.stateStack.pop();
-    if (state) {
-      this.applyHelperScale(state.scaleX, state.scaleY);
-      this.state = state;
+    const saved = this.stateStack.pop();
+    if (!saved) return;
+    saved.helper.restore();
+    if (saved.helper !== this.helper) {
+      this.applyHelperScale(saved.scaleX, saved.scaleY);
     }
+    this.state = this.toRenderState(saved);
   }
 
   getCanvas(padding = 0): IRenderer {
@@ -707,8 +714,23 @@ class HTML5CSSRenderer implements IRenderer {
   private restoreFrameStartState(): void {
     const frameStartState = this.stateStack[0];
     if (!frameStartState) return;
-    this.state = { ...frameStartState };
+    for (let i = this.stateStack.length - 1; i >= 0; i--) {
+      this.stateStack[i]?.helper.restore();
+    }
+    this.state = this.toRenderState(frameStartState);
     this.stateStack.length = 0;
+  }
+
+  private toRenderState(saved: SavedCssRenderState): CssRenderState {
+    return {
+      alpha: saved.alpha,
+      fillStyle: saved.fillStyle,
+      strokeStyle: saved.strokeStyle,
+      lineWidth: saved.lineWidth,
+      font: saved.font,
+      scaleX: saved.scaleX,
+      scaleY: saved.scaleY,
+    };
   }
 
   private normalizeSize(size: { width: number; height: number }) {

@@ -475,6 +475,7 @@ class HTML5CSSRenderer implements IRenderer {
 
   invalidateImage(image: IRenderer): void {
     this.imageUrlCache.delete(image.canvas);
+    this.failedImageUrlCache.delete(image.canvas);
   }
 
   private getImageUrl(source: HTMLCanvasElement): string {

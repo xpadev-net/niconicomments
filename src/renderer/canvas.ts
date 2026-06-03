@@ -3,7 +3,7 @@ import { CanvasRenderingContext2DError } from "@/errors";
 import { canvasPool } from "@/renderer/canvasPool";
 
 const MAX_CANVAS_DIMENSION = 8192;
-const MAX_CANVAS_AREA = 16_777_216;
+export const MAX_CANVAS_AREA = 16_777_216;
 const MAX_MEASURE_TEXT_CACHE_TEXT_LENGTH = 512;
 
 const clampCanvasSize = (width: number, height: number) => {

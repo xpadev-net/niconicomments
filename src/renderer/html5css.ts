@@ -573,6 +573,7 @@ class HTML5CSSRenderer implements IRenderer {
   private prepareHelperSurface(index: number): CanvasRenderer {
     const helper = this.getHelperSurface(index);
     helper.setSize(this.width, this.height);
+    this.resetHelperContextDefaults(helper);
     this.setupSurfaceCanvas(helper);
     if (this.state.scaleX !== 1 || this.state.scaleY !== 1) {
       helper.setScale(this.state.scaleX, this.state.scaleY);
@@ -588,6 +589,9 @@ class HTML5CSSRenderer implements IRenderer {
     this.helper.canvas.style.display = "block";
     this.layer.appendChild(this.helper.canvas);
     this.helperDirty = false;
+    if (this.helperCursor + 1 >= MAX_HELPER_SURFACES) {
+      return;
+    }
     this.helperCursor++;
     this.helper = this.prepareHelperSurface(this.helperCursor);
   }
@@ -649,6 +653,7 @@ class HTML5CSSRenderer implements IRenderer {
     this.helperSurfaces[this.helperCursor] = helper;
     this.helper = helper;
     helper.setSize(this.width, this.height);
+    this.resetHelperContextDefaults(helper);
     this.setupSurfaceCanvas(helper);
     helper.canvas.style.display = "none";
     if (
@@ -664,6 +669,14 @@ class HTML5CSSRenderer implements IRenderer {
   private teardownSurfaceCanvas(surface: IRenderer): void {
     surface.canvas.remove();
     surface.canvas.removeAttribute("style");
+  }
+
+  private resetHelperContextDefaults(surface: IRenderer): void {
+    const context = surface.canvas.getContext("2d");
+    if (!context) return;
+    context.textAlign = "start";
+    context.textBaseline = "alphabetic";
+    context.lineJoin = "round";
   }
 
   private trimHelperSurfaces(): void {

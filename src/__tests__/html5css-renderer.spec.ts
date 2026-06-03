@@ -210,6 +210,40 @@ test("HTML5CSSRenderer keeps an active path across DOM-backed drawing", async ({
   );
 });
 
+test("HTML5CSSRenderer reapplies helper context defaults after resizing surfaces", async ({
+  page,
+}) => {
+  await loadCssSample(page);
+
+  const lineJoin = await page.evaluate(() => {
+    const root = document.createElement("div");
+    root.dataset.width = "100";
+    root.dataset.height = "100";
+    document.body.appendChild(root);
+    const global = window as typeof window & {
+      NiconiComments: typeof import("@/main").default;
+    };
+    const renderer =
+      new global.NiconiComments.internal.renderer.HTML5CSSRenderer(root);
+    renderer.beginPath();
+    renderer.moveTo(0, 10);
+    renderer.lineTo(10, 20);
+    renderer.lineTo(20, 10);
+    renderer.stroke();
+    renderer.flush();
+    const canvases = Array.from(root.querySelectorAll("canvas")).filter(
+      (canvas) => getComputedStyle(canvas).display !== "none",
+    );
+    const canvas = canvases.at(-1);
+    const result = canvas?.getContext("2d")?.lineJoin;
+    renderer.destroy();
+    root.remove();
+    return result;
+  });
+
+  expect(lineJoin).toBe("round");
+});
+
 test("HTML5CSSRenderer keeps the video surface below DOM and text layers", async ({
   page,
 }) => {
@@ -250,6 +284,40 @@ test("HTML5CSSRenderer keeps the video surface below DOM and text layers", async
     lastTag: "canvas",
     length: 3,
   });
+});
+
+test("HTML5CSSRenderer caps helper surfaces within one frame", async ({
+  page,
+}) => {
+  await loadCssSample(page);
+
+  const canvasCount = await page.evaluate(() => {
+    const root = document.createElement("div");
+    root.dataset.width = "100";
+    root.dataset.height = "100";
+    document.body.appendChild(root);
+    const global = window as typeof window & {
+      NiconiComments: typeof import("@/main").default;
+    };
+    const renderer =
+      new global.NiconiComments.internal.renderer.HTML5CSSRenderer(root);
+    for (let i = 0; i < 20; i++) {
+      renderer.fillText("x", i, i + 10);
+      renderer.fillRect(i, i, 1, 1);
+    }
+    renderer.flush();
+    const layer = root.querySelector<HTMLElement>("div");
+    const result = layer
+      ? Array.from(layer.children).filter(
+          (child) => child.tagName.toLowerCase() === "canvas",
+        ).length
+      : 0;
+    renderer.destroy();
+    root.remove();
+    return result;
+  });
+
+  expect(canvasCount).toBeLessThanOrEqual(8);
 });
 
 test("HTML5CSSRenderer refreshes drawImage snapshots after sub-renderer clears", async ({

@@ -35,6 +35,14 @@ class HTML5CSSRenderer implements IRenderer {
   private readonly imageUrlCache = new WeakMap<HTMLCanvasElement, string>();
   private readonly nodes: HTMLElement[] = [];
   private readonly resizeObserver?: ResizeObserver;
+  private readonly originalRootStyle: {
+    boxSizing: string;
+    height: string;
+    overflow: string;
+    pointerEvents: string;
+    position: string;
+    width: string;
+  };
   private nodeCursor = 0;
 
   constructor(root: HTMLElement, video?: HTMLVideoElement) {
@@ -49,6 +57,14 @@ class HTML5CSSRenderer implements IRenderer {
     this.canvas.style.display = "none";
     this.helper = new CanvasRenderer(undefined, this.video);
     this.helper.setSize(this.width, this.height);
+    this.originalRootStyle = {
+      boxSizing: this.root.style.boxSizing,
+      height: this.root.style.height,
+      overflow: this.root.style.overflow,
+      pointerEvents: this.root.style.pointerEvents,
+      position: this.root.style.position,
+      width: this.root.style.width,
+    };
 
     const computedStyle = this.root.ownerDocument.defaultView?.getComputedStyle(
       this.root,
@@ -100,6 +116,12 @@ class HTML5CSSRenderer implements IRenderer {
     this.layer.remove();
     this.canvas.remove();
     this.root.classList.remove("niconicomments-html5css-renderer");
+    this.root.style.boxSizing = this.originalRootStyle.boxSizing;
+    this.root.style.height = this.originalRootStyle.height;
+    this.root.style.overflow = this.originalRootStyle.overflow;
+    this.root.style.pointerEvents = this.originalRootStyle.pointerEvents;
+    this.root.style.position = this.originalRootStyle.position;
+    this.root.style.width = this.originalRootStyle.width;
   }
 
   drawVideo(enableLegacyPip: boolean): void {

@@ -59,17 +59,12 @@ test("HTML5CSSRenderer contains its logical stage inside the host layout", async
     layerHeight: "1080px",
   });
   expect(metrics.layerTransform).not.toBe("none");
-  expect(metrics.layerRect?.left).toBeGreaterThanOrEqual(
-    metrics.rootRect?.left ?? 0,
-  );
-  expect(metrics.layerRect?.top).toBeGreaterThanOrEqual(
-    metrics.rootRect?.top ?? 0,
-  );
-  expect(metrics.layerRect?.right).toBeLessThanOrEqual(
-    metrics.rootRect?.right ?? 0,
-  );
-  expect(metrics.layerRect?.bottom).toBeLessThanOrEqual(
-    metrics.rootRect?.bottom ?? 0,
-  );
+  expect(metrics.rootRect).toBeDefined();
+  expect(metrics.layerRect).toBeDefined();
+  if (!metrics.rootRect || !metrics.layerRect) throw new Error("missing rect");
+  expect(metrics.layerRect.left).toBeGreaterThanOrEqual(metrics.rootRect.left);
+  expect(metrics.layerRect.top).toBeGreaterThanOrEqual(metrics.rootRect.top);
+  expect(metrics.layerRect.right).toBeLessThanOrEqual(metrics.rootRect.right);
+  expect(metrics.layerRect.bottom).toBeLessThanOrEqual(metrics.rootRect.bottom);
   expect(metrics.visibleImages).toBeGreaterThan(0);
 });

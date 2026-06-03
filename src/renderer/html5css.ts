@@ -348,9 +348,11 @@ class HTML5CSSRenderer implements IRenderer {
   measureText(text: string): TextMetrics {
     const font = this.helper.getFont();
     this.helper.setFont(this.state.font);
-    const result = this.helper.measureText(text);
-    this.helper.setFont(font);
-    return result;
+    try {
+      return this.helper.measureText(text);
+    } finally {
+      this.helper.setFont(font);
+    }
   }
 
   beginPath(): void {
@@ -371,10 +373,12 @@ class HTML5CSSRenderer implements IRenderer {
   }
 
   stroke(): void {
+    this.helper.save();
     this.helper.setStrokeStyle(this.state.strokeStyle);
     this.helper.setLineWidth(this.state.lineWidth);
     this.helper.setGlobalAlpha(this.state.alpha);
     this.helper.stroke();
+    this.helper.restore();
     if (this.pathActive) {
       this.helperDirty = true;
     }
@@ -656,6 +660,8 @@ class HTML5CSSRenderer implements IRenderer {
   }
 
   private trimHelperSurfaces(): void {
+    // clearRect() resets helperCursor before trimming, so the current helper
+    // is surface 0 and it is safe to release unused surfaces from the end.
     while (this.helperSurfaces.length > MAX_HELPER_SURFACES) {
       const helper = this.helperSurfaces.pop();
       if (!helper) continue;

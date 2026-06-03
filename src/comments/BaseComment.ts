@@ -15,6 +15,24 @@ import type { CommentInstanceContext } from "@/contexts";
 import { NotImplementedError } from "@/errors/";
 import { getPosX, isBanActive, isReverseActive, parseFont } from "@/utils";
 
+const MAX_CACHE_KEY_CONTENT_LENGTH = 512;
+const MAX_IMAGE_CACHE_ENTRIES = 1024;
+const imageCacheEntries = new WeakMap<object, Map<string, number>>();
+
+const hashString = (input: string) => {
+  let hash = 2166136261;
+  for (let i = 0, n = input.length; i < n; i++) {
+    hash ^= input.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+  return (hash >>> 0).toString(36);
+};
+
+const boundedCachePart = (input: string) => {
+  if (input.length <= MAX_CACHE_KEY_CONTENT_LENGTH) return input;
+  return `${input.slice(0, MAX_CACHE_KEY_CONTENT_LENGTH)}\0${input.length}\0${hashString(input)}`;
+};
+
 /**
  * コメントの描画を行うクラスの基底クラス
  */
@@ -302,13 +320,19 @@ class BaseComment implements IComment {
       this.comment.invisible ||
       (this.comment.lineCount === 1 && this.comment.width === 0) ||
       this.comment.height - (this.comment.charSize - this.comment.lineHeight) <=
-        0
+        0 ||
+      !this.canGenerateTextImage()
     )
       return null;
     const key = this.cacheKey;
     const { imageCache, config } = this.ctx;
     const cache = imageCache.get(key);
     if (cache) {
+      const entries = imageCacheEntries.get(imageCache);
+      if (entries?.has(key)) {
+        entries.delete(key);
+        entries.set(key, Date.now());
+      }
       this.image = cache.image;
       window.setTimeout(
         () => {
@@ -317,10 +341,14 @@ class BaseComment implements IComment {
         this.comment.long * 10 + config.cacheAge,
       );
       clearTimeout(cache.timeout);
+      const cachedImage = cache.image;
       cache.timeout = window.setTimeout(
         () => {
-          imageCache.get(key)?.image.destroy();
-          imageCache.delete(key);
+          if (imageCache.get(key)?.image === cachedImage) {
+            cachedImage.destroy();
+            imageCache.delete(key);
+            imageCacheEntries.get(imageCache)?.delete(key);
+          }
         },
         this.comment.long * 10 + config.cacheAge,
       );
@@ -347,6 +375,23 @@ class BaseComment implements IComment {
   protected _cacheImage(image: IRenderer) {
     const key = this.cacheKey;
     const { imageCache, config } = this.ctx;
+    let entries = imageCacheEntries.get(imageCache);
+    if (!entries) {
+      entries = new Map();
+      imageCacheEntries.set(imageCache, entries);
+    }
+    if (!entries.has(key) && entries.size >= MAX_IMAGE_CACHE_ENTRIES) {
+      const oldestKey = entries.keys().next().value;
+      if (oldestKey !== undefined) {
+        const oldest = imageCache.get(oldestKey);
+        if (oldest) {
+          clearTimeout(oldest.timeout);
+          oldest.image.destroy();
+        }
+        imageCache.delete(oldestKey);
+        entries.delete(oldestKey);
+      }
+    }
     this.image = image;
     window.setTimeout(
       () => {
@@ -357,13 +402,22 @@ class BaseComment implements IComment {
     imageCache.set(key, {
       timeout: window.setTimeout(
         () => {
-          imageCache.get(key)?.image.destroy();
-          imageCache.delete(key);
+          if (imageCache.get(key)?.image === image) {
+            image.destroy();
+            imageCache.delete(key);
+            imageCacheEntries.get(imageCache)?.delete(key);
+          }
         },
         this.comment.long * 10 + config.cacheAge,
       ),
       image,
     });
+    entries.delete(key);
+    entries.set(key, Date.now());
+  }
+
+  protected canGenerateTextImage(): boolean {
+    return true;
   }
 
   protected getButtonImage(
@@ -387,7 +441,7 @@ class BaseComment implements IComment {
 
   protected getCacheKey() {
     const sortedMail = [...this.comment.mail].sort().join(",");
-    return `${this.pluginName}\0${sortedMail}\0${this.comment.rawContent}`;
+    return `${this.pluginName}\0${sortedMail}\0${boundedCachePart(this.comment.rawContent)}`;
   }
 }
 

@@ -143,7 +143,7 @@ const measureWidth = (
       lineWidth.push(Math.ceil(currentWidth * scale));
       continue;
     }
-    const lines = item.content.split("\n");
+    const lines = item.slicedContent;
     const font = parseFont(item.font ?? comment.font, fontSize, config);
     if (font !== lastFont) {
       renderer.setFont(font);
@@ -164,8 +164,12 @@ const measureWidth = (
     itemWidth.push(width);
     lineWidth.push(Math.ceil(currentWidth * scale));
   }
+  let maxWidth = 0;
+  for (const width of lineWidth) {
+    if (width > maxWidth) maxWidth = width;
+  }
   return {
-    width: Math.max(...lineWidth),
+    width: maxWidth,
     lineWidth,
     itemWidth,
   };

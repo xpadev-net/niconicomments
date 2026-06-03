@@ -28,6 +28,36 @@ import { addHTML5PartToResult } from "@/utils/niconico";
 import { BaseComment } from "./BaseComment";
 
 const MAX_RESIZE_ITERATIONS = 20;
+const MAX_HTML5_COMMENT_CHARS = 16_384;
+const MAX_HTML5_COMMENT_LINES = 256;
+const MAX_HTML5_COMMENT_IMAGE_WIDTH = 8192;
+const MAX_HTML5_COMMENT_IMAGE_HEIGHT = 8192;
+const MAX_HTML5_COMMENT_IMAGE_AREA = 16_777_216;
+
+const clampHTML5Content = (input: string) => {
+  let lineCount = 1;
+  let end = 0;
+  for (; end < input.length && end < MAX_HTML5_COMMENT_CHARS; end++) {
+    if (input[end] === "\n") {
+      if (lineCount >= MAX_HTML5_COMMENT_LINES) break;
+      lineCount++;
+    }
+  }
+  const content = input.slice(0, end);
+  return {
+    content,
+    lineCount,
+  };
+};
+
+const isWithinImageBounds = (width: number, height: number) =>
+  Number.isFinite(width) &&
+  Number.isFinite(height) &&
+  width > 0 &&
+  height > 0 &&
+  width <= MAX_HTML5_COMMENT_IMAGE_WIDTH &&
+  height <= MAX_HTML5_COMMENT_IMAGE_HEIGHT &&
+  width * height <= MAX_HTML5_COMMENT_IMAGE_AREA;
 
 class HTML5Comment extends BaseComment {
   override readonly pluginName: string = "HTML5Comment";
@@ -127,8 +157,14 @@ class HTML5Comment extends BaseComment {
 
   override parseContent(input: string, font?: HTML5Fonts) {
     const content: CommentContentItemText[] = [];
-    addHTML5PartToResult(content, input, this.config, font ?? "defont");
-    const lineCount = input.split("\n").length;
+    const clamped = clampHTML5Content(input);
+    addHTML5PartToResult(
+      content,
+      clamped.content,
+      this.config,
+      font ?? "defont",
+    );
+    const lineCount = clamped.lineCount;
     const lineOffset = 0;
     return {
       content,
@@ -319,6 +355,10 @@ class HTML5Comment extends BaseComment {
       }
       this.renderer.restore();
     }
+  }
+
+  protected override canGenerateTextImage(): boolean {
+    return isWithinImageBounds(this.comment.width, this.comment.height);
   }
 
   override _generateTextImage(): IRenderer {

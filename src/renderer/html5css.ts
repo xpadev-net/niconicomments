@@ -54,7 +54,7 @@ class HTML5CSSRenderer implements IRenderer {
     const size = this.getInitialSize(root);
     this.width = size.width;
     this.height = size.height;
-    this.canvas = document.createElement("canvas");
+    this.canvas = this.root.ownerDocument.createElement("canvas");
     this.canvas.width = this.width;
     this.canvas.height = this.height;
     this.canvas.style.display = "none";
@@ -92,7 +92,7 @@ class HTML5CSSRenderer implements IRenderer {
       this.root.style.position = "relative";
     }
 
-    this.layer = document.createElement("div");
+    this.layer = this.root.ownerDocument.createElement("div");
     this.layer.style.position = "absolute";
     this.layer.style.left = "0";
     this.layer.style.top = "0";
@@ -107,8 +107,19 @@ class HTML5CSSRenderer implements IRenderer {
     this.setupVideoCanvas();
     this.updateObjectFitContain();
     if (typeof ResizeObserver !== "undefined") {
-      this.resizeObserver = new ResizeObserver(() => {
-        this.updateObjectFitContain();
+      this.resizeObserver = new ResizeObserver((entries) => {
+        const entry = entries[entries.length - 1];
+        if (!entry) {
+          this.updateObjectFitContain();
+          return;
+        }
+        const box = Array.isArray(entry.contentBoxSize)
+          ? entry.contentBoxSize[0]
+          : entry.contentBoxSize;
+        this.updateObjectFitContainWithSize(
+          box?.inlineSize ?? entry.contentRect.width,
+          box?.blockSize ?? entry.contentRect.height,
+        );
       });
       this.resizeObserver.observe(this.root);
     }
@@ -263,6 +274,10 @@ class HTML5CSSRenderer implements IRenderer {
   setSize(width: number, height: number): void {
     this.width = width;
     this.height = height;
+    this.nodeCursor = 0;
+    for (const node of this.nodes) {
+      node.style.display = "none";
+    }
     this.canvas.width = width;
     this.canvas.height = height;
     this.layer.style.width = `${width}px`;
@@ -402,7 +417,7 @@ class HTML5CSSRenderer implements IRenderer {
     let node = this.nodes[this.nodeCursor];
     if (!node || node.tagName.toLowerCase() !== tagName) {
       node?.remove();
-      node = document.createElement(tagName);
+      node = this.root.ownerDocument.createElement(tagName);
       node.style.position = "absolute";
       node.style.margin = "0";
       node.style.padding = "0";
@@ -445,14 +460,18 @@ class HTML5CSSRenderer implements IRenderer {
       return;
     }
     const rect = this.root.getBoundingClientRect();
-    const containerWidth = rect.width || this.width;
-    const containerHeight = rect.height || this.height;
-    const scale = Math.min(
-      containerWidth / this.width,
-      containerHeight / this.height,
-    );
-    const offsetX = (containerWidth - this.width * scale) / 2;
-    const offsetY = (containerHeight - this.height * scale) / 2;
+    this.updateObjectFitContainWithSize(rect.width, rect.height);
+  }
+
+  private updateObjectFitContainWithSize(
+    containerWidth: number,
+    containerHeight: number,
+  ): void {
+    const fitWidth = containerWidth || this.width;
+    const fitHeight = containerHeight || this.height;
+    const scale = Math.min(fitWidth / this.width, fitHeight / this.height);
+    const offsetX = (fitWidth - this.width * scale) / 2;
+    const offsetY = (fitHeight - this.height * scale) / 2;
     this.layer.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${scale})`;
   }
 

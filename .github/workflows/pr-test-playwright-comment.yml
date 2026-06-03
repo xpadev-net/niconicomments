@@ -2,7 +2,8 @@ name: Playwright Screenshots Comment
 permissions:
   actions: read
   contents: write
-  pull-requests: write
+  issues: write
+  pull-requests: read
 on:
   workflow_run:
     workflows: ["Playwright Tests"]
@@ -15,29 +16,157 @@ jobs:
     if: ${{ github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion != 'cancelled' }}
     runs-on: ubuntu-latest
     steps:
-      - name: Download PR info
-        id: pr-info
-        uses: actions/download-artifact@v8
+      - name: Resolve trusted PR context
+        id: pr-context
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
         with:
-          name: pr-info
-          path: pr-info/
-          run-id: ${{ github.event.workflow_run.id }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-        continue-on-error: true
+          result-encoding: string
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const run = context.payload.workflow_run;
+            const prs = Array.isArray(run.pull_requests) ? run.pull_requests : [];
+            const artifactDownloadPattern = /^test-results-node-.*$/;
+            const allowedArtifactPattern = /^test-results-node-(\d+)$/;
+            const maxArtifactDirectories = 3;
+            const maxArtifactBytes = 50 * 1024 * 1024;
+
+            function result(trusted, reason, extra = {}) {
+              return JSON.stringify({ trusted, reason, ...extra });
+            }
+
+            if (prs.length !== 1) {
+              core.warning(`Expected exactly one pull request on workflow_run, found ${prs.length}`);
+              return result(false, 'unexpected-pr-count');
+            }
+
+            const prNumber = prs[0]?.number;
+            if (!Number.isInteger(prNumber) || prNumber <= 0) {
+              core.warning(`Invalid pull request number: ${prNumber}`);
+              return result(false, 'invalid-pr-number');
+            }
+
+            try {
+              const { data: pr } = await github.rest.pulls.get({
+                owner,
+                repo,
+                pull_number: prNumber,
+              });
+
+              const baseRepo = pr.base.repo?.full_name ?? '';
+              const prHeadRepo = pr.head.repo?.full_name ?? '';
+              const runHeadRepo = run.head_repository?.full_name ?? '';
+              const runHeadSha = run.head_sha ?? '';
+              const isCurrentHead = pr.head.sha === runHeadSha;
+
+              if (pr.state !== 'open') {
+                core.info(`Skipping PR #${prNumber} because it is ${pr.state}`);
+                return result(false, 'pr-not-open', { prNumber });
+              }
+
+              if (baseRepo !== `${owner}/${repo}`) {
+                core.warning(`Unexpected base repo for PR #${prNumber}: ${baseRepo}`);
+                return result(false, 'unexpected-base-repo', { prNumber });
+              }
+
+              if (!runHeadRepo || runHeadRepo !== prHeadRepo) {
+                core.warning(`Head repository mismatch for PR #${prNumber}: workflow_run=${runHeadRepo} pr=${prHeadRepo}`);
+                return result(false, 'head-repo-mismatch', { prNumber });
+              }
+
+              if (!runHeadSha) {
+                core.warning('workflow_run.head_sha is missing');
+                return result(false, 'missing-head-sha', { prNumber });
+              }
+
+              if (!isCurrentHead) {
+                core.info(`Skipping stale run ${run.id}; PR #${prNumber} head is ${pr.head.sha}, run head is ${runHeadSha}`);
+                return result(false, 'stale-run', { prNumber, runHeadSha });
+              }
+
+              const artifacts = await github.paginate(
+                github.rest.actions.listWorkflowRunArtifacts,
+                {
+                  owner,
+                  repo,
+                  run_id: run.id,
+                  per_page: 100,
+                }
+              );
+              const candidateArtifacts = artifacts.filter(artifact => artifactDownloadPattern.test(artifact.name));
+              const invalidArtifacts = candidateArtifacts.filter(artifact => !allowedArtifactPattern.test(artifact.name));
+              const artifactBytes = candidateArtifacts.reduce((sum, artifact) => sum + (artifact.size_in_bytes ?? 0), 0);
+              const expectedArtifactNames = candidateArtifacts
+                .map(artifact => artifact.name)
+                .sort();
+
+              if (invalidArtifacts.length > 0) {
+                return result(true, 'trusted', {
+                  prNumber,
+                  runHeadSha,
+                  branchName: '_playwright-artifacts',
+                  testResultsArtifactCount: candidateArtifacts.length,
+                  expectedArtifactNames,
+                  artifactDisposition: 'rejected',
+                  artifactError: `Unexpected artifact names: ${invalidArtifacts.map(artifact => artifact.name).join(', ')}`,
+                });
+              }
+
+              if (candidateArtifacts.length > maxArtifactDirectories) {
+                return result(true, 'trusted', {
+                  prNumber,
+                  runHeadSha,
+                  branchName: '_playwright-artifacts',
+                  testResultsArtifactCount: candidateArtifacts.length,
+                  expectedArtifactNames,
+                  artifactDisposition: 'rejected',
+                  artifactError: `Unexpected test result artifact count: ${candidateArtifacts.length}`,
+                });
+              }
+
+              if (artifactBytes > maxArtifactBytes) {
+                return result(true, 'trusted', {
+                  prNumber,
+                  runHeadSha,
+                  branchName: '_playwright-artifacts',
+                  testResultsArtifactCount: candidateArtifacts.length,
+                  expectedArtifactNames,
+                  artifactDisposition: 'rejected',
+                  artifactError: `Test result artifacts exceed byte limit: ${artifactBytes}`,
+                });
+              }
+
+              return result(true, 'trusted', {
+                prNumber,
+                runHeadSha,
+                branchName: '_playwright-artifacts',
+                testResultsArtifactCount: candidateArtifacts.length,
+                expectedArtifactNames,
+                artifactDisposition: candidateArtifacts.length === 0 ? 'none' : 'download',
+              });
+            } catch (error) {
+              core.warning(`Failed to resolve trusted PR context: ${error.message}`);
+              return result(false, 'api-error', { prNumber });
+            }
 
       - name: Download test results
-        if: ${{ github.event.workflow_run.conclusion == 'failure' && steps.pr-info.outcome == 'success' }}
-        uses: actions/download-artifact@v8
+        id: test-results
+        if: ${{ github.event.workflow_run.conclusion == 'failure' && fromJSON(steps.pr-context.outputs.result).trusted && fromJSON(steps.pr-context.outputs.result).artifactDisposition == 'download' && fromJSON(steps.pr-context.outputs.result).testResultsArtifactCount > 0 }}
+        uses: actions/download-artifact@974686ed5098c7f9c9289ec946b9058e496a2561
         with:
           pattern: test-results-node-*
           path: all-test-results/
           run-id: ${{ github.event.workflow_run.id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          merge-multiple: false
         continue-on-error: true
 
-      - name: Post failure screenshots to PR
-        if: ${{ github.event.workflow_run.conclusion == 'failure' && steps.pr-info.outcome == 'success' }}
-        uses: actions/github-script@v9
+      - name: Sync failure screenshots comment
+        if: ${{ fromJSON(steps.pr-context.outputs.result).trusted }}
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
+        env:
+          DOWNLOAD_OUTCOME: ${{ steps.test-results.outcome }}
+          PR_CONTEXT: ${{ steps.pr-context.outputs.result }}
         with:
           script: |
             const fs = require('fs');
@@ -45,10 +174,31 @@ jobs:
 
             const owner = context.repo.owner;
             const repo = context.repo.repo;
-            const prNumber = parseInt(fs.readFileSync('pr-info/number', 'utf8').trim(), 10);
             const runId = context.payload.workflow_run.id;
-            const branchName = '_playwright-artifacts';
+            const conclusion = context.payload.workflow_run.conclusion;
             const marker = '<!-- playwright-failure-screenshots -->';
+            const prContext = JSON.parse(process.env.PR_CONTEXT);
+            const prNumber = prContext.prNumber;
+            const branchName = prContext.branchName;
+            const artifactDisposition = prContext.artifactDisposition ?? 'rejected';
+            const artifactError = prContext.artifactError ?? '';
+            const downloadOutcome = process.env.DOWNLOAD_OUTCOME;
+            const artifactsDir = path.join(process.cwd(), 'all-test-results');
+            const expectedArtifactNames = Array.isArray(prContext.expectedArtifactNames) ? prContext.expectedArtifactNames : [];
+            const expectedArtifactNamesSet = new Set(expectedArtifactNames);
+            const expectedNodeVersions = new Set(
+              expectedArtifactNames
+                .map(name => name.match(/^test-results-node-(\d+)$/)?.[1])
+                .filter(Boolean)
+            );
+            const maxArtifactDirectories = expectedArtifactNames.length;
+            const maxTestDirectoriesPerArtifact = 200;
+            const maxFailures = 20;
+            const maxFileBytes = 5 * 1024 * 1024;
+            const maxTotalBytes = 45 * 1024 * 1024;
+            const maxCommentLength = 60000;
+            const pngSignature = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+            let totalBytes = 0;
 
             // Helper: remove stale marker comment if it exists
             async function removeStaleComment() {
@@ -56,7 +206,7 @@ jobs:
                 github.rest.issues.listComments,
                 { owner, repo, issue_number: prNumber, per_page: 100 },
               );
-              const existing = comments.find(c => c.body && c.body.includes(marker));
+              const existing = comments.find(isManagedComment);
               if (existing) {
                 await github.rest.issues.deleteComment({
                   owner, repo, comment_id: existing.id,
@@ -65,27 +215,145 @@ jobs:
               }
             }
 
-            // Phase 1: Discover failure screenshots
-            const artifactsDir = 'all-test-results';
-            const failures = [];
+            function escapeHtml(s) {
+              return s
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+            }
 
-            if (!fs.existsSync(artifactsDir)) {
-              console.log('No test results directory found');
+            function isManagedComment(comment) {
+              return Boolean(
+                comment.body &&
+                comment.body.includes(marker) &&
+                comment.user?.type === 'Bot' &&
+                comment.user?.login === 'github-actions[bot]'
+              );
+            }
+
+            function sanitizePathSegment(s) {
+              const sanitized = s
+                .normalize('NFKC')
+                .replace(/[^a-zA-Z0-9._-]/g, '_')
+                .replace(/_+/g, '_')
+                .replace(/^_+|_+$/g, '')
+                .slice(0, 120);
+
+              if (!sanitized || /^\.+$/.test(sanitized)) {
+                throw new Error(`Unable to sanitize path segment: ${s}`);
+              }
+
+              return sanitized;
+            }
+
+            function ensureDirectory(dirPath, label) {
+              const stats = fs.lstatSync(dirPath);
+              if (stats.isSymbolicLink() || !stats.isDirectory()) {
+                throw new Error(`${label} must be a real directory: ${dirPath}`);
+              }
+            }
+
+            function readValidatedPng(filePath) {
+              const stats = fs.lstatSync(filePath);
+              if (stats.isSymbolicLink() || !stats.isFile()) {
+                throw new Error(`Expected a regular file: ${filePath}`);
+              }
+
+              if (stats.size <= 0 || stats.size > maxFileBytes) {
+                throw new Error(`Unexpected PNG size for ${filePath}: ${stats.size}`);
+              }
+
+              totalBytes += stats.size;
+              if (totalBytes > maxTotalBytes) {
+                throw new Error(`Total PNG bytes exceeded limit of ${maxTotalBytes}`);
+              }
+
+              const buffer = fs.readFileSync(filePath);
+              if (buffer.length < pngSignature.length || !buffer.subarray(0, pngSignature.length).equals(pngSignature)) {
+                throw new Error(`Invalid PNG signature for ${filePath}`);
+              }
+
+              return buffer;
+            }
+
+            const failures = [];
+            const treePathOwners = new Map();
+
+            if (conclusion === 'success') {
               await removeStaleComment();
               return;
             }
 
-            for (const artifactDir of fs.readdirSync(artifactsDir)) {
+            if (conclusion !== 'failure') {
+              console.log(`Skipping comment sync for workflow conclusion ${conclusion}`);
+              return;
+            }
+
+            if (artifactDisposition === 'none') {
+              console.log('No matching screenshot artifacts were uploaded for this run');
+              await removeStaleComment();
+              return;
+            }
+
+            if (!['download', 'none', 'rejected'].includes(artifactDisposition)) {
+              await removeStaleComment();
+              throw new Error(`Unknown artifact disposition: ${artifactDisposition}`);
+            }
+
+            if (artifactDisposition === 'rejected') {
+              await removeStaleComment();
+              throw new Error(artifactError || 'Screenshot artifacts were rejected by policy');
+            }
+
+            if (downloadOutcome !== 'success') {
+              await removeStaleComment();
+              throw new Error(`Screenshot artifact download failed with outcome ${downloadOutcome}`);
+            }
+
+            if (!fs.existsSync(artifactsDir)) {
+              throw new Error('Expected screenshot artifacts were reported but no download directory was created');
+            }
+
+            ensureDirectory(artifactsDir, 'Artifact root');
+            const artifactDirs = fs.readdirSync(artifactsDir);
+
+            if (artifactDirs.length !== maxArtifactDirectories) {
+              throw new Error(`Unexpected artifact directory count: ${artifactDirs.length}`);
+            }
+
+            for (const artifactDir of artifactDirs) {
+              if (!expectedArtifactNamesSet.has(artifactDir)) {
+                throw new Error(`Unexpected artifact directory name: ${artifactDir}`);
+              }
+
               const match = artifactDir.match(/^test-results-node-(\d+)$/);
-              if (!match) continue;
-              const nodeVersion = match[1];
+              const nodeVersion = match?.[1];
+              if (!nodeVersion || !expectedNodeVersions.has(nodeVersion)) {
+                throw new Error(`Unexpected node version artifact: ${artifactDir}`);
+              }
+
               const artifactPath = path.join(artifactsDir, artifactDir);
+              ensureDirectory(artifactPath, `Artifact directory ${artifactDir}`);
+              const testEntries = fs.readdirSync(artifactPath, { withFileTypes: true });
 
-              if (!fs.statSync(artifactPath).isDirectory()) continue;
+              for (const entry of testEntries) {
+                if (entry.isSymbolicLink()) {
+                  throw new Error(`Symbolic links are not allowed in ${artifactDir}: ${entry.name}`);
+                }
+              }
 
-              for (const testDir of fs.readdirSync(artifactPath)) {
+              const testDirs = testEntries
+                .filter(entry => entry.isDirectory())
+                .map(entry => entry.name);
+
+              if (testDirs.length > maxTestDirectoriesPerArtifact) {
+                throw new Error(`Too many test result directories in ${artifactDir}: ${testDirs.length}`);
+              }
+
+              for (const testDir of testDirs) {
                 const testPath = path.join(artifactPath, testDir);
-                if (!fs.statSync(testPath).isDirectory()) continue;
+                ensureDirectory(testPath, `Test directory ${testDir}`);
 
                 const files = fs.readdirSync(testPath);
                 const diffFiles = files.filter(f => f.endsWith('-diff.png'));
@@ -96,14 +364,44 @@ jobs:
                   const expectedFile = `${baseName}-expected.png`;
 
                   if (files.includes(actualFile) && files.includes(expectedFile)) {
+                    const safeNodeVersion = sanitizePathSegment(nodeVersion);
+                    const safeTestName = sanitizePathSegment(testDir);
+                    const safeScreenshotName = sanitizePathSegment(baseName);
+                    const actualPath = path.join(testPath, actualFile);
+                    const expectedPath = path.join(testPath, expectedFile);
+                    const diffPath = path.join(testPath, diffFile);
+                    const baseTreePath = `pr-${prNumber}/${runId}/node-${safeNodeVersion}/${safeTestName}/${safeScreenshotName}`;
+                    const buffers = {
+                      actual: readValidatedPng(actualPath),
+                      expected: readValidatedPng(expectedPath),
+                      diff: readValidatedPng(diffPath),
+                    };
+
+                    for (const suffix of Object.keys(buffers)) {
+                      const treePath = `${baseTreePath}-${suffix}.png`;
+                      const previousOwner = treePathOwners.get(treePath);
+                      const ownerLabel = `${nodeVersion}/${testDir}/${baseName}`;
+
+                      if (previousOwner && previousOwner !== ownerLabel) {
+                        throw new Error(`Sanitized path collision for ${treePath}: ${previousOwner} vs ${ownerLabel}`);
+                      }
+
+                      treePathOwners.set(treePath, ownerLabel);
+                    }
+
                     failures.push({
                       nodeVersion,
                       testName: testDir,
                       screenshotName: baseName,
-                      actualPath: path.join(testPath, actualFile),
-                      expectedPath: path.join(testPath, expectedFile),
-                      diffPath: path.join(testPath, diffFile),
+                      safeNodeVersion,
+                      safeTestName,
+                      safeScreenshotName,
+                      buffers,
                     });
+
+                    if (failures.length > maxFailures) {
+                      throw new Error(`Too many failure screenshot groups: ${failures.length}`);
+                    }
                   }
                 }
               }
@@ -117,40 +415,21 @@ jobs:
 
             console.log(`Found ${failures.length} failure(s)`);
 
-            // Sanitization helpers
-            function escapeHtml(s) {
-              return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-            }
-            function sanitizePathSegment(s) {
-              return s.replace(/[^a-zA-Z0-9._-]/g, '_');
-            }
-
             // Phase 2: Upload images to _playwright-artifacts branch via Git Data API
-            async function createBlob(filePath) {
-              const content = fs.readFileSync(filePath).toString('base64');
+            async function createBlob(buffer) {
+              const content = buffer.toString('base64');
               const { data } = await github.rest.git.createBlob({
                 owner, repo, content, encoding: 'base64',
               });
               return data.sha;
             }
 
-            // Sanitize path segments for git tree and URLs
-            for (const failure of failures) {
-              failure.safeNodeVersion = sanitizePathSegment(failure.nodeVersion);
-              failure.safeTestName = sanitizePathSegment(failure.testName);
-              failure.safeScreenshotName = sanitizePathSegment(failure.screenshotName);
-            }
-
             // Create all blobs in parallel
             const blobEntries = [];
             for (const failure of failures) {
-              for (const [suffix, filePath] of [
-                ['actual', failure.actualPath],
-                ['expected', failure.expectedPath],
-                ['diff', failure.diffPath],
-              ]) {
+              for (const [suffix, buffer] of Object.entries(failure.buffers)) {
                 blobEntries.push({
-                  filePath,
+                  buffer,
                   treePath: `pr-${prNumber}/${runId}/node-${failure.safeNodeVersion}/${failure.safeTestName}/${failure.safeScreenshotName}-${suffix}.png`,
                 });
               }
@@ -161,7 +440,7 @@ jobs:
                 path: entry.treePath,
                 mode: '100644',
                 type: 'blob',
-                sha: await createBlob(entry.filePath),
+                sha: await createBlob(entry.buffer),
               }))
             );
 
@@ -238,9 +517,7 @@ jobs:
               }
             }
 
-            await pushWithRetry(blobResults);
-
-            // Phase 3: Build and post PR comment
+            // Phase 3: Build PR comment body before pushing blobs
             const baseUrl = `https://raw.githubusercontent.com/${owner}/${repo}/${branchName}`;
 
             let body = `${marker}\n## Playwright Visual Regression Test Failures\n\n`;
@@ -272,12 +549,18 @@ jobs:
 
             body += `---\n*Auto-generated by Playwright CI*\n`;
 
+            if (body.length > maxCommentLength) {
+              throw new Error(`Generated comment body exceeded ${maxCommentLength} characters`);
+            }
+
+            await pushWithRetry(blobResults);
+
             // Find existing comment (paginated)
             const comments = await github.paginate(
               github.rest.issues.listComments,
               { owner, repo, issue_number: prNumber, per_page: 100 },
             );
-            const existing = comments.find(c => c.body && c.body.includes(marker));
+            const existing = comments.find(isManagedComment);
 
             if (existing) {
               await github.rest.issues.updateComment({
@@ -289,28 +572,4 @@ jobs:
                 owner, repo, issue_number: prNumber, body,
               });
               console.log('Created new comment');
-            }
-
-      - name: Remove stale failure comment
-        if: ${{ github.event.workflow_run.conclusion == 'success' && steps.pr-info.outcome == 'success' }}
-        uses: actions/github-script@v9
-        with:
-          script: |
-            const fs = require('fs');
-            const owner = context.repo.owner;
-            const repo = context.repo.repo;
-            const prNumber = parseInt(fs.readFileSync('pr-info/number', 'utf8').trim(), 10);
-            const marker = '<!-- playwright-failure-screenshots -->';
-
-            const comments = await github.paginate(
-              github.rest.issues.listComments,
-              { owner, repo, issue_number: prNumber, per_page: 100 },
-            );
-            const existing = comments.find(c => c.body && c.body.includes(marker));
-
-            if (existing) {
-              await github.rest.issues.deleteComment({
-                owner, repo, comment_id: existing.id,
-              });
-              console.log(`Deleted stale comment ${existing.id}`);
             }

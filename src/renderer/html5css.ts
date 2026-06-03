@@ -517,6 +517,7 @@ class HTML5CSSRenderer implements IRenderer {
     let url: string;
     try {
       url = source.toDataURL("image/png");
+      this.imageUrlCache.set(source, url);
     } catch (error) {
       console.warn(
         "HTML5CSSRenderer: failed to serialize a canvas image.",
@@ -525,7 +526,6 @@ class HTML5CSSRenderer implements IRenderer {
       url = TRANSPARENT_IMAGE_URL;
       this.failedImageUrlCache.add(source);
     }
-    this.imageUrlCache.set(source, url);
     return url;
   }
 

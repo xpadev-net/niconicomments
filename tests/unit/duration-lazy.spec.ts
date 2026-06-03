@@ -331,8 +331,8 @@ describe("duration bounds and lazy timeline expansion", () => {
     const instance = new NiconiComments(
       new FakeRenderer(),
       [
-        createComment({ id: 1, vpos: 100000, mail: ["ue"] }),
-        createComment({ id: 2, vpos: 0, mail: ["ue"] }),
+        createComment({ id: 1, vpos: 0, mail: ["ue"] }),
+        createComment({ id: 2, vpos: 100000, mail: ["ue"] }),
       ],
       {
         format: "formatted",

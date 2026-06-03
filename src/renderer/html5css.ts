@@ -202,9 +202,13 @@ class HTML5CSSRenderer implements IRenderer {
     }
     const node = this.getNode("div");
     node.style.background = "transparent";
-    node.style.border = `${this.state.lineWidth * this.state.scaleX}px solid ${
-      this.state.strokeStyle
-    }`;
+    const borderX = `${this.state.lineWidth * this.state.scaleX}px`;
+    const borderY = `${this.state.lineWidth * this.state.scaleY}px`;
+    node.style.border = "0";
+    node.style.borderLeft = `${borderX} solid ${this.state.strokeStyle}`;
+    node.style.borderRight = `${borderX} solid ${this.state.strokeStyle}`;
+    node.style.borderTop = `${borderY} solid ${this.state.strokeStyle}`;
+    node.style.borderBottom = `${borderY} solid ${this.state.strokeStyle}`;
     node.style.boxSizing = "border-box";
     this.positionNode(node, nx, ny, nw, nh);
   }
@@ -237,12 +241,15 @@ class HTML5CSSRenderer implements IRenderer {
   clearRect(x: number, y: number, width: number, height: number): void {
     this.nodeCursor = 0;
     this.helperCursor = 0;
-    for (const helper of this.helperSurfaces) {
+    for (let i = 1, n = this.helperSurfaces.length; i < n; i++) {
+      const helper = this.helperSurfaces[i];
+      if (!helper) continue;
       helper.setSize(this.width, this.height);
       this.setupSurfaceCanvas(helper);
       helper.canvas.style.display = "none";
     }
     this.helper = this.prepareHelperSurface(0);
+    this.helper.canvas.style.display = "none";
     if (this.videoSurface) {
       this.videoSurface.clearRect(x, y, width, height);
       this.videoSurface.canvas.style.display = "none";
@@ -529,6 +536,7 @@ class HTML5CSSRenderer implements IRenderer {
       this.state.scaleX === 0 ? scaleX : scaleX / this.state.scaleX;
     const ratioY =
       this.state.scaleY === 0 ? scaleY : scaleY / this.state.scaleY;
+    if (ratioX === 1 && ratioY === 1) return;
     if (Number.isFinite(ratioX) && Number.isFinite(ratioY)) {
       this.helper.setScale(ratioX, ratioY);
     }

@@ -41,7 +41,7 @@ import { RangeCacheContext } from "@/utils/rangeCache";
 import * as internal from "./internal";
 
 const EMPTY_TIMELINE = Object.freeze([]) as readonly IComment[];
-export const BAN_FRAME_POSITION_RESOLUTION_BUDGET = 256;
+const BAN_FRAME_POSITION_RESOLUTION_BUDGET = 256;
 const TIMELINE_COMMENT_SORT = (a: IComment, b: IComment) =>
   Number(a.owner) - Number(b.owner) || a.index - b.index;
 
@@ -127,6 +127,8 @@ class NiconiComments {
   private plugins: IPluginList = [];
   static typeGuard = typeGuard;
   static default = NiconiComments;
+  static readonly BAN_FRAME_POSITION_RESOLUTION_BUDGET =
+    BAN_FRAME_POSITION_RESOLUTION_BUDGET;
   static FlashComment = {
     condition: isFlashComment,
     class: FlashComment,

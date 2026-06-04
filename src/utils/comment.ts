@@ -184,7 +184,7 @@ type ActiveRangeScanState<T extends TimedRange> = {
   startIndex: number;
   endIndex: number;
   activeCount: number;
-  targetCounts: Record<NicoScript["reverse"][number]["target"], number>;
+  targetCounts?: Record<NicoScript["reverse"][number]["target"], number>;
   lastVpos: number;
 };
 
@@ -207,7 +207,7 @@ const activeRangeScanCaches = new WeakMap<
 const getActiveRangeScanCaches = (rangeCache: RangeCacheContext) => {
   const cached = activeRangeScanCaches.get(rangeCache);
   if (cached) return cached;
-  const next = {
+  const next: ActiveRangeScanCaches = {
     reverse: new WeakMap<
       NicoScript["reverse"],
       ActiveRangeScanState<NicoScript["reverse"][number]>
@@ -229,16 +229,16 @@ const getActiveRangeScanState = <T extends TimedRange>(
   if (cached?.sourceLength === ranges.length) return cached;
   // NicoScript ranges are append-only and immutable after creation; this
   // length check must be revisited if future code mutates start/end in place.
-  const sortedByStart = [...ranges].sort((a, b) => a.start - b.start);
-  const sortedByEnd = [...ranges].sort((a, b) => a.end - b.end);
-  const next = {
+  const validRanges = ranges.filter((range) => range.start < range.end);
+  const sortedByStart = [...validRanges].sort((a, b) => a.start - b.start);
+  const sortedByEnd = [...validRanges].sort((a, b) => a.end - b.end);
+  const next: ActiveRangeScanState<T> = {
     sourceLength: ranges.length,
     sortedByStart,
     sortedByEnd,
     startIndex: 0,
     endIndex: 0,
     activeCount: 0,
-    targetCounts: { コメ: 0, 投コメ: 0, 全: 0 },
     lastVpos: -Infinity,
   };
   scanCache.set(ranges, next);
@@ -247,19 +247,21 @@ const getActiveRangeScanState = <T extends TimedRange>(
 
 const changeReverseTargetCount = (
   counts: Record<NicoScript["reverse"][number]["target"], number>,
-  range: TimedRange,
+  range: NicoScript["reverse"][number],
   delta: number,
 ) => {
-  const target = (range as NicoScript["reverse"][number]).target;
-  if (target === "コメ" || target === "投コメ" || target === "全") {
-    counts[target] += delta;
-  }
+  counts[range.target] += delta;
 };
 
 const getActiveRangeState = <T extends TimedRange>(
   ranges: T[],
   vpos: number,
   scanCache: WeakMap<T[], ActiveRangeScanState<T>>,
+  changeTargetCount?: (
+    counts: Record<NicoScript["reverse"][number]["target"], number>,
+    range: T,
+    delta: number,
+  ) => void,
 ) => {
   if (!Number.isFinite(vpos)) return;
   const state = getActiveRangeScanState(ranges, scanCache);
@@ -267,6 +269,9 @@ const getActiveRangeState = <T extends TimedRange>(
     state.startIndex = 0;
     state.endIndex = 0;
     state.activeCount = 0;
+    state.targetCounts = undefined;
+  }
+  if (changeTargetCount && !state.targetCounts) {
     state.targetCounts = { コメ: 0, 投コメ: 0, 全: 0 };
   }
   state.lastVpos = vpos;
@@ -276,7 +281,9 @@ const getActiveRangeState = <T extends TimedRange>(
     if (!range || vpos <= range.start) break;
     state.startIndex++;
     state.activeCount++;
-    changeReverseTargetCount(state.targetCounts, range, 1);
+    if (state.targetCounts) {
+      changeTargetCount?.(state.targetCounts, range, 1);
+    }
   }
 
   while (state.endIndex < state.sortedByEnd.length) {
@@ -285,7 +292,9 @@ const getActiveRangeState = <T extends TimedRange>(
     state.endIndex++;
     if (range.start < vpos) {
       state.activeCount--;
-      changeReverseTargetCount(state.targetCounts, range, -1);
+      if (state.targetCounts) {
+        changeTargetCount?.(state.targetCounts, range, -1);
+      }
     }
   }
 
@@ -945,12 +954,13 @@ const isReverseActive = (
     nicoScripts.reverse,
     vpos,
     getActiveRangeScanCaches(rangeCache).reverse,
+    changeReverseTargetCount,
   );
   const result = isOwner
-    ? (activeState?.targetCounts.投コメ ?? 0) > 0 ||
-      (activeState?.targetCounts.全 ?? 0) > 0
-    : (activeState?.targetCounts.コメ ?? 0) > 0 ||
-      (activeState?.targetCounts.全 ?? 0) > 0;
+    ? (activeState?.targetCounts?.投コメ ?? 0) > 0 ||
+      (activeState?.targetCounts?.全 ?? 0) > 0
+    : (activeState?.targetCounts?.コメ ?? 0) > 0 ||
+      (activeState?.targetCounts?.全 ?? 0) > 0;
   rangeCache.setCachedActiveState(cache, vpos, result);
   return result;
 };

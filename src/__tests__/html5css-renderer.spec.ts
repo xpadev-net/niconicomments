@@ -1,12 +1,23 @@
 import type { Page } from "@playwright/test";
 import { expect, test } from "@playwright/test";
 
+// Used by the layout test that inspects the CSS renderer mounted on the page.
 const loadCssSample = async (page: Page) => {
   await page.goto(
     "http://localhost:8080/docs/sample/test.html?renderer=css&time=20&video=0",
   );
   // BrowserSync injects this overlay only during local runs; in CI the detached
   // wait resolves immediately, matching the existing visual regression tests.
+  await Promise.all([
+    page.waitForSelector("div#loaded", { state: "attached" }),
+    page.waitForSelector("div#__bs_notify__", { state: "detached" }),
+  ]);
+};
+
+// Used by tests that construct their own renderer inside page.evaluate —
+// they only need the bundle present, not a CSS-rendered page.
+const loadBundle = async (page: Page) => {
+  await page.goto("http://localhost:8080/docs/sample/test.html?time=0&video=0");
   await Promise.all([
     page.waitForSelector("div#loaded", { state: "attached" }),
     page.waitForSelector("div#__bs_notify__", { state: "detached" }),
@@ -72,7 +83,7 @@ test("HTML5CSSRenderer contains its logical stage inside the host layout", async
 test("HTML5CSSRenderer commits direct canvas drawing into its DOM layer", async ({
   page,
 }) => {
-  await loadCssSample(page);
+  await loadBundle(page);
 
   const renderedChildren = await page.evaluate(() => {
     const root = document.createElement("div");
@@ -105,7 +116,7 @@ test("HTML5CSSRenderer commits direct canvas drawing into its DOM layer", async 
 test("HTML5CSSRenderer resets state to defaults on clearRect", async ({
   page,
 }) => {
-  await loadCssSample(page);
+  await loadBundle(page);
 
   const rectWidth = await page.evaluate(() => {
     const root = document.createElement("div");
@@ -137,7 +148,7 @@ test("HTML5CSSRenderer resets state to defaults on clearRect", async ({
 test("HTML5CSSRenderer discards imbalanced saved state on clearRect", async ({
   page,
 }) => {
-  await loadCssSample(page);
+  await loadBundle(page);
 
   const rectWidth = await page.evaluate(() => {
     const root = document.createElement("div");
@@ -172,7 +183,7 @@ test("HTML5CSSRenderer discards imbalanced saved state on clearRect", async ({
 test("HTML5CSSRenderer restores helper drawing after zero scale", async ({
   page,
 }) => {
-  await loadCssSample(page);
+  await loadBundle(page);
 
   const paintedPixels = await page.evaluate(() => {
     const root = document.createElement("div");
@@ -212,7 +223,7 @@ test("HTML5CSSRenderer restores helper drawing after zero scale", async ({
 test("HTML5CSSRenderer keeps an active path across DOM-backed drawing", async ({
   page,
 }) => {
-  await loadCssSample(page);
+  await loadBundle(page);
   const warnings: string[] = [];
   page.on("console", (message) => {
     if (message.type() === "warning") {
@@ -257,7 +268,7 @@ test("HTML5CSSRenderer keeps an active path across DOM-backed drawing", async ({
 test("HTML5CSSRenderer clears text-before-DOM warning state after flush", async ({
   page,
 }) => {
-  await loadCssSample(page);
+  await loadBundle(page);
   const warnings: string[] = [];
   page.on("console", (message) => {
     if (message.type() === "warning") {
@@ -291,7 +302,7 @@ test("HTML5CSSRenderer clears text-before-DOM warning state after flush", async 
 test("HTML5CSSRenderer reapplies helper context defaults after resizing surfaces", async ({
   page,
 }) => {
-  await loadCssSample(page);
+  await loadBundle(page);
 
   const lineJoin = await page.evaluate(() => {
     const root = document.createElement("div");
@@ -325,7 +336,7 @@ test("HTML5CSSRenderer reapplies helper context defaults after resizing surfaces
 test("HTML5CSSRenderer keeps the video surface below DOM and text layers", async ({
   page,
 }) => {
-  await loadCssSample(page);
+  await loadBundle(page);
 
   const order = await page.evaluate(() => {
     const root = document.createElement("div");
@@ -365,7 +376,7 @@ test("HTML5CSSRenderer keeps the video surface below DOM and text layers", async
 });
 
 test("HTML5CSSRenderer caps and trims helper surfaces", async ({ page }) => {
-  await loadCssSample(page);
+  await loadBundle(page);
 
   const counts = await page.evaluate(() => {
     const root = document.createElement("div");
@@ -406,7 +417,7 @@ test("HTML5CSSRenderer caps and trims helper surfaces", async ({ page }) => {
 test("HTML5CSSRenderer refreshes drawImage snapshots after sub-renderer clears", async ({
   page,
 }) => {
-  await loadCssSample(page);
+  await loadBundle(page);
 
   const result = await page.evaluate(() => {
     const root = document.createElement("div");
@@ -451,7 +462,7 @@ test("HTML5CSSRenderer refreshes drawImage snapshots after sub-renderer clears",
 test("HTML5CSSRenderer refreshes drawImage snapshots after sub-renderer resize", async ({
   page,
 }) => {
-  await loadCssSample(page);
+  await loadBundle(page);
 
   const metrics = await page.evaluate(() => {
     const root = document.createElement("div");
@@ -510,7 +521,7 @@ test("HTML5CSSRenderer refreshes drawImage snapshots after sub-renderer resize",
 test("HTML5CSSRenderer uses clamped canvas dimensions consistently", async ({
   page,
 }) => {
-  await loadCssSample(page);
+  await loadBundle(page);
 
   const metrics = await page.evaluate(() => {
     const root = document.createElement("div");
@@ -552,7 +563,7 @@ test("HTML5CSSRenderer uses clamped canvas dimensions consistently", async ({
 test("HTML5CSSRenderer uses computed CSS dimensions as its initial logical size", async ({
   page,
 }) => {
-  await loadCssSample(page);
+  await loadBundle(page);
 
   const metrics = await page.evaluate(() => {
     const root = document.createElement("div");

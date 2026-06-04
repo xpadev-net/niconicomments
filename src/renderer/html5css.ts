@@ -420,15 +420,14 @@ class HTML5CSSRenderer implements IRenderer {
   }
 
   stroke(): void {
+    if (!this.pathActive) return;
     this.helper.save();
     this.helper.setStrokeStyle(this.state.strokeStyle);
     this.helper.setLineWidth(this.state.lineWidth);
     this.helper.setGlobalAlpha(this.state.alpha);
     this.helper.stroke();
     this.helper.restore();
-    if (this.pathActive) {
-      this.helperDirty = true;
-    }
+    this.helperDirty = true;
     this.pathActive = false;
   }
 

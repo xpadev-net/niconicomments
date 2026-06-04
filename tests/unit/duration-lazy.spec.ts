@@ -5,11 +5,13 @@ import type { CommentInstanceContext } from "@/contexts";
 import { createNicoScripts, ImageCacheContext } from "@/contexts";
 import { defaultConfig, defaultOptions } from "@/definition/config";
 import { initConfig } from "@/definition/initConfig";
+import { EventHandler } from "@/eventHandler";
 import NiconiComments from "@/main";
 import {
   DEFAULT_COMMENT_LONG,
   DEFAULT_NICOSCRIPT_LONG,
   getLazyCommentLookahead,
+  isReverseActive,
   MAX_COMMENT_LONG,
   MAX_LAZY_COMMENT_LOOKAHEAD,
   MAX_NICOSCRIPT_LONG,
@@ -21,6 +23,7 @@ class HTMLCanvasElementMock {}
 
 const HUGE_DURATION = "@9999";
 const OVERFLOW_DURATION = `@${"9".repeat(400)}`;
+const { BAN_FRAME_POSITION_RESOLUTION_BUDGET } = NiconiComments;
 
 const emptyTextMetrics = (width: number): TextMetrics =>
   ({
@@ -41,6 +44,7 @@ const emptyTextMetrics = (width: number): TextMetrics =>
 class FakeRenderer implements IRenderer {
   public readonly rendererName = "FakeRenderer";
   public readonly canvas = {} as HTMLCanvasElement;
+  public clearRectCalls = 0;
   private font = "";
   private size = { width: 1920, height: 1080 };
 
@@ -58,7 +62,9 @@ class FakeRenderer implements IRenderer {
   fillText() {}
   strokeText() {}
   quadraticCurveTo() {}
-  clearRect() {}
+  clearRect() {
+    this.clearRectCalls++;
+  }
   setFont(font: string) {
     this.font = font;
   }
@@ -399,5 +405,210 @@ describe("duration bounds and lazy timeline expansion", () => {
     expect(Object.keys(state.timeline).length).toBeLessThan(
       MAX_COMMENT_LONG * 3,
     );
+  });
+
+  test("ban frames skip reverse state and keep lazy resolution inside the frame budget", () => {
+    const invisibleComments = Array.from({ length: 1024 }, (_, index) =>
+      createComment({
+        id: index + 3,
+        vpos: 1,
+        content: `/hidden ${index}`,
+      }),
+    );
+    const heavyComments = Array.from({ length: 1024 }, (_, index) =>
+      createComment({
+        id: index + 2000,
+        vpos: 1,
+        content: `visible ${index}`,
+        mail: ["ue"],
+      }),
+    );
+    const instance = new NiconiComments(
+      new FakeRenderer(),
+      [
+        createComment({
+          id: 1,
+          owner: true,
+          vpos: 0,
+          content: "@コメント禁止",
+        }),
+        createComment({
+          id: 2,
+          owner: true,
+          vpos: 0,
+          content: "@逆 全",
+        }),
+        ...invisibleComments,
+        ...heavyComments,
+      ],
+      {
+        format: "formatted",
+        lazy: true,
+        mode: "html5",
+        config: { commentLimit: undefined },
+      },
+    );
+    const state = instance as unknown as {
+      comments: IComment[];
+      ctx: CommentInstanceContext;
+      nextUnprocessedCommentIndex: number;
+      processedCommentIndex: number;
+    };
+    const firstDrawableIndex = state.comments.findIndex(
+      (comment) => !comment.invisible,
+    );
+
+    instance.drawCanvas(1, true);
+
+    expect(firstDrawableIndex).toBeGreaterThanOrEqual(0);
+    expect(state.nextUnprocessedCommentIndex).toBeLessThanOrEqual(
+      BAN_FRAME_POSITION_RESOLUTION_BUDGET,
+    );
+    expect(state.processedCommentIndex).toBeLessThanOrEqual(
+      firstDrawableIndex + BAN_FRAME_POSITION_RESOLUTION_BUDGET - 1,
+    );
+    expect(state.processedCommentIndex).toBeLessThan(state.comments.length - 1);
+    expect(state.ctx.rangeCache.reverseActiveOwner.size).toBe(0);
+    expect(state.ctx.rangeCache.reverseActiveViewer.size).toBe(0);
+  });
+
+  test("redraws when ban state changes across identical timeline ranges", () => {
+    const renderer = new FakeRenderer();
+    const instance = new NiconiComments(renderer, [], {
+      format: "formatted",
+      mode: "html5",
+    });
+    const state = instance as unknown as {
+      ctx: CommentInstanceContext;
+    };
+
+    state.ctx.nicoScripts.ban.push({ start: 0, end: 10 });
+    state.ctx.rangeCache.reset();
+
+    expect(instance.drawCanvas(1)).toBe(true);
+    expect(renderer.clearRectCalls).toBe(1);
+
+    state.ctx.nicoScripts.ban.length = 0;
+    state.ctx.rangeCache.reset();
+
+    expect(instance.drawCanvas(2)).toBe(true);
+    expect(renderer.clearRectCalls).toBe(2);
+  });
+
+  test("reverse active range cache prunes expired ranges after the first scan", () => {
+    const ctx = createContext();
+    let expiredEndReads = 0;
+    for (let i = 0; i < 512; i++) {
+      ctx.nicoScripts.reverse.push({
+        target: "全",
+        start: 0,
+        get end() {
+          expiredEndReads++;
+          return 5;
+        },
+      });
+    }
+    ctx.nicoScripts.reverse.push({
+      target: "全",
+      start: 0,
+      end: 100,
+    });
+
+    expect(isReverseActive(4, false, ctx.nicoScripts, ctx.rangeCache)).toBe(
+      true,
+    );
+    expect(isReverseActive(6, false, ctx.nicoScripts, ctx.rangeCache)).toBe(
+      true,
+    );
+
+    expiredEndReads = 0;
+    expect(isReverseActive(7, false, ctx.nicoScripts, ctx.rangeCache)).toBe(
+      true,
+    );
+    expect(expiredEndReads).toBeLessThan(64);
+  });
+
+  test("reverse active range cache does not rescan long-lived active ranges each frame", () => {
+    const ctx = createContext();
+    let targetReads = 0;
+    for (let i = 0; i < 512; i++) {
+      ctx.nicoScripts.reverse.push({
+        get target() {
+          targetReads++;
+          return "全";
+        },
+        start: 0,
+        end: 10_000,
+      });
+    }
+
+    expect(isReverseActive(4, false, ctx.nicoScripts, ctx.rangeCache)).toBe(
+      true,
+    );
+
+    targetReads = 0;
+    expect(isReverseActive(5, false, ctx.nicoScripts, ctx.rangeCache)).toBe(
+      true,
+    );
+    expect(targetReads).toBe(0);
+  });
+
+  test("event range scan cache prunes expired ban ranges after transition checks", () => {
+    const eventHandler = new EventHandler();
+    const ctx = createContext();
+    let expiredEndReads = 0;
+    let disabled = 0;
+    eventHandler.register("commentDisable", () => {
+      disabled++;
+    });
+    for (let i = 0; i < 512; i++) {
+      ctx.nicoScripts.ban.push({
+        start: 0,
+        get end() {
+          expiredEndReads++;
+          return 5;
+        },
+      });
+    }
+    ctx.nicoScripts.ban.push({
+      start: 0,
+      end: 100,
+    });
+
+    eventHandler.trigger(4, 3, ctx.nicoScripts);
+    eventHandler.trigger(6, 4, ctx.nicoScripts);
+
+    expiredEndReads = 0;
+    eventHandler.trigger(7, 6, ctx.nicoScripts);
+
+    expect(expiredEndReads).toBeLessThan(64);
+    expect(disabled).toBe(0);
+  });
+
+  test("event range scan cache does not rescan long-lived active ranges each frame", () => {
+    const eventHandler = new EventHandler();
+    const ctx = createContext();
+    let startReads = 0;
+    let disabled = 0;
+    eventHandler.register("commentDisable", () => {
+      disabled++;
+    });
+    for (let i = 0; i < 512; i++) {
+      ctx.nicoScripts.ban.push({
+        get start() {
+          startReads++;
+          return 0;
+        },
+        end: 10_000,
+      });
+    }
+
+    eventHandler.trigger(4, 3, ctx.nicoScripts);
+
+    startReads = 0;
+    eventHandler.trigger(5, 4, ctx.nicoScripts);
+
+    expect(startReads).toBeLessThan(64);
+    expect(disabled).toBe(0);
   });
 });

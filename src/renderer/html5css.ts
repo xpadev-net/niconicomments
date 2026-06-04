@@ -304,6 +304,9 @@ class HTML5CSSRenderer implements IRenderer {
     this.pathActive = false;
     this.textDrawnBeforeDom = false;
     this.restoreFrameStartState();
+    // Reset state so stale scaleX/scaleY from a previous frame never bleeds
+    // into prepareHelperSurface() for the new frame.
+    this.resetState();
     for (let i = 0; i < this.prevNodeCursor; i++) {
       const node = this.nodes[i];
       if (node) this.hideNode(node);
@@ -467,7 +470,7 @@ class HTML5CSSRenderer implements IRenderer {
       undefined,
       padding,
       invalidate,
-      invalidate,
+      undefined, // onChange: invalidateImage is a no-op here; skip WeakRef overhead
     );
     return inner;
   }
@@ -559,8 +562,11 @@ class HTML5CSSRenderer implements IRenderer {
     }
   }
 
-  invalidateImage(_image: IRenderer): void {
-    // Source canvases are placed directly in the DOM; no URL cache to invalidate.
+  invalidateImage(image: IRenderer): void {
+    // Eagerly drop the canvas from both tracking sets so a destroyed
+    // sub-renderer's element is never removed from an unrelated consumer's DOM.
+    this.prevCanvasSet.delete(image.canvas);
+    this.activeCanvasSet.delete(image.canvas);
   }
 
   private getNode(tagName: "div"): HTMLElement {

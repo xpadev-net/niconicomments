@@ -102,7 +102,7 @@ test("HTML5CSSRenderer commits direct canvas drawing into its DOM layer", async 
   expect(renderedChildren).toBeGreaterThan(0);
 });
 
-test("HTML5CSSRenderer preserves persistent scale across clearRect", async ({
+test("HTML5CSSRenderer resets state to defaults on clearRect", async ({
   page,
 }) => {
   await loadCssSample(page);
@@ -117,6 +117,7 @@ test("HTML5CSSRenderer preserves persistent scale across clearRect", async ({
     };
     const renderer =
       new global.NiconiComments.internal.renderer.HTML5CSSRenderer(root);
+    // Set scale before clearRect — it must NOT bleed into the next frame.
     renderer.setScale(2);
     renderer.clearRect(0, 0, 200, 100);
     renderer.fillRect(1, 1, 10, 10);
@@ -129,7 +130,8 @@ test("HTML5CSSRenderer preserves persistent scale across clearRect", async ({
     return width;
   });
 
-  expect(rectWidth).toBe("20px");
+  // scale resets to 1 on clearRect → 10 × 1 = 10 px
+  expect(rectWidth).toBe("10px");
 });
 
 test("HTML5CSSRenderer discards imbalanced saved state on clearRect", async ({
@@ -162,7 +164,9 @@ test("HTML5CSSRenderer discards imbalanced saved state on clearRect", async ({
     return width;
   });
 
-  expect(rectWidth).toBe("20px");
+  // clearRect resets all state to defaults (scale=1); neither scale=2 nor
+  // scale=6 (2×3) from the imbalanced save should bleed into the next frame.
+  expect(rectWidth).toBe("10px");
 });
 
 test("HTML5CSSRenderer restores helper drawing after zero scale", async ({

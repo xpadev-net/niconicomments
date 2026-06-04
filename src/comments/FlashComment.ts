@@ -336,18 +336,23 @@ class FlashComment extends BaseComment {
   }
 
   private _measureContent(comment: MeasureTextInput) {
-    const widthArr: number[] = [];
-    const spacedWidthArr: number[] = [];
     let currentWidth = 0;
     let spacedWidth = 0;
+    let leadLineWidth = 1;
+    let leadLineSpacedWidth = 0;
+    const recordLineWidth = () => {
+      if (leadLineSpacedWidth < spacedWidth) {
+        leadLineWidth = currentWidth || 1;
+        leadLineSpacedWidth = spacedWidth;
+      }
+    };
     for (const item of comment.content) {
       if (item.type === "spacer") {
         spacedWidth +=
           item.count * item.charWidth * comment.fontSize +
           Math.max(item.count - 1, 0) * this.config.flashLetterSpacing;
         currentWidth += item.count * item.charWidth * comment.fontSize;
-        widthArr.push(currentWidth);
-        spacedWidthArr.push(spacedWidth);
+        recordLineWidth();
         continue;
       }
       const lines = item.content.split("\n");
@@ -366,29 +371,16 @@ class FlashComment extends BaseComment {
           Math.max(value.length - 1, 0) * this.config.flashLetterSpacing;
         widths.push(meas.width);
         if (i < lines.length - 1) {
-          widthArr.push(currentWidth);
-          spacedWidthArr.push(spacedWidth);
+          recordLineWidth();
           spacedWidth = 0;
           currentWidth = 0;
         }
       }
-      widthArr.push(currentWidth);
-      spacedWidthArr.push(spacedWidth);
+      recordLineWidth();
       item.width = widths;
     }
-    const leadLine = (() => {
-      let max = 0;
-      let index = -1;
-      spacedWidthArr.forEach((val, i) => {
-        if (max < val) {
-          max = val;
-          index = i;
-        }
-      });
-      return { max, index };
-    })();
-    const scaleX = leadLine.max / (widthArr[leadLine.index] ?? 1);
-    const width = leadLine.max * comment.scale;
+    const scaleX = leadLineSpacedWidth / leadLineWidth;
+    const width = leadLineSpacedWidth * comment.scale;
     const height =
       (comment.fontSize * (comment.lineHeight ?? 0) * comment.lineCount +
         this.config.flashCommentYPaddingTop[

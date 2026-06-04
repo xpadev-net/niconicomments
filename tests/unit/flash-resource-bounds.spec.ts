@@ -15,6 +15,7 @@ import {
   MAX_AT_BUTTON_MAIL_ENTRIES,
   MAX_AT_BUTTON_TEXT_CHARS,
   MAX_FLASH_COMMENT_LINES,
+  MAX_FLASH_CONTENT_ITEMS,
   MAX_NICOSCRIPT_COMMAND_CHARS,
   MAX_NICOSCRIPT_TEXT_CHARS,
   MAX_PARSED_COMMAND_MAIL_ENTRIES,
@@ -241,6 +242,26 @@ describe("Flash and at-button resource bounds", () => {
 
     expect(comment.exposeTextImage()).toBeNull();
     expect(renderer.children).toHaveLength(initialCanvasCount);
+  });
+
+  test("parses long spacer-heavy Flash comments iteratively within item bounds", () => {
+    const renderer = new RecordingRenderer();
+    const budgetFiller = "x ".repeat(MAX_FLASH_CONTENT_ITEMS / 2);
+    const skippedTail = `\n${"tail ".repeat(3000)}`;
+    const comment = new TestFlashComment(
+      formattedComment(`${budgetFiller}${skippedTail}`),
+      renderer,
+      0,
+      createContext(),
+    );
+
+    expect(comment.comment.content).toHaveLength(MAX_FLASH_CONTENT_ITEMS);
+    expect(
+      comment.comment.content.some(
+        (item) => item.type === "text" && item.content.includes("tail"),
+      ),
+    ).toBe(false);
+    expect(renderer.measureCalls).toBeLessThanOrEqual(MAX_FLASH_CONTENT_ITEMS);
   });
 
   test("does not allocate button canvases for many normal Flash comments", () => {

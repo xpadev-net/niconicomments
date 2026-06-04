@@ -404,7 +404,7 @@ test("HTML5CSSRenderer refreshes drawImage snapshots after sub-renderer clears",
 }) => {
   await loadCssSample(page);
 
-  const sources = await page.evaluate(() => {
+  const result = await page.evaluate(() => {
     const root = document.createElement("div");
     root.dataset.width = "100";
     root.dataset.height = "100";
@@ -420,23 +420,28 @@ test("HTML5CSSRenderer refreshes drawImage snapshots after sub-renderer clears",
     image.fillRect(0, 0, 10, 10);
     renderer.drawImage(image, 0, 0);
     renderer.flush();
-    const first = root.querySelector<HTMLImageElement>("img")?.src;
+    const source = image.canvas;
+    const firstInLayer = root.contains(source);
+    const ctx = source.getContext("2d");
+    const firstAlpha = ctx?.getImageData(0, 0, 1, 1).data[3] ?? -1;
 
     renderer.clearRect(0, 0, 100, 100);
     image.clearRect(0, 0, 10, 10);
     renderer.drawImage(image, 0, 0);
     renderer.flush();
-    const second = root.querySelector<HTMLImageElement>("img")?.src;
+    const secondInLayer = root.contains(source);
+    const secondAlpha = ctx?.getImageData(0, 0, 1, 1).data[3] ?? -1;
 
     image.destroy();
     renderer.destroy();
     root.remove();
-    return { first, second };
+    return { firstInLayer, secondInLayer, firstAlpha, secondAlpha };
   });
 
-  expect(sources.first).toBeDefined();
-  expect(sources.second).toBeDefined();
-  expect(sources.first).not.toBe(sources.second);
+  expect(result.firstInLayer).toBe(true);
+  expect(result.secondInLayer).toBe(true);
+  expect(result.firstAlpha).toBe(255);
+  expect(result.secondAlpha).toBe(0);
 });
 
 test("HTML5CSSRenderer refreshes drawImage snapshots after sub-renderer resize", async ({
@@ -460,26 +465,40 @@ test("HTML5CSSRenderer refreshes drawImage snapshots after sub-renderer resize",
     image.fillRect(0, 0, 10, 10);
     renderer.drawImage(image, 0, 0);
     renderer.flush();
-    const firstSrc = root.querySelector<HTMLImageElement>("img")?.src;
+    const source = image.canvas;
+    const firstInLayer = root.contains(source);
+    const firstWidth = firstInLayer
+      ? getComputedStyle(source).width
+      : undefined;
+    const firstHeight = firstInLayer
+      ? getComputedStyle(source).height
+      : undefined;
 
     renderer.clearRect(0, 0, 100, 100);
     image.setSize(20, 5);
     renderer.drawImage(image, 0, 0);
     renderer.flush();
-    const img = root.querySelector<HTMLImageElement>("img");
-    const secondSrc = img?.src;
-    const width = img ? getComputedStyle(img).width : undefined;
-    const height = img ? getComputedStyle(img).height : undefined;
+    const secondInLayer = root.contains(source);
+    const width = secondInLayer ? getComputedStyle(source).width : undefined;
+    const height = secondInLayer ? getComputedStyle(source).height : undefined;
 
     image.destroy();
     renderer.destroy();
     root.remove();
-    return { firstSrc, secondSrc, width, height };
+    return {
+      firstInLayer,
+      secondInLayer,
+      firstWidth,
+      firstHeight,
+      width,
+      height,
+    };
   });
 
-  expect(metrics.firstSrc).toBeDefined();
-  expect(metrics.secondSrc).toBeDefined();
-  expect(metrics.firstSrc).not.toBe(metrics.secondSrc);
+  expect(metrics.firstInLayer).toBe(true);
+  expect(metrics.secondInLayer).toBe(true);
+  expect(metrics.firstWidth).toBe("10px");
+  expect(metrics.firstHeight).toBe("10px");
   expect(metrics.width).toBe("20px");
   expect(metrics.height).toBe("5px");
 });

@@ -5,6 +5,7 @@ const HASH_OFFSET_A = 0x811c9dc5;
 const HASH_OFFSET_B = 0x9e3779b9;
 const HASH_PRIME_A = 0x01000193;
 const HASH_PRIME_B = 0x85ebca6b;
+const HASH_SEPARATOR = 0x1f;
 
 type GroupedByUser = {
   comments: FormattedComment[];
@@ -117,32 +118,43 @@ const getCommentArtDuplicateKey = (comment: FormattedComment) => {
     new Set(comment.mail.filter((mail) => !RE_CA_FILTER.test(mail))),
   ).sort((a, b) => a.localeCompare(b));
   const mailHash = hashStringList(normalizedMail);
+  // Keep the duplicate key bounded even for huge CA payloads. The finite hash
+  // can theoretically collide, but avoids reintroducing unbounded content keys.
   return `content=${hashString(comment.content)};mail=${mailHash}`;
 };
 
 const hashStringList = (values: string[]) => {
-  let hashA = HASH_OFFSET_A;
-  let hashB = HASH_OFFSET_B;
+  const state = createHashState();
   for (const value of values) {
-    const hash = hashString(value);
-    for (let i = 0; i < hash.length; i++) {
-      const code = hash.charCodeAt(i);
-      hashA = Math.imul(hashA ^ code, HASH_PRIME_A);
-      hashB = Math.imul(hashB + code, HASH_PRIME_B) ^ (hashB >>> 13);
+    mixHashCode(state, value.length);
+    for (let i = 0; i < value.length; i++) {
+      mixHashCode(state, value.charCodeAt(i));
     }
+    mixHashCode(state, HASH_SEPARATOR);
   }
-  return `${values.length}:${toBase36(hashA)}:${toBase36(hashB)}`;
+  return `${values.length}:${toBase36(state.hashA)}:${toBase36(state.hashB)}`;
 };
 
 const hashString = (value: string) => {
-  let hashA = HASH_OFFSET_A;
-  let hashB = HASH_OFFSET_B;
+  const state = createHashState();
   for (let i = 0; i < value.length; i++) {
-    const code = value.charCodeAt(i);
-    hashA = Math.imul(hashA ^ code, HASH_PRIME_A);
-    hashB = Math.imul(hashB + code, HASH_PRIME_B) ^ (hashB >>> 13);
+    mixHashCode(state, value.charCodeAt(i));
   }
-  return `${value.length}:${toBase36(hashA)}:${toBase36(hashB)}`;
+  return `${value.length}:${toBase36(state.hashA)}:${toBase36(state.hashB)}`;
+};
+
+const createHashState = () => ({
+  hashA: HASH_OFFSET_A,
+  hashB: HASH_OFFSET_B,
+});
+
+const mixHashCode = (
+  state: ReturnType<typeof createHashState>,
+  code: number,
+) => {
+  state.hashA = Math.imul(state.hashA ^ code, HASH_PRIME_A);
+  state.hashB =
+    Math.imul(state.hashB + code, HASH_PRIME_B) ^ (state.hashB >>> 13);
 };
 
 const toBase36 = (value: number) => (value >>> 0).toString(36);
@@ -221,6 +233,7 @@ const groupUserCommentsByTime = (
     if (time === undefined) {
       time = {
         bucketEnd: 0,
+        // Inverted range means no buckets have been registered yet.
         bucketStart: 1,
         index: result.length,
         range: {

@@ -62,12 +62,14 @@ describe("comment art resource bounds", () => {
       );
     } as typeof Array.prototype.find;
 
+    let result: FormattedComment[];
     try {
-      expect(changeCALayer(comments, config)).toHaveLength(comments.length);
+      result = changeCALayer(comments, config);
     } finally {
       Array.prototype.find = originalFind;
     }
 
+    expect(result).toHaveLength(comments.length);
     expect(findPredicateCalls).toBe(0);
   });
 
@@ -144,12 +146,14 @@ describe("comment art resource bounds", () => {
       return originalSet.call(this, key, value);
     } as typeof Map.prototype.set;
 
+    let result: FormattedComment[];
     try {
-      expect(changeCALayer(comments, config)).toHaveLength(1);
+      result = changeCALayer(comments, config);
     } finally {
       Map.prototype.set = originalSet;
     }
 
+    expect(result).toHaveLength(1);
     expect(stringKeyLengths.length).toBeGreaterThan(0);
     expect(Math.max(...stringKeyLengths)).toBeLessThan(160);
   });

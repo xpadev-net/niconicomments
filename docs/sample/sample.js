@@ -642,7 +642,6 @@ const loadComments = async () => {
   if (!videoItem) return;
   const displayScale = `scale(${videoItem.scale ?? 100}%)`;
   canvasElement.style.transform = displayScale;
-  cssRendererElement.style.transform = displayScale;
   const req = await fetch(`./commentdata/${video}.json`);
   if (!req.ok) throw new Error(`Failed to load comment data: ${req.status}`);
   const res = await req.json();
@@ -653,9 +652,13 @@ const loadComments = async () => {
   if (rendererType === "css") {
     canvasElement.hidden = true;
     cssRendererElement.hidden = false;
+    // Set transform after constructing so getBoundingClientRect() in the
+    // constructor sees the untransformed layout size, avoiding a first-frame
+    // scale error on videos with scale != 100.
     activeCssRenderer = new NiconiComments.internal.renderer.HTML5CSSRenderer(
       cssRendererElement,
     );
+    cssRendererElement.style.transform = displayScale;
     renderer = activeCssRenderer;
   } else {
     canvasElement.hidden = false;

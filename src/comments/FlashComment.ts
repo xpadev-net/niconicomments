@@ -336,14 +336,15 @@ class FlashComment extends BaseComment {
   }
 
   private _measureContent(comment: MeasureTextInput) {
-    const widthArr: number[] = [];
-    const spacedWidthArr: number[] = [];
     let currentWidth = 0;
     let spacedWidth = 0;
+    let leadLineWidth = 1;
+    let leadLineSpacedWidth = 0;
     const recordLineWidth = () => {
-      if (widthArr.length >= MAX_FLASH_CONTENT_ITEMS) return;
-      widthArr.push(currentWidth);
-      spacedWidthArr.push(spacedWidth);
+      if (leadLineSpacedWidth < spacedWidth) {
+        leadLineWidth = currentWidth || 1;
+        leadLineSpacedWidth = spacedWidth;
+      }
     };
     for (const item of comment.content) {
       if (item.type === "spacer") {
@@ -378,19 +379,8 @@ class FlashComment extends BaseComment {
       recordLineWidth();
       item.width = widths;
     }
-    const leadLine = (() => {
-      let max = 0;
-      let index = -1;
-      spacedWidthArr.forEach((val, i) => {
-        if (max < val) {
-          max = val;
-          index = i;
-        }
-      });
-      return { max, index };
-    })();
-    const scaleX = leadLine.max / (widthArr[leadLine.index] ?? 1);
-    const width = leadLine.max * comment.scale;
+    const scaleX = leadLineSpacedWidth / leadLineWidth;
+    const width = leadLineSpacedWidth * comment.scale;
     const height =
       (comment.fontSize * (comment.lineHeight ?? 0) * comment.lineCount +
         this.config.flashCommentYPaddingTop[

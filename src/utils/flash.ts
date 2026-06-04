@@ -198,8 +198,7 @@ const addPartToResult = (
   const spacerKeys = getFlashSpacerKeys(config);
   const fontName = font ?? "defont";
   while (tasks.length > 0 && lineContent.length < maxItems) {
-    const task = tasks.pop();
-    if (!task) continue;
+    const task = tasks.pop() as AddPartTask;
     if (task.type === "spacer") {
       lineContent.push({
         type: "spacer",

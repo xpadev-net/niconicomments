@@ -44,6 +44,7 @@ const emptyTextMetrics = (width: number): TextMetrics =>
 class FakeRenderer implements IRenderer {
   public readonly rendererName = "FakeRenderer";
   public readonly canvas = {} as HTMLCanvasElement;
+  public clearRectCalls = 0;
   private font = "";
   private size = { width: 1920, height: 1080 };
 
@@ -61,7 +62,9 @@ class FakeRenderer implements IRenderer {
   fillText() {}
   strokeText() {}
   quadraticCurveTo() {}
-  clearRect() {}
+  clearRect() {
+    this.clearRectCalls++;
+  }
   setFont(font: string) {
     this.font = font;
   }
@@ -467,6 +470,29 @@ describe("duration bounds and lazy timeline expansion", () => {
     expect(state.processedCommentIndex).toBeLessThan(state.comments.length - 1);
     expect(state.ctx.rangeCache.reverseActiveOwner.size).toBe(0);
     expect(state.ctx.rangeCache.reverseActiveViewer.size).toBe(0);
+  });
+
+  test("redraws when ban state changes across identical timeline ranges", () => {
+    const renderer = new FakeRenderer();
+    const instance = new NiconiComments(renderer, [], {
+      format: "formatted",
+      mode: "html5",
+    });
+    const state = instance as unknown as {
+      ctx: CommentInstanceContext;
+    };
+
+    state.ctx.nicoScripts.ban.push({ start: 0, end: 10 });
+    state.ctx.rangeCache.reset();
+
+    expect(instance.drawCanvas(1)).toBe(true);
+    expect(renderer.clearRectCalls).toBe(1);
+
+    state.ctx.nicoScripts.ban.length = 0;
+    state.ctx.rangeCache.reset();
+
+    expect(instance.drawCanvas(2)).toBe(true);
+    expect(renderer.clearRectCalls).toBe(2);
   });
 
   test("reverse active range cache prunes expired ranges after the first scan", () => {

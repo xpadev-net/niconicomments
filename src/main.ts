@@ -107,6 +107,7 @@ class NiconiComments {
   public showFPS: boolean;
   public showCommentCount: boolean;
   private lastVpos: number;
+  private lastFrameBanActive: boolean;
   private get lastVposInt() {
     return Math.floor(this.lastVpos);
   }
@@ -214,6 +215,7 @@ class NiconiComments {
       right: {},
     };
     this.lastVpos = -1;
+    this.lastFrameBanActive = false;
     this.lazyCommentOrderSortedByVpos = true;
     this.nextUnprocessedCommentIndex = 0;
     this.commentArrayIndexMap = new WeakMap();
@@ -562,7 +564,8 @@ class NiconiComments {
       !forceRendering &&
       this.plugins.length === 0 &&
       !currentHasNaka &&
-      !lastHasNaka
+      !lastHasNaka &&
+      frameBanActive === this.lastFrameBanActive
     ) {
       if (arrayEqual(timelineRange, lastTimelineRange)) return false;
     }
@@ -573,6 +576,7 @@ class NiconiComments {
       this.ctx.config.canvasHeight,
     );
     this.lastVpos = vpos;
+    this.lastFrameBanActive = frameBanActive;
 
     const drawVideoStart = profile ? performance.now() : 0;
     this._drawVideo();

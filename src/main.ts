@@ -219,7 +219,9 @@ class NiconiComments {
 
     this.comments = this.preRendering(parsedData);
     this._rebuildCommentArrayIndex(this.comments);
-    this._advanceNextUnprocessedCommentIndex();
+    if (!this.ctx.options.lazy || !this.lazyCommentOrderSortedByVpos) {
+      this._advanceNextUnprocessedCommentIndex();
+    }
 
     this._log(
       `constructor complete: ${performance.now() - constructorStart}ms`,
@@ -239,8 +241,18 @@ class NiconiComments {
     }
   }
 
-  private _advanceNextUnprocessedCommentIndex(comments = this.comments) {
-    while (this.nextUnprocessedCommentIndex < comments.length) {
+  private _advanceNextUnprocessedCommentIndex(
+    comments = this.comments,
+    scanBudget?: number,
+  ) {
+    const scanEndIndex =
+      scanBudget === undefined
+        ? comments.length
+        : Math.min(
+            comments.length,
+            this.nextUnprocessedCommentIndex + scanBudget,
+          );
+    while (this.nextUnprocessedCommentIndex < scanEndIndex) {
       const comment = comments[this.nextUnprocessedCommentIndex];
       if (comment && !comment.invisible && comment.posY < 0) {
         break;
@@ -319,6 +331,7 @@ class NiconiComments {
     data: IComment[],
     end: number,
     touchedTimeline?: Set<number>,
+    advanceBudget?: number,
   ) {
     const getCommentPosStart = performance.now();
     const startIndex = this.processedCommentIndex + 1;
@@ -352,19 +365,28 @@ class NiconiComments {
       this.nextUnprocessedCommentIndex,
       this.processedCommentIndex + 1,
     );
-    this._advanceNextUnprocessedCommentIndex(data);
+    this._advanceNextUnprocessedCommentIndex(data, advanceBudget);
     this._log(
       `getCommentPos complete: ${performance.now() - getCommentPosStart}ms`,
     );
   }
 
-  private resolveLazyCommentWindow(vpos: number) {
+  private resolveLazyCommentWindow(vpos: number, resolutionBudget?: number) {
     if (!this.ctx.options.lazy) return false;
-    const startIndex = this._advanceNextUnprocessedCommentIndex();
+    const scanStartIndex = this.nextUnprocessedCommentIndex;
+    const scanEndIndex =
+      resolutionBudget === undefined
+        ? this.comments.length
+        : Math.min(this.comments.length, scanStartIndex + resolutionBudget);
+    const startIndex = this._advanceNextUnprocessedCommentIndex(
+      this.comments,
+      resolutionBudget,
+    );
+    if (startIndex >= scanEndIndex) return false;
     const resolveUntil =
       vpos + getLazyCommentLookahead(this.ctx.config.canvasWidth);
     let endIndex = startIndex - 1;
-    for (let i = startIndex; i < this.comments.length; i++) {
+    for (let i = startIndex; i < scanEndIndex; i++) {
       const comment = this.comments[i];
       if (!comment || comment.invisible || comment.posY > -1) {
         continue;
@@ -379,7 +401,12 @@ class NiconiComments {
       return false;
     }
     const touchedTimeline = new Set<number>();
-    this.getCommentPos(this.comments, endIndex + 1, touchedTimeline);
+    this.getCommentPos(
+      this.comments,
+      Math.min(endIndex + 1, scanEndIndex),
+      touchedTimeline,
+      resolutionBudget === undefined ? undefined : 0,
+    );
     this.sortTimelineComment(touchedTimeline);
     return true;
   }
@@ -512,7 +539,15 @@ class NiconiComments {
     const triggerHandlerStart = profile ? performance.now() : 0;
     this.eventHandler.trigger(vposInt, this.lastVposInt, this.ctx.nicoScripts);
     setProfile("triggerHandler", triggerHandlerStart);
-    this.resolveLazyCommentWindow(vposInt);
+    const frameBanActive = isBanActive(
+      vpos,
+      this.ctx.nicoScripts,
+      this.ctx.rangeCache,
+    );
+    this.resolveLazyCommentWindow(
+      vposInt,
+      frameBanActive ? BAN_FRAME_POSITION_RESOLUTION_BUDGET : undefined,
+    );
     const timelineRange = this.timeline[vposInt] ?? EMPTY_TIMELINE;
     const lastTimelineRange = this.timeline[this.lastVposInt] ?? EMPTY_TIMELINE;
     const currentHasNaka = hasNakaComment(timelineRange);
@@ -560,7 +595,12 @@ class NiconiComments {
     setProfile("drawCollision", drawCollisionStart);
 
     const drawCommentsStart = profile ? performance.now() : 0;
-    const drawnCount = this._drawComments(timelineRange, vpos, cursor);
+    const drawnCount = this._drawComments(
+      timelineRange,
+      vpos,
+      cursor,
+      frameBanActive,
+    );
     setProfile("drawComments", drawCommentsStart);
 
     const drawFPSStart = profile ? performance.now() : 0;
@@ -606,8 +646,13 @@ class NiconiComments {
     timelineRange: readonly IComment[],
     vpos: number,
     cursor?: Position,
+    frameBanActive?: boolean,
   ): number {
     const { config, nicoScripts, rangeCache } = this.ctx;
+    const banActive =
+      frameBanActive ?? isBanActive(vpos, nicoScripts, rangeCache);
+    if (banActive) return 0;
+
     let startIndex = 0;
     let endIndex = timelineRange.length;
     if (config.commentLimit !== undefined) {
@@ -625,7 +670,7 @@ class NiconiComments {
       }
     }
     const frameActiveState: FrameActiveState = {
-      banActive: isBanActive(vpos, nicoScripts, rangeCache),
+      banActive,
       reverseActiveOwner: isReverseActive(vpos, true, nicoScripts, rangeCache),
       reverseActiveViewer: isReverseActive(
         vpos,
@@ -634,7 +679,6 @@ class NiconiComments {
         rangeCache,
       ),
     };
-    if (frameActiveState.banActive && !this.ctx.options.lazy) return 0;
     let maxCommentOffset = -1;
     let requiresFullScan = false;
     for (let i = startIndex; i < endIndex; i++) {
@@ -648,28 +692,6 @@ class NiconiComments {
       if (maxCommentOffset < commentOffset) {
         maxCommentOffset = commentOffset;
       }
-    }
-    if (frameActiveState.banActive) {
-      const resolutionEnd =
-        this.processedCommentIndex + 1 + BAN_FRAME_POSITION_RESOLUTION_BUDGET;
-      if (
-        requiresFullScan &&
-        this.processedCommentIndex < this.comments.length - 1
-      ) {
-        this.getCommentPos(
-          this.comments,
-          Math.min(this.comments.length, resolutionEnd),
-        );
-      } else if (
-        maxCommentOffset >= 0 &&
-        this.processedCommentIndex < maxCommentOffset
-      ) {
-        this.getCommentPos(
-          this.comments,
-          Math.min(maxCommentOffset + 1, resolutionEnd),
-        );
-      }
-      return 0;
     }
     if (
       requiresFullScan &&

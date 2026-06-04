@@ -5,6 +5,133 @@ import type {
   ValueOf,
 } from "@/@types/";
 
+type EventRange = {
+  start: number;
+  end?: number;
+};
+
+type EventRangeScanState<T extends EventRange> = {
+  sourceLength: number;
+  sortedByStart: T[];
+  sortedByEnd: T[];
+};
+
+const rangeEnd = (range: EventRange) => range.end ?? Infinity;
+
+const getRangeScanState = <T extends EventRange>(
+  ranges: T[],
+  scanCache: WeakMap<T[], EventRangeScanState<T>>,
+) => {
+  const cached = scanCache.get(ranges);
+  if (cached?.sourceLength === ranges.length) return cached;
+  const sortedByStart = [...ranges].sort((a, b) => a.start - b.start);
+  const sortedByEnd = [...ranges].sort((a, b) => rangeEnd(a) - rangeEnd(b));
+  const next = {
+    sourceLength: ranges.length,
+    sortedByStart,
+    sortedByEnd,
+  };
+  scanCache.set(ranges, next);
+  return next;
+};
+
+const rangeEndsAfter = (range: EventRange, vpos: number) =>
+  range.end === undefined || vpos < range.end;
+
+const lowerBoundStart = <T extends EventRange>(ranges: T[], vpos: number) => {
+  let low = 0;
+  let high = ranges.length;
+  while (low < high) {
+    const mid = Math.floor((low + high) / 2);
+    const range = ranges[mid];
+    if (range && range.start < vpos) {
+      low = mid + 1;
+    } else {
+      high = mid;
+    }
+  }
+  return low;
+};
+
+const upperBoundEnd = <T extends EventRange>(ranges: T[], vpos: number) => {
+  let low = 0;
+  let high = ranges.length;
+  while (low < high) {
+    const mid = Math.floor((low + high) / 2);
+    const range = ranges[mid];
+    if (range && rangeEnd(range) <= vpos) {
+      low = mid + 1;
+    } else {
+      high = mid;
+    }
+  }
+  return low;
+};
+
+const getTransitionRanges = <T extends EventRange>(
+  ranges: T[],
+  vpos: number,
+  lastVpos: number,
+  scanCache: WeakMap<T[], EventRangeScanState<T>>,
+) => {
+  if (!Number.isFinite(vpos) || !Number.isFinite(lastVpos)) {
+    return { entered: [], exited: [] };
+  }
+  const state = getRangeScanState(ranges, scanCache);
+  const entered: T[] = [];
+  const exited: T[] = [];
+
+  if (lastVpos <= vpos) {
+    for (
+      let i = lowerBoundStart(state.sortedByStart, lastVpos),
+        end = lowerBoundStart(state.sortedByStart, vpos);
+      i < end;
+      i++
+    ) {
+      const range = state.sortedByStart[i];
+      if (range && rangeEndsAfter(range, vpos)) {
+        entered.push(range);
+      }
+    }
+    for (
+      let i = upperBoundEnd(state.sortedByEnd, lastVpos),
+        end = upperBoundEnd(state.sortedByEnd, vpos);
+      i < end;
+      i++
+    ) {
+      const range = state.sortedByEnd[i];
+      if (range && range.start < lastVpos) {
+        exited.push(range);
+      }
+    }
+  } else {
+    for (
+      let i = upperBoundEnd(state.sortedByEnd, vpos),
+        end = upperBoundEnd(state.sortedByEnd, lastVpos);
+      i < end;
+      i++
+    ) {
+      const range = state.sortedByEnd[i];
+      if (range && range.start < vpos) {
+        entered.push(range);
+      }
+    }
+    for (
+      let i = lowerBoundStart(state.sortedByStart, vpos),
+        end = lowerBoundStart(state.sortedByStart, lastVpos);
+      i < end;
+      i++
+    ) {
+      const range = state.sortedByStart[i];
+      if (range && rangeEndsAfter(range, lastVpos)) {
+        exited.push(range);
+      }
+    }
+  }
+
+  return { entered, exited };
+};
+
 class EventHandler {
   private handlerList: {
     eventName: keyof CommentEventHandlerMap;
@@ -18,6 +145,19 @@ class EventHandler {
     commentEnable: 0,
     jump: 0,
   };
+
+  private readonly banActiveRangeScans = new WeakMap<
+    NicoScript["ban"],
+    EventRangeScanState<NicoScript["ban"][number]>
+  >();
+  private readonly seekDisableActiveRangeScans = new WeakMap<
+    NicoScript["seekDisable"],
+    EventRangeScanState<NicoScript["seekDisable"][number]>
+  >();
+  private readonly jumpActiveRangeScans = new WeakMap<
+    NicoScript["jump"],
+    EventRangeScanState<NicoScript["jump"][number]>
+  >();
 
   register<K extends keyof CommentEventHandlerMap>(
     eventName: K,
@@ -62,22 +202,25 @@ class EventHandler {
       this.handlerCounts.commentEnable < 1
     )
       return;
-    for (const range of nicoScripts.ban) {
-      const vposInRange = range.start < vpos && vpos < range.end;
-      const lastVposInRange = range.start < lastVpos && lastVpos < range.end;
-      if (vposInRange && !lastVposInRange) {
-        this._execute("commentDisable", {
-          type: "commentDisable",
-          timeStamp: Date.now(),
-          vpos,
-        });
-      } else if (!vposInRange && lastVposInRange) {
-        this._execute("commentEnable", {
-          type: "commentEnable",
-          timeStamp: Date.now(),
-          vpos,
-        });
-      }
+    const { entered, exited } = getTransitionRanges(
+      nicoScripts.ban,
+      vpos,
+      lastVpos,
+      this.banActiveRangeScans,
+    );
+    for (const _range of entered) {
+      this._execute("commentDisable", {
+        type: "commentDisable",
+        timeStamp: Date.now(),
+        vpos,
+      });
+    }
+    for (const _range of exited) {
+      this._execute("commentEnable", {
+        type: "commentEnable",
+        timeStamp: Date.now(),
+        vpos,
+      });
     }
   }
 
@@ -88,22 +231,25 @@ class EventHandler {
   ) {
     if (this.handlerCounts.seekDisable < 1 && this.handlerCounts.seekEnable < 1)
       return;
-    for (const range of nicoScripts.seekDisable) {
-      const vposInRange = range.start < vpos && vpos < range.end;
-      const lastVposInRange = range.start < lastVpos && lastVpos < range.end;
-      if (vposInRange && !lastVposInRange) {
-        this._execute("seekDisable", {
-          type: "seekDisable",
-          timeStamp: Date.now(),
-          vpos,
-        });
-      } else if (!vposInRange && lastVposInRange) {
-        this._execute("seekEnable", {
-          type: "seekEnable",
-          timeStamp: Date.now(),
-          vpos,
-        });
-      }
+    const { entered, exited } = getTransitionRanges(
+      nicoScripts.seekDisable,
+      vpos,
+      lastVpos,
+      this.seekDisableActiveRangeScans,
+    );
+    for (const _range of entered) {
+      this._execute("seekDisable", {
+        type: "seekDisable",
+        timeStamp: Date.now(),
+        vpos,
+      });
+    }
+    for (const _range of exited) {
+      this._execute("seekEnable", {
+        type: "seekEnable",
+        timeStamp: Date.now(),
+        vpos,
+      });
     }
   }
 
@@ -113,20 +259,20 @@ class EventHandler {
     nicoScripts: NicoScript,
   ) {
     if (this.handlerCounts.jump < 1) return;
-    for (const range of nicoScripts.jump) {
-      const vposInRange =
-        range.start < vpos && (!range.end || vpos < range.end);
-      const lastVposInRange =
-        range.start < lastVpos && (!range.end || lastVpos < range.end);
-      if (vposInRange && !lastVposInRange) {
-        this._execute("jump", {
-          type: "jump",
-          timeStamp: Date.now(),
-          vpos,
-          to: range.to,
-          message: range.message,
-        });
-      }
+    const { entered } = getTransitionRanges(
+      nicoScripts.jump,
+      vpos,
+      lastVpos,
+      this.jumpActiveRangeScans,
+    );
+    for (const range of entered) {
+      this._execute("jump", {
+        type: "jump",
+        timeStamp: Date.now(),
+        vpos,
+        to: range.to,
+        message: range.message,
+      });
     }
   }
 

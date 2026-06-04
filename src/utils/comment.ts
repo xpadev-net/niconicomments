@@ -172,6 +172,100 @@ const hasParsedMailCommand = (commands: string[], target: string) => {
 
 const processedTimelineComments = new WeakMap<IComment, WeakSet<Timeline>>();
 
+type TimedRange = {
+  start: number;
+  end: number;
+};
+
+type ActiveRangeScanState<T extends TimedRange> = {
+  sourceLength: number;
+  sortedByStart: T[];
+  sortedByEnd: T[];
+  startIndex: number;
+  endIndex: number;
+  activeCount: number;
+  targetCounts: Record<NicoScript["reverse"][number]["target"], number>;
+  lastVpos: number;
+};
+
+const reverseActiveRangeScans = new WeakMap<
+  NicoScript["reverse"],
+  ActiveRangeScanState<NicoScript["reverse"][number]>
+>();
+const banActiveRangeScans = new WeakMap<
+  NicoScript["ban"],
+  ActiveRangeScanState<NicoScript["ban"][number]>
+>();
+
+const getActiveRangeScanState = <T extends TimedRange>(
+  ranges: T[],
+  scanCache: WeakMap<T[], ActiveRangeScanState<T>>,
+) => {
+  const cached = scanCache.get(ranges);
+  if (cached?.sourceLength === ranges.length) return cached;
+  const sortedByStart = [...ranges].sort((a, b) => a.start - b.start);
+  const sortedByEnd = [...ranges].sort((a, b) => a.end - b.end);
+  const next = {
+    sourceLength: ranges.length,
+    sortedByStart,
+    sortedByEnd,
+    startIndex: 0,
+    endIndex: 0,
+    activeCount: 0,
+    targetCounts: { コメ: 0, 投コメ: 0, 全: 0 },
+    lastVpos: -Infinity,
+  };
+  scanCache.set(ranges, next);
+  return next;
+};
+
+const changeReverseTargetCount = (
+  counts: Record<NicoScript["reverse"][number]["target"], number>,
+  range: TimedRange,
+  delta: number,
+) => {
+  const target = (range as NicoScript["reverse"][number]).target;
+  if (target === "コメ" || target === "投コメ" || target === "全") {
+    counts[target] += delta;
+  }
+};
+
+const getActiveRangeState = <T extends TimedRange>(
+  ranges: T[],
+  vpos: number,
+  scanCache: WeakMap<T[], ActiveRangeScanState<T>>,
+) => {
+  if (!Number.isFinite(vpos)) return;
+  const state = getActiveRangeScanState(ranges, scanCache);
+  if (vpos < state.lastVpos) {
+    state.startIndex = 0;
+    state.endIndex = 0;
+    state.activeCount = 0;
+    state.targetCounts = { コメ: 0, 投コメ: 0, 全: 0 };
+  }
+  state.lastVpos = vpos;
+
+  while (state.startIndex < state.sortedByStart.length) {
+    const range = state.sortedByStart[state.startIndex];
+    if (!range || vpos <= range.start) break;
+    state.startIndex++;
+    state.activeCount++;
+    changeReverseTargetCount(state.targetCounts, range, 1);
+  }
+
+  while (state.endIndex < state.sortedByEnd.length) {
+    const range = state.sortedByEnd[state.endIndex];
+    if (!range || vpos < range.end) break;
+    state.endIndex++;
+    if (range.start < vpos) {
+      state.activeCount--;
+      changeReverseTargetCount(state.targetCounts, range, -1);
+    }
+  }
+
+  return state;
+};
+
 const isTimelineProcessed = (timeline: Timeline, comment: IComment) =>
   processedTimelineComments.get(comment)?.has(timeline) ?? false;
 
@@ -821,18 +915,16 @@ const isReverseActive = (
     : rangeCache.reverseActiveViewer;
   const cached = cache.get(vpos);
   if (cached !== undefined) return cached;
-  let result = false;
-  for (const range of nicoScripts.reverse) {
-    if (
-      (range.target === "コメ" && isOwner) ||
-      (range.target === "投コメ" && !isOwner)
-    )
-      continue;
-    if (range.start < vpos && vpos < range.end) {
-      result = true;
-      break;
-    }
-  }
+  const activeState = getActiveRangeState(
+    nicoScripts.reverse,
+    vpos,
+    reverseActiveRangeScans,
+  );
+  const result = isOwner
+    ? (activeState?.targetCounts.投コメ ?? 0) > 0 ||
+      (activeState?.targetCounts.全 ?? 0) > 0
+    : (activeState?.targetCounts.コメ ?? 0) > 0 ||
+      (activeState?.targetCounts.全 ?? 0) > 0;
   rangeCache.setCachedActiveState(cache, vpos, result);
   return result;
 };
@@ -851,13 +943,9 @@ const isBanActive = (
 ): boolean => {
   const cached = rangeCache.banActive.get(vpos);
   if (cached !== undefined) return cached;
-  let result = false;
-  for (const range of nicoScripts.ban) {
-    if (range.start < vpos && vpos < range.end) {
-      result = true;
-      break;
-    }
-  }
+  const result =
+    (getActiveRangeState(nicoScripts.ban, vpos, banActiveRangeScans)
+      ?.activeCount ?? 0) > 0;
   rangeCache.setCachedActiveState(rangeCache.banActive, vpos, result);
   return result;
 };

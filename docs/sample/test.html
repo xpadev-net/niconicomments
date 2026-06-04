@@ -20,16 +20,32 @@
     const rendererType = urlParams.get("renderer");
     const req = await fetch(`./commentdata/${video}.json`);
     const res = await req.json();
+    let renderer;
     if (rendererType === "css") {
       canvasElement.hidden = true;
       cssRendererElement.hidden = false;
+      renderer = new NiconiComments.internal.renderer.HTML5CSSRenderer(
+        cssRendererElement,
+      );
+    } else if (rendererType === "canvas") {
+      renderer = new NiconiComments.internal.renderer.CanvasRenderer(
+        canvasElement,
+      );
+    } else if (rendererType === "webgl") {
+      try {
+        renderer = new NiconiComments.internal.renderer.WebGL2Renderer(
+          canvasElement,
+        );
+      } catch (e) {
+        const err = document.createElement("div");
+        err.id = "renderer-error";
+        err.textContent = String(e);
+        document.body.appendChild(err);
+        return;
+      }
+    } else {
+      renderer = canvasElement;
     }
-    const renderer =
-      rendererType === "css"
-        ? new NiconiComments.internal.renderer.HTML5CSSRenderer(
-            cssRendererElement,
-          )
-        : canvasElement;
     const nico = new NiconiComments(renderer, res, {
       format: "formatted",
     });

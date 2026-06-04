@@ -351,7 +351,7 @@ const isValidConfig = (item: unknown): boolean => {
   };
 
   for (const [key, validator] of Object.entries(validators)) {
-    if (Object.hasOwn(item, key) && !validator(item[key])) {
+    if (item[key] !== undefined && !validator(item[key])) {
       console.warn(
         `[Incorrect input] var: initOptions.config, key: ${key}, value: ${item[key]}`,
       );
@@ -360,6 +360,8 @@ const isValidConfig = (item: unknown): boolean => {
   }
   const width = item.canvasWidth;
   const height = item.canvasHeight;
+  // Single-axis overrides remain within MAX_CANVAS_AREA with today's
+  // 1920x1080 defaults. Revisit this guard if the defaults grow.
   if (
     typeof width === "number" &&
     typeof height === "number" &&
@@ -396,11 +398,11 @@ const typeGuard = {
     apiThread: (i: unknown): i is ApiThread => is(ZApiThread, i),
   },
   xmlDocument: (i: unknown): i is XMLDocument => {
-    if ((i as XMLDocument).documentElement?.nodeName !== "packet") return false;
-    if (!(i as XMLDocument).documentElement.children) return false;
-    for (const element of Array.from(
-      (i as XMLDocument).documentElement.children,
-    )) {
+    if (!isRecord(i)) return false;
+    const document = i as unknown as XMLDocument;
+    if (document.documentElement?.nodeName !== "packet") return false;
+    if (!document.documentElement.children) return false;
+    for (const element of Array.from(document.documentElement.children)) {
       if (element?.nodeName !== "chat") continue;
       if (!typeAttributeVerify(element, ["vpos", "date"])) return false;
     }

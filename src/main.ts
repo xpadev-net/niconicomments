@@ -89,6 +89,13 @@ const hasNakaComment = (items: readonly IComment[]) => {
   return hasNaka;
 };
 
+const removeUndefinedConfigValues = (
+  config: NonNullable<Options["config"]>,
+): NonNullable<Options["config"]> =>
+  Object.fromEntries(
+    Object.entries(config).filter(([, value]) => value !== undefined),
+  ) as NonNullable<Options["config"]>;
+
 type DrawCanvasProfile = {
   triggerHandler: number;
   drawVideo: number;
@@ -153,7 +160,11 @@ class NiconiComments {
       throw new InvalidOptionError();
 
     const options = Object.assign({}, defaultOptions, initOptions);
-    const config = Object.assign({}, defaultConfig, options.config);
+    const config = Object.assign(
+      {},
+      defaultConfig,
+      removeUndefinedConfigValues(options.config ?? {}),
+    );
 
     const nicoScripts = createNicoScripts();
     const imageCache = new ImageCacheContext();

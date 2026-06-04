@@ -247,6 +247,20 @@ describe("init option and config bounds", () => {
     ).not.toThrow();
   });
 
+  test("ignores explicit undefined config values and keeps defaults", () => {
+    expect(
+      () =>
+        new NiconiComments(new FakeRenderer(), [], {
+          format: "formatted",
+          mode: "html5",
+          config: {
+            canvasWidth: undefined as unknown as number,
+            commentLimit: undefined,
+          },
+        }),
+    ).not.toThrow();
+  });
+
   test("treats commentLimit 0 as drawing zero comments", () => {
     const zeroLimitRenderer = new FakeRenderer();
     const zeroLimit = new NiconiComments(

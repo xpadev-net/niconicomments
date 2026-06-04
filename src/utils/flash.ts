@@ -20,6 +20,7 @@ const flashCharRegexCache = new WeakMap<
   BaseConfig,
   { simsunStrong: RegExp; simsunWeak: RegExp; gulim: RegExp; gothic: RegExp }
 >();
+const flashSpacerKeysCache = new WeakMap<BaseConfig, string[]>();
 
 const getFlashCharRegex = (config: BaseConfig) => {
   let cached = flashCharRegexCache.get(config);
@@ -31,6 +32,17 @@ const getFlashCharRegex = (config: BaseConfig) => {
       gothic: new RegExp(config.flashChar.gothic),
     };
     flashCharRegexCache.set(config, cached);
+  }
+  return cached;
+};
+
+const getFlashSpacerKeys = (config: BaseConfig) => {
+  let cached = flashSpacerKeysCache.get(config);
+  if (!cached) {
+    cached = Object.keys(config.compatSpacer.flash).filter(
+      (key) => key.length > 0,
+    );
+    flashSpacerKeysCache.set(config, cached);
   }
   return cached;
 };
@@ -105,14 +117,14 @@ const parseContent = (content: string, config: BaseConfig) => {
   const clamped = clampFlashContent(content);
   const lines = Array.from(clamped.content.match(/\n|[^\n]+/g) ?? []);
   for (const line of lines) {
-    const lineContent = parseLine(line, config);
-    const firstContent = lineContent[0];
     const remainingItems = MAX_FLASH_CONTENT_ITEMS - results.length;
     if (remainingItems <= 0) break;
+    const lineContent = parseLine(line, config, remainingItems);
+    const firstContent = lineContent[0];
     const defaultFont = firstContent?.font;
     if (defaultFont) {
       results.push(
-        ...lineContent.slice(0, remainingItems).map((val) => {
+        ...lineContent.map((val) => {
           val.font ??= defaultFont;
           if (val.type === "spacer") {
             const spacer = config.compatSpacer.flash[val.char];
@@ -125,7 +137,7 @@ const parseContent = (content: string, config: BaseConfig) => {
         }),
       );
     } else {
-      results.push(...lineContent.slice(0, remainingItems));
+      results.push(...lineContent);
     }
   }
   return results;
@@ -137,18 +149,35 @@ const parseContent = (content: string, config: BaseConfig) => {
  * @param config インスタンス設定
  * @returns パースしたコメントの内容
  */
-const parseLine = (line: string, config: BaseConfig) => {
+const parseLine = (
+  line: string,
+  config: BaseConfig,
+  maxItems = MAX_FLASH_CONTENT_ITEMS,
+) => {
   const parts = Array.from(line.match(/[ -~｡-ﾟ]+|[^ -~｡-ﾟ]+/g) ?? []);
   const lineContent: CommentContentItem[] = [];
   for (const part of parts) {
+    if (lineContent.length >= maxItems) break;
     if (part.match(/[ -~｡-ﾟ]+/g) !== null) {
-      addPartToResult(lineContent, part, config, "defont");
+      addPartToResult(lineContent, part, config, "defont", maxItems);
       continue;
     }
-    parseFullWidthPart(part, lineContent, config);
+    parseFullWidthPart(part, lineContent, config, maxItems);
   }
   return lineContent;
 };
+
+type AddPartTask =
+  | {
+      type: "segment";
+      value: string;
+    }
+  | {
+      type: "spacer";
+      char: string;
+      charWidth: number;
+      count: number;
+    };
 
 /**
  * スペースの補正を行った上で結果を追加する
@@ -162,35 +191,68 @@ const addPartToResult = (
   part: string,
   config: BaseConfig,
   font?: CommentFlashFont,
+  maxItems = MAX_FLASH_CONTENT_ITEMS,
 ) => {
-  if (part === "" || lineContent.length >= MAX_FLASH_CONTENT_ITEMS) return;
-  for (const key of Object.keys(config.compatSpacer.flash)) {
-    const spacerWidth = config.compatSpacer.flash[key]?.[font ?? "defont"];
-    if (!spacerWidth) continue;
-    const compatIndex = part.indexOf(key);
-    if (compatIndex >= 0) {
-      addPartToResult(lineContent, part.slice(0, compatIndex), config, font);
-      let i = compatIndex;
-      for (; i < part.length && part[i] === key; i++) {
-        /* empty */
-      }
+  if (part === "" || lineContent.length >= maxItems) return;
+  const tasks: AddPartTask[] = [{ type: "segment", value: part }];
+  const spacerKeys = getFlashSpacerKeys(config);
+  const fontName = font ?? "defont";
+  while (tasks.length > 0 && lineContent.length < maxItems) {
+    const task = tasks.pop() as AddPartTask;
+    if (task.type === "spacer") {
       lineContent.push({
         type: "spacer",
-        char: key,
-        charWidth: spacerWidth,
+        char: task.char,
+        charWidth: task.charWidth,
         font,
-        count: i - compatIndex,
+        count: task.count,
       });
-      addPartToResult(lineContent, part.slice(i), config, font);
-      return;
+      continue;
     }
+    if (task.value === "") continue;
+    let match:
+      | {
+          key: string;
+          index: number;
+          width: number;
+          count: number;
+          end: number;
+        }
+      | undefined;
+    for (const key of spacerKeys) {
+      const spacerWidth = config.compatSpacer.flash[key]?.[fontName];
+      if (!spacerWidth) continue;
+      const compatIndex = task.value.indexOf(key);
+      if (compatIndex < 0) continue;
+      let count = 0;
+      let end = compatIndex;
+      while (task.value.startsWith(key, end)) {
+        count++;
+        end += key.length;
+      }
+      match = { key, index: compatIndex, width: spacerWidth, count, end };
+      break;
+    }
+    if (!match) {
+      lineContent.push({
+        type: "text",
+        content: task.value,
+        slicedContent: task.value.split("\n"),
+        font,
+      });
+      continue;
+    }
+    const after = task.value.slice(match.end);
+    if (after !== "") tasks.push({ type: "segment", value: after });
+    tasks.push({
+      type: "spacer",
+      char: match.key,
+      charWidth: match.width,
+      count: match.count,
+    });
+    const before = task.value.slice(0, match.index);
+    if (before !== "") tasks.push({ type: "segment", value: before });
   }
-  lineContent.push({
-    type: "text",
-    content: part,
-    slicedContent: part.split("\n"),
-    font,
-  });
 };
 
 /**
@@ -203,14 +265,22 @@ const parseFullWidthPart = (
   part: string,
   lineContent: CommentContentItem[],
   config: BaseConfig,
+  maxItems = MAX_FLASH_CONTENT_ITEMS,
 ) => {
+  if (lineContent.length >= maxItems) return;
   const index = getFlashFontIndex(part, config);
   if (index.length === 0) {
-    addPartToResult(lineContent, part, config);
+    addPartToResult(lineContent, part, config, undefined, maxItems);
   } else if (index.length === 1 && index[0]) {
-    addPartToResult(lineContent, part, config, getFlashFontName(index[0].font));
+    addPartToResult(
+      lineContent,
+      part,
+      config,
+      getFlashFontName(index[0].font),
+      maxItems,
+    );
   } else {
-    parseMultiFontFullWidthPart(part, index, lineContent, config);
+    parseMultiFontFullWidthPart(part, index, lineContent, config, maxItems);
   }
 };
 
@@ -226,11 +296,13 @@ const parseMultiFontFullWidthPart = (
   index: CommentContentIndex[],
   lineContent: CommentContentItem[],
   config: BaseConfig,
+  maxItems = MAX_FLASH_CONTENT_ITEMS,
 ) => {
   index.sort(nativeSort((val) => val.index));
   if (config.flashMode === "xp") {
     let offset = 0;
     for (let i = 1, n = index.length; i < n; i++) {
+      if (lineContent.length >= maxItems) return;
       const currentVal = index[i];
       const lastVal = index[i - 1];
       if (currentVal === undefined || lastVal === undefined) continue;
@@ -240,24 +312,37 @@ const parseMultiFontFullWidthPart = (
         content,
         config,
         getFlashFontName(lastVal.font),
+        maxItems,
       );
       offset = currentVal.index;
     }
     const val = index[index.length - 1];
     if (val) {
       const content = part.slice(offset);
-      addPartToResult(lineContent, content, config, getFlashFontName(val.font));
+      addPartToResult(
+        lineContent,
+        content,
+        config,
+        getFlashFontName(val.font),
+        maxItems,
+      );
     }
     return;
   }
   const firstVal = index[0];
   const secondVal = index[1];
   if (!firstVal || !secondVal) {
-    addPartToResult(lineContent, part, config);
+    addPartToResult(lineContent, part, config, undefined, maxItems);
     return;
   }
   if (firstVal.font !== "gothic") {
-    addPartToResult(lineContent, part, config, getFlashFontName(firstVal.font));
+    addPartToResult(
+      lineContent,
+      part,
+      config,
+      getFlashFontName(firstVal.font),
+      maxItems,
+    );
     return;
   }
   const firstContent = part.slice(0, secondVal.index);
@@ -267,12 +352,14 @@ const parseMultiFontFullWidthPart = (
     firstContent,
     config,
     getFlashFontName(firstVal.font),
+    maxItems,
   );
   addPartToResult(
     lineContent,
     secondContent,
     config,
     getFlashFontName(secondVal.font),
+    maxItems,
   );
 };
 

@@ -861,7 +861,7 @@ class HTML5CSSRenderer implements IRenderer {
     const match = value.match(/^\s*(\d+(?:\.\d+)?)(?:px)?\s*$/);
     if (!match) return undefined;
     const number = Number.parseFloat(match[1] ?? "");
-    return Number.isFinite(number) && number >= 0 ? number : undefined;
+    return Number.isFinite(number) && number > 0 ? number : undefined;
   }
 }
 

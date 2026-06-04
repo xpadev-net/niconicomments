@@ -1,8 +1,6 @@
 import type { IRenderer } from "@/@types/";
 import { CanvasRenderer, clampCanvasSize } from "@/renderer/canvas";
 
-const TRANSPARENT_IMAGE_URL =
-  "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
 const MAX_HELPER_SURFACES = 8;
 
 type CssRenderState = {
@@ -47,9 +45,11 @@ class HTML5CSSRenderer implements IRenderer {
   private height = 0;
   private state: CssRenderState = { ...DEFAULT_CSS_RENDER_STATE };
   private readonly stateStack: SavedCssRenderState[] = [];
-  private readonly imageUrlCache = new WeakMap<HTMLCanvasElement, string>();
-  private readonly failedImageUrlCache = new WeakSet<HTMLCanvasElement>();
   private readonly nodes: HTMLElement[] = [];
+  private prevNodeCursor = 0;
+  private activeCanvasSet = new Set<HTMLCanvasElement>();
+  private prevCanvasSet = new Set<HTMLCanvasElement>();
+  private readonly setupCanvases = new WeakSet<HTMLCanvasElement>();
   private readonly resizeObserver?: ResizeObserver;
   private readonly originalRootStyle: {
     boxSizing: string;
@@ -158,6 +158,8 @@ class HTML5CSSRenderer implements IRenderer {
       this.videoSurface.destroy();
     }
     this.nodes.length = 0;
+    this.prevCanvasSet.clear();
+    this.activeCanvasSet.clear();
     this.layer.remove();
     this.canvas.remove();
     this.root.classList.remove("niconicomments-html5css-renderer");
@@ -302,7 +304,12 @@ class HTML5CSSRenderer implements IRenderer {
     this.pathActive = false;
     this.textDrawnBeforeDom = false;
     this.restoreFrameStartState();
-    for (const node of this.nodes) this.hideNode(node);
+    for (let i = 0; i < this.prevNodeCursor; i++) {
+      const node = this.nodes[i];
+      if (node) this.hideNode(node);
+    }
+    // Source canvases are NOT hidden here — they remain visible until flush()
+    // removes stale ones, keeping them flicker-free across frames.
     this.trimHelperSurfaces();
     this.helper = this.prepareHelperSurface(0);
     this.helper.canvas.style.display = "none";
@@ -339,9 +346,20 @@ class HTML5CSSRenderer implements IRenderer {
     this.width = size.width;
     this.height = size.height;
     this.nodeCursor = 0;
+    this.prevNodeCursor = 0;
     this.pathActive = false;
     this.textDrawnBeforeDom = false;
     for (const node of this.nodes) this.hideNode(node);
+    for (const canvas of this.prevCanvasSet) {
+      canvas.style.display = "none";
+      canvas.remove();
+    }
+    for (const canvas of this.activeCanvasSet) {
+      canvas.style.display = "none";
+      canvas.remove();
+    }
+    this.prevCanvasSet.clear();
+    this.activeCanvasSet.clear();
     this.canvas.width = size.width;
     this.canvas.height = size.height;
     this.layer.style.width = `${size.width}px`;
@@ -474,20 +492,44 @@ class HTML5CSSRenderer implements IRenderer {
       this.helperDirty = true;
       return;
     }
-    const node = this.getNode("img") as HTMLImageElement;
-    const url = this.getImageUrl(source);
-    if (node.src !== url) {
-      node.src = url;
+    const deferHelperCommit = this.pathActive;
+    if (deferHelperCommit) {
+      console.warn(
+        "HTML5CSSRenderer: DOM drawing interleaved with an active path before stroke().",
+      );
     }
-    node.style.border = "0";
-    node.style.background = "transparent";
+    if (this.textDrawnBeforeDom) {
+      console.warn(
+        "HTML5CSSRenderer: text drawn before a DOM-backed draw may render below it.",
+      );
+      this.textDrawnBeforeDom = false;
+    }
+    if (!deferHelperCommit) {
+      this.commitHelperSurface();
+    }
+    // Place the source canvas directly in the layer — no toDataURL needed.
+    // CSS width/height scales the canvas content just as it would an <img>.
+    if (!this.setupCanvases.has(source)) {
+      source.style.position = "absolute";
+      source.style.margin = "0";
+      source.style.padding = "0";
+      source.style.pointerEvents = "none";
+      source.style.transformOrigin = "0 0";
+      source.style.maxWidth = "none";
+      source.style.maxHeight = "none";
+      this.setupCanvases.add(source);
+    }
+    this.layer.appendChild(source);
+    source.style.display = "block";
+    source.style.opacity = String(this.state.alpha);
     this.positionNode(
-      node,
+      source,
       x,
       y,
       width ?? source.width,
       height ?? source.height,
     );
+    this.activeCanvasSet.add(source);
   }
 
   flush(): void {
@@ -497,6 +539,18 @@ class HTML5CSSRenderer implements IRenderer {
       const node = this.nodes[i];
       if (node) this.hideNode(node);
     }
+    this.prevNodeCursor = this.nodeCursor;
+    // Remove source canvases that were visible last frame but not drawn this frame.
+    for (const canvas of this.prevCanvasSet) {
+      if (!this.activeCanvasSet.has(canvas)) {
+        canvas.style.display = "none";
+        canvas.remove();
+      }
+    }
+    const tmp = this.prevCanvasSet;
+    this.prevCanvasSet = this.activeCanvasSet;
+    this.activeCanvasSet = tmp;
+    this.activeCanvasSet.clear();
     this.textDrawnBeforeDom = false;
     if (this.stateStack.length > 0) {
       console.warn(
@@ -505,31 +559,11 @@ class HTML5CSSRenderer implements IRenderer {
     }
   }
 
-  invalidateImage(image: IRenderer): void {
-    this.imageUrlCache.delete(image.canvas);
-    this.failedImageUrlCache.delete(image.canvas);
+  invalidateImage(_image: IRenderer): void {
+    // Source canvases are placed directly in the DOM; no URL cache to invalidate.
   }
 
-  private getImageUrl(source: HTMLCanvasElement): string {
-    if (this.failedImageUrlCache.has(source)) return TRANSPARENT_IMAGE_URL;
-    const cached = this.imageUrlCache.get(source);
-    if (cached) return cached;
-    let url: string;
-    try {
-      url = source.toDataURL("image/png");
-      this.imageUrlCache.set(source, url);
-    } catch (error) {
-      console.warn(
-        "HTML5CSSRenderer: failed to serialize a canvas image.",
-        error,
-      );
-      url = TRANSPARENT_IMAGE_URL;
-      this.failedImageUrlCache.add(source);
-    }
-    return url;
-  }
-
-  private getNode(tagName: "div" | "img"): HTMLElement {
+  private getNode(tagName: "div"): HTMLElement {
     const deferHelperCommit = this.pathActive;
     if (deferHelperCommit) {
       console.warn(
@@ -556,7 +590,6 @@ class HTML5CSSRenderer implements IRenderer {
       node.style.transformOrigin = "0 0";
       node.style.maxWidth = "none";
       node.style.maxHeight = "none";
-      if (tagName === "img") node.style.objectFit = "fill";
       this.nodes[this.nodeCursor] = node;
     }
     this.layer.appendChild(node);
@@ -788,9 +821,6 @@ class HTML5CSSRenderer implements IRenderer {
 
   private hideNode(node: HTMLElement) {
     node.style.display = "none";
-    if (node.tagName.toLowerCase() === "img") {
-      node.removeAttribute("src");
-    }
   }
 
   private getInitialSize(root: HTMLElement) {

@@ -24,6 +24,7 @@
 
 #player,
 #canvas,
+#css-renderer,
 #background {
   position: absolute;
   top: 0;
@@ -35,7 +36,8 @@
   object-fit: contain;
 }
 
-#canvas {
+#canvas,
+#css-renderer {
   pointer-events: none;
 }
 

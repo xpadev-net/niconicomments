@@ -1,6 +1,7 @@
 const localize = {
   movie: ["Movie", "動画"],
   mode: ["Mode", "モード"],
+  renderer: ["Renderer", "レンダラー"],
   scale: ["Scale", "スケール"],
   auto: ["Auto", "自動"],
   showFPS: ["show FPS", "FPS表示"],
@@ -12,6 +13,7 @@ const localize = {
   pluginVersion: ["plugin version", "プラグインバージョン"],
   niwangoVersion: ["niwango version", "niwangoバージョン"],
   devBuild: ["dev build", "devビルド"],
+  localBuild: ["local build", "ローカルビルド"],
   general: ["general", "一般"],
   sm9_2: [
     "新・豪血寺一族 -煩悩解放 - レッツゴー！陰陽師(enlarged edition)",
@@ -40,6 +42,6 @@ i18next.use(i18nextBrowserLanguageDetector).init({
   resources: resources,
 });
 const i18nList = document.querySelectorAll("[data-i18n]");
-i18nList.forEach(function (v) {
+i18nList.forEach((v) => {
   v.textContent = i18next.t(v.dataset.i18n);
 });

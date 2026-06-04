@@ -17,6 +17,7 @@
 
     <div id="background"></div>
     <canvas id="canvas" width="1920" height="1080"></canvas>
+    <div id="css-renderer" data-width="1920" data-height="1080" hidden></div>
   </div>
 </div>
 <div id="control-wrapper">
@@ -31,6 +32,15 @@
         <option value="default" data-i18n="auto"></option>
         <option value="flash">Flash</option>
         <option value="html5">HTML5</option>
+      </select>
+    </label>
+    <label>
+      <span data-i18n="renderer"></span>
+      <select name="renderer" id="control-renderer" autocomplete="off">
+        <option value="auto" data-i18n="auto"></option>
+        <option value="canvas">Canvas 2D</option>
+        <option value="webgl">WebGL2</option>
+        <option value="css">HTML5 CSS</option>
       </select>
     </label>
     <label>
@@ -87,6 +97,7 @@
       <span data-i18n="ncVersion"></span>
       <select name="nc-version" id="nc-version" autocomplete="off">
         <option value="dev" data-i18n="devBuild"></option>
+        <option value="local" data-i18n="localBuild"></option>
       </select>
     </label>
     <label>

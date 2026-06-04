@@ -44,6 +44,7 @@ class RecordingRenderer implements IRenderer {
   public readonly children: RecordingRenderer[] = [];
   public measureCalls = 0;
   public fillTextCalls = 0;
+  public setSizeCalls = 0;
   public strokeTextCalls = 0;
   private font = "10px sans-serif";
   private size = { width: 0, height: 0 };
@@ -75,6 +76,7 @@ class RecordingRenderer implements IRenderer {
   setLineWidth() {}
   setGlobalAlpha() {}
   setSize(width: number, height: number) {
+    this.setSizeCalls++;
     this.size = { width, height };
   }
   getSize() {
@@ -239,6 +241,66 @@ describe("Flash and at-button resource bounds", () => {
 
     expect(comment.exposeTextImage()).toBeNull();
     expect(renderer.children).toHaveLength(initialCanvasCount);
+  });
+
+  test("does not allocate button canvases for many normal Flash comments", () => {
+    const renderer = new RecordingRenderer();
+    const comments: TestFlashComment[] = [];
+
+    for (let i = 0; i < 500; i++) {
+      comments.push(
+        new TestFlashComment(formattedComment(`normal-${i}`), renderer, i, {
+          ...createContext(),
+          imageCache: new ImageCacheContext(),
+        }),
+      );
+    }
+
+    expect(renderer.children).toHaveLength(0);
+
+    for (const comment of comments) {
+      comment.draw(0, false);
+    }
+
+    expect(renderer.children).toHaveLength(comments.length);
+  });
+
+  test("allocates a visible at-button canvas only on first draw", () => {
+    const renderer = new RecordingRenderer();
+    const comment = new TestFlashComment(
+      formattedComment('@ボタン "[Push]" "posted" "表示" "" "3"'),
+      renderer,
+      0,
+      createContext(),
+    );
+
+    expect(renderer.children).toHaveLength(0);
+
+    comment.draw(0, false);
+
+    expect(renderer.children).toHaveLength(2);
+    const buttonImage = renderer.children[1];
+    expect(buttonImage?.setSizeCalls).toBe(1);
+
+    comment.draw(0, false);
+
+    expect(renderer.children).toHaveLength(2);
+    expect(buttonImage?.setSizeCalls).toBe(1);
+  });
+
+  test("does not allocate button canvases for hidden at-buttons", () => {
+    const renderer = new RecordingRenderer();
+    const comment = new TestFlashComment(
+      formattedComment('@ボタン "[Hidden]" "posted" "表示" "" "3"', ["hidden"]),
+      renderer,
+      0,
+      createContext(),
+    );
+
+    comment.draw(0, false);
+
+    expect(comment.comment.button?.hidden).toBe(true);
+    expect(renderer.children).toHaveLength(1);
   });
 
   test("caps escaped-newline at-button display text from the displayed body", () => {

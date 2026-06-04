@@ -1,6 +1,7 @@
 import type { IRenderer } from "@/@types/";
 import { CanvasRenderer, clampCanvasSize } from "@/renderer/canvas";
 
+// Must be >= 1; trimHelperSurfaces keeps surfaces[0..helperCursor] after each frame.
 const MAX_HELPER_SURFACES = 8;
 
 type CssRenderState = {

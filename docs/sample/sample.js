@@ -1,22 +1,18 @@
-const NC_DEV_URL =
-  "https://cdn.jsdelivr.net/gh/xpadev-net/niconicomments@dev-build/dist/bundle.js";
-const NIWANGO_DEV_URL =
-  "https://cdn.jsdelivr.net/gh/xpadev-net/niwango.js@dev-build/dist/bundle.js";
-const DEFAULT_NC_VERSION = "dev";
-const DEFAULT_PLUGIN_VERSION = "latest";
-const DEFAULT_NIWANGO_VERSION = "dev-build";
+const DEFAULT_NC_VERSION = "0.2.78";
+const DEFAULT_PLUGIN_VERSION = "0.0.13";
+const DEFAULT_NIWANGO_VERSION = "0.0.1-canary.20231002-1";
 const MAX_VERSION_LENGTH = 64;
 const VERSION_PARAM_CONFIG = {
   ncVersion: {
-    aliases: new Set([DEFAULT_NC_VERSION, "local"]),
+    aliases: new Set(["local"]),
     defaultValue: DEFAULT_NC_VERSION,
   },
   pluginVersion: {
-    aliases: new Set([DEFAULT_PLUGIN_VERSION]),
+    aliases: new Set(),
     defaultValue: DEFAULT_PLUGIN_VERSION,
   },
   niwangoVersion: {
-    aliases: new Set([DEFAULT_NIWANGO_VERSION]),
+    aliases: new Set(),
     defaultValue: DEFAULT_NIWANGO_VERSION,
   },
 };
@@ -117,17 +113,13 @@ const loadScript = (src) =>
 
 const encodeVersionForUrl = (value) => encodeURIComponent(value);
 const getNCUrl = (v) =>
-  v === "dev"
-    ? NC_DEV_URL
-    : v === "local"
-      ? "../../dist/bundle.js"
-      : `https://cdn.jsdelivr.net/npm/@xpadev-net/niconicomments@${encodeVersionForUrl(v)}/dist/bundle.min.js`;
+  v === "local"
+    ? "../../dist/bundle.js"
+    : `https://cdn.jsdelivr.net/npm/@xpadev-net/niconicomments@${encodeVersionForUrl(v)}/dist/bundle.min.js`;
 const getPluginUrl = (v) =>
   `https://cdn.jsdelivr.net/npm/@xpadev-net/niconicomments-plugin-niwango@${encodeVersionForUrl(v)}/dist/bundle.min.js`;
 const getNiwangoUrl = (v) =>
-  v === "dev-build"
-    ? NIWANGO_DEV_URL
-    : `https://cdn.jsdelivr.net/npm/@xpadev-net/niwango@${encodeVersionForUrl(v)}/dist/bundle.js`;
+  `https://cdn.jsdelivr.net/npm/@xpadev-net/niwango@${encodeVersionForUrl(v)}/dist/bundle.js`;
 
 let resolveScripts;
 let scriptsLoadError = null;
@@ -388,7 +380,7 @@ let player,
   isPaused = true,
   duration = 0,
   seekDragging = false,
-  interval = null,
+  animationFrameId = null,
   loadGeneration = 0,
   nicoLoadId = 0,
   videoChangeGeneration = 0;
@@ -588,6 +580,34 @@ const updateTime = (currentTime_, paused) => {
   }
 };
 
+const shouldRunRenderLoop = () =>
+  Boolean(nico && !isPaused && document.visibilityState !== "hidden");
+
+const stopRenderLoop = () => {
+  if (animationFrameId === null) return;
+  cancelAnimationFrame(animationFrameId);
+  animationFrameId = null;
+};
+
+const scheduleRenderLoop = () => {
+  if (animationFrameId !== null || !shouldRunRenderLoop()) return;
+  animationFrameId = requestAnimationFrame(renderFrame);
+};
+
+const updateRenderLoop = () => {
+  if (shouldRunRenderLoop()) {
+    scheduleRenderLoop();
+  } else {
+    stopRenderLoop();
+  }
+};
+
+const renderFrame = () => {
+  animationFrameId = null;
+  updateCanvas();
+  scheduleRenderLoop();
+};
+
 const updateCanvas = () => {
   if (!nico) return;
   let vpos;
@@ -665,13 +685,16 @@ const loadComments = async () => {
   document.body.appendChild(elem);
   const background = getById(videos, video).bg;
   backgroundElement.style.background = background || "none";
+  let didSeek = false;
   if (time >= 0) {
     seekTo(time);
     time = -1;
+    didSeek = true;
   }
-  if (!interval) {
-    interval = setInterval(updateCanvas, 1);
+  if (!didSeek) {
+    updateCanvas();
   }
+  updateRenderLoop();
   if (debug) {
     const handler = (e) => {
       console.log(e);
@@ -701,8 +724,7 @@ const loadVideo = async () => {
   isPaused = true;
   videoMicroSec = false;
   nico = undefined;
-  clearInterval(interval);
-  interval = null;
+  stopRenderLoop();
   resetVideoControls();
   if (videoItem.yt) {
     await loadYTVideo(videoItem.yt);
@@ -782,6 +804,7 @@ const loadYTVideo = (ytId) => {
           isPaused = e.data !== YT.PlayerState.PLAYING;
           updateTime(currentTime, isPaused);
           updatePlayPauseButton();
+          updateRenderLoop();
           const d = player.getDuration();
           if (d > 0 && duration !== d) {
             duration = d;
@@ -799,6 +822,7 @@ const loadYTVideo = (ytId) => {
 
 const seekTo = (time_) => {
   currentTime = time_;
+  updateTime(currentTime, isPaused);
   if (player) {
     player.seekTo(time_, true);
   } else {
@@ -814,6 +838,8 @@ const seekTo = (time_) => {
       "https://embed.nicovideo.jp",
     );
   }
+  updateCanvas();
+  updateRenderLoop();
 };
 
 const togglePlayback = () => {
@@ -934,12 +960,17 @@ window.addEventListener("message", (e) => {
       vcSeekElement.disabled = false;
     }
     updateTime(currentTime, isPaused);
+    updateRenderLoop();
   } else if (e.data.eventName === "playerStatusChange") {
     isPaused = e.data.data.playerStatus !== 2;
     updateTime(currentTime, isPaused);
     updatePlayPauseButton();
+    updateRenderLoop();
   }
 });
+
+document.addEventListener("visibilitychange", updateRenderLoop);
+window.addEventListener("pagehide", stopRenderLoop);
 
 // --- Main initialization ---
 const onYouTubeIframeAPIReady = async () => {

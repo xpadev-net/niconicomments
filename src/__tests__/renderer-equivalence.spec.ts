@@ -73,6 +73,11 @@ function diffRatio(a: Buffer, b: Buffer): number {
   const imgA = PNG.sync.read(a);
   const imgB = PNG.sync.read(b);
   const { width, height } = imgA;
+  if (imgB.width !== width || imgB.height !== height) {
+    throw new Error(
+      `Screenshot dimension mismatch: ${width}x${height} vs ${imgB.width}x${imgB.height}`,
+    );
+  }
   const numDiff = pixelmatch(imgA.data, imgB.data, undefined, width, height, {
     threshold: PIXELMATCH_THRESHOLD,
   });

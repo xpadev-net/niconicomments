@@ -384,6 +384,8 @@ let player,
   loadGeneration = 0,
   nicoLoadId = 0,
   videoChangeGeneration = 0;
+/** @type {InstanceType<typeof NiconiComments.internal.renderer.HTML5CSSRenderer> | null} */
+let activeCssRenderer = null;
 
 // --- DOM references ---
 /** @type {HTMLDivElement} */
@@ -645,13 +647,16 @@ const loadComments = async () => {
   if (!req.ok) throw new Error(`Failed to load comment data: ${req.status}`);
   const res = await req.json();
   if (gen !== loadGeneration) return;
+  activeCssRenderer?.destroy();
+  activeCssRenderer = null;
   let renderer;
   if (rendererType === "css") {
     canvasElement.hidden = true;
     cssRendererElement.hidden = false;
-    renderer = new NiconiComments.internal.renderer.HTML5CSSRenderer(
+    activeCssRenderer = new NiconiComments.internal.renderer.HTML5CSSRenderer(
       cssRendererElement,
     );
+    renderer = activeCssRenderer;
   } else {
     canvasElement.hidden = false;
     cssRendererElement.hidden = true;

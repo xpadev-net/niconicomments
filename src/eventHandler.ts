@@ -18,14 +18,23 @@ type EventRangeScanState<T extends EventRange> = {
 
 const rangeEnd = (range: EventRange) => range.end ?? Infinity;
 
+const compareRangeEnd = (a: EventRange, b: EventRange) => {
+  const endA = rangeEnd(a);
+  const endB = rangeEnd(b);
+  if (endA === endB) return 0;
+  return endA < endB ? -1 : 1;
+};
+
 const getRangeScanState = <T extends EventRange>(
   ranges: T[],
   scanCache: WeakMap<T[], EventRangeScanState<T>>,
 ) => {
   const cached = scanCache.get(ranges);
   if (cached?.sourceLength === ranges.length) return cached;
+  // NicoScript event ranges are append-only and immutable after creation; this
+  // length check must be revisited if future code mutates start/end in place.
   const sortedByStart = [...ranges].sort((a, b) => a.start - b.start);
-  const sortedByEnd = [...ranges].sort((a, b) => rangeEnd(a) - rangeEnd(b));
+  const sortedByEnd = [...ranges].sort(compareRangeEnd);
   const next = {
     sourceLength: ranges.length,
     sortedByStart,

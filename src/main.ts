@@ -41,7 +41,7 @@ import { RangeCacheContext } from "@/utils/rangeCache";
 import * as internal from "./internal";
 
 const EMPTY_TIMELINE = Object.freeze([]) as readonly IComment[];
-const BAN_FRAME_POSITION_RESOLUTION_BUDGET = 256;
+export const BAN_FRAME_POSITION_RESOLUTION_BUDGET = 256;
 const TIMELINE_COMMENT_SORT = (a: IComment, b: IComment) =>
   Number(a.owner) - Number(b.owner) || a.index - b.index;
 

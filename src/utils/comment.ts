@@ -188,14 +188,38 @@ type ActiveRangeScanState<T extends TimedRange> = {
   lastVpos: number;
 };
 
-const reverseActiveRangeScans = new WeakMap<
-  NicoScript["reverse"],
-  ActiveRangeScanState<NicoScript["reverse"][number]>
+type ActiveRangeScanCaches = {
+  reverse: WeakMap<
+    NicoScript["reverse"],
+    ActiveRangeScanState<NicoScript["reverse"][number]>
+  >;
+  ban: WeakMap<
+    NicoScript["ban"],
+    ActiveRangeScanState<NicoScript["ban"][number]>
+  >;
+};
+
+const activeRangeScanCaches = new WeakMap<
+  RangeCacheContext,
+  ActiveRangeScanCaches
 >();
-const banActiveRangeScans = new WeakMap<
-  NicoScript["ban"],
-  ActiveRangeScanState<NicoScript["ban"][number]>
->();
+
+const getActiveRangeScanCaches = (rangeCache: RangeCacheContext) => {
+  const cached = activeRangeScanCaches.get(rangeCache);
+  if (cached) return cached;
+  const next = {
+    reverse: new WeakMap<
+      NicoScript["reverse"],
+      ActiveRangeScanState<NicoScript["reverse"][number]>
+    >(),
+    ban: new WeakMap<
+      NicoScript["ban"],
+      ActiveRangeScanState<NicoScript["ban"][number]>
+    >(),
+  };
+  activeRangeScanCaches.set(rangeCache, next);
+  return next;
+};
 
 const getActiveRangeScanState = <T extends TimedRange>(
   ranges: T[],
@@ -203,6 +227,8 @@ const getActiveRangeScanState = <T extends TimedRange>(
 ) => {
   const cached = scanCache.get(ranges);
   if (cached?.sourceLength === ranges.length) return cached;
+  // NicoScript ranges are append-only and immutable after creation; this
+  // length check must be revisited if future code mutates start/end in place.
   const sortedByStart = [...ranges].sort((a, b) => a.start - b.start);
   const sortedByEnd = [...ranges].sort((a, b) => a.end - b.end);
   const next = {
@@ -918,7 +944,7 @@ const isReverseActive = (
   const activeState = getActiveRangeState(
     nicoScripts.reverse,
     vpos,
-    reverseActiveRangeScans,
+    getActiveRangeScanCaches(rangeCache).reverse,
   );
   const result = isOwner
     ? (activeState?.targetCounts.投コメ ?? 0) > 0 ||
@@ -944,8 +970,11 @@ const isBanActive = (
   const cached = rangeCache.banActive.get(vpos);
   if (cached !== undefined) return cached;
   const result =
-    (getActiveRangeState(nicoScripts.ban, vpos, banActiveRangeScans)
-      ?.activeCount ?? 0) > 0;
+    (getActiveRangeState(
+      nicoScripts.ban,
+      vpos,
+      getActiveRangeScanCaches(rangeCache).ban,
+    )?.activeCount ?? 0) > 0;
   rangeCache.setCachedActiveState(rangeCache.banActive, vpos, result);
   return result;
 };

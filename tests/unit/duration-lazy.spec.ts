@@ -6,7 +6,7 @@ import { createNicoScripts, ImageCacheContext } from "@/contexts";
 import { defaultConfig, defaultOptions } from "@/definition/config";
 import { initConfig } from "@/definition/initConfig";
 import { EventHandler } from "@/eventHandler";
-import NiconiComments from "@/main";
+import NiconiComments, { BAN_FRAME_POSITION_RESOLUTION_BUDGET } from "@/main";
 import {
   DEFAULT_COMMENT_LONG,
   DEFAULT_NICOSCRIPT_LONG,
@@ -23,7 +23,6 @@ class HTMLCanvasElementMock {}
 
 const HUGE_DURATION = "@9999";
 const OVERFLOW_DURATION = `@${"9".repeat(400)}`;
-const BAN_FRAME_POSITION_RESOLUTION_BUDGET = 256;
 
 const emptyTextMetrics = (width: number): TextMetrics =>
   ({

@@ -563,10 +563,12 @@ class HTML5CSSRenderer implements IRenderer {
   }
 
   invalidateImage(image: IRenderer): void {
-    // Eagerly drop the canvas from both tracking sets so a destroyed
-    // sub-renderer's element is never removed from an unrelated consumer's DOM.
+    // Eagerly drop and detach the canvas so flush() never touches it again
+    // and a pooled re-acquisition by another renderer finds no ghost in the DOM.
     this.prevCanvasSet.delete(image.canvas);
     this.activeCanvasSet.delete(image.canvas);
+    image.canvas.style.display = "none";
+    image.canvas.remove();
   }
 
   private getNode(tagName: "div"): HTMLElement {

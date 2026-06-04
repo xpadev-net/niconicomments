@@ -340,14 +340,18 @@ class FlashComment extends BaseComment {
     const spacedWidthArr: number[] = [];
     let currentWidth = 0;
     let spacedWidth = 0;
+    const recordLineWidth = () => {
+      if (widthArr.length >= MAX_FLASH_CONTENT_ITEMS) return;
+      widthArr.push(currentWidth);
+      spacedWidthArr.push(spacedWidth);
+    };
     for (const item of comment.content) {
       if (item.type === "spacer") {
         spacedWidth +=
           item.count * item.charWidth * comment.fontSize +
           Math.max(item.count - 1, 0) * this.config.flashLetterSpacing;
         currentWidth += item.count * item.charWidth * comment.fontSize;
-        widthArr.push(currentWidth);
-        spacedWidthArr.push(spacedWidth);
+        recordLineWidth();
         continue;
       }
       const lines = item.content.split("\n");
@@ -366,14 +370,12 @@ class FlashComment extends BaseComment {
           Math.max(value.length - 1, 0) * this.config.flashLetterSpacing;
         widths.push(meas.width);
         if (i < lines.length - 1) {
-          widthArr.push(currentWidth);
-          spacedWidthArr.push(spacedWidth);
+          recordLineWidth();
           spacedWidth = 0;
           currentWidth = 0;
         }
       }
-      widthArr.push(currentWidth);
-      spacedWidthArr.push(spacedWidth);
+      recordLineWidth();
       item.width = widths;
     }
     const leadLine = (() => {

@@ -662,7 +662,9 @@ class NiconiComments {
     let startIndex = 0;
     let endIndex = timelineRange.length;
     if (config.commentLimit !== undefined) {
-      if (config.hideCommentOrder === "asc") {
+      if (config.commentLimit === 0) {
+        endIndex = 0;
+      } else if (config.hideCommentOrder === "asc") {
         ({ startIndex, endIndex } = getSliceBounds(
           timelineRange.length,
           -config.commentLimit,

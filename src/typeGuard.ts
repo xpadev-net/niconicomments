@@ -68,6 +68,20 @@ import {
 } from "@/@types/";
 import { colors } from "@/definition/colors";
 
+const MAX_OPTION_SCALE = 8;
+const MAX_CANVAS_DIMENSION = 8192;
+const MAX_CANVAS_AREA = 16_777_216;
+const MAX_FONT_SIZE = 512;
+const MAX_LINE_HEIGHT = 16;
+const MAX_COMMENT_LIMIT = 10_000;
+const MAX_COMMENT_LINE_COUNT = 256;
+const MAX_COMMENT_RANGE = 86_400_000;
+const MAX_UNIX_TIME_SECONDS = 4_102_444_800;
+const MAX_CONFIG_RATIO = 64;
+const MAX_CONFIG_SPACING = 1024;
+const COMMENT_SIZES = ["big", "medium", "small"] as const;
+const RESIZED_KEYS = ["default", "resized"] as const;
+
 /**
  * 入力がBooleanかどうかを返す
  * @param i 入力
@@ -75,19 +89,291 @@ import { colors } from "@/definition/colors";
  */
 const isBoolean = (i: unknown): i is boolean => typeof i === "boolean";
 
-/**
- * 入力がNumberかどうかを返す
- * @param i 入力
- * @returns 入力がNumberかどうか
- */
-const isNumber = (i: unknown): i is number => typeof i === "number";
+const isRecord = (i: unknown): i is Record<string, unknown> =>
+  typeof i === "object" && i !== null;
 
-/**
- * 入力がObjectかどうかを返す
- * @param i 入力
- * @returns 入力がObjectかどうか
- */
-const isObject = (i: unknown): i is object => typeof i === "object";
+const isFiniteNumberInRange = (
+  i: unknown,
+  {
+    min = 0,
+    max,
+    integer = false,
+  }: { min?: number; max: number; integer?: boolean },
+) =>
+  typeof i === "number" &&
+  Number.isFinite(i) &&
+  i >= min &&
+  i <= max &&
+  (!integer || Number.isInteger(i));
+
+const isValidOptionScale = (i: unknown): i is number =>
+  isFiniteNumberInRange(i, { min: Number.MIN_VALUE, max: MAX_OPTION_SCALE });
+
+const isMode = (i: unknown): boolean =>
+  i === "default" || i === "html5" || i === "flash";
+
+const isHideCommentOrder = (i: unknown): boolean => i === "asc" || i === "desc";
+
+const isBoundedSpacing = (i: unknown): boolean =>
+  isFiniteNumberInRange(i, { max: MAX_CONFIG_SPACING });
+
+const isBoundedOffset = (i: unknown): boolean =>
+  isFiniteNumberInRange(i, {
+    min: -MAX_CONFIG_SPACING,
+    max: MAX_CONFIG_SPACING,
+  });
+
+const hasConfigKeys = (
+  item: Record<string, unknown>,
+  keys: readonly string[],
+): boolean => keys.every((key) => Object.hasOwn(item, key));
+
+const isBoundedNumberConfigItem = (
+  item: unknown,
+  validate: (i: unknown) => boolean,
+): boolean => {
+  if (validate(item)) return true;
+  if (!isRecord(item) || !hasConfigKeys(item, ["html5", "flash"])) {
+    return false;
+  }
+  return validate(item.html5) && validate(item.flash);
+};
+
+const isBoundedResizedItem = (
+  item: unknown,
+  validate: (i: unknown) => boolean,
+): boolean => {
+  if (!isRecord(item) || !hasConfigKeys(item, RESIZED_KEYS)) return false;
+  return RESIZED_KEYS.every((key) => validate(item[key]));
+};
+
+const isBoundedSizeItem = (
+  item: unknown,
+  validate: (i: unknown) => boolean,
+): boolean => {
+  if (!isRecord(item) || !hasConfigKeys(item, COMMENT_SIZES)) return false;
+  return COMMENT_SIZES.every((size) => validate(item[size]));
+};
+
+const isBoundedFontSizeConfig = (item: unknown): boolean =>
+  isBoundedNumberConfigItem(item, (value) =>
+    isBoundedSizeItem(value, (sizeValue) =>
+      isBoundedResizedItem(sizeValue, (resizedValue) =>
+        isFiniteNumberInRange(resizedValue, {
+          min: Number.MIN_VALUE,
+          max: MAX_FONT_SIZE,
+        }),
+      ),
+    ),
+  );
+
+const isBoundedLineHeightConfig = (item: unknown): boolean =>
+  isBoundedNumberConfigItem(item, (value) =>
+    isBoundedSizeItem(value, (sizeValue) =>
+      isBoundedResizedItem(sizeValue, (resizedValue) =>
+        isFiniteNumberInRange(resizedValue, {
+          min: Number.MIN_VALUE,
+          max: MAX_LINE_HEIGHT,
+        }),
+      ),
+    ),
+  );
+
+const isBoundedLineCountsConfig = (item: unknown): boolean =>
+  isBoundedNumberConfigItem(item, (value) => {
+    if (
+      !isRecord(value) ||
+      !hasConfigKeys(value, ["default", "resized", "doubleResized"])
+    ) {
+      return false;
+    }
+    return ["default", "resized", "doubleResized"].every((key) =>
+      isBoundedSizeItem(value[key], (count) =>
+        isFiniteNumberInRange(count, {
+          min: Number.MIN_VALUE,
+          max: MAX_COMMENT_LINE_COUNT,
+        }),
+      ),
+    );
+  });
+
+const isBoundedCommentStageSizeConfig = (item: unknown): boolean =>
+  isBoundedNumberConfigItem(item, (value) => {
+    if (
+      !isRecord(value) ||
+      !hasConfigKeys(value, ["width", "fullWidth", "height"])
+    ) {
+      return false;
+    }
+    return ["width", "fullWidth", "height"].every((key) =>
+      isFiniteNumberInRange(value[key], {
+        min: Number.MIN_VALUE,
+        max: MAX_CANVAS_DIMENSION,
+      }),
+    );
+  });
+
+const isBoundedCollisionRange = (item: unknown): boolean =>
+  isRecord(item) &&
+  hasConfigKeys(item, ["left", "right"]) &&
+  isFiniteNumberInRange(item.left, { max: MAX_CANVAS_DIMENSION }) &&
+  isFiniteNumberInRange(item.right, { max: MAX_CANVAS_DIMENSION });
+
+const isBoundedLineBreakCount = (item: unknown): boolean =>
+  isBoundedSizeItem(item, (count) =>
+    isFiniteNumberInRange(count, {
+      min: 1,
+      max: MAX_COMMENT_LINE_COUNT,
+      integer: true,
+    }),
+  );
+
+const isBoundedFlashDoubleResizeHeights = (item: unknown): boolean => {
+  if (!isRecord(item)) return false;
+  for (const size of Object.keys(item)) {
+    if (!COMMENT_SIZES.includes(size as (typeof COMMENT_SIZES)[number])) {
+      return false;
+    }
+    const heights = item[size];
+    if (!isRecord(heights)) return false;
+    for (const height of Object.values(heights)) {
+      if (!isFiniteNumberInRange(height, { max: MAX_CANVAS_DIMENSION })) {
+        return false;
+      }
+    }
+  }
+  return true;
+};
+
+const isValidPlugins = (item: unknown): boolean =>
+  Array.isArray(item) &&
+  item.every(
+    (plugin) =>
+      typeof plugin === "function" &&
+      typeof (plugin as { id?: unknown }).id === "string",
+  );
+
+const isValidCommentPlugins = (item: unknown): boolean =>
+  Array.isArray(item) &&
+  item.every(
+    (plugin) =>
+      isRecord(plugin) &&
+      typeof plugin.class === "function" &&
+      typeof plugin.condition === "function",
+  );
+
+const isValidCommentLimit = (item: unknown): boolean =>
+  item === undefined ||
+  isFiniteNumberInRange(item, {
+    max: MAX_COMMENT_LIMIT,
+    integer: true,
+  });
+
+const isValidConfig = (item: unknown): boolean => {
+  if (!isRecord(item)) return false;
+  const validators: Record<string, (i: unknown) => boolean> = {
+    cacheAge: (i) => isFiniteNumberInRange(i, { max: MAX_COMMENT_RANGE }),
+    canvasHeight: (i) =>
+      isFiniteNumberInRange(i, {
+        min: 1,
+        max: MAX_CANVAS_DIMENSION,
+      }),
+    canvasWidth: (i) =>
+      isFiniteNumberInRange(i, {
+        min: 1,
+        max: MAX_CANVAS_DIMENSION,
+      }),
+    atButtonPadding: isBoundedSpacing,
+    atButtonRadius: isBoundedSpacing,
+    collisionPadding: isBoundedSpacing,
+    collisionRange: isBoundedCollisionRange,
+    commentDrawPadding: (i) =>
+      isFiniteNumberInRange(i, { max: MAX_CANVAS_DIMENSION }),
+    commentDrawRange: (i) =>
+      isFiniteNumberInRange(i, { max: MAX_CANVAS_DIMENSION }),
+    commentLimit: isValidCommentLimit,
+    commentPlugins: isValidCommentPlugins,
+    commentScale: (i) =>
+      isBoundedNumberConfigItem(i, (value) =>
+        isFiniteNumberInRange(value, {
+          min: Number.MIN_VALUE,
+          max: MAX_CONFIG_RATIO,
+        }),
+      ),
+    commentStageSize: isBoundedCommentStageSizeConfig,
+    contextLineWidth: (i) =>
+      isBoundedNumberConfigItem(i, (value) =>
+        isFiniteNumberInRange(value, { max: MAX_CONFIG_SPACING }),
+      ),
+    contextStrokeOpacity: (i) => isFiniteNumberInRange(i, { max: 1 }),
+    contextFillLiveOpacity: (i) => isFiniteNumberInRange(i, { max: 1 }),
+    flashLetterSpacing: (i) =>
+      isFiniteNumberInRange(i, { max: MAX_CONFIG_SPACING }),
+    flashCommentYPaddingTop: (i) => isBoundedResizedItem(i, isBoundedSpacing),
+    flashCommentYOffset: (i) =>
+      isBoundedSizeItem(i, (sizeValue) =>
+        isBoundedResizedItem(sizeValue, isBoundedOffset),
+      ),
+    flashDoubleResizeHeights: isBoundedFlashDoubleResizeHeights,
+    flashLineBreakScale: (i) =>
+      isBoundedSizeItem(i, (value) =>
+        isFiniteNumberInRange(value, {
+          min: Number.MIN_VALUE,
+          max: MAX_CONFIG_RATIO,
+        }),
+      ),
+    flashScriptCharOffset: (i) =>
+      isFiniteNumberInRange(i, { max: MAX_CONFIG_RATIO }),
+    flashThreshold: (i) =>
+      isFiniteNumberInRange(i, { max: MAX_UNIX_TIME_SECONDS }),
+    fontSize: isBoundedFontSizeConfig,
+    fpsInterval: (i) => isFiniteNumberInRange(i, { max: MAX_COMMENT_RANGE }),
+    hideCommentOrder: isHideCommentOrder,
+    html5HiResCommentCorrection: (i) =>
+      isFiniteNumberInRange(i, { max: MAX_CONFIG_SPACING }),
+    html5LineCounts: isBoundedLineCountsConfig,
+    html5MinFontSize: (i) =>
+      isFiniteNumberInRange(i, {
+        min: Number.MIN_VALUE,
+        max: MAX_FONT_SIZE,
+      }),
+    lineBreakCount: isBoundedLineBreakCount,
+    lineHeight: isBoundedLineHeightConfig,
+    nakaCommentSpeedOffset: (i) =>
+      isFiniteNumberInRange(i, { max: MAX_CONFIG_RATIO }),
+    plugins: isValidPlugins,
+    sameCAGap: (i) => isFiniteNumberInRange(i, { max: MAX_COMMENT_RANGE }),
+    sameCAMinScore: (i) =>
+      isFiniteNumberInRange(i, { max: MAX_COMMENT_LIMIT, integer: true }),
+    sameCARange: (i) => isFiniteNumberInRange(i, { max: MAX_COMMENT_RANGE }),
+    sameCATimestampRange: (i) =>
+      isFiniteNumberInRange(i, { max: MAX_COMMENT_RANGE }),
+  };
+
+  for (const [key, validator] of Object.entries(validators)) {
+    if (Object.hasOwn(item, key) && !validator(item[key])) {
+      console.warn(
+        `[Incorrect input] var: initOptions.config, key: ${key}, value: ${item[key]}`,
+      );
+      return false;
+    }
+  }
+  const width = item.canvasWidth;
+  const height = item.canvasHeight;
+  if (
+    typeof width === "number" &&
+    typeof height === "number" &&
+    width * height > MAX_CANVAS_AREA
+  ) {
+    console.warn(
+      `[Incorrect input] var: initOptions.config, key: canvasArea, value: ${
+        width * height
+      }`,
+    );
+    return false;
+  }
+  return true;
+};
 
 const typeGuard = {
   formatted: {
@@ -110,16 +396,12 @@ const typeGuard = {
     apiThread: (i: unknown): i is ApiThread => is(ZApiThread, i),
   },
   xmlDocument: (i: unknown): i is XMLDocument => {
-    if (
-      !(i as XMLDocument).documentElement ||
-      (i as XMLDocument).documentElement.nodeName !== "packet"
-    )
-      return false;
+    if ((i as XMLDocument).documentElement?.nodeName !== "packet") return false;
     if (!(i as XMLDocument).documentElement.children) return false;
     for (const element of Array.from(
       (i as XMLDocument).documentElement.children,
     )) {
-      if (!element || element.nodeName !== "chat") continue;
+      if (element?.nodeName !== "chat") continue;
       if (!typeAttributeVerify(element, ["vpos", "date"])) return false;
     }
     return true;
@@ -220,8 +502,10 @@ const typeGuard = {
         debug: isBoolean,
         enableLegacyPiP: isBoolean,
         keepCA: isBoolean,
-        scale: isNumber,
-        config: isObject,
+        lazy: isBoolean,
+        mode: isMode,
+        scale: isValidOptionScale,
+        config: isValidConfig,
         format: (i) => is(ZInputFormatType, i),
         video: (i: unknown) => is(optional(instance(HTMLVideoElement)), i),
       };

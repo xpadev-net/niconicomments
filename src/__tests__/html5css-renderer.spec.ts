@@ -8,10 +8,16 @@ const loadCssSample = async (page: Page) => {
   );
   // BrowserSync injects this overlay only during local runs; in CI the detached
   // wait resolves immediately, matching the existing visual regression tests.
-  await Promise.all([
+  await Promise.race([
     page.waitForSelector("div#loaded", { state: "attached" }),
-    page.waitForSelector("div#__bs_notify__", { state: "detached" }),
+    page.waitForSelector("div#renderer-error", { state: "attached" }),
   ]);
+  await page.waitForSelector("div#__bs_notify__", { state: "detached" });
+  if ((await page.locator("#renderer-error").count()) > 0) {
+    throw new Error(
+      `CSS renderer failed: ${await page.locator("#renderer-error").textContent()}`,
+    );
+  }
 };
 
 // Used by tests that construct their own renderer inside page.evaluate —

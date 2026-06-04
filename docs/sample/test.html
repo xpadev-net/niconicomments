@@ -24,9 +24,17 @@
     if (rendererType === "css") {
       canvasElement.hidden = true;
       cssRendererElement.hidden = false;
-      renderer = new NiconiComments.internal.renderer.HTML5CSSRenderer(
-        cssRendererElement,
-      );
+      try {
+        renderer = new NiconiComments.internal.renderer.HTML5CSSRenderer(
+          cssRendererElement,
+        );
+      } catch (e) {
+        const err = document.createElement("div");
+        err.id = "renderer-error";
+        err.textContent = String(e);
+        document.body.appendChild(err);
+        return;
+      }
     } else if (rendererType === "canvas") {
       renderer = new NiconiComments.internal.renderer.CanvasRenderer(
         canvasElement,

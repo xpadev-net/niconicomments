@@ -4,12 +4,12 @@ on:
   push:
     branches:
       - master
-  workflow_dispatch:
 
 jobs:
   publish:
     name: Publish npm package
     runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
     permissions:
       contents: read # Checkout repository contents for the publish build.
       id-token: write # Request an OIDC token for npm provenance.
@@ -34,7 +34,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pnpm install
+          pnpm install --frozen-lockfile
 
       - name: Publish package
         run: npm publish --provenance
@@ -43,9 +43,17 @@ jobs:
     name: Create GitHub release
     runs-on: ubuntu-latest
     needs: publish
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
     permissions:
       contents: write # Create the GitHub release for the published ref.
     steps:
+      - name: Validate release ref
+        run: |
+          if [ "${GITHUB_REF}" != "refs/heads/master" ]; then
+            echo "::error::Ref ${GITHUB_REF} is not allowed to create a release"
+            exit 1
+          fi
+
       - name: Create GitHub release
         uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda
         with:

@@ -149,6 +149,11 @@ class HTML5CSSRenderer implements IRenderer {
   }
 
   destroy(): void {
+    // If the caller still holds live sub-renderers obtained via getCanvas(),
+    // layer.remove() below detaches their canvases from the DOM implicitly.
+    // prevCanvasSet/activeCanvasSet are cleared, so any subsequent
+    // invalidateImage() on those sub-renderers is harmless (no-op on empty sets
+    // and an already-detached element).
     this.resizeObserver?.disconnect();
     for (const helper of this.helperSurfaces) {
       this.teardownSurfaceCanvas(helper);
@@ -684,6 +689,12 @@ class HTML5CSSRenderer implements IRenderer {
     // visible until the next clearRect() starts a fresh frame.
     this.helper.canvas.style.display = "block";
     const isOverflowHelper = this.helperCursor + 1 >= MAX_HELPER_SURFACES;
+    // For the overflow helper we skip appendChild once it is already in the
+    // layer (isConnected=true). The first draw that reaches overflow mode
+    // finds isConnected=false and appends it; helperCursor is NOT incremented
+    // so shouldDrawOnOverflowHelper detects it via isConnected on the next
+    // call. All subsequent overflow draws re-enter here with isConnected=true
+    // and skip the append, keeping the canvas at a stable z-order position.
     if (!isOverflowHelper || !this.helper.canvas.isConnected) {
       this.layer.appendChild(this.helper.canvas);
     }

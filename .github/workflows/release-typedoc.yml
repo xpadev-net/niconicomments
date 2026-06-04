@@ -58,7 +58,7 @@ jobs:
         run: pnpm build
 
       - name: Package generated artifacts
-        run: tar -czf typedoc-artifacts.tgz .gitignore docs/type dist/bundle.js
+        run: find .gitignore docs/type dist/bundle.js -type f -print0 | tar --null --hard-dereference -czf typedoc-artifacts.tgz --files-from -
 
       - name: Upload generated artifacts
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -85,17 +85,73 @@ jobs:
           name: typedoc-artifacts
           path: ${{ runner.temp }}/typedoc-artifacts
 
+      - name: Validate generated artifacts
+        run: |
+          archive="${RUNNER_TEMP}/typedoc-artifacts/typedoc-artifacts.tgz"
+          validated_dir="${RUNNER_TEMP}/validated-artifacts"
+          rm -rf "$validated_dir"
+          mkdir -p "$validated_dir"
+          python3 - "$archive" "$validated_dir" <<'PY'
+          import pathlib
+          import shutil
+          import sys
+          import tarfile
+
+          archive = sys.argv[1]
+          destination = pathlib.Path(sys.argv[2])
+          required = {".gitignore", "dist/bundle.js"}
+          seen = set()
+
+          def is_allowed(name):
+              return name in required or name.startswith("docs/type/")
+
+          with tarfile.open(archive, "r:gz") as tar:
+              for member in tar.getmembers():
+                  name = member.name
+                  normalized_name = pathlib.PurePosixPath(name).as_posix()
+                  parts = pathlib.PurePosixPath(name).parts
+                  if (
+                      pathlib.PurePosixPath(name).is_absolute()
+                      or name != normalized_name
+                      or ".." in parts
+                      or ".git" in parts
+                      or not is_allowed(normalized_name)
+                      or normalized_name in seen
+                      or not member.isfile()
+                  ):
+                      raise SystemExit(f"Unexpected artifact entry: {name!r}")
+                  seen.add(normalized_name)
+
+              missing = required - seen
+              if missing:
+                  raise SystemExit(f"Missing artifact entry: {', '.join(sorted(missing))}")
+
+              for member in tar.getmembers():
+                  target = destination / member.name
+                  target.parent.mkdir(parents=True, exist_ok=True)
+                  source = tar.extractfile(member)
+                  if source is None:
+                      raise SystemExit(f"Unable to read artifact entry: {member.name!r}")
+                  with source, target.open("wb") as output:
+                      shutil.copyfileobj(source, output)
+          PY
+
       - name: Create new Branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.email "github-actions@xpadev.net"
           git config user.name "github-actions"
-          git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           git checkout -b typedoc
           git rm -rf . --quiet || true
-          tar -xzf "${RUNNER_TEMP}/typedoc-artifacts/typedoc-artifacts.tgz"
-          cp -f ./dist/bundle.js ./docs/
+          mkdir -p dist docs/type
+          cp "${RUNNER_TEMP}/validated-artifacts/.gitignore" .gitignore
+          cp "${RUNNER_TEMP}/validated-artifacts/dist/bundle.js" dist/bundle.js
+          if [ -d "${RUNNER_TEMP}/validated-artifacts/docs/type" ]; then
+            cp -a "${RUNNER_TEMP}/validated-artifacts/docs/type/." docs/type/
+          fi
+          cp -f dist/bundle.js docs/
           git add .
-          git commit -m "auto generate" -n
+          git -c core.hooksPath=/dev/null commit -m "auto generate"
+          git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           git push -f origin typedoc

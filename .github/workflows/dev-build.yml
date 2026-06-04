@@ -39,7 +39,7 @@ jobs:
         run: pnpm build
 
       - name: Package build artifact
-        run: tar -czf dev-build-artifacts.tgz dist/bundle.js
+        run: tar --hard-dereference -czf dev-build-artifacts.tgz dist/bundle.js
 
       - name: Upload build artifact
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -66,16 +66,65 @@ jobs:
           name: dev-build-artifacts
           path: ${{ runner.temp }}/dev-build-artifacts
 
+      - name: Validate build artifact
+        run: |
+          archive="${RUNNER_TEMP}/dev-build-artifacts/dev-build-artifacts.tgz"
+          validated_dir="${RUNNER_TEMP}/validated-artifacts"
+          rm -rf "$validated_dir"
+          mkdir -p "$validated_dir"
+          python3 - "$archive" "$validated_dir" <<'PY'
+          import pathlib
+          import shutil
+          import sys
+          import tarfile
+
+          archive = sys.argv[1]
+          destination = pathlib.Path(sys.argv[2])
+          allowed = {"dist/bundle.js"}
+          seen = set()
+
+          with tarfile.open(archive, "r:gz") as tar:
+              for member in tar.getmembers():
+                  name = member.name
+                  normalized_name = pathlib.PurePosixPath(name).as_posix()
+                  parts = pathlib.PurePosixPath(name).parts
+                  if (
+                      pathlib.PurePosixPath(name).is_absolute()
+                      or name != normalized_name
+                      or ".." in parts
+                      or ".git" in parts
+                      or normalized_name not in allowed
+                      or normalized_name in seen
+                      or not member.isfile()
+                  ):
+                      raise SystemExit(f"Unexpected artifact entry: {name!r}")
+                  seen.add(normalized_name)
+
+              if seen != allowed:
+                  missing = ", ".join(sorted(allowed - seen))
+                  raise SystemExit(f"Missing artifact entry: {missing}")
+
+              for member in tar.getmembers():
+                  target = destination / member.name
+                  target.parent.mkdir(parents=True, exist_ok=True)
+                  source = tar.extractfile(member)
+                  if source is None:
+                      raise SystemExit(f"Unable to read artifact entry: {member.name!r}")
+                  with source, target.open("wb") as output:
+                      shutil.copyfileobj(source, output)
+          PY
+
       - name: Push to dev-build branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.email "github-actions@xpadev.net"
           git config user.name "github-actions"
-          git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           git checkout --orphan dev-build
           git rm -rf . --quiet || true
-          tar -xzf "${RUNNER_TEMP}/dev-build-artifacts/dev-build-artifacts.tgz"
+          mkdir -p dist
+          cp "${RUNNER_TEMP}/validated-artifacts/dist/bundle.js" dist/bundle.js
           git add dist/bundle.js -f
-          git commit -m "dev build"
+          git -c core.hooksPath=/dev/null commit -m "dev build"
+          git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           git push -f origin dev-build

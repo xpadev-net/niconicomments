@@ -470,7 +470,7 @@ class HTML5CSSRenderer implements IRenderer {
       undefined,
       padding,
       invalidate,
-      undefined, // onChange: invalidateImage is a no-op here; skip WeakRef overhead
+      undefined, // onChange: canvas is live in the layer — no snapshot caching needed
     );
     return inner;
   }

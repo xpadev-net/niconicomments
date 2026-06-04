@@ -652,13 +652,14 @@ const loadComments = async () => {
   if (rendererType === "css") {
     canvasElement.hidden = true;
     cssRendererElement.hidden = false;
-    // Set transform after constructing so getBoundingClientRect() in the
-    // constructor sees the untransformed layout size, avoiding a first-frame
-    // scale error on videos with scale != 100.
+    // Do NOT apply displayScale here: HTML5CSSRenderer computes its own
+    // contain-scale from the element's layout dimensions. A CSS transform on
+    // the root does not trigger ResizeObserver, so the layer transform would
+    // remain stale for any video whose scale differs from 100.
+    cssRendererElement.style.transform = "";
     activeCssRenderer = new NiconiComments.internal.renderer.HTML5CSSRenderer(
       cssRendererElement,
     );
-    cssRendererElement.style.transform = displayScale;
     renderer = activeCssRenderer;
   } else {
     canvasElement.hidden = false;

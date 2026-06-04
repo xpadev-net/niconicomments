@@ -62,8 +62,12 @@ const takeFlashDisplayPart = (value: string, remaining: { value: string }) => {
 
 class FlashComment extends BaseComment {
   private _globalScale: number;
+  private _buttonImageState?: {
+    height: number;
+    strokeStyle: string;
+    width: number;
+  };
   override readonly pluginName: string = "FlashComment";
-  override buttonImage: IRenderer;
   constructor(
     comment: FormattedComment,
     renderer: IRenderer,
@@ -72,7 +76,6 @@ class FlashComment extends BaseComment {
   ) {
     super(comment, renderer, index, ctx);
     this._globalScale ??= getConfig(this.config.commentScale, true);
-    this.buttonImage = renderer.getCanvas();
   }
 
   private get _flashScriptCharRegex(): { super: RegExp; sub: RegExp } {
@@ -498,22 +501,36 @@ class FlashComment extends BaseComment {
 
   override getButtonImage(posX: number, posY: number, cursor?: Position) {
     if (!this.comment.button || this.comment.button.hidden) return undefined;
-    const { renderer } = this._setupCanvas(this.buttonImage);
     const parts = this.comment.buttonObjects;
     if (!parts) return undefined;
-    const atButtonRadius = getConfig(this.config.atButtonRadius, true);
     const isHover = this.isHovered(cursor, posX, posY);
-    renderer.save();
-    const getStrokeStyle = () => {
-      if (isHover) {
-        return this.comment.color;
-      }
-      if (this.comment.button && this.comment.button.limit < 1) {
+    const strokeStyle = (() => {
+      if (isHover) return this.comment.color;
+      if (this.comment.button && this.comment.button.limit < 1)
         return "#777777";
-      }
       return "white";
+    })();
+    const atButtonPadding = getConfig(this.config.atButtonPadding, true);
+    const nextState = {
+      height: this.comment.height + atButtonPadding * 2,
+      strokeStyle,
+      width: this.comment.width,
     };
-    renderer.setStrokeStyle(getStrokeStyle());
+    const shouldRedraw =
+      !this.buttonImage ||
+      !this._buttonImageState ||
+      this._buttonImageState.width !== nextState.width ||
+      this._buttonImageState.height !== nextState.height ||
+      this._buttonImageState.strokeStyle !== nextState.strokeStyle;
+
+    if (!shouldRedraw) return this.buttonImage ?? undefined;
+
+    const renderer = this.buttonImage ?? this.renderer.getCanvas();
+    this.buttonImage = renderer;
+    this._setupCanvas(renderer);
+    const atButtonRadius = getConfig(this.config.atButtonRadius, true);
+    renderer.save();
+    renderer.setStrokeStyle(strokeStyle);
     drawLeftBorder(
       renderer,
       parts.left.left,
@@ -533,6 +550,7 @@ class FlashComment extends BaseComment {
       atButtonRadius,
     );
     renderer.restore();
+    this._buttonImageState = nextState;
     return renderer;
   }
 

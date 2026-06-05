@@ -412,7 +412,7 @@ const controlToggleElement = document.getElementById("toggle");
 /** @type {HTMLDivElement} */
 const container = document.getElementById("container");
 /** @type {HTMLCanvasElement} */
-const canvasElement = document.getElementById("canvas");
+let canvasElement = document.getElementById("canvas");
 /** @type {HTMLDivElement} */
 const cssRendererElement = document.getElementById("css-renderer");
 /** @type {HTMLDivElement} */
@@ -641,7 +641,6 @@ const loadComments = async () => {
   const videoItem = getVideoItem();
   if (!videoItem) return;
   const displayScale = `scale(${videoItem.scale ?? 100}%)`;
-  canvasElement.style.transform = displayScale;
   const req = await fetch(`./commentdata/${video}.json`);
   if (!req.ok) throw new Error(`Failed to load comment data: ${req.status}`);
   const res = await req.json();
@@ -662,6 +661,13 @@ const loadComments = async () => {
     );
     renderer = activeCssRenderer;
   } else {
+    // Replace the canvas with a fresh element on every load so that switching
+    // between Canvas 2D and WebGL2 works — browsers do not allow changing a
+    // canvas's context type once acquired.
+    const freshCanvas = canvasElement.ownerDocument.createElement("canvas");
+    canvasElement.replaceWith(freshCanvas);
+    canvasElement = freshCanvas;
+    canvasElement.style.transform = displayScale;
     canvasElement.hidden = false;
     cssRendererElement.hidden = true;
     if (rendererType === "canvas") {

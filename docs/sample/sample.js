@@ -666,9 +666,16 @@ const loadComments = async () => {
     // element's layout dimensions) stays correct. The outer transform just
     // scales the whole layer visually — no stale state.
     cssRendererElement.style.transform = displayScale;
-    activeCssRenderer = new NiconiComments.internal.renderer.HTML5CSSRenderer(
-      cssRendererElement,
-    );
+    try {
+      activeCssRenderer = new NiconiComments.internal.renderer.HTML5CSSRenderer(
+        cssRendererElement,
+      );
+    } catch (e) {
+      canvasElement.hidden = false;
+      cssRendererElement.hidden = true;
+      console.error("CSS renderer failed to initialise:", e);
+      return;
+    }
     renderer = activeCssRenderer;
   } else {
     // Replace the canvas with a fresh element on every load so that switching

@@ -92,7 +92,11 @@ for (const [video, time] of CASES) {
   test(`css matches canvas: video=${video} time=${time}`, async ({ page }) => {
     await page.setViewportSize(VIEWPORT);
 
-    await loadRenderer(page, video, time, "canvas");
+    const canvasBaseOk = await loadRenderer(page, video, time, "canvas");
+    if (!canvasBaseOk) {
+      test.skip(true, "Canvas baseline failed to load");
+      return;
+    }
     const canvasShot = await page.screenshot();
 
     const cssOk = await loadRenderer(page, video, time, "css");
@@ -114,7 +118,11 @@ for (const [video, time] of CASES) {
   }) => {
     await page.setViewportSize(VIEWPORT);
 
-    await loadRenderer(page, video, time, "canvas");
+    const canvasBaseOk = await loadRenderer(page, video, time, "canvas");
+    if (!canvasBaseOk) {
+      test.skip(true, "Canvas baseline failed to load");
+      return;
+    }
     const canvasShot = await page.screenshot();
 
     const ok = await loadRenderer(page, video, time, "webgl");

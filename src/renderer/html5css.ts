@@ -57,6 +57,12 @@ class HTML5CSSRenderer implements IRenderer {
     HTMLCanvasElement,
     Set<HTMLCanvasElement>
   >();
+  // Reverse of cloneMap: clone → its source, for O(1) cleanup in flush().
+  // WeakMap so the clone canvas can be GC'd if we miss a removal.
+  private readonly cloneSourceMap = new WeakMap<
+    HTMLCanvasElement,
+    HTMLCanvasElement
+  >();
   private readonly resizeObserver?: ResizeObserver;
   private readonly originalRootStyle: {
     boxSizing: string;
@@ -542,6 +548,7 @@ class HTML5CSSRenderer implements IRenderer {
         this.cloneMap.set(source, clones);
       }
       clones.add(element);
+      this.cloneSourceMap.set(element, source);
     } else {
       element = source;
     }
@@ -581,7 +588,12 @@ class HTML5CSSRenderer implements IRenderer {
       if (!this.activeCanvasSet.has(canvas)) {
         canvas.style.display = "none";
         canvas.remove();
-        this.cloneMap.delete(canvas);
+        const src = this.cloneSourceMap.get(canvas);
+        if (src) {
+          this.cloneMap.get(src)?.delete(canvas);
+        } else {
+          this.cloneMap.delete(canvas);
+        }
       }
     }
     const tmp = this.prevCanvasSet;

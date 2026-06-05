@@ -649,6 +649,16 @@ const loadComments = async () => {
   activeCssRenderer = null;
   let renderer;
   if (rendererType === "css") {
+    // Guard: HTML5CSSRenderer is only available in recent builds; older CDN
+    // versions won't have it.
+    if (!NiconiComments.internal?.renderer?.HTML5CSSRenderer) {
+      canvasElement.hidden = false;
+      cssRendererElement.hidden = true;
+      console.error(
+        "CSS renderer is not available in this version of the library.",
+      );
+      return;
+    }
     canvasElement.hidden = true;
     cssRendererElement.hidden = false;
     // Apply the same displayScale as the canvas path. CSS transforms do not

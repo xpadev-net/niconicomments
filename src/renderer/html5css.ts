@@ -617,6 +617,9 @@ class HTML5CSSRenderer implements IRenderer {
     }
     this.prevNodeCursor = this.nodeCursor;
     // Remove source canvases that were visible last frame but not drawn this frame.
+    // Collect stale source canvases and delete their cloneMap entries AFTER the
+    // loop so clone-to-source lookups via cloneSourceMap still work within it.
+    const staleSourceCanvases: HTMLCanvasElement[] = [];
     for (const canvas of this.prevCanvasSet) {
       if (!this.activeCanvasSet.has(canvas)) {
         canvas.style.display = "none";
@@ -625,9 +628,12 @@ class HTML5CSSRenderer implements IRenderer {
         if (src) {
           this.cloneMap.get(src)?.delete(canvas);
         } else {
-          this.cloneMap.delete(canvas);
+          staleSourceCanvases.push(canvas);
         }
       }
+    }
+    for (const canvas of staleSourceCanvases) {
+      this.cloneMap.delete(canvas);
     }
     const tmp = this.prevCanvasSet;
     this.prevCanvasSet = this.activeCanvasSet;

@@ -657,6 +657,7 @@ const loadComments = async () => {
       console.error(
         "CSS renderer is not available in this version of the library.",
       );
+      nico = null;
       return;
     }
     canvasElement.hidden = true;
@@ -674,6 +675,7 @@ const loadComments = async () => {
       canvasElement.hidden = false;
       cssRendererElement.hidden = true;
       console.error("CSS renderer failed to initialise:", e);
+      nico = null;
       return;
     }
     renderer = activeCssRenderer;

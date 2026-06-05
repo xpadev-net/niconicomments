@@ -719,8 +719,13 @@ class HTML5CSSRenderer implements IRenderer {
       this.layer.style.transform = "translate(0px, 0px) scale(1)";
       return;
     }
-    const rect = this.root.getBoundingClientRect();
-    this.updateObjectFitContainWithSize(rect.width, rect.height);
+    // offsetWidth/offsetHeight are the layout-box dimensions, unaffected by CSS
+    // transforms on the element. getBoundingClientRect() would return the
+    // visually-scaled size and cause a double-scale when a transform is set.
+    this.updateObjectFitContainWithSize(
+      this.root.offsetWidth,
+      this.root.offsetHeight,
+    );
   }
 
   private updateObjectFitContainWithSize(

@@ -58,6 +58,7 @@ class CanvasRenderer implements IRenderer {
   /** プールから取得した canvas かどうか (destroy 時にプールに返却するため) */
   private readonly pooled: boolean;
   private readonly _onDestroy?: () => void;
+  /** Called after every draw operation. Intended for parent compositors that need to re-blit this canvas into their own surface; currently unused (all callers pass undefined). */
   private readonly _onChange?: () => void;
 
   constructor(

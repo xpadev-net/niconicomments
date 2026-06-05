@@ -374,6 +374,7 @@ class HTML5CSSRenderer implements IRenderer {
     this.layer.style.width = `${size.width}px`;
     this.layer.style.height = `${size.height}px`;
     this.updateObjectFitContain();
+    this.restoreFrameStartState();
     for (const helper of this.helperSurfaces) {
       this.teardownSurfaceCanvas(helper);
       helper.destroy();
@@ -385,7 +386,6 @@ class HTML5CSSRenderer implements IRenderer {
       this.videoSurface.setSize(size.width, size.height);
       this.setupVideoCanvas();
     }
-    this.restoreFrameStartState();
     this.resetState();
     this.helper = this.prepareHelperSurface(0);
     this.helper.canvas.style.display = "none";

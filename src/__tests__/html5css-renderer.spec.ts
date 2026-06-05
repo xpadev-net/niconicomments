@@ -119,7 +119,7 @@ test("HTML5CSSRenderer commits direct canvas drawing into its DOM layer", async 
   expect(renderedChildren).toBeGreaterThan(0);
 });
 
-test("HTML5CSSRenderer resets state to defaults on clearRect", async ({
+test("HTML5CSSRenderer preserves display scale across clearRect", async ({
   page,
 }) => {
   await loadBundle(page);
@@ -134,7 +134,7 @@ test("HTML5CSSRenderer resets state to defaults on clearRect", async ({
     };
     const renderer =
       new global.NiconiComments.internal.renderer.HTML5CSSRenderer(root);
-    // Set scale before clearRect — it must NOT bleed into the next frame.
+    // Scale set before any frame (mirrors main.ts constructor setScale).
     renderer.setScale(2);
     renderer.clearRect(0, 0, 200, 100);
     renderer.fillRect(1, 1, 10, 10);
@@ -147,8 +147,8 @@ test("HTML5CSSRenderer resets state to defaults on clearRect", async ({
     return width;
   });
 
-  // scale resets to 1 on clearRect → 10 × 1 = 10 px
-  expect(rectWidth).toBe("10px");
+  // Display scale 2 persists across clearRect → 10 × 2 = 20 px
+  expect(rectWidth).toBe("20px");
 });
 
 test("HTML5CSSRenderer discards imbalanced saved state on clearRect", async ({
@@ -166,7 +166,9 @@ test("HTML5CSSRenderer discards imbalanced saved state on clearRect", async ({
     };
     const renderer =
       new global.NiconiComments.internal.renderer.HTML5CSSRenderer(root);
+    // Display scale 2 is the frame-start scale.
     renderer.setScale(2);
+    // An imbalanced save/setScale — the extra scale(3) must not survive clearRect.
     renderer.save();
     renderer.setScale(3);
     renderer.flush();
@@ -181,9 +183,10 @@ test("HTML5CSSRenderer discards imbalanced saved state on clearRect", async ({
     return width;
   });
 
-  // clearRect resets all state to defaults (scale=1); neither scale=2 nor
-  // scale=6 (2×3) from the imbalanced save should bleed into the next frame.
-  expect(rectWidth).toBe("10px");
+  // clearRect restores to the frame-start scale (2); the accumulated scale(3)
+  // from inside the imbalanced save must not bleed (scale must not be 6).
+  // Display scale 2 is preserved: 10 × 2 = 20 px.
+  expect(rectWidth).toBe("20px");
 });
 
 test("HTML5CSSRenderer restores helper drawing after zero scale", async ({
@@ -602,4 +605,91 @@ test("HTML5CSSRenderer uses computed CSS dimensions as its initial logical size"
     layerWidth: "320px",
     layerHeight: "180px",
   });
+});
+
+test("HTML5CSSRenderer preserves display scale across multiple frames", async ({
+  page,
+}) => {
+  await loadBundle(page);
+
+  const widths = await page.evaluate(() => {
+    const root = document.createElement("div");
+    root.dataset.width = "200";
+    root.dataset.height = "100";
+    document.body.appendChild(root);
+    const global = window as typeof window & {
+      NiconiComments: typeof import("@/main").default;
+    };
+    const renderer =
+      new global.NiconiComments.internal.renderer.HTML5CSSRenderer(root);
+    // Mirrors main.ts constructor: set display scale once before any frame.
+    renderer.setScale(0.5, 0.5);
+
+    const getFirstNodeWidth = () => {
+      const layer = root.querySelector<HTMLElement>("div");
+      const node = layer?.firstElementChild;
+      return node ? getComputedStyle(node).width : undefined;
+    };
+
+    // Frame 1
+    renderer.clearRect(0, 0, 200, 100);
+    renderer.fillRect(0, 0, 100, 50);
+    renderer.flush();
+    const frame1Width = getFirstNodeWidth();
+
+    // Frame 2 — scale must still be 0.5, not 1
+    renderer.clearRect(0, 0, 200, 100);
+    renderer.fillRect(0, 0, 100, 50);
+    renderer.flush();
+    const frame2Width = getFirstNodeWidth();
+
+    renderer.destroy();
+    root.remove();
+    return { frame1Width, frame2Width };
+  });
+
+  // 100 logical units × scale 0.5 = 50 px in both frames
+  expect(widths.frame1Width).toBe("50px");
+  expect(widths.frame2Width).toBe("50px");
+});
+
+test("HTML5CSSRenderer hides source canvases after clearRect and flush", async ({
+  page,
+}) => {
+  await loadBundle(page);
+
+  const result = await page.evaluate(() => {
+    const root = document.createElement("div");
+    root.dataset.width = "100";
+    root.dataset.height = "100";
+    document.body.appendChild(root);
+    const global = window as typeof window & {
+      NiconiComments: typeof import("@/main").default;
+    };
+    const renderer =
+      new global.NiconiComments.internal.renderer.HTML5CSSRenderer(root);
+    const image = renderer.getCanvas();
+    image.setSize(10, 10);
+    image.setFillStyle("#ff0000");
+    image.fillRect(0, 0, 10, 10);
+    renderer.drawImage(image, 0, 0);
+    renderer.flush();
+    const source = image.canvas;
+    const visibleBefore =
+      root.contains(source) && getComputedStyle(source).display !== "none";
+
+    // clearRect + flush mirrors NiconiComments.clear() — source canvases must disappear.
+    renderer.clearRect(0, 0, 100, 100);
+    renderer.flush();
+    const visibleAfter =
+      root.contains(source) && getComputedStyle(source).display !== "none";
+
+    image.destroy();
+    renderer.destroy();
+    root.remove();
+    return { visibleBefore, visibleAfter };
+  });
+
+  expect(result.visibleBefore).toBe(true);
+  expect(result.visibleAfter).toBe(false);
 });

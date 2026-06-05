@@ -478,15 +478,29 @@ class HTML5CSSRenderer implements IRenderer {
     // back to a strong reference so sub-renderer cache invalidation still works;
     // callers that keep sub-renderers alive should destroy them explicitly.
     let inner: CanvasRenderer | undefined;
+    // invalidate is the onDestroy callback — fired when the CanvasRenderer is
+    // destroyed and its canvas returned to the pool. Remove the canvas from
+    // ownedCanvases here (destroy path) rather than in invalidateImage(), which
+    // is also called by the plugin draw loop to signal texture updates while
+    // the canvas is still alive (main.ts: invalidateImage → drawImage per frame).
     const invalidate =
       typeof WeakRef === "undefined"
         ? () => {
-            if (inner) this.invalidateImage(inner);
+            if (inner) {
+              this.ownedCanvases.delete(inner.canvas);
+              this.invalidateImage(inner);
+            }
           }
         : (() => {
             const parentRef = new WeakRef(this);
             return () => {
-              if (inner) parentRef.deref()?.invalidateImage(inner);
+              if (inner) {
+                const parent = parentRef.deref();
+                if (parent) {
+                  parent.ownedCanvases.delete(inner.canvas);
+                  parent.invalidateImage(inner);
+                }
+              }
             };
           })();
     inner = new CanvasRenderer(undefined, undefined, padding, invalidate);
@@ -643,7 +657,6 @@ class HTML5CSSRenderer implements IRenderer {
     }
     this.prevCanvasSet.delete(source);
     this.activeCanvasSet.delete(source);
-    this.ownedCanvases.delete(source);
     source.style.display = "none";
     source.remove();
   }

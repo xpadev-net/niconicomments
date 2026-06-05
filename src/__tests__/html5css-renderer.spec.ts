@@ -24,9 +24,15 @@ const loadCssSample = async (page: Page) => {
 // they only need the bundle present, not a CSS-rendered page.
 const loadBundle = async (page: Page) => {
   await page.goto("http://localhost:8080/docs/sample/test.html?time=0&video=0");
-  // Serialise the two waits so the BrowserSync overlay cannot appear between
-  // them and race with drawing assertions (same pattern as loadCssSample).
-  await page.waitForSelector("div#loaded", { state: "attached" });
+  await Promise.race([
+    page.waitForSelector("div#loaded", { state: "attached" }),
+    page.waitForSelector("div#renderer-error", { state: "attached" }),
+  ]);
+  if ((await page.locator("#renderer-error").count()) > 0) {
+    throw new Error(
+      `Page failed to load: ${await page.locator("#renderer-error").textContent()}`,
+    );
+  }
   await page.waitForSelector("div#__bs_notify__", { state: "detached" });
 };
 

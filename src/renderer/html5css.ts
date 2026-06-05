@@ -325,10 +325,10 @@ class HTML5CSSRenderer implements IRenderer {
     this.helperCursor = 0;
     this.pathActive = false;
     this.textDrawnBeforeDom = false;
+    // restoreFrameStartState() already clears the stateStack and restores all
+    // state to its frame-start values, so no further state reset is needed here.
+    // Callers expect clearRect() to clear pixels only, not drawing state.
     this.restoreFrameStartState();
-    // Reset state so stale scaleX/scaleY from a previous frame never bleeds
-    // into prepareHelperSurface() for the new frame.
-    this.resetState();
     for (let i = 0; i < this.prevNodeCursor; i++) {
       const node = this.nodes[i];
       if (node) this.hideNode(node);

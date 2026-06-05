@@ -51,6 +51,12 @@ class HTML5CSSRenderer implements IRenderer {
   private activeCanvasSet = new Set<HTMLCanvasElement>();
   private prevCanvasSet = new Set<HTMLCanvasElement>();
   private readonly setupCanvases = new WeakSet<HTMLCanvasElement>();
+  // Maps source canvas → set of clone canvases created for it this frame.
+  // Clones are created when the same IRenderer is drawn more than once per frame.
+  private readonly cloneMap = new Map<
+    HTMLCanvasElement,
+    Set<HTMLCanvasElement>
+  >();
   private readonly resizeObserver?: ResizeObserver;
   private readonly originalRootStyle: {
     boxSizing: string;
@@ -166,6 +172,7 @@ class HTML5CSSRenderer implements IRenderer {
     this.nodes.length = 0;
     this.prevCanvasSet.clear();
     this.activeCanvasSet.clear();
+    this.cloneMap.clear();
     this.layer.remove();
     this.canvas.remove();
     this.root.classList.remove("niconicomments-html5css-renderer");
@@ -369,6 +376,7 @@ class HTML5CSSRenderer implements IRenderer {
     }
     this.prevCanvasSet.clear();
     this.activeCanvasSet.clear();
+    this.cloneMap.clear();
     this.canvas.width = size.width;
     this.canvas.height = size.height;
     this.layer.style.width = `${size.width}px`;
@@ -528,6 +536,12 @@ class HTML5CSSRenderer implements IRenderer {
       element.width = source.width;
       element.height = source.height;
       element.getContext("2d")?.drawImage(source, 0, 0);
+      let clones = this.cloneMap.get(source);
+      if (!clones) {
+        clones = new Set();
+        this.cloneMap.set(source, clones);
+      }
+      clones.add(element);
     } else {
       element = source;
     }
@@ -567,6 +581,7 @@ class HTML5CSSRenderer implements IRenderer {
       if (!this.activeCanvasSet.has(canvas)) {
         canvas.style.display = "none";
         canvas.remove();
+        this.cloneMap.delete(canvas);
       }
     }
     const tmp = this.prevCanvasSet;
@@ -584,10 +599,21 @@ class HTML5CSSRenderer implements IRenderer {
   invalidateImage(image: IRenderer): void {
     // Eagerly drop and detach the canvas so flush() never touches it again
     // and a pooled re-acquisition by another renderer finds no ghost in the DOM.
-    this.prevCanvasSet.delete(image.canvas);
-    this.activeCanvasSet.delete(image.canvas);
-    image.canvas.style.display = "none";
-    image.canvas.remove();
+    const source = image.canvas;
+    const clones = this.cloneMap.get(source);
+    if (clones) {
+      for (const clone of clones) {
+        this.prevCanvasSet.delete(clone);
+        this.activeCanvasSet.delete(clone);
+        clone.style.display = "none";
+        clone.remove();
+      }
+      this.cloneMap.delete(source);
+    }
+    this.prevCanvasSet.delete(source);
+    this.activeCanvasSet.delete(source);
+    source.style.display = "none";
+    source.remove();
   }
 
   private getNode(tagName: "div"): HTMLElement {

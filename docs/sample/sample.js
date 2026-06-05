@@ -652,11 +652,11 @@ const loadComments = async () => {
   if (rendererType === "css") {
     canvasElement.hidden = true;
     cssRendererElement.hidden = false;
-    // Do NOT apply displayScale here: HTML5CSSRenderer computes its own
-    // contain-scale from the element's layout dimensions. A CSS transform on
-    // the root does not trigger ResizeObserver, so the layer transform would
-    // remain stale for any video whose scale differs from 100.
-    cssRendererElement.style.transform = "";
+    // Apply the same displayScale as the canvas path. CSS transforms do not
+    // affect layout, so the ResizeObserver-computed layer scale (based on the
+    // element's layout dimensions) stays correct. The outer transform just
+    // scales the whole layer visually — no stale state.
+    cssRendererElement.style.transform = displayScale;
     activeCssRenderer = new NiconiComments.internal.renderer.HTML5CSSRenderer(
       cssRendererElement,
     );

@@ -385,6 +385,7 @@ class HTML5CSSRenderer implements IRenderer {
       this.videoSurface.setSize(size.width, size.height);
       this.setupVideoCanvas();
     }
+    this.restoreFrameStartState();
     this.resetState();
     this.helper = this.prepareHelperSurface(0);
     this.helper.canvas.style.display = "none";

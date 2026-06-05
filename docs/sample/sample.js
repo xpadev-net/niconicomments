@@ -707,6 +707,7 @@ const loadComments = async () => {
           "WebGL2 renderer is not available in this environment:",
           e,
         );
+        nico = null;
         return;
       }
     } else {

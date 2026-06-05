@@ -649,6 +649,7 @@ class HTML5CSSRenderer implements IRenderer {
     }
     this.prevCanvasSet.delete(source);
     this.activeCanvasSet.delete(source);
+    this.ownedCanvases.delete(source);
     source.style.display = "none";
     source.remove();
   }

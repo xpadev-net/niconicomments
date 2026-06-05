@@ -952,7 +952,7 @@ if (!noVideo) {
   controlRendererElement.onchange = (e) => {
     rendererType = e.target.value;
     urlParams.set("renderer", rendererType);
-    history.pushState(
+    history.replaceState(
       "",
       "",
       `${window.location.pathname}?${urlParams.toString()}`,

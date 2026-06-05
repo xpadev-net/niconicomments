@@ -519,27 +519,39 @@ class HTML5CSSRenderer implements IRenderer {
     }
     // Place the source canvas directly in the layer — no toDataURL needed.
     // CSS width/height scales the canvas content just as it would an <img>.
-    if (!this.setupCanvases.has(source)) {
-      source.style.position = "absolute";
-      source.style.margin = "0";
-      source.style.padding = "0";
-      source.style.pointerEvents = "none";
-      source.style.transformOrigin = "0 0";
-      source.style.maxWidth = "none";
-      source.style.maxHeight = "none";
-      this.setupCanvases.add(source);
+    // If the same source was already placed this frame (e.g. two comments sharing
+    // the same imageCache entry), copy its pixels to a fresh canvas so both
+    // occurrences can be independently positioned in the DOM.
+    let element: HTMLCanvasElement;
+    if (this.activeCanvasSet.has(source)) {
+      element = this.root.ownerDocument.createElement("canvas");
+      element.width = source.width;
+      element.height = source.height;
+      element.getContext("2d")?.drawImage(source, 0, 0);
+    } else {
+      element = source;
     }
-    this.layer.appendChild(source);
-    source.style.display = "block";
-    source.style.opacity = String(this.state.alpha);
+    if (!this.setupCanvases.has(element)) {
+      element.style.position = "absolute";
+      element.style.margin = "0";
+      element.style.padding = "0";
+      element.style.pointerEvents = "none";
+      element.style.transformOrigin = "0 0";
+      element.style.maxWidth = "none";
+      element.style.maxHeight = "none";
+      this.setupCanvases.add(element);
+    }
+    this.layer.appendChild(element);
+    element.style.display = "block";
+    element.style.opacity = String(this.state.alpha);
     this.positionNode(
-      source,
+      element,
       x,
       y,
       width ?? source.width,
       height ?? source.height,
     );
-    this.activeCanvasSet.add(source);
+    this.activeCanvasSet.add(element);
   }
 
   flush(): void {

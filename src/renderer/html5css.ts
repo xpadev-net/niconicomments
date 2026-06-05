@@ -436,6 +436,7 @@ class HTML5CSSRenderer implements IRenderer {
     this.helper.restore();
     this.helperDirty = true;
     this.pathActive = false;
+    this.textDrawnBeforeDom = false;
   }
 
   save(): void {

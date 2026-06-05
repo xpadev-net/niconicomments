@@ -11,8 +11,9 @@
  *   - The CSS-renderer layer `transform:scale()` is also exactly 1
  * This eliminates letterbox-related pixel differences and keeps tolerances tight.
  *
- * NOTE: visual-regression tests must run on GitHub CI (not locally) due to
- * font rendering differences across platforms.
+ * NOTE: unlike test.spec.ts (which compares against stored PNG fixtures),
+ * these tests compare two live renderers in the same process and are not
+ * sensitive to cross-platform font rendering — they can be run locally.
  */
 
 import type { Page } from "@playwright/test";

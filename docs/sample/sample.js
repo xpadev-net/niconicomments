@@ -665,6 +665,9 @@ const loadComments = async () => {
     // between Canvas 2D and WebGL2 works — browsers do not allow changing a
     // canvas's context type once acquired.
     const freshCanvas = canvasElement.ownerDocument.createElement("canvas");
+    for (const { name, value } of canvasElement.attributes) {
+      freshCanvas.setAttribute(name, value);
+    }
     canvasElement.replaceWith(freshCanvas);
     canvasElement = freshCanvas;
     canvasElement.style.transform = displayScale;

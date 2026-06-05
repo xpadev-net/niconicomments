@@ -860,9 +860,9 @@ class HTML5CSSRenderer implements IRenderer {
   }
 
   private resetState(): void {
-    const { scaleX, scaleY } = this.state;
+    const { scaleX, scaleY, lineWidth } = this.state;
     this.stateStack.length = 0;
-    this.state = { ...DEFAULT_CSS_RENDER_STATE, scaleX, scaleY };
+    this.state = { ...DEFAULT_CSS_RENDER_STATE, scaleX, scaleY, lineWidth };
   }
 
   private restoreFrameStartState(): void {

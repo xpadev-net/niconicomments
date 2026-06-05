@@ -688,9 +688,18 @@ const loadComments = async () => {
         canvasElement,
       );
     } else if (rendererType === "webgl") {
-      renderer = new NiconiComments.internal.renderer.WebGL2Renderer(
-        canvasElement,
-      );
+      try {
+        renderer = new NiconiComments.internal.renderer.WebGL2Renderer(
+          canvasElement,
+        );
+      } catch (e) {
+        canvasElement.hidden = true;
+        console.error(
+          "WebGL2 renderer is not available in this environment:",
+          e,
+        );
+        return;
+      }
     } else {
       renderer = NiconiComments.internal.renderer.createRenderer(canvasElement);
     }

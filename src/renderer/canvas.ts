@@ -58,19 +58,15 @@ class CanvasRenderer implements IRenderer {
   /** プールから取得した canvas かどうか (destroy 時にプールに返却するため) */
   private readonly pooled: boolean;
   private readonly _onDestroy?: () => void;
-  /** Called after every draw/resize operation. Intended for parent compositors that need to re-blit this canvas into their own surface; currently unused (all callers pass undefined). */
-  private readonly _onChange?: () => void;
 
   constructor(
     canvas?: HTMLCanvasElement,
     video?: HTMLVideoElement,
     padding = 0,
     onDestroy?: () => void,
-    onChange?: () => void,
   ) {
     this.pooled = !canvas;
     this._onDestroy = onDestroy;
-    this._onChange = onChange;
     this.canvas = canvas ?? canvasPool.acquire();
     const context = this.canvas.getContext("2d");
     if (!context) throw new CanvasRenderingContext2DError();
@@ -109,7 +105,6 @@ class CanvasRenderer implements IRenderer {
         this.video.videoWidth * scale,
         this.video.videoHeight * scale,
       );
-      this._onChange?.();
     }
   }
 
@@ -135,25 +130,20 @@ class CanvasRenderer implements IRenderer {
     if (width === undefined || height === undefined)
       this.context.drawImage(image.canvas, x, y);
     else this.context.drawImage(image.canvas, x, y, width, height);
-    this._onChange?.();
   }
 
   fillRect(x: number, y: number, width: number, height: number): void {
     this.context.fillRect(x, y, width, height);
-    this._onChange?.();
   }
   strokeRect(x: number, y: number, width: number, height: number) {
     this.context.strokeRect(x, y, width, height);
-    this._onChange?.();
   }
 
   fillText(text: string, x: number, y: number): void {
     this.context.fillText(text, x, y);
-    this._onChange?.();
   }
   strokeText(text: string, x: number, y: number) {
     this.context.strokeText(text, x, y);
-    this._onChange?.();
   }
 
   quadraticCurveTo(cpx: number, cpy: number, x: number, y: number): void {
@@ -162,7 +152,6 @@ class CanvasRenderer implements IRenderer {
 
   clearRect(x: number, y: number, width: number, height: number): void {
     this.context.clearRect(x, y, width, height);
-    this._onChange?.();
   }
 
   setFont(font: string): void {
@@ -187,7 +176,6 @@ class CanvasRenderer implements IRenderer {
     this.height = Math.max(0, size.height - paddingSize);
     this.canvas.width = size.width;
     this.canvas.height = size.height;
-    this._onChange?.();
   }
 
   getSize(): { width: number; height: number } {
@@ -228,7 +216,6 @@ class CanvasRenderer implements IRenderer {
   }
   stroke(): void {
     this.context.stroke();
-    this._onChange?.();
   }
   save(): void {
     this.context.save();

@@ -489,13 +489,7 @@ class HTML5CSSRenderer implements IRenderer {
               if (inner) parentRef.deref()?.invalidateImage(inner);
             };
           })();
-    inner = new CanvasRenderer(
-      undefined,
-      undefined,
-      padding,
-      invalidate,
-      undefined, // onChange: canvas is live in the layer — no snapshot caching needed
-    );
+    inner = new CanvasRenderer(undefined, undefined, padding, invalidate);
     this.ownedCanvases.add(inner.canvas);
     return inner;
   }

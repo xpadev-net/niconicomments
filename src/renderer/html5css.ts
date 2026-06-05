@@ -547,12 +547,26 @@ class HTML5CSSRenderer implements IRenderer {
       element = this.root.ownerDocument.createElement("canvas");
       element.width = source.width;
       element.height = source.height;
-      element.getContext("2d")?.drawImage(source, 0, 0);
+      const ctx = element.getContext("2d");
+      if (!ctx) {
+        console.warn(
+          "HTML5CSSRenderer: failed to acquire 2D context for canvas copy.",
+        );
+        return;
+      }
+      ctx.drawImage(source, 0, 0);
     } else if (this.activeCanvasSet.has(source)) {
       element = this.root.ownerDocument.createElement("canvas");
       element.width = source.width;
       element.height = source.height;
-      element.getContext("2d")?.drawImage(source, 0, 0);
+      const ctx = element.getContext("2d");
+      if (!ctx) {
+        console.warn(
+          "HTML5CSSRenderer: failed to acquire 2D context for canvas clone.",
+        );
+        return;
+      }
+      ctx.drawImage(source, 0, 0);
       let clones = this.cloneMap.get(source);
       if (!clones) {
         clones = new Set();

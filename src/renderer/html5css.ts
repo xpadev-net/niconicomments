@@ -63,6 +63,9 @@ class HTML5CSSRenderer implements IRenderer {
     HTMLCanvasElement,
     HTMLCanvasElement
   >();
+  // Canvases created by this renderer's getCanvas() — safe to reparent in drawImage.
+  // External canvases are never reparented; pixels are copied instead.
+  private readonly ownedCanvases = new WeakSet<HTMLCanvasElement>();
   private readonly resizeObserver?: ResizeObserver;
   private readonly originalRootStyle: {
     boxSizing: string;
@@ -493,6 +496,7 @@ class HTML5CSSRenderer implements IRenderer {
       invalidate,
       undefined, // onChange: canvas is live in the layer — no snapshot caching needed
     );
+    this.ownedCanvases.add(inner.canvas);
     return inner;
   }
 
@@ -533,11 +537,18 @@ class HTML5CSSRenderer implements IRenderer {
     }
     // Place the source canvas directly in the layer — no toDataURL needed.
     // CSS width/height scales the canvas content just as it would an <img>.
-    // If the same source was already placed this frame (e.g. two comments sharing
-    // the same imageCache entry), copy its pixels to a fresh canvas so both
-    // occurrences can be independently positioned in the DOM.
+    // Only canvases created by this renderer's getCanvas() are safe to
+    // reparent into the layer. External canvases (e.g. plugin-owned) are never
+    // reparented — pixels are copied so the caller's DOM is left intact.
+    // For owned canvases drawn twice in one frame, also copy to allow both
+    // occurrences to be independently positioned.
     let element: HTMLCanvasElement;
-    if (this.activeCanvasSet.has(source)) {
+    if (!this.ownedCanvases.has(source)) {
+      element = this.root.ownerDocument.createElement("canvas");
+      element.width = source.width;
+      element.height = source.height;
+      element.getContext("2d")?.drawImage(source, 0, 0);
+    } else if (this.activeCanvasSet.has(source)) {
       element = this.root.ownerDocument.createElement("canvas");
       element.width = source.width;
       element.height = source.height;

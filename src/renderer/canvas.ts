@@ -6,7 +6,7 @@ const MAX_CANVAS_DIMENSION = 8192;
 export const MAX_CANVAS_AREA = 16_777_216;
 const MAX_MEASURE_TEXT_CACHE_TEXT_LENGTH = 512;
 
-const clampCanvasSize = (width: number, height: number) => {
+export const clampCanvasSize = (width: number, height: number) => {
   let nextWidth = Number.isFinite(width) ? Math.max(0, Math.floor(width)) : 0;
   let nextHeight = Number.isFinite(height)
     ? Math.max(0, Math.floor(height))

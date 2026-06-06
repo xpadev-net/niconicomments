@@ -7,17 +7,54 @@
   </head>
   <body id="body">
     <canvas id="canvas" width="1920" height="1080"></canvas>
+    <div id="css-renderer" data-width="1920" data-height="1080" hidden></div>
   </body>
 </html>
 <script>
   void (async () => {
     const canvasElement = document.getElementById("canvas");
+    const cssRendererElement = document.getElementById("css-renderer");
     const urlParams = new URLSearchParams(window.location.search);
     const video = Number(urlParams.get("video") || 0);
     const time = Number(urlParams.get("time") || 0);
+    const rendererType = urlParams.get("renderer");
     const req = await fetch(`./commentdata/${video}.json`);
     const res = await req.json();
-    const nico = new NiconiComments(canvasElement, res, {
+    let renderer;
+    if (rendererType === "css") {
+      canvasElement.hidden = true;
+      cssRendererElement.hidden = false;
+      try {
+        renderer = new NiconiComments.internal.renderer.HTML5CSSRenderer(
+          cssRendererElement,
+        );
+      } catch (e) {
+        const err = document.createElement("div");
+        err.id = "renderer-error";
+        err.textContent = String(e);
+        document.body.appendChild(err);
+        return;
+      }
+    } else if (rendererType === "canvas") {
+      renderer = new NiconiComments.internal.renderer.CanvasRenderer(
+        canvasElement,
+      );
+    } else if (rendererType === "webgl") {
+      try {
+        renderer = new NiconiComments.internal.renderer.WebGL2Renderer(
+          canvasElement,
+        );
+      } catch (e) {
+        const err = document.createElement("div");
+        err.id = "renderer-error";
+        err.textContent = String(e);
+        document.body.appendChild(err);
+        return;
+      }
+    } else {
+      renderer = canvasElement;
+    }
+    const nico = new NiconiComments(renderer, res, {
       format: "formatted",
     });
     nico.drawCanvas(time * 100);
@@ -38,6 +75,14 @@
     left: 0;
     top: 0;
     object-fit: contain;
+    background: black;
+  }
+  #css-renderer {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
     background: black;
   }
 </style>

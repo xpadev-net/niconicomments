@@ -4,7 +4,7 @@ const DEFAULT_NIWANGO_VERSION = "0.0.1-canary.20231002-1";
 const MAX_VERSION_LENGTH = 64;
 const VERSION_PARAM_CONFIG = {
   ncVersion: {
-    aliases: new Set(),
+    aliases: new Set(["local"]),
     defaultValue: DEFAULT_NC_VERSION,
   },
   pluginVersion: {
@@ -113,7 +113,9 @@ const loadScript = (src) =>
 
 const encodeVersionForUrl = (value) => encodeURIComponent(value);
 const getNCUrl = (v) =>
-  `https://cdn.jsdelivr.net/npm/@xpadev-net/niconicomments@${encodeVersionForUrl(v)}/dist/bundle.min.js`;
+  v === "local"
+    ? "../../dist/bundle.js"
+    : `https://cdn.jsdelivr.net/npm/@xpadev-net/niconicomments@${encodeVersionForUrl(v)}/dist/bundle.min.js`;
 const getPluginUrl = (v) =>
   `https://cdn.jsdelivr.net/npm/@xpadev-net/niconicomments-plugin-niwango@${encodeVersionForUrl(v)}/dist/bundle.min.js`;
 const getNiwangoUrl = (v) =>
@@ -363,6 +365,10 @@ let player,
   nicoIframe,
   nico = null,
   mode = "default",
+  rendererType = (() => {
+    const v = urlParams.get("renderer");
+    return ["auto", "canvas", "webgl", "css"].includes(v) ? v : "auto";
+  })(),
   showFPS = false,
   showCollision = false,
   showCommentCount = false,
@@ -378,6 +384,8 @@ let player,
   loadGeneration = 0,
   nicoLoadId = 0,
   videoChangeGeneration = 0;
+/** @type {InstanceType<typeof NiconiComments.internal.renderer.HTML5CSSRenderer> | null} */
+let activeCssRenderer = null;
 
 // --- DOM references ---
 /** @type {HTMLDivElement} */
@@ -404,9 +412,13 @@ const controlToggleElement = document.getElementById("toggle");
 /** @type {HTMLDivElement} */
 const container = document.getElementById("container");
 /** @type {HTMLCanvasElement} */
-const canvasElement = document.getElementById("canvas");
+let canvasElement = document.getElementById("canvas");
+/** @type {HTMLDivElement} */
+const cssRendererElement = document.getElementById("css-renderer");
 /** @type {HTMLDivElement} */
 const backgroundElement = document.getElementById("background");
+/** @type {HTMLSelectElement} */
+const controlRendererElement = document.getElementById("control-renderer");
 /** @type {HTMLSelectElement} */
 const ncVersionElement = document.getElementById("nc-version");
 /** @type {HTMLSelectElement} */
@@ -434,6 +446,7 @@ const ensureVersionOption = (selectEl, version) => {
 ensureVersionOption(ncVersionElement, ncVersion);
 ensureVersionOption(pluginVersionElement, pluginVersion);
 ensureVersionOption(niwangoVersionElement, niwangoVersion);
+controlRendererElement.value = rendererType;
 
 const fetchVersions = async (packageName) => {
   try {
@@ -627,13 +640,80 @@ const loadComments = async () => {
   const gen = ++loadGeneration;
   const videoItem = getVideoItem();
   if (!videoItem) return;
-  canvasElement.style.transform = `scale(${videoItem.scale ?? 100}%)`;
+  const displayScale = `scale(${videoItem.scale ?? 100}%)`;
   const req = await fetch(`./commentdata/${video}.json`);
   if (!req.ok) throw new Error(`Failed to load comment data: ${req.status}`);
   const res = await req.json();
   if (gen !== loadGeneration) return;
-  const renderer =
-    NiconiComments.internal.renderer.createRenderer(canvasElement);
+  activeCssRenderer?.destroy();
+  activeCssRenderer = null;
+  let renderer;
+  if (rendererType === "css") {
+    // Guard: HTML5CSSRenderer is only available in recent builds; older CDN
+    // versions won't have it.
+    if (!NiconiComments.internal?.renderer?.HTML5CSSRenderer) {
+      canvasElement.hidden = false;
+      cssRendererElement.hidden = true;
+      console.error(
+        "CSS renderer is not available in this version of the library.",
+      );
+      nico = null;
+      return;
+    }
+    canvasElement.hidden = true;
+    cssRendererElement.hidden = false;
+    // Apply the same displayScale as the canvas path. CSS transforms do not
+    // affect layout, so the ResizeObserver-computed layer scale (based on the
+    // element's layout dimensions) stays correct. The outer transform just
+    // scales the whole layer visually — no stale state.
+    cssRendererElement.style.transform = displayScale;
+    try {
+      activeCssRenderer = new NiconiComments.internal.renderer.HTML5CSSRenderer(
+        cssRendererElement,
+      );
+    } catch (e) {
+      canvasElement.hidden = false;
+      cssRendererElement.hidden = true;
+      console.error("CSS renderer failed to initialise:", e);
+      nico = null;
+      return;
+    }
+    renderer = activeCssRenderer;
+  } else {
+    // Replace the canvas with a fresh element on every load so that switching
+    // between Canvas 2D and WebGL2 works — browsers do not allow changing a
+    // canvas's context type once acquired.
+    const freshCanvas = canvasElement.ownerDocument.createElement("canvas");
+    for (const { name, value } of canvasElement.attributes) {
+      freshCanvas.setAttribute(name, value);
+    }
+    canvasElement.replaceWith(freshCanvas);
+    canvasElement = freshCanvas;
+    canvasElement.style.transform = displayScale;
+    canvasElement.hidden = false;
+    cssRendererElement.hidden = true;
+    if (rendererType === "canvas") {
+      renderer = new NiconiComments.internal.renderer.CanvasRenderer(
+        canvasElement,
+      );
+    } else if (rendererType === "webgl") {
+      try {
+        renderer = new NiconiComments.internal.renderer.WebGL2Renderer(
+          canvasElement,
+        );
+      } catch (e) {
+        canvasElement.hidden = true;
+        console.error(
+          "WebGL2 renderer is not available in this environment:",
+          e,
+        );
+        nico = null;
+        return;
+      }
+    } else {
+      renderer = NiconiComments.internal.renderer.createRenderer(canvasElement);
+    }
+  }
   nico = new NiconiComments(renderer, res, {
     mode: mode,
     keepCA: keepCA,
@@ -886,6 +966,16 @@ if (!noVideo) {
   };
   controlModeElement.onchange = (e) => {
     mode = e.target.value;
+    void loadComments();
+  };
+  controlRendererElement.onchange = (e) => {
+    rendererType = e.target.value;
+    urlParams.set("renderer", rendererType);
+    history.replaceState(
+      "",
+      "",
+      `${window.location.pathname}?${urlParams.toString()}`,
+    );
     void loadComments();
   };
   controlKeepCAElement.onchange = (e) => {

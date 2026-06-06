@@ -860,6 +860,7 @@ class NiconiComments {
   public clear() {
     const size = this.renderer.getSize();
     this.renderer.clearRect(0, 0, size.width, size.height);
+    this.renderer.flush();
   }
 
   /**

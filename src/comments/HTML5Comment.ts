@@ -263,23 +263,94 @@ class HTML5Comment extends BaseComment {
       MIN_HTML5_RESIZE_CHAR_SIZE,
       comment.lineHeight ?? 0,
     );
-    const baseCharSize = Math.max(
-      MIN_HTML5_RESIZE_CHAR_SIZE,
-      currentCharSize * scale,
-    );
+    const rawBaseCharSize = currentCharSize * scale;
+    const rawBaseLineHeight = currentLineHeight * scale;
+    const baseCharSize = Math.max(MIN_HTML5_RESIZE_CHAR_SIZE, rawBaseCharSize);
     const baseLineHeight = Math.max(
       MIN_HTML5_RESIZE_CHAR_SIZE,
-      currentLineHeight * scale,
+      rawBaseLineHeight,
     );
+    const legacyBaseCharSize = Math.max(1, rawBaseCharSize);
+    const legacyBaseLineHeight = Math.max(1, rawBaseLineHeight);
 
     const workComment: MeasureTextInput = {
       ...comment,
-      charSize: baseCharSize,
-      lineHeight: baseLineHeight,
-      fontSize: baseCharSize * 0.8,
+      charSize: legacyBaseCharSize,
+      lineHeight: legacyBaseLineHeight,
+      fontSize: legacyBaseCharSize * 0.8,
     };
     if (!typeGuard.internal.MeasureInput(workComment)) {
       throw new TypeGuardError();
+    }
+
+    const getLegacyMeasured = (nextCharSize: number) => {
+      workComment.charSize = nextCharSize;
+      workComment.lineHeight =
+        legacyBaseLineHeight * (nextCharSize / legacyBaseCharSize);
+      workComment.fontSize = nextCharSize * 0.8;
+      return measure(workComment, this.renderer, this.config);
+    };
+
+    if (baseCharSize >= 1) {
+      let low = Math.max(1, Math.floor(legacyBaseCharSize * 0.5));
+      let high = Math.max(low, Math.ceil(legacyBaseCharSize * 1.5));
+      let best = legacyBaseCharSize;
+      let bestResult = getLegacyMeasured(legacyBaseCharSize);
+      if (bestResult.width > widthLimit) {
+        high = legacyBaseCharSize;
+        let remainingIterations = MAX_RESIZE_ITERATIONS;
+        while (remainingIterations-- > 0) {
+          const candidate = getLegacyMeasured(low);
+          const nextLow = Math.max(1, Math.floor(low * 0.5));
+          if (candidate.width <= widthLimit || nextLow === low) {
+            best = low;
+            bestResult = candidate;
+            break;
+          }
+          high = low;
+          low = nextLow;
+        }
+      } else {
+        let remainingIterations = MAX_RESIZE_ITERATIONS;
+        while (remainingIterations-- > 0) {
+          const candidate = getLegacyMeasured(high);
+          if (candidate.width > widthLimit) break;
+          best = high;
+          bestResult = candidate;
+          const nextHigh = Math.ceil(high * 1.5);
+          if (nextHigh === high) break;
+          high = nextHigh;
+        }
+      }
+      if (bestResult.width <= widthLimit && low < high) {
+        let left = best;
+        let right = high;
+        while (left <= right) {
+          const mid = Math.floor((left + right) / 2);
+          const candidate = getLegacyMeasured(mid);
+          if (candidate.width <= widthLimit) {
+            best = mid;
+            bestResult = candidate;
+            left = mid + 1;
+          } else {
+            right = mid - 1;
+          }
+        }
+      }
+      if (comment.resizedY) {
+        const resizeScale = best / (comment.charSize ?? 1);
+        comment.charSize = resizeScale * charSize;
+        comment.lineHeight = resizeScale * lineHeight;
+      } else {
+        comment.charSize = best;
+        comment.lineHeight = legacyBaseLineHeight * (best / legacyBaseCharSize);
+      }
+      comment.fontSize = (comment.charSize ?? 0) * 0.8;
+      return measure(
+        comment as MeasureTextInput & MeasureInput,
+        this.renderer,
+        this.config,
+      );
     }
 
     const getMeasured = (_nextCharSize: number) => {
@@ -399,10 +470,7 @@ class HTML5Comment extends BaseComment {
       scale *
       (this.comment.layer === -1 ? this.ctx.options.scale : 1);
     const image = this.renderer.getCanvas(HTML5_COMMENT_IMAGE_PADDING);
-    image.setSize(
-      Math.max(1, this.comment.width),
-      Math.max(1, this.comment.height),
-    );
+    image.setSize(this.comment.width, this.comment.height);
     image.setStrokeStyle(getStrokeColor(this.comment, this.config));
     image.setFillStyle(this.comment.color);
     image.setLineWidth(getConfig(this.config.contextLineWidth, false));

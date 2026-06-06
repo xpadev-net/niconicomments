@@ -1,7 +1,7 @@
 import type { IComment, IRenderer } from "@/@types/";
 
 export interface IPluginConstructor {
-  id: string;
+  id?: string;
   new (Canvas: IRenderer, comments: IComment[]): IPlugin;
 }
 

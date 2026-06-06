@@ -29,6 +29,7 @@ import { addHTML5PartToResult } from "@/utils/niconico";
 import { BaseComment } from "./BaseComment";
 
 const MAX_RESIZE_ITERATIONS = 20;
+const MIN_HTML5_RESIZE_CHAR_SIZE = 1e-6;
 const MAX_HTML5_COMMENT_CHARS = 16_384;
 const MAX_HTML5_COMMENT_LINES = 256;
 const HTML5_COMMENT_IMAGE_PADDING = 4;
@@ -254,8 +255,22 @@ class HTML5Comment extends BaseComment {
     const charSize = getCharSize(comment.size, false, this.config);
     const scale = widthLimit / width;
     comment.resizedX = true;
-    const baseCharSize = Math.max(1, (comment.charSize ?? 0) * scale);
-    const baseLineHeight = Math.max(1, (comment.lineHeight ?? 0) * scale);
+    const currentCharSize = Math.max(
+      MIN_HTML5_RESIZE_CHAR_SIZE,
+      comment.charSize ?? 0,
+    );
+    const currentLineHeight = Math.max(
+      MIN_HTML5_RESIZE_CHAR_SIZE,
+      comment.lineHeight ?? 0,
+    );
+    const baseCharSize = Math.max(
+      MIN_HTML5_RESIZE_CHAR_SIZE,
+      currentCharSize * scale,
+    );
+    const baseLineHeight = Math.max(
+      MIN_HTML5_RESIZE_CHAR_SIZE,
+      currentLineHeight * scale,
+    );
 
     const workComment: MeasureTextInput = {
       ...comment,
@@ -267,60 +282,57 @@ class HTML5Comment extends BaseComment {
       throw new TypeGuardError();
     }
 
-    const getMeasured = (nextCharSize: number) => {
-      workComment.charSize = nextCharSize;
-      workComment.lineHeight = baseLineHeight * (nextCharSize / baseCharSize);
-      workComment.fontSize = nextCharSize * 0.8;
+    const getMeasured = (_nextCharSize: number) => {
+      const nextCharSize = Math.max(MIN_HTML5_RESIZE_CHAR_SIZE, _nextCharSize);
+      if (comment.resizedY) {
+        const resizeScale = nextCharSize / currentCharSize;
+        workComment.charSize = resizeScale * charSize;
+        workComment.lineHeight = resizeScale * lineHeight;
+      } else {
+        workComment.charSize = nextCharSize;
+        workComment.lineHeight = baseLineHeight * (nextCharSize / baseCharSize);
+      }
+      workComment.fontSize = (workComment.charSize ?? 0) * 0.8;
       return measure(workComment, this.renderer, this.config);
     };
 
-    let low = Math.max(1, Math.floor(baseCharSize * 0.5));
-    let high = Math.max(low, Math.ceil(baseCharSize * 1.5));
     let best = baseCharSize;
-    let bestResult = getMeasured(baseCharSize);
-    if (bestResult.width > widthLimit) {
-      high = baseCharSize;
+    const baseResult = getMeasured(baseCharSize);
+    if (baseResult.width > widthLimit) {
+      let low = MIN_HTML5_RESIZE_CHAR_SIZE;
+      let high = baseCharSize;
       let remainingIterations = MAX_RESIZE_ITERATIONS;
-      while (remainingIterations-- > 0) {
-        const candidate = getMeasured(low);
-        const nextLow = Math.max(1, Math.floor(low * 0.5));
-        if (candidate.width <= widthLimit || nextLow === low) {
-          best = low;
-          bestResult = candidate;
-          break;
+      const lowResult = getMeasured(low);
+      best = low;
+      if (lowResult.width <= widthLimit) {
+        while (remainingIterations-- > 0 && low < high) {
+          const candidateCharSize = (low + high) / 2;
+          const candidate = getMeasured(candidateCharSize);
+          if (candidate.width <= widthLimit) {
+            best = candidateCharSize;
+            low = candidateCharSize;
+          } else {
+            high = candidateCharSize;
+          }
         }
-        high = low;
-        low = nextLow;
       }
     } else {
+      let low = baseCharSize;
+      let high = currentCharSize;
       let remainingIterations = MAX_RESIZE_ITERATIONS;
-      while (remainingIterations-- > 0) {
-        const candidate = getMeasured(high);
-        if (candidate.width > widthLimit) break;
-        best = high;
-        bestResult = candidate;
-        const nextHigh = Math.ceil(high * 1.5);
-        if (nextHigh === high) break;
-        high = nextHigh;
-      }
-    }
-    if (bestResult.width <= widthLimit && low < high) {
-      let left = best;
-      let right = high;
-      while (left <= right) {
-        const mid = Math.floor((left + right) / 2);
+      while (remainingIterations-- > 0 && low < high) {
+        const mid = (low + high) / 2;
         const candidate = getMeasured(mid);
         if (candidate.width <= widthLimit) {
           best = mid;
-          bestResult = candidate;
-          left = mid + 1;
+          low = mid;
         } else {
-          right = mid - 1;
+          high = mid;
         }
       }
     }
     if (comment.resizedY) {
-      const resizeScale = best / (comment.charSize ?? 1);
+      const resizeScale = best / currentCharSize;
       comment.charSize = resizeScale * charSize;
       comment.lineHeight = resizeScale * lineHeight;
     } else {
@@ -387,7 +399,10 @@ class HTML5Comment extends BaseComment {
       scale *
       (this.comment.layer === -1 ? this.ctx.options.scale : 1);
     const image = this.renderer.getCanvas(HTML5_COMMENT_IMAGE_PADDING);
-    image.setSize(this.comment.width, this.comment.height);
+    image.setSize(
+      Math.max(1, this.comment.width),
+      Math.max(1, this.comment.height),
+    );
     image.setStrokeStyle(getStrokeColor(this.comment, this.config));
     image.setFillStyle(this.comment.color);
     image.setLineWidth(getConfig(this.config.contextLineWidth, false));

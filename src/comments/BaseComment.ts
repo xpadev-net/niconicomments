@@ -469,22 +469,19 @@ class BaseComment implements IComment {
   }
 
   protected getButtonImage(
-    posX: number,
-    posY: number,
-    cursor?: Position,
+    _posX: number,
+    _posY: number,
+    _cursor?: Position,
   ): IRenderer | undefined {
-    console.error(
-      "getButtonImage method is not implemented",
-      posX,
-      posY,
-      cursor,
-    );
-    throw new NotImplementedError(this.pluginName, "getButtonImage");
+    return undefined;
   }
 
-  public isHovered(cursor?: Position, posX?: number, posY?: number): boolean {
-    console.error("isHovered method is not implemented", posX, posY, cursor);
-    throw new NotImplementedError(this.pluginName, "getButtonImage");
+  public isHovered(
+    _cursor?: Position,
+    _posX?: number,
+    _posY?: number,
+  ): boolean {
+    return false;
   }
 
   protected getCacheKey() {

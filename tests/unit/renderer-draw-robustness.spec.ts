@@ -1,6 +1,11 @@
 import { beforeAll, beforeEach, describe, expect, test, vi } from "vitest";
 
-import type { FormattedComment, IRenderer } from "@/@types";
+import type {
+  FormattedComment,
+  FormattedCommentWithSize,
+  IRenderer,
+} from "@/@types";
+import { BaseComment } from "@/comments";
 import { initConfig } from "@/definition/initConfig";
 import NiconiComments from "@/main";
 
@@ -103,6 +108,66 @@ class VideoSurfaceRenderer extends RecordingRenderer {
 
 class NullVideoRenderer extends RecordingRenderer {
   public readonly video = null;
+}
+
+class BaseStyleCommentWithoutButtons extends BaseComment {
+  protected override convertComment(
+    comment: FormattedComment,
+  ): FormattedCommentWithSize {
+    return {
+      ...comment,
+      loc: "ue",
+      size: "medium",
+      fontSize: 24,
+      font: "defont",
+      color: "#ffffff",
+      full: false,
+      ender: false,
+      _live: false,
+      long: 100,
+      invisible: false,
+      rawContent: comment.content,
+      flash: false,
+      lineCount: 1,
+      lineOffset: 0,
+      content: [
+        {
+          type: "text",
+          content: comment.content,
+          slicedContent: [comment.content],
+          width: [100],
+        },
+      ],
+      height: 24,
+      width: 100,
+      lineHeight: 24,
+      resized: false,
+      resizedX: false,
+      resizedY: false,
+      charSize: 24,
+      scale: 1,
+      scaleX: 1,
+      button: {
+        message: {
+          before: "",
+          body: "Push",
+          after: "",
+        },
+        commentMessage: "posted",
+        commentVisible: true,
+        commentMail: [],
+        limit: 1,
+        local: false,
+        hidden: false,
+      },
+    };
+  }
+
+  protected override _generateTextImage(): IRenderer {
+    return this.renderer.getCanvas();
+  }
+
+  protected override _drawCollision() {}
 }
 
 const createComment = (
@@ -208,5 +273,54 @@ describe("renderer draw robustness", () => {
     expect(instance.drawCanvas(2)).toBe(false);
     expect(renderer.clearRectCalls).toBe(1);
     expect(renderer.drawVideoCalls).toBe(1);
+  });
+
+  test("draws a base-style custom comment with button metadata as a no-op button", () => {
+    const renderer = new RecordingRenderer();
+    const instance = new NiconiComments(
+      renderer,
+      [createComment({ content: "custom button-like", mail: ["ue"] })],
+      {
+        format: "formatted",
+        mode: "html5",
+        config: {
+          commentPlugins: [
+            {
+              class: BaseStyleCommentWithoutButtons,
+              condition: () => true,
+            },
+          ],
+        },
+      },
+    );
+
+    expect(() => instance.drawCanvas(0, true, { x: 50, y: 10 })).not.toThrow();
+    expect(renderer.drawImageCalls).toBe(1);
+  });
+
+  test("click over a base-style custom comment with button metadata is a no-op", () => {
+    const instance = new NiconiComments(
+      new RecordingRenderer(),
+      [createComment({ content: "custom button-like", mail: ["ue"] })],
+      {
+        format: "formatted",
+        mode: "html5",
+        config: {
+          commentPlugins: [
+            {
+              class: BaseStyleCommentWithoutButtons,
+              condition: () => true,
+            },
+          ],
+        },
+      },
+    );
+    const state = instance as unknown as {
+      comments: { comment: { button?: { limit: number } } }[];
+    };
+
+    expect(() => instance.click(0, { x: 50, y: 10 })).not.toThrow();
+    expect(state.comments).toHaveLength(1);
+    expect(state.comments[0]?.comment.button?.limit).toBe(1);
   });
 });

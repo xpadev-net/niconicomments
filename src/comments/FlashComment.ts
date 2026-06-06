@@ -393,34 +393,37 @@ class FlashComment extends BaseComment {
   override _drawCollision(posX: number, posY: number, showCollision: boolean) {
     if (showCollision) {
       this.renderer.save();
-      this.renderer.setStrokeStyle("rgba(255,0,255,1)");
-      this.renderer.strokeRect(
-        posX,
-        posY,
-        this.comment.width,
-        this.comment.height,
-      );
-      for (let i = 0, n = this.comment.lineCount; i < n; i++) {
-        const linePosY =
-          ((i + 1) * (this.comment.fontSize * this.comment.lineHeight) +
-            this.config.flashCommentYPaddingTop[
-              this.comment.resizedY ? "resized" : "default"
-            ]) *
-          this.comment.scale;
-        this.renderer.setStrokeStyle("rgba(255,255,0,0.25)");
+      try {
+        this.renderer.setStrokeStyle("rgba(255,0,255,1)");
         this.renderer.strokeRect(
           posX,
-          posY + linePosY * this._globalScale,
+          posY,
           this.comment.width,
-          this.comment.fontSize *
-            this.comment.lineHeight *
-            -1 *
-            this._globalScale *
-            this.comment.scale *
-            (this.comment.layer === -1 ? this.ctx.options.scale : 1),
+          this.comment.height,
         );
+        for (let i = 0, n = this.comment.lineCount; i < n; i++) {
+          const linePosY =
+            ((i + 1) * (this.comment.fontSize * this.comment.lineHeight) +
+              this.config.flashCommentYPaddingTop[
+                this.comment.resizedY ? "resized" : "default"
+              ]) *
+            this.comment.scale;
+          this.renderer.setStrokeStyle("rgba(255,255,0,0.25)");
+          this.renderer.strokeRect(
+            posX,
+            posY + linePosY * this._globalScale,
+            this.comment.width,
+            this.comment.fontSize *
+              this.comment.lineHeight *
+              -1 *
+              this._globalScale *
+              this.comment.scale *
+              (this.comment.layer === -1 ? this.ctx.options.scale : 1),
+          );
+        }
+      } finally {
+        this.renderer.restore();
       }
-      this.renderer.restore();
     }
   }
 

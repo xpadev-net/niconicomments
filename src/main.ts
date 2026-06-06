@@ -89,6 +89,10 @@ const hasNakaComment = (items: readonly IComment[]) => {
   return hasNaka;
 };
 
+const rendererHasVideoSurface = (renderer: IRenderer) =>
+  "video" in renderer &&
+  (renderer as IRenderer & { readonly video?: unknown }).video != null;
+
 const removeUndefinedConfigValues = (
   config: NonNullable<Options["config"]>,
 ): NonNullable<Options["config"]> =>
@@ -550,7 +554,10 @@ class NiconiComments {
 
     const vposInt = Math.floor(vpos);
     const drawCanvasStart = performance.now();
-    if (this.lastVpos === vpos && !forceRendering) return false;
+    const requiresVideoRedraw = rendererHasVideoSurface(this.renderer);
+    if (this.lastVpos === vpos && !forceRendering && !requiresVideoRedraw) {
+      return false;
+    }
     const triggerHandlerStart = profile ? performance.now() : 0;
     this.eventHandler.trigger(vposInt, this.lastVposInt, this.ctx.nicoScripts);
     setProfile("triggerHandler", triggerHandlerStart);
@@ -573,6 +580,7 @@ class NiconiComments {
     this._cachedSplit = { vpos: vposInt, hasNaka: currentHasNaka };
     if (
       !forceRendering &&
+      !requiresVideoRedraw &&
       this.plugins.length === 0 &&
       !currentHasNaka &&
       !lastHasNaka &&
@@ -743,8 +751,15 @@ class NiconiComments {
           continue;
         }
       }
-      comment.draw(vpos, this.showCollision, cursor, frameActiveState);
-      drawnCount += 1;
+      try {
+        comment.draw(vpos, this.showCollision, cursor, frameActiveState);
+        drawnCount += 1;
+      } catch (e) {
+        const message = e instanceof Error ? e.message : String(e);
+        this._log(
+          `_drawComments: failed to draw comment index=${comment.index}: ${message}`,
+        );
+      }
     }
     return drawnCount;
   }

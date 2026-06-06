@@ -80,6 +80,8 @@ class FakeRenderer implements IRenderer {
   invalidateImage() {}
 }
 
+class IdlessPlugin {}
+
 const createComment = (id: number): FormattedComment => ({
   id,
   vpos: 0,
@@ -243,6 +245,17 @@ describe("init option and config bounds", () => {
           format: "formatted",
           mode: "html5",
           config: { ...defaultConfig },
+        }),
+    ).not.toThrow();
+  });
+
+  test("accepts plugin constructors without static ids for compatibility", () => {
+    expect(
+      () =>
+        new NiconiComments(new FakeRenderer(), [], {
+          format: "formatted",
+          mode: "html5",
+          config: { plugins: [IdlessPlugin] },
         }),
     ).not.toThrow();
   });

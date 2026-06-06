@@ -246,12 +246,7 @@ const isBoundedFlashDoubleResizeHeights = (item: unknown): boolean => {
 };
 
 const isValidPlugins = (item: unknown): boolean =>
-  Array.isArray(item) &&
-  item.every(
-    (plugin) =>
-      typeof plugin === "function" &&
-      typeof (plugin as { id?: unknown }).id === "string",
-  );
+  Array.isArray(item) && item.every((plugin) => typeof plugin === "function");
 
 const isValidCommentPlugins = (item: unknown): boolean =>
   Array.isArray(item) &&

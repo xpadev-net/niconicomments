@@ -315,9 +315,12 @@ describe("renderer draw robustness", () => {
         },
       },
     );
-    const state = instance as unknown as { comments: unknown[] };
+    const state = instance as unknown as {
+      comments: { comment: { button?: { limit: number } } }[];
+    };
 
     expect(() => instance.click(0, { x: 50, y: 10 })).not.toThrow();
     expect(state.comments).toHaveLength(1);
+    expect(state.comments[0]?.comment.button?.limit).toBe(1);
   });
 });

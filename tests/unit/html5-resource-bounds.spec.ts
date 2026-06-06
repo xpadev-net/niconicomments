@@ -194,17 +194,76 @@ describe("HTML5 comment resource bounds", () => {
     expect(renderer.children[0]?.strokeTextCalls).toBe(3);
   });
 
-  test("keeps fixed-comment resize measurement bounded for huge text", () => {
+  test.each([
+    "ue",
+    "shita",
+  ] as const)("keeps %s fixed-comment resize measurement bounded for huge text", (loc) => {
     const renderer = new RecordingRenderer();
     const comment = new TestHTML5Comment(
-      formattedComment(1, "x".repeat(5000), ["ue"]),
+      formattedComment(1, "x".repeat(5000), [loc]),
       renderer,
       0,
       createContext(),
     );
+    const widthLimit =
+      defaultConfig.commentStageSize.html5.width *
+      defaultConfig.commentScale.html5;
 
     expect(comment.comment.resizedX).toBe(true);
+    expect(comment.comment.charSize).toBeLessThan(1);
+    expect(comment.comment.width).toBeLessThanOrEqual(widthLimit);
     expect(renderer.measureCalls).toBeLessThanOrEqual(80);
+
+    const image = comment.exposeTextImage() as RecordingRenderer | null;
+
+    expect(image).not.toBeNull();
+    expect(image?.getSize().width).toBeLessThanOrEqual(widthLimit);
+    expect(image?.getSize().height).toBeGreaterThan(0);
+  });
+
+  test("keeps fixed-comment resize measurement bounded at max content length", () => {
+    const renderer = new RecordingRenderer();
+    const comment = new TestHTML5Comment(
+      formattedComment(1, "x".repeat(20_000), ["ue"]),
+      renderer,
+      0,
+      createContext(),
+    );
+    const widthLimit =
+      defaultConfig.commentStageSize.html5.width *
+      defaultConfig.commentScale.html5;
+
+    expect(comment.comment.resizedX).toBe(true);
+    expect(comment.comment.width).toBeLessThanOrEqual(widthLimit);
+    expect(renderer.measureCalls).toBeLessThanOrEqual(80);
+  });
+
+  test("keeps fixed-comment resize bounded when max line count also applies", () => {
+    const renderer = new RecordingRenderer();
+    const comment = new TestHTML5Comment(
+      formattedComment(1, `${"x".repeat(5000)}\n${"\n".repeat(10_000)}`, [
+        "shita",
+      ]),
+      renderer,
+      0,
+      createContext(),
+    );
+    const widthLimit =
+      defaultConfig.commentStageSize.html5.width *
+      defaultConfig.commentScale.html5;
+
+    expect(comment.comment.lineCount).toBe(256);
+    expect(comment.comment.resizedX).toBe(true);
+    expect(comment.comment.resizedY).toBe(true);
+    expect(comment.comment.charSize).toBeLessThan(1);
+    expect(comment.comment.width).toBeLessThanOrEqual(widthLimit);
+    expect(renderer.measureCalls).toBeLessThanOrEqual(7000);
+
+    const image = comment.exposeTextImage() as RecordingRenderer | null;
+
+    expect(image).not.toBeNull();
+    expect(image?.getSize().width).toBeLessThanOrEqual(widthLimit);
+    expect(image?.getSize().height).toBeGreaterThan(0);
   });
 
   test("bounds cache keys and per-context image cache growth", () => {
@@ -270,5 +329,28 @@ describe("HTML5 comment resource bounds", () => {
     expect(canvas.height).toBeLessThanOrEqual(8192);
     expect(renderer.getSize().width).toBe(canvas.width - 8);
     expect(renderer.getSize().height).toBe(canvas.height - 8);
+  });
+
+  test("keeps subpixel padded canvas dimensions visible", () => {
+    const context = {
+      textAlign: "start",
+      textBaseline: "alphabetic",
+      lineJoin: "round",
+      translate: vi.fn(),
+      measureText: vi.fn(() => textMetrics(1)),
+    };
+    const canvas = {
+      width: 0,
+      height: 0,
+      getContext: vi.fn(() => context),
+    } as unknown as HTMLCanvasElement;
+    const renderer = new CanvasRenderer(canvas, undefined, 4);
+
+    renderer.setSize(0.25, 0.25);
+
+    expect(canvas.width).toBe(9);
+    expect(canvas.height).toBe(9);
+    expect(renderer.getSize().width).toBe(1);
+    expect(renderer.getSize().height).toBe(1);
   });
 });

@@ -338,32 +338,35 @@ class HTML5Comment extends BaseComment {
   override _drawCollision(posX: number, posY: number, showCollision: boolean) {
     if (showCollision) {
       this.renderer.save();
-      const scale = getConfig(this.config.commentScale, false);
-      this.renderer.setStrokeStyle("rgba(0,255,255,1)");
-      this.renderer.strokeRect(
-        posX,
-        posY,
-        this.comment.width,
-        this.comment.height,
-      );
-      for (let i = 0, n = this.comment.lineCount; i < n; i++) {
-        if (!typeGuard.internal.HTML5Fonts(this.comment.font))
-          throw new TypeGuardError();
-        const linePosY =
-          (this.comment.lineHeight * (i + 1) +
-            (this.comment.charSize - this.comment.lineHeight) / 2 +
-            this.comment.lineHeight * -0.16 +
-            (this.config.fonts.html5[this.comment.font]?.offset || 0)) *
-          scale;
-        this.renderer.setStrokeStyle("rgba(255,255,0,0.5)");
+      try {
+        const scale = getConfig(this.config.commentScale, false);
+        this.renderer.setStrokeStyle("rgba(0,255,255,1)");
         this.renderer.strokeRect(
           posX,
-          posY + linePosY,
+          posY,
           this.comment.width,
-          this.comment.fontSize * -1 * scale,
+          this.comment.height,
         );
+        for (let i = 0, n = this.comment.lineCount; i < n; i++) {
+          if (!typeGuard.internal.HTML5Fonts(this.comment.font))
+            throw new TypeGuardError();
+          const linePosY =
+            (this.comment.lineHeight * (i + 1) +
+              (this.comment.charSize - this.comment.lineHeight) / 2 +
+              this.comment.lineHeight * -0.16 +
+              (this.config.fonts.html5[this.comment.font]?.offset || 0)) *
+            scale;
+          this.renderer.setStrokeStyle("rgba(255,255,0,0.5)");
+          this.renderer.strokeRect(
+            posX,
+            posY + linePosY,
+            this.comment.width,
+            this.comment.fontSize * -1 * scale,
+          );
+        }
+      } finally {
+        this.renderer.restore();
       }
-      this.renderer.restore();
     }
   }
 

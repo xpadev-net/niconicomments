@@ -35,6 +35,24 @@ const boundedCachePart = (input: string) => {
   return `${input.slice(0, MAX_CACHE_KEY_EDGE_LENGTH)}\0${input.slice(-MAX_CACHE_KEY_EDGE_LENGTH)}\0${input.length}\0${hashString(input)}`;
 };
 
+const isOutsideStage = (
+  posX: number,
+  posY: number,
+  width: number,
+  height: number,
+  config: BaseConfig,
+) =>
+  !Number.isFinite(posX) ||
+  !Number.isFinite(posY) ||
+  !Number.isFinite(width) ||
+  !Number.isFinite(height) ||
+  width <= 0 ||
+  height <= 0 ||
+  posX >= config.canvasWidth ||
+  posY >= config.canvasHeight ||
+  posX + width <= 0 ||
+  posY + height <= 0;
+
 /**
  * コメントの描画を行うクラスの基底クラス
  */
@@ -205,6 +223,17 @@ class BaseComment implements IComment {
       x: posX,
       y: posY,
     };
+    if (
+      isOutsideStage(
+        posX,
+        posY,
+        this.comment.width,
+        this.comment.height,
+        this.config,
+      )
+    ) {
+      return;
+    }
     this._drawBackgroundColor(posX, posY);
     this._draw(posX, posY, cursor);
     this._drawRectColor(posX, posY);
@@ -236,13 +265,16 @@ class BaseComment implements IComment {
         this.renderer.save();
         this.renderer.setGlobalAlpha(effectiveAlpha);
       }
-      if (this.comment.button && !this.comment.button.hidden) {
-        const button = this.getButtonImage(posX, posY, cursor);
-        button && this.renderer.drawImage(button, posX, posY);
-      }
-      this.renderer.drawImage(this.image, posX, posY);
-      if (effectiveAlpha !== 1) {
-        this.renderer.restore();
+      try {
+        if (this.comment.button && !this.comment.button.hidden) {
+          const button = this.getButtonImage(posX, posY, cursor);
+          button && this.renderer.drawImage(button, posX, posY);
+        }
+        this.renderer.drawImage(this.image, posX, posY);
+      } finally {
+        if (effectiveAlpha !== 1) {
+          this.renderer.restore();
+        }
       }
     }
   }
@@ -255,14 +287,17 @@ class BaseComment implements IComment {
   protected _drawRectColor(posX: number, posY: number) {
     if (this.comment.wakuColor) {
       this.renderer.save();
-      this.renderer.setStrokeStyle(this.comment.wakuColor);
-      this.renderer.strokeRect(
-        posX,
-        posY,
-        this.comment.width,
-        this.comment.height,
-      );
-      this.renderer.restore();
+      try {
+        this.renderer.setStrokeStyle(this.comment.wakuColor);
+        this.renderer.strokeRect(
+          posX,
+          posY,
+          this.comment.width,
+          this.comment.height,
+        );
+      } finally {
+        this.renderer.restore();
+      }
     }
   }
 
@@ -274,14 +309,17 @@ class BaseComment implements IComment {
   protected _drawBackgroundColor(posX: number, posY: number) {
     if (this.comment.fillColor) {
       this.renderer.save();
-      this.renderer.setFillStyle(this.comment.fillColor);
-      this.renderer.fillRect(
-        posX,
-        posY,
-        this.comment.width,
-        this.comment.height,
-      );
-      this.renderer.restore();
+      try {
+        this.renderer.setFillStyle(this.comment.fillColor);
+        this.renderer.fillRect(
+          posX,
+          posY,
+          this.comment.width,
+          this.comment.height,
+        );
+      } finally {
+        this.renderer.restore();
+      }
     }
   }
 
@@ -293,10 +331,13 @@ class BaseComment implements IComment {
   protected _drawDebugInfo(posX: number, posY: number) {
     if (this.ctx.options.debug) {
       this.renderer.save();
-      this.renderer.setFont(parseFont("defont", 30, this.config));
-      this.renderer.setFillStyle("#ff00ff");
-      this.renderer.fillText(this.comment.mail.join(","), posX, posY + 30);
-      this.renderer.restore();
+      try {
+        this.renderer.setFont(parseFont("defont", 30, this.config));
+        this.renderer.setFillStyle("#ff00ff");
+        this.renderer.fillText(this.comment.mail.join(","), posX, posY + 30);
+      } finally {
+        this.renderer.restore();
+      }
     }
   }
 

@@ -304,14 +304,16 @@ class HTML5Comment extends BaseComment {
       let remainingIterations = MAX_RESIZE_ITERATIONS;
       const lowResult = getMeasured(low);
       best = low;
-      while (remainingIterations-- > 0 && lowResult.width <= widthLimit) {
-        const candidateCharSize = (low + high) / 2;
-        const candidate = getMeasured(candidateCharSize);
-        if (candidate.width <= widthLimit) {
-          best = candidateCharSize;
-          low = candidateCharSize;
-        } else {
-          high = candidateCharSize;
+      if (lowResult.width <= widthLimit) {
+        while (remainingIterations-- > 0 && low < high) {
+          const candidateCharSize = (low + high) / 2;
+          const candidate = getMeasured(candidateCharSize);
+          if (candidate.width <= widthLimit) {
+            best = candidateCharSize;
+            low = candidateCharSize;
+          } else {
+            high = candidateCharSize;
+          }
         }
       }
     } else {
@@ -397,7 +399,10 @@ class HTML5Comment extends BaseComment {
       scale *
       (this.comment.layer === -1 ? this.ctx.options.scale : 1);
     const image = this.renderer.getCanvas(HTML5_COMMENT_IMAGE_PADDING);
-    image.setSize(this.comment.width, this.comment.height);
+    image.setSize(
+      Math.max(1, this.comment.width),
+      Math.max(1, this.comment.height),
+    );
     image.setStrokeStyle(getStrokeColor(this.comment, this.config));
     image.setFillStyle(this.comment.color);
     image.setLineWidth(getConfig(this.config.contextLineWidth, false));

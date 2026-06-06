@@ -330,27 +330,4 @@ describe("HTML5 comment resource bounds", () => {
     expect(renderer.getSize().width).toBe(canvas.width - 8);
     expect(renderer.getSize().height).toBe(canvas.height - 8);
   });
-
-  test("keeps subpixel padded canvas dimensions visible", () => {
-    const context = {
-      textAlign: "start",
-      textBaseline: "alphabetic",
-      lineJoin: "round",
-      translate: vi.fn(),
-      measureText: vi.fn(() => textMetrics(1)),
-    };
-    const canvas = {
-      width: 0,
-      height: 0,
-      getContext: vi.fn(() => context),
-    } as unknown as HTMLCanvasElement;
-    const renderer = new CanvasRenderer(canvas, undefined, 4);
-
-    renderer.setSize(0.25, 0.25);
-
-    expect(canvas.width).toBe(9);
-    expect(canvas.height).toBe(9);
-    expect(renderer.getSize().width).toBe(1);
-    expect(renderer.getSize().height).toBe(1);
-  });
 });

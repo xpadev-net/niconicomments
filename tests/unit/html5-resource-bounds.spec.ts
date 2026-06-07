@@ -308,6 +308,41 @@ describe("HTML5 comment resource bounds", () => {
     expect(firstComment?.exposeCurrentImage()).toBeTruthy();
   });
 
+  test("preserves mail command order in image cache keys", () => {
+    const ctx = createContext();
+    const first = new TestHTML5Comment(
+      formattedComment(1, "same content", ["red", "blue"]),
+      new RecordingRenderer(),
+      0,
+      ctx,
+    );
+    const reversed = new TestHTML5Comment(
+      formattedComment(2, "same content", ["blue", "red"]),
+      new RecordingRenderer(),
+      1,
+      ctx,
+    );
+    const identical = new TestHTML5Comment(
+      formattedComment(3, "same content", ["red", "blue"]),
+      new RecordingRenderer(),
+      2,
+      ctx,
+    );
+
+    expect(first.comment.color).not.toBe(reversed.comment.color);
+    expect(first.exposeCacheKey()).not.toBe(reversed.exposeCacheKey());
+    expect(first.exposeCacheKey()).toBe(identical.exposeCacheKey());
+
+    const firstImage = first.exposeTextImage();
+    const reversedImage = reversed.exposeTextImage();
+    const identicalImage = identical.exposeTextImage();
+
+    expect(firstImage).not.toBeNull();
+    expect(reversedImage).not.toBeNull();
+    expect(firstImage).not.toBe(reversedImage);
+    expect(identicalImage).toBe(firstImage);
+  });
+
   test("clamps backing canvas dimensions including padding", () => {
     const context = {
       textAlign: "start",

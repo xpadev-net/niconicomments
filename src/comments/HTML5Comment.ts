@@ -42,11 +42,10 @@ const clampHTML5Content = (input: string) => {
   let end = 0;
   for (; end < input.length && end < MAX_HTML5_COMMENT_CHARS; end++) {
     if (input[end] === "\n") {
-      lineCount++;
       if (lineCount >= MAX_HTML5_COMMENT_LINES) {
-        end++;
         break;
       }
+      lineCount++;
     }
   }
   const content = input.slice(0, end);

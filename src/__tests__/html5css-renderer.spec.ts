@@ -576,6 +576,46 @@ test("HTML5CSSRenderer bounds duplicate owned canvas clones per frame", async ({
         renderer.drawImage(image, i % 200, Math.floor(i / 200) * 12);
       }
     };
+    const withVirtualCreatedCanvases = <T>(callback: () => T): T => {
+      const originalCreateElement = document.createElement;
+      document.createElement = ((
+        tagName: string,
+        options?: ElementCreationOptions,
+      ) => {
+        const element = originalCreateElement.call(document, tagName, options);
+        if (tagName.toLowerCase() === "canvas") {
+          let virtualWidth = 0;
+          let virtualHeight = 0;
+          Object.defineProperty(element, "width", {
+            configurable: true,
+            get: () => virtualWidth,
+            set: (value) => {
+              virtualWidth = Number(value) || 0;
+            },
+          });
+          Object.defineProperty(element, "height", {
+            configurable: true,
+            get: () => virtualHeight,
+            set: (value) => {
+              virtualHeight = Number(value) || 0;
+            },
+          });
+          Object.defineProperty(element, "getContext", {
+            configurable: true,
+            value: () =>
+              ({
+                drawImage: () => undefined,
+              }) as unknown as CanvasRenderingContext2D,
+          });
+        }
+        return element;
+      }) as typeof document.createElement;
+      try {
+        return callback();
+      } finally {
+        document.createElement = originalCreateElement;
+      }
+    };
 
     const countCase = createRenderer();
     const smallImage = countCase.renderer.getCanvas();
@@ -607,7 +647,9 @@ test("HTML5CSSRenderer bounds duplicate owned canvas clones per frame", async ({
     const byteCase = createRenderer();
     const largeImage = byteCase.renderer.getCanvas();
     largeImage.setSize(2048, 2048);
-    drawRepeatedly(byteCase.renderer, largeImage, 20);
+    withVirtualCreatedCanvases(() => {
+      drawRepeatedly(byteCase.renderer, largeImage, 40);
+    });
     byteCase.renderer.flush();
     const byteCappedFrameConnectedCanvases = countLayerCanvases(byteCase.layer);
     const byteCappedFrameVisibleCanvases = countVisibleLayerCanvases(
@@ -625,7 +667,9 @@ test("HTML5CSSRenderer bounds duplicate owned canvas clones per frame", async ({
         externalElement,
       );
     externalImage.setSize(2048, 2048);
-    drawRepeatedly(externalCase.renderer, externalImage, 20);
+    withVirtualCreatedCanvases(() => {
+      drawRepeatedly(externalCase.renderer, externalImage, 40);
+    });
     externalCase.renderer.flush();
     const externalByteCappedFrameConnectedCanvases = countLayerCanvases(
       externalCase.layer,
@@ -653,15 +697,15 @@ test("HTML5CSSRenderer bounds duplicate owned canvas clones per frame", async ({
   // duplicate draws are skipped without throwing.
   expect(result.countCappedFrameVisibleCanvases).toBe(1025);
   expect(result.countCappedFrameConnectedCanvases).toBe(1025);
-  // 2048 x 2048 x 4 bytes = 16 MiB per clone, so the 64 MiB byte budget allows
-  // the source canvas plus 4 duplicate clones.
-  expect(result.byteCappedFrameVisibleCanvases).toBe(5);
-  expect(result.byteCappedFrameConnectedCanvases).toBe(5);
+  // 2048 x 2048 x 4 bytes = 16 MiB per clone, so the 512 MiB byte budget allows
+  // the source canvas plus 32 duplicate clones.
+  expect(result.byteCappedFrameVisibleCanvases).toBe(33);
+  expect(result.byteCappedFrameConnectedCanvases).toBe(33);
   // External canvases are copied instead of reparented. The first copy of a
   // source is allowed, then repeated copies of that source consume the same
-  // 64 MiB budget, allowing 4 more copied canvases.
-  expect(result.externalByteCappedFrameVisibleCanvases).toBe(5);
-  expect(result.externalByteCappedFrameConnectedCanvases).toBe(5);
+  // 512 MiB budget, allowing 32 more copied canvases.
+  expect(result.externalByteCappedFrameVisibleCanvases).toBe(33);
+  expect(result.externalByteCappedFrameConnectedCanvases).toBe(33);
   expect(result.recoveredFrameVisibleCanvases).toBe(2);
   expect(result.recoveredFrameConnectedCanvases).toBe(2);
 });

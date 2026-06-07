@@ -533,6 +533,59 @@ test("HTML5CSSRenderer refreshes drawImage snapshots after sub-renderer resize",
   expect(metrics.height).toBe("5px");
 });
 
+test("HTML5CSSRenderer bounds duplicate owned canvas clones per frame", async ({
+  page,
+}) => {
+  await loadBundle(page);
+
+  const result = await page.evaluate(() => {
+    const root = document.createElement("div");
+    root.dataset.width = "200";
+    root.dataset.height = "100";
+    document.body.appendChild(root);
+    const global = window as typeof window & {
+      NiconiComments: typeof import("@/main").default;
+    };
+    const renderer =
+      new global.NiconiComments.internal.renderer.HTML5CSSRenderer(root);
+    const image = renderer.getCanvas();
+    image.setSize(10, 10);
+    image.setFillStyle("#ff0000");
+    image.fillRect(0, 0, 10, 10);
+    const layer = root.querySelector<HTMLElement>("div");
+    const visibleLayerCanvases = () =>
+      layer
+        ? Array.from(layer.children).filter(
+            (child) =>
+              child.tagName.toLowerCase() === "canvas" &&
+              getComputedStyle(child).display !== "none",
+          ).length
+        : 0;
+
+    for (let i = 0; i < 300; i++) {
+      renderer.drawImage(image, i % 200, Math.floor(i / 200) * 12);
+    }
+    renderer.flush();
+    const cappedFrameVisibleCanvases = visibleLayerCanvases();
+
+    renderer.clearRect(0, 0, 200, 100);
+    renderer.drawImage(image, 0, 0);
+    renderer.drawImage(image, 20, 0);
+    renderer.flush();
+    const recoveredFrameVisibleCanvases = visibleLayerCanvases();
+
+    image.destroy();
+    renderer.destroy();
+    root.remove();
+    return { cappedFrameVisibleCanvases, recoveredFrameVisibleCanvases };
+  });
+
+  // Source canvas + at most 128 duplicate clones. The remaining over-cap
+  // duplicate draws are skipped without throwing.
+  expect(result.cappedFrameVisibleCanvases).toBe(129);
+  expect(result.recoveredFrameVisibleCanvases).toBe(2);
+});
+
 test("HTML5CSSRenderer uses clamped canvas dimensions consistently", async ({
   page,
 }) => {

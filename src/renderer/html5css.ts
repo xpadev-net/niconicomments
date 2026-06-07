@@ -3,6 +3,9 @@ import { CanvasRenderer, clampCanvasSize } from "@/renderer/canvas";
 
 // Must be >= 1; trimHelperSurfaces keeps surfaces[0..helperCursor] after each frame.
 const MAX_HELPER_SURFACES = 8;
+const MAX_DUPLICATE_CANVAS_CLONES_PER_FRAME = 128;
+const MAX_DUPLICATE_CANVAS_CLONE_BYTES_PER_FRAME = 64 * 1024 * 1024;
+const CANVAS_RGBA_BYTES_PER_PIXEL = 4;
 
 type CssRenderState = {
   alpha: number;
@@ -63,6 +66,8 @@ class HTML5CSSRenderer implements IRenderer {
     HTMLCanvasElement,
     HTMLCanvasElement
   >();
+  private duplicateCloneCount = 0;
+  private duplicateCloneBytes = 0;
   // Canvases created by this renderer's getCanvas() — safe to reparent in drawImage.
   // External canvases are never reparented; pixels are copied instead.
   private readonly ownedCanvases = new WeakSet<HTMLCanvasElement>();
@@ -182,6 +187,7 @@ class HTML5CSSRenderer implements IRenderer {
     this.prevCanvasSet.clear();
     this.activeCanvasSet.clear();
     this.cloneMap.clear();
+    this.resetDuplicateCloneAccounting();
     this.layer.remove();
     this.canvas.remove();
     this.root.classList.remove("niconicomments-html5css-renderer");
@@ -336,6 +342,7 @@ class HTML5CSSRenderer implements IRenderer {
     // Source canvases are NOT hidden here — they remain visible until flush()
     // removes stale ones, keeping them flicker-free across frames.
     this.trimHelperSurfaces();
+    this.resetDuplicateCloneAccounting();
     this.helper = this.prepareHelperSurface(0);
     this.helper.canvas.style.display = "none";
     if (this.videoSurface) {
@@ -386,6 +393,7 @@ class HTML5CSSRenderer implements IRenderer {
     this.prevCanvasSet.clear();
     this.activeCanvasSet.clear();
     this.cloneMap.clear();
+    this.resetDuplicateCloneAccounting();
     this.canvas.width = size.width;
     this.canvas.height = size.height;
     this.layer.style.width = `${size.width}px`;
@@ -564,11 +572,14 @@ class HTML5CSSRenderer implements IRenderer {
       }
       ctx.drawImage(source, 0, 0);
     } else if (this.activeCanvasSet.has(source)) {
+      const cloneBytes = this.getCanvasByteSize(source);
+      if (!this.reserveDuplicateClone(cloneBytes)) return;
       element = this.root.ownerDocument.createElement("canvas");
       element.width = source.width;
       element.height = source.height;
       const ctx = element.getContext("2d");
       if (!ctx) {
+        this.releaseDuplicateClone(cloneBytes);
         console.warn(
           "HTML5CSSRenderer: failed to acquire 2D context for canvas clone.",
         );
@@ -639,6 +650,7 @@ class HTML5CSSRenderer implements IRenderer {
     this.prevCanvasSet = this.activeCanvasSet;
     this.activeCanvasSet = tmp;
     this.activeCanvasSet.clear();
+    this.resetDuplicateCloneAccounting();
     this.textDrawnBeforeDom = false;
     if (this.stateStack.length > 0) {
       console.warn(
@@ -890,6 +902,36 @@ class HTML5CSSRenderer implements IRenderer {
       this.helperCursor + 1 >= MAX_HELPER_SURFACES &&
       this.helper.canvas.isConnected
     );
+  }
+
+  private getCanvasByteSize(canvas: HTMLCanvasElement): number {
+    const pixels = canvas.width * canvas.height;
+    return Number.isFinite(pixels) && pixels > 0
+      ? pixels * CANVAS_RGBA_BYTES_PER_PIXEL
+      : 0;
+  }
+
+  private reserveDuplicateClone(bytes: number): boolean {
+    if (
+      this.duplicateCloneCount >= MAX_DUPLICATE_CANVAS_CLONES_PER_FRAME ||
+      this.duplicateCloneBytes + bytes >
+        MAX_DUPLICATE_CANVAS_CLONE_BYTES_PER_FRAME
+    ) {
+      return false;
+    }
+    this.duplicateCloneCount++;
+    this.duplicateCloneBytes += bytes;
+    return true;
+  }
+
+  private releaseDuplicateClone(bytes: number): void {
+    this.duplicateCloneCount = Math.max(0, this.duplicateCloneCount - 1);
+    this.duplicateCloneBytes = Math.max(0, this.duplicateCloneBytes - bytes);
+  }
+
+  private resetDuplicateCloneAccounting(): void {
+    this.duplicateCloneCount = 0;
+    this.duplicateCloneBytes = 0;
   }
 
   private trimHelperSurfaces(): void {

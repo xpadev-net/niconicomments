@@ -485,7 +485,8 @@ class BaseComment implements IComment {
   }
 
   protected getCacheKey() {
-    return `${this.pluginName}\0${this.comment.mail.join(",")}\0${boundedCachePart(this.comment.rawContent)}`;
+    const mail = boundedCachePart(JSON.stringify(this.comment.mail));
+    return `${this.pluginName}\0${mail}\0${boundedCachePart(this.comment.rawContent)}`;
   }
 }
 

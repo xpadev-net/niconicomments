@@ -343,6 +343,34 @@ describe("HTML5 comment resource bounds", () => {
     expect(identicalImage).toBe(firstImage);
   });
 
+  test("keeps delimiter-ambiguous mail arrays out of the same image cache entry", () => {
+    const ctx = createContext();
+    const commaCommand = new TestHTML5Comment(
+      formattedComment(1, "same content", ["red,blue"]),
+      new RecordingRenderer(),
+      0,
+      ctx,
+    );
+    const separateCommands = new TestHTML5Comment(
+      formattedComment(2, "same content", ["red", "blue"]),
+      new RecordingRenderer(),
+      1,
+      ctx,
+    );
+
+    expect(commaCommand.comment.color).not.toBe(separateCommands.comment.color);
+    expect(commaCommand.exposeCacheKey()).not.toBe(
+      separateCommands.exposeCacheKey(),
+    );
+
+    const commaImage = commaCommand.exposeTextImage();
+    const separateImage = separateCommands.exposeTextImage();
+
+    expect(commaImage).not.toBeNull();
+    expect(separateImage).not.toBeNull();
+    expect(commaImage).not.toBe(separateImage);
+  });
+
   test("clamps backing canvas dimensions including padding", () => {
     const context = {
       textAlign: "start",

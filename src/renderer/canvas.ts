@@ -157,10 +157,16 @@ class CanvasRenderer implements IRenderer {
   }
 
   clearRect(x: number, y: number, width: number, height: number): void {
+    const transform = this.context.getTransform();
     this.context.save();
     try {
       this.context.setTransform(1, 0, 0, 1, 0, 0);
-      this.context.clearRect(x + this.padding, y + this.padding, width, height);
+      this.context.clearRect(
+        x * transform.a + transform.e,
+        y * transform.d + transform.f,
+        width * transform.a,
+        height * transform.d,
+      );
     } finally {
       this.context.restore();
     }

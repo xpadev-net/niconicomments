@@ -5,6 +5,8 @@ import { CanvasRenderer } from "@/renderer/canvas";
 type Transform = {
   scaleX: number;
   scaleY: number;
+  translateX: number;
+  translateY: number;
 };
 
 class RecordingCanvasContext {
@@ -15,7 +17,12 @@ class RecordingCanvasContext {
   public strokeStyle: string | CanvasGradient | CanvasPattern = "#000000";
   public textAlign: CanvasTextAlign = "start";
   public textBaseline: CanvasTextBaseline = "alphabetic";
-  private transform: Transform = { scaleX: 1, scaleY: 1 };
+  private transform: Transform = {
+    scaleX: 1,
+    scaleY: 1,
+    translateX: 0,
+    translateY: 0,
+  };
   private stack: Transform[] = [];
 
   save() {
@@ -38,17 +45,35 @@ class RecordingCanvasContext {
     f: number,
   ) {
     this.calls.push(`setTransform(${a},${b},${c},${d},${e},${f})`);
-    this.transform = { scaleX: a, scaleY: d };
+    this.transform = {
+      scaleX: a,
+      scaleY: d,
+      translateX: e,
+      translateY: f,
+    };
   }
 
   translate(x: number, y: number) {
     this.calls.push(`translate(${x},${y})`);
+    this.transform.translateX += x * this.transform.scaleX;
+    this.transform.translateY += y * this.transform.scaleY;
   }
 
   scale(x: number, y: number) {
     this.calls.push(`scale(${x},${y})`);
     this.transform.scaleX *= x;
     this.transform.scaleY *= y;
+  }
+
+  getTransform() {
+    return {
+      a: this.transform.scaleX,
+      b: 0,
+      c: 0,
+      d: this.transform.scaleY,
+      e: this.transform.translateX,
+      f: this.transform.translateY,
+    };
   }
 
   clearRect(x: number, y: number, width: number, height: number) {
@@ -86,7 +111,7 @@ describe("CanvasRenderer.clearRect", () => {
       "scale(0.5,0.5)",
       "save",
       "setTransform(1,0,0,1,0,0)",
-      "clearRect(0,0,640,360)",
+      "clearRect(0,0,320,180)",
       "restore",
       "fillRect(10,20,30,40)@0.5,0.5",
     ]);
@@ -102,7 +127,22 @@ describe("CanvasRenderer.clearRect", () => {
       "scale(0.5,0.25)",
       "save",
       "setTransform(1,0,0,1,0,0)",
-      "clearRect(5,6,100,50)",
+      "clearRect(4.5,4.5,50,12.5)",
+      "restore",
+    ]);
+  });
+
+  test("expands logical clears when the renderer scale is greater than one", () => {
+    const { context, renderer } = createRenderer();
+
+    renderer.setScale(2);
+    renderer.clearRect(0, 0, 640, 360);
+
+    expect(context.calls).toEqual([
+      "scale(2,2)",
+      "save",
+      "setTransform(1,0,0,1,0,0)",
+      "clearRect(0,0,1280,720)",
       "restore",
     ]);
   });

@@ -230,6 +230,17 @@ describe("Flash and at-button resource bounds", () => {
     expect(image?.strokeTextCalls).toBeLessThanOrEqual(8);
   });
 
+  test("reports Flash comments as Flash instances", () => {
+    const comment = new TestFlashComment(
+      formattedComment("flash"),
+      new RecordingRenderer(),
+      0,
+      createContext(),
+    );
+
+    expect(comment.flash).toBe(true);
+  });
+
   test("does not allocate Flash text images outside bounded dimensions", () => {
     const renderer = new RecordingRenderer();
     const comment = new TestFlashComment(
@@ -307,6 +318,32 @@ describe("Flash and at-button resource bounds", () => {
 
     expect(renderer.children).toHaveLength(2);
     expect(buttonImage?.setSizeCalls).toBe(1);
+  });
+
+  test("keeps at-button vertical hit testing independent of horizontal scale", () => {
+    const comment = new TestFlashComment(
+      formattedComment('@ボタン "[Push]" "posted" "表示" "" "3"'),
+      new RecordingRenderer(),
+      0,
+      createContext(),
+    );
+    const button = comment.comment.buttonObjects;
+    if (!button) {
+      throw new Error("Expected at-button geometry");
+    }
+
+    comment.comment.scale = 1;
+    comment.comment.scaleX = 10;
+    const { left } = button;
+    expect(left.top).toBeGreaterThan(1);
+
+    const cursor = {
+      x: (left.left + left.width / 2) * comment.comment.scaleX,
+      y: left.top + left.height / 2,
+    };
+
+    expect(cursor.y / comment.comment.scaleX).toBeLessThan(left.top);
+    expect(comment.isHovered(cursor, 0, 0)).toBe(true);
   });
 
   test("does not allocate button canvases for hidden at-buttons", () => {

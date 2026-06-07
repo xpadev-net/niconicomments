@@ -3,9 +3,7 @@ import { expect, test } from "@playwright/test";
 
 // Used by the layout test that inspects the CSS renderer mounted on the page.
 const loadCssSample = async (page: Page) => {
-  await page.goto(
-    "http://localhost:8080/docs/sample/test.html?renderer=css&time=20&video=0",
-  );
+  await page.goto("/docs/sample/test.html?renderer=css&time=20&video=0");
   // BrowserSync injects this overlay only during local runs; in CI the detached
   // wait resolves immediately, matching the existing visual regression tests.
   await Promise.race([
@@ -23,7 +21,7 @@ const loadCssSample = async (page: Page) => {
 // Used by tests that construct their own renderer inside page.evaluate —
 // they only need the bundle present, not a CSS-rendered page.
 const loadBundle = async (page: Page) => {
-  await page.goto("http://localhost:8080/docs/sample/test.html?time=0&video=0");
+  await page.goto("/docs/sample/test.html?time=0&video=0");
   await Promise.race([
     page.waitForSelector("div#loaded", { state: "attached" }),
     page.waitForSelector("div#renderer-error", { state: "attached" }),
@@ -539,51 +537,106 @@ test("HTML5CSSRenderer bounds duplicate owned canvas clones per frame", async ({
   await loadBundle(page);
 
   const result = await page.evaluate(() => {
-    const root = document.createElement("div");
-    root.dataset.width = "200";
-    root.dataset.height = "100";
-    document.body.appendChild(root);
     const global = window as typeof window & {
       NiconiComments: typeof import("@/main").default;
     };
-    const renderer =
-      new global.NiconiComments.internal.renderer.HTML5CSSRenderer(root);
-    const image = renderer.getCanvas();
-    image.setSize(10, 10);
-    image.setFillStyle("#ff0000");
-    image.fillRect(0, 0, 10, 10);
-    const layer = root.querySelector<HTMLElement>("div");
-    const visibleLayerCanvases = () =>
-      layer
-        ? Array.from(layer.children).filter(
-            (child) =>
-              child.tagName.toLowerCase() === "canvas" &&
-              getComputedStyle(child).display !== "none",
-          ).length
-        : 0;
+    const createRenderer = () => {
+      const root = document.createElement("div");
+      root.dataset.width = "200";
+      root.dataset.height = "100";
+      document.body.appendChild(root);
+      const renderer =
+        new global.NiconiComments.internal.renderer.HTML5CSSRenderer(root);
+      const layer = root.querySelector<HTMLElement>("div");
+      if (!layer) throw new Error("missing renderer layer");
+      return { root, renderer, layer };
+    };
+    const countLayerCanvases = (layer: HTMLElement) =>
+      Array.from(layer.children).filter(
+        (child) => child.tagName.toLowerCase() === "canvas",
+      ).length;
+    const countVisibleLayerCanvases = (layer: HTMLElement) =>
+      Array.from(layer.children).filter(
+        (child) =>
+          child.tagName.toLowerCase() === "canvas" &&
+          getComputedStyle(child).display !== "none",
+      ).length;
+    const drawRepeatedly = (
+      renderer: InstanceType<
+        typeof global.NiconiComments.internal.renderer.HTML5CSSRenderer
+      >,
+      image: ReturnType<
+        InstanceType<
+          typeof global.NiconiComments.internal.renderer.HTML5CSSRenderer
+        >["getCanvas"]
+      >,
+      count: number,
+    ) => {
+      for (let i = 0; i < count; i++) {
+        renderer.drawImage(image, i % 200, Math.floor(i / 200) * 12);
+      }
+    };
 
-    for (let i = 0; i < 300; i++) {
-      renderer.drawImage(image, i % 200, Math.floor(i / 200) * 12);
-    }
-    renderer.flush();
-    const cappedFrameVisibleCanvases = visibleLayerCanvases();
+    const countCase = createRenderer();
+    const smallImage = countCase.renderer.getCanvas();
+    smallImage.setSize(10, 10);
+    smallImage.setFillStyle("#ff0000");
+    smallImage.fillRect(0, 0, 10, 10);
+    drawRepeatedly(countCase.renderer, smallImage, 300);
+    countCase.renderer.flush();
+    const countCappedFrameVisibleCanvases = countVisibleLayerCanvases(
+      countCase.layer,
+    );
+    const countCappedFrameConnectedCanvases = countLayerCanvases(
+      countCase.layer,
+    );
 
-    renderer.clearRect(0, 0, 200, 100);
-    renderer.drawImage(image, 0, 0);
-    renderer.drawImage(image, 20, 0);
-    renderer.flush();
-    const recoveredFrameVisibleCanvases = visibleLayerCanvases();
+    countCase.renderer.clearRect(0, 0, 200, 100);
+    countCase.renderer.drawImage(smallImage, 0, 0);
+    countCase.renderer.drawImage(smallImage, 20, 0);
+    countCase.renderer.flush();
+    const recoveredFrameVisibleCanvases = countVisibleLayerCanvases(
+      countCase.layer,
+    );
+    const recoveredFrameConnectedCanvases = countLayerCanvases(countCase.layer);
 
-    image.destroy();
-    renderer.destroy();
-    root.remove();
-    return { cappedFrameVisibleCanvases, recoveredFrameVisibleCanvases };
+    smallImage.destroy();
+    countCase.renderer.destroy();
+    countCase.root.remove();
+
+    const byteCase = createRenderer();
+    const largeImage = byteCase.renderer.getCanvas();
+    largeImage.setSize(2048, 2048);
+    drawRepeatedly(byteCase.renderer, largeImage, 20);
+    byteCase.renderer.flush();
+    const byteCappedFrameConnectedCanvases = countLayerCanvases(byteCase.layer);
+    const byteCappedFrameVisibleCanvases = countVisibleLayerCanvases(
+      byteCase.layer,
+    );
+
+    largeImage.destroy();
+    byteCase.renderer.destroy();
+    byteCase.root.remove();
+    return {
+      countCappedFrameVisibleCanvases,
+      countCappedFrameConnectedCanvases,
+      recoveredFrameVisibleCanvases,
+      recoveredFrameConnectedCanvases,
+      byteCappedFrameVisibleCanvases,
+      byteCappedFrameConnectedCanvases,
+    };
   });
 
   // Source canvas + at most 128 duplicate clones. The remaining over-cap
   // duplicate draws are skipped without throwing.
-  expect(result.cappedFrameVisibleCanvases).toBe(129);
+  expect(result.countCappedFrameVisibleCanvases).toBe(129);
+  expect(result.countCappedFrameConnectedCanvases).toBe(129);
+  // 2048 x 2048 x 4 bytes = 16 MiB per clone, so the 64 MiB byte budget allows
+  // the source canvas plus 4 duplicate clones.
+  expect(result.byteCappedFrameVisibleCanvases).toBe(5);
+  expect(result.byteCappedFrameConnectedCanvases).toBe(5);
   expect(result.recoveredFrameVisibleCanvases).toBe(2);
+  expect(result.recoveredFrameConnectedCanvases).toBe(2);
 });
 
 test("HTML5CSSRenderer uses clamped canvas dimensions consistently", async ({

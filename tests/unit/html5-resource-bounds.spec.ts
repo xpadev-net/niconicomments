@@ -217,8 +217,11 @@ const createContext = () => ({
 const cachedKeyCount = (imageCache: ImageCacheContext, keys: string[]) =>
   keys.filter((key) => imageCache.get(key)).length;
 
-const runWindowTimeout = (callIndex: number) => {
-  const timeoutCall = vi.mocked(window.setTimeout).mock.calls[callIndex];
+const runWindowTimeout = (timeoutId: number) => {
+  const timeoutCallIndex = vi
+    .mocked(window.setTimeout)
+    .mock.results.findIndex((result) => result.value === timeoutId);
+  const timeoutCall = vi.mocked(window.setTimeout).mock.calls[timeoutCallIndex];
   const callback = timeoutCall?.[0];
 
   expect(callback).toEqual(expect.any(Function));
@@ -453,7 +456,9 @@ describe("HTML5 comment resource bounds", () => {
     expect(image).not.toBeNull();
     expectLegacyImageWithoutDestroy(renderer.legacyImages);
     expect(ctx.imageCache.get(comment.exposeCacheKey())?.image).toBe(image);
-    expect(() => runWindowTimeout(1)).not.toThrow();
+    const timeoutId = ctx.imageCache.get(comment.exposeCacheKey())?.timeout;
+    expect(timeoutId).toBeDefined();
+    expect(() => runWindowTimeout(timeoutId as number)).not.toThrow();
     expect(ctx.imageCache.get(comment.exposeCacheKey())).toBeUndefined();
   });
 
@@ -478,7 +483,9 @@ describe("HTML5 comment resource bounds", () => {
 
     expect(cachedImage).toBe(image);
     expectLegacyImageWithoutDestroy(renderer.legacyImages);
-    expect(() => runWindowTimeout(3)).not.toThrow();
+    const timeoutId = ctx.imageCache.get(second.exposeCacheKey())?.timeout;
+    expect(timeoutId).toBeDefined();
+    expect(() => runWindowTimeout(timeoutId as number)).not.toThrow();
     expect(ctx.imageCache.get(second.exposeCacheKey())).toBeUndefined();
   });
 

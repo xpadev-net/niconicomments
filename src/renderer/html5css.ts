@@ -21,6 +21,11 @@ type SavedCssRenderState = CssRenderState & {
   helper: CanvasRenderer;
 };
 
+type DuplicateCloneBudget = {
+  bytes: number;
+  count: number;
+};
+
 const DEFAULT_CSS_RENDER_STATE: CssRenderState = {
   alpha: 1,
   fillStyle: "#000000",
@@ -66,8 +71,10 @@ class HTML5CSSRenderer implements IRenderer {
     HTMLCanvasElement,
     HTMLCanvasElement
   >();
-  private duplicateCloneCount = 0;
-  private duplicateCloneBytes = 0;
+  private duplicateCloneBudgetMap = new Map<
+    HTMLCanvasElement,
+    DuplicateCloneBudget
+  >();
   private externalCanvasSet = new WeakSet<HTMLCanvasElement>();
   // Canvases created by this renderer's getCanvas() — safe to reparent in drawImage.
   // External canvases are never reparented; pixels are copied instead.
@@ -563,13 +570,14 @@ class HTML5CSSRenderer implements IRenderer {
     if (!this.ownedCanvases.has(source)) {
       const cloneBytes = this.getCanvasByteSize(source);
       const seenExternalCanvas = this.externalCanvasSet.has(source);
-      if (seenExternalCanvas && !this.reserveDuplicateClone(cloneBytes)) return;
+      if (seenExternalCanvas && !this.reserveDuplicateClone(source, cloneBytes))
+        return;
       element = this.root.ownerDocument.createElement("canvas");
       element.width = source.width;
       element.height = source.height;
       const ctx = element.getContext("2d");
       if (!ctx) {
-        if (seenExternalCanvas) this.releaseDuplicateClone(cloneBytes);
+        if (seenExternalCanvas) this.releaseDuplicateClone(source, cloneBytes);
         console.warn(
           "HTML5CSSRenderer: failed to acquire 2D context for canvas copy.",
         );
@@ -579,13 +587,13 @@ class HTML5CSSRenderer implements IRenderer {
       this.externalCanvasSet.add(source);
     } else if (this.activeCanvasSet.has(source)) {
       const cloneBytes = this.getCanvasByteSize(source);
-      if (!this.reserveDuplicateClone(cloneBytes)) return;
+      if (!this.reserveDuplicateClone(source, cloneBytes)) return;
       element = this.root.ownerDocument.createElement("canvas");
       element.width = source.width;
       element.height = source.height;
       const ctx = element.getContext("2d");
       if (!ctx) {
-        this.releaseDuplicateClone(cloneBytes);
+        this.releaseDuplicateClone(source, cloneBytes);
         console.warn(
           "HTML5CSSRenderer: failed to acquire 2D context for canvas clone.",
         );
@@ -917,27 +925,41 @@ class HTML5CSSRenderer implements IRenderer {
       : 0;
   }
 
-  private reserveDuplicateClone(bytes: number): boolean {
+  private reserveDuplicateClone(
+    source: HTMLCanvasElement,
+    bytes: number,
+  ): boolean {
+    const budget = this.duplicateCloneBudgetMap.get(source) ?? {
+      bytes: 0,
+      count: 0,
+    };
     if (
-      this.duplicateCloneCount >= MAX_DUPLICATE_CANVAS_CLONES_PER_FRAME ||
-      this.duplicateCloneBytes + bytes >
-        MAX_DUPLICATE_CANVAS_CLONE_BYTES_PER_FRAME
+      budget.count >= MAX_DUPLICATE_CANVAS_CLONES_PER_FRAME ||
+      budget.bytes + bytes > MAX_DUPLICATE_CANVAS_CLONE_BYTES_PER_FRAME
     ) {
       return false;
     }
-    this.duplicateCloneCount++;
-    this.duplicateCloneBytes += bytes;
+    budget.count++;
+    budget.bytes += bytes;
+    this.duplicateCloneBudgetMap.set(source, budget);
     return true;
   }
 
-  private releaseDuplicateClone(bytes: number): void {
-    this.duplicateCloneCount = Math.max(0, this.duplicateCloneCount - 1);
-    this.duplicateCloneBytes = Math.max(0, this.duplicateCloneBytes - bytes);
+  private releaseDuplicateClone(
+    source: HTMLCanvasElement,
+    bytes: number,
+  ): void {
+    const budget = this.duplicateCloneBudgetMap.get(source);
+    if (!budget) return;
+    budget.count = Math.max(0, budget.count - 1);
+    budget.bytes = Math.max(0, budget.bytes - bytes);
+    if (budget.count === 0 && budget.bytes === 0) {
+      this.duplicateCloneBudgetMap.delete(source);
+    }
   }
 
   private resetDuplicateCloneAccounting(): void {
-    this.duplicateCloneCount = 0;
-    this.duplicateCloneBytes = 0;
+    this.duplicateCloneBudgetMap.clear();
     this.externalCanvasSet = new WeakSet();
   }
 

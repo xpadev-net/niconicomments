@@ -582,7 +582,7 @@ test("HTML5CSSRenderer bounds duplicate owned canvas clones per frame", async ({
     smallImage.setSize(10, 10);
     smallImage.setFillStyle("#ff0000");
     smallImage.fillRect(0, 0, 10, 10);
-    drawRepeatedly(countCase.renderer, smallImage, 300);
+    drawRepeatedly(countCase.renderer, smallImage, 1200);
     countCase.renderer.flush();
     const countCappedFrameVisibleCanvases = countVisibleLayerCanvases(
       countCase.layer,
@@ -649,10 +649,10 @@ test("HTML5CSSRenderer bounds duplicate owned canvas clones per frame", async ({
     };
   });
 
-  // Source canvas + at most 128 duplicate clones. The remaining over-cap
+  // Source canvas + at most 1024 duplicate clones. The remaining over-cap
   // duplicate draws are skipped without throwing.
-  expect(result.countCappedFrameVisibleCanvases).toBe(129);
-  expect(result.countCappedFrameConnectedCanvases).toBe(129);
+  expect(result.countCappedFrameVisibleCanvases).toBe(1025);
+  expect(result.countCappedFrameConnectedCanvases).toBe(1025);
   // 2048 x 2048 x 4 bytes = 16 MiB per clone, so the 64 MiB byte budget allows
   // the source canvas plus 4 duplicate clones.
   expect(result.byteCappedFrameVisibleCanvases).toBe(5);

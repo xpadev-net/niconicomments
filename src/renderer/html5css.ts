@@ -3,7 +3,7 @@ import { CanvasRenderer, clampCanvasSize } from "@/renderer/canvas";
 
 // Must be >= 1; trimHelperSurfaces keeps surfaces[0..helperCursor] after each frame.
 const MAX_HELPER_SURFACES = 8;
-const MAX_DUPLICATE_CANVAS_CLONES_PER_FRAME = 128;
+const MAX_DUPLICATE_CANVAS_CLONES_PER_FRAME = 1024;
 const MAX_DUPLICATE_CANVAS_CLONE_BYTES_PER_FRAME = 64 * 1024 * 1024;
 const CANVAS_RGBA_BYTES_PER_PIXEL = 4;
 

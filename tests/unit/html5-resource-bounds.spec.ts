@@ -91,6 +91,73 @@ class RecordingRenderer implements IRenderer {
   invalidateImage() {}
 }
 
+const createLegacyImageRenderer = (): Omit<IRenderer, "destroy"> => {
+  let font = "10px sans-serif";
+  let size = { width: 0, height: 0 };
+  return {
+    rendererName: "LegacyImageRenderer",
+    canvas: {} as HTMLCanvasElement,
+    drawVideo() {},
+    getFont() {
+      return font;
+    },
+    getFillStyle() {
+      return "#000000";
+    },
+    setScale() {},
+    fillRect() {},
+    strokeRect() {},
+    fillText() {},
+    strokeText() {},
+    quadraticCurveTo() {},
+    clearRect() {},
+    setFont(nextFont: string) {
+      font = nextFont;
+    },
+    setFillStyle() {},
+    setStrokeStyle() {},
+    setLineWidth() {},
+    setGlobalAlpha() {},
+    setSize(width: number, height: number) {
+      size = { width, height };
+    },
+    getSize() {
+      return size;
+    },
+    measureText(text: string) {
+      const fontSize = Number(/([0-9.]+)px/.exec(font)?.[1] ?? 10);
+      return textMetrics(text.length * fontSize * 0.5);
+    },
+    beginPath() {},
+    closePath() {},
+    moveTo() {},
+    lineTo() {},
+    stroke() {},
+    save() {},
+    restore() {},
+    getCanvas() {
+      // Test-only runtime contract break: createLegacyImageRenderer omits
+      // destroy() while providing the members this cache path uses.
+      return createLegacyImageRenderer() as IRenderer;
+    },
+    drawImage() {},
+    flush() {},
+    invalidateImage() {},
+  };
+};
+
+class LegacyImageSourceRenderer extends RecordingRenderer {
+  public readonly legacyImages: IRenderer[] = [];
+
+  override getCanvas() {
+    // Test-only runtime contract break for LegacyImageSourceRenderer; do not
+    // copy this cast outside legacy compatibility tests.
+    const image = createLegacyImageRenderer() as IRenderer;
+    this.legacyImages.push(image);
+    return image;
+  }
+}
+
 class TestHTML5Comment extends HTML5Comment {
   exposeTextImage() {
     return this.getTextImage();
@@ -149,6 +216,24 @@ const createContext = () => ({
 
 const cachedKeyCount = (imageCache: ImageCacheContext, keys: string[]) =>
   keys.filter((key) => imageCache.get(key)).length;
+
+const runWindowTimeout = (timeoutId: number) => {
+  const timeoutCallIndex = vi
+    .mocked(window.setTimeout)
+    .mock.results.findIndex((result) => result.value === timeoutId);
+  const timeoutCall = vi.mocked(window.setTimeout).mock.calls[timeoutCallIndex];
+  const callback = timeoutCall?.[0];
+
+  expect(callback).toEqual(expect.any(Function));
+  (callback as () => void)();
+};
+
+const expectLegacyImageWithoutDestroy = (images: IRenderer[]) => {
+  expect(images).toHaveLength(1);
+  const image = images[0];
+  expect(image).toBeDefined();
+  expect("destroy" in (image as object)).toBe(false);
+};
 
 describe("HTML5 comment resource bounds", () => {
   beforeEach(() => {
@@ -354,6 +439,99 @@ describe("HTML5 comment resource bounds", () => {
 
     expect(firstComment?.exposeCurrentImage()).not.toBe(firstImage);
     expect(firstComment?.exposeCurrentImage()).toBeTruthy();
+  });
+
+  test("expires legacy cached images without requiring destroy", () => {
+    const ctx = createContext();
+    const renderer = new LegacyImageSourceRenderer();
+    const comment = new TestHTML5Comment(
+      formattedComment(1, "legacy image"),
+      renderer,
+      0,
+      ctx,
+    );
+
+    const image = comment.exposeTextImage();
+
+    expect(image).not.toBeNull();
+    expectLegacyImageWithoutDestroy(renderer.legacyImages);
+    expect(ctx.imageCache.get(comment.exposeCacheKey())?.image).toBe(image);
+    const timeoutId = ctx.imageCache.get(comment.exposeCacheKey())?.timeout;
+    expect(timeoutId).toBeDefined();
+    expect(() => runWindowTimeout(timeoutId as number)).not.toThrow();
+    expect(ctx.imageCache.get(comment.exposeCacheKey())).toBeUndefined();
+  });
+
+  test("refreshes legacy cached image expiry without requiring destroy", () => {
+    const ctx = createContext();
+    const renderer = new LegacyImageSourceRenderer();
+    const first = new TestHTML5Comment(
+      formattedComment(1, "legacy cache hit"),
+      renderer,
+      0,
+      ctx,
+    );
+    const second = new TestHTML5Comment(
+      formattedComment(2, "legacy cache hit"),
+      renderer,
+      1,
+      ctx,
+    );
+
+    const image = first.exposeTextImage();
+    const cachedImage = second.exposeTextImage();
+
+    expect(cachedImage).toBe(image);
+    expectLegacyImageWithoutDestroy(renderer.legacyImages);
+    const timeoutId = ctx.imageCache.get(second.exposeCacheKey())?.timeout;
+    expect(timeoutId).toBeDefined();
+    expect(() => runWindowTimeout(timeoutId as number)).not.toThrow();
+    expect(ctx.imageCache.get(second.exposeCacheKey())).toBeUndefined();
+  });
+
+  test("evicts legacy cached images without requiring destroy", () => {
+    const ctx = createContext();
+    const firstRenderer = new LegacyImageSourceRenderer();
+    const firstComment = new TestHTML5Comment(
+      formattedComment(1, "legacy evicted"),
+      firstRenderer,
+      0,
+      ctx,
+    );
+    const firstImage = firstComment.exposeTextImage();
+
+    for (let i = 0; i < 1024; i++) {
+      const comment = new TestHTML5Comment(
+        formattedComment(i + 2, `cache filler ${i}`),
+        new RecordingRenderer(),
+        i + 1,
+        ctx,
+      );
+      expect(comment.exposeTextImage()).not.toBeNull();
+    }
+
+    expect(firstImage).not.toBeNull();
+    expectLegacyImageWithoutDestroy(firstRenderer.legacyImages);
+    expect(ctx.imageCache.get(firstComment.exposeCacheKey())).toBeUndefined();
+  });
+
+  test("resets legacy cached images without requiring destroy", () => {
+    const ctx = createContext();
+    const renderer = new LegacyImageSourceRenderer();
+    const comment = new TestHTML5Comment(
+      formattedComment(1, "legacy reset"),
+      renderer,
+      0,
+      ctx,
+    );
+
+    const image = comment.exposeTextImage();
+
+    expect(image).not.toBeNull();
+    expectLegacyImageWithoutDestroy(renderer.legacyImages);
+    expect(ctx.imageCache.get(comment.exposeCacheKey())?.image).toBe(image);
+    expect(() => ctx.imageCache.reset()).not.toThrow();
+    expect(ctx.imageCache.get(comment.exposeCacheKey())).toBeUndefined();
   });
 
   test("preserves mail command order in image cache keys", () => {

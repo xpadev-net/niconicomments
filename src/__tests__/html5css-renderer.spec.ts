@@ -657,10 +657,11 @@ test("HTML5CSSRenderer bounds duplicate owned canvas clones per frame", async ({
   // the source canvas plus 4 duplicate clones.
   expect(result.byteCappedFrameVisibleCanvases).toBe(5);
   expect(result.byteCappedFrameConnectedCanvases).toBe(5);
-  // External canvases are copied instead of reparented, so the same 64 MiB
-  // budget allows 4 copied canvases total.
-  expect(result.externalByteCappedFrameVisibleCanvases).toBe(4);
-  expect(result.externalByteCappedFrameConnectedCanvases).toBe(4);
+  // External canvases are copied instead of reparented. The first copy of a
+  // source is allowed, then repeated copies of that source consume the same
+  // 64 MiB budget, allowing 4 more copied canvases.
+  expect(result.externalByteCappedFrameVisibleCanvases).toBe(5);
+  expect(result.externalByteCappedFrameConnectedCanvases).toBe(5);
   expect(result.recoveredFrameVisibleCanvases).toBe(2);
   expect(result.recoveredFrameConnectedCanvases).toBe(2);
 });

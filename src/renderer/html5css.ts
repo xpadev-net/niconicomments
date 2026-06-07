@@ -68,6 +68,7 @@ class HTML5CSSRenderer implements IRenderer {
   >();
   private duplicateCloneCount = 0;
   private duplicateCloneBytes = 0;
+  private externalCanvasSet = new WeakSet<HTMLCanvasElement>();
   // Canvases created by this renderer's getCanvas() — safe to reparent in drawImage.
   // External canvases are never reparented; pixels are copied instead.
   private readonly ownedCanvases = new WeakSet<HTMLCanvasElement>();
@@ -561,19 +562,21 @@ class HTML5CSSRenderer implements IRenderer {
     let element: HTMLCanvasElement;
     if (!this.ownedCanvases.has(source)) {
       const cloneBytes = this.getCanvasByteSize(source);
-      if (!this.reserveDuplicateClone(cloneBytes)) return;
+      const seenExternalCanvas = this.externalCanvasSet.has(source);
+      if (seenExternalCanvas && !this.reserveDuplicateClone(cloneBytes)) return;
       element = this.root.ownerDocument.createElement("canvas");
       element.width = source.width;
       element.height = source.height;
       const ctx = element.getContext("2d");
       if (!ctx) {
-        this.releaseDuplicateClone(cloneBytes);
+        if (seenExternalCanvas) this.releaseDuplicateClone(cloneBytes);
         console.warn(
           "HTML5CSSRenderer: failed to acquire 2D context for canvas copy.",
         );
         return;
       }
       ctx.drawImage(source, 0, 0);
+      this.externalCanvasSet.add(source);
     } else if (this.activeCanvasSet.has(source)) {
       const cloneBytes = this.getCanvasByteSize(source);
       if (!this.reserveDuplicateClone(cloneBytes)) return;
@@ -935,6 +938,7 @@ class HTML5CSSRenderer implements IRenderer {
   private resetDuplicateCloneAccounting(): void {
     this.duplicateCloneCount = 0;
     this.duplicateCloneBytes = 0;
+    this.externalCanvasSet = new WeakSet();
   }
 
   private trimHelperSurfaces(): void {

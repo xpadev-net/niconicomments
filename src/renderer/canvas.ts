@@ -71,9 +71,6 @@ class CanvasRenderer implements IRenderer {
     const context = this.canvas.getContext("2d");
     if (!context) throw new CanvasRenderingContext2DError();
     this.context = context;
-    this.context.textAlign = "start";
-    this.context.textBaseline = "alphabetic";
-    this.context.lineJoin = "round";
     this.video = video;
     this.padding = padding;
     this.width = this.canvas.width;
@@ -81,6 +78,15 @@ class CanvasRenderer implements IRenderer {
     if (this.padding > 0) {
       this.canvas.width += this.padding * 2;
       this.canvas.height += this.padding * 2;
+    }
+    this.resetContextState();
+  }
+
+  private resetContextState() {
+    this.context.textAlign = "start";
+    this.context.textBaseline = "alphabetic";
+    this.context.lineJoin = "round";
+    if (this.padding > 0) {
       this.context.translate(this.padding, this.padding);
     }
   }
@@ -176,6 +182,7 @@ class CanvasRenderer implements IRenderer {
     this.height = Math.max(0, size.height - paddingSize);
     this.canvas.width = size.width;
     this.canvas.height = size.height;
+    this.resetContextState();
   }
 
   getSize(): { width: number; height: number } {

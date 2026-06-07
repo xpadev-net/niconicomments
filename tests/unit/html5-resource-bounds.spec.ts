@@ -221,6 +221,13 @@ const runWindowTimeout = (callIndex: number) => {
   (callback as () => void)();
 };
 
+const expectLegacyImageWithoutDestroy = (images: IRenderer[]) => {
+  expect(images).toHaveLength(1);
+  const image = images[0];
+  expect(image).toBeDefined();
+  expect("destroy" in (image as object)).toBe(false);
+};
+
 describe("HTML5 comment resource bounds", () => {
   beforeEach(() => {
     initConfig();
@@ -440,8 +447,7 @@ describe("HTML5 comment resource bounds", () => {
     const image = comment.exposeTextImage();
 
     expect(image).not.toBeNull();
-    expect(renderer.legacyImages).toHaveLength(1);
-    expect("destroy" in renderer.legacyImages[0]!).toBe(false);
+    expectLegacyImageWithoutDestroy(renderer.legacyImages);
     expect(ctx.imageCache.get(comment.exposeCacheKey())?.image).toBe(image);
     expect(() => runWindowTimeout(1)).not.toThrow();
     expect(ctx.imageCache.get(comment.exposeCacheKey())).toBeUndefined();
@@ -467,8 +473,7 @@ describe("HTML5 comment resource bounds", () => {
     const cachedImage = second.exposeTextImage();
 
     expect(cachedImage).toBe(image);
-    expect(renderer.legacyImages).toHaveLength(1);
-    expect("destroy" in renderer.legacyImages[0]!).toBe(false);
+    expectLegacyImageWithoutDestroy(renderer.legacyImages);
     expect(() => runWindowTimeout(3)).not.toThrow();
     expect(ctx.imageCache.get(second.exposeCacheKey())).toBeUndefined();
   });
@@ -495,8 +500,7 @@ describe("HTML5 comment resource bounds", () => {
     }
 
     expect(firstImage).not.toBeNull();
-    expect(firstRenderer.legacyImages).toHaveLength(1);
-    expect("destroy" in firstRenderer.legacyImages[0]!).toBe(false);
+    expectLegacyImageWithoutDestroy(firstRenderer.legacyImages);
     expect(ctx.imageCache.get(firstComment.exposeCacheKey())).toBeUndefined();
   });
 

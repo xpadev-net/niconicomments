@@ -560,11 +560,14 @@ class HTML5CSSRenderer implements IRenderer {
     // occurrences to be independently positioned.
     let element: HTMLCanvasElement;
     if (!this.ownedCanvases.has(source)) {
+      const cloneBytes = this.getCanvasByteSize(source);
+      if (!this.reserveDuplicateClone(cloneBytes)) return;
       element = this.root.ownerDocument.createElement("canvas");
       element.width = source.width;
       element.height = source.height;
       const ctx = element.getContext("2d");
       if (!ctx) {
+        this.releaseDuplicateClone(cloneBytes);
         console.warn(
           "HTML5CSSRenderer: failed to acquire 2D context for canvas copy.",
         );

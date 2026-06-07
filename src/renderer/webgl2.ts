@@ -998,6 +998,7 @@ class WebGL2Renderer implements IRenderer {
   /* ═══ Texture invalidation ═══ */
 
   invalidateImage(image: IRenderer): void {
+    if (!image?.canvas) return;
     const entry = this.texMap.get(image.canvas);
     if (entry) {
       this._deleteTiles(entry);

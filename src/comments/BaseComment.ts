@@ -22,10 +22,9 @@ const imageCacheEntries = new WeakMap<object, Set<string>>();
 const destroyedTextImages = new WeakSet<IRenderer>();
 
 const destroyTextImage = (image: IRenderer) => {
-  const destroy = image.destroy;
-  if (typeof destroy !== "function") return false;
+  if (typeof image.destroy !== "function") return false;
   destroyedTextImages.add(image);
-  destroy.call(image);
+  image.destroy();
   return true;
 };
 

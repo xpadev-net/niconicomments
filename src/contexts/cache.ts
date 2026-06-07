@@ -20,7 +20,9 @@ class ImageCacheContext {
   reset() {
     for (const entry of Object.values(this._cache)) {
       clearTimeout(entry.timeout);
-      entry.image.destroy();
+      if (typeof entry.image.destroy === "function") {
+        entry.image.destroy();
+      }
     }
     this._cache = {};
   }

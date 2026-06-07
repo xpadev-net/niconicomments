@@ -504,6 +504,25 @@ describe("HTML5 comment resource bounds", () => {
     expect(ctx.imageCache.get(firstComment.exposeCacheKey())).toBeUndefined();
   });
 
+  test("resets legacy cached images without requiring destroy", () => {
+    const ctx = createContext();
+    const renderer = new LegacyImageSourceRenderer();
+    const comment = new TestHTML5Comment(
+      formattedComment(1, "legacy reset"),
+      renderer,
+      0,
+      ctx,
+    );
+
+    const image = comment.exposeTextImage();
+
+    expect(image).not.toBeNull();
+    expectLegacyImageWithoutDestroy(renderer.legacyImages);
+    expect(ctx.imageCache.get(comment.exposeCacheKey())?.image).toBe(image);
+    expect(() => ctx.imageCache.reset()).not.toThrow();
+    expect(ctx.imageCache.get(comment.exposeCacheKey())).toBeUndefined();
+  });
+
   test("preserves mail command order in image cache keys", () => {
     const ctx = createContext();
     const first = new TestHTML5Comment(

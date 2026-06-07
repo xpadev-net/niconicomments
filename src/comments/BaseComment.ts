@@ -21,6 +21,14 @@ const MAX_IMAGE_CACHE_ENTRIES = 1024;
 const imageCacheEntries = new WeakMap<object, Set<string>>();
 const destroyedTextImages = new WeakSet<IRenderer>();
 
+const destroyTextImage = (image: IRenderer) => {
+  const destroy = image.destroy;
+  if (typeof destroy !== "function") return false;
+  destroyedTextImages.add(image);
+  destroy.call(image);
+  return true;
+};
+
 const hashString = (input: string) => {
   let hash = 2166136261;
   for (let i = 0, n = input.length; i < n; i++) {
@@ -390,8 +398,7 @@ class BaseComment implements IComment {
       cache.timeout = window.setTimeout(
         () => {
           if (imageCache.get(key)?.image === cachedImage) {
-            destroyedTextImages.add(cachedImage);
-            cachedImage.destroy();
+            destroyTextImage(cachedImage);
             imageCache.delete(key);
             imageCacheEntries.get(imageCache)?.delete(key);
           }
@@ -439,8 +446,7 @@ class BaseComment implements IComment {
         const oldest = imageCache.get(oldestKey);
         if (oldest) {
           clearTimeout(oldest.timeout);
-          destroyedTextImages.add(oldest.image);
-          oldest.image.destroy();
+          destroyTextImage(oldest.image);
         }
         imageCache.delete(oldestKey);
         entries.delete(oldestKey);
@@ -452,8 +458,7 @@ class BaseComment implements IComment {
     imageCache.set(key, {
       timeout: window.setTimeout(() => {
         if (imageCache.get(key)?.image === image) {
-          destroyedTextImages.add(image);
-          image.destroy();
+          destroyTextImage(image);
           imageCache.delete(key);
           imageCacheEntries.get(imageCache)?.delete(key);
         }

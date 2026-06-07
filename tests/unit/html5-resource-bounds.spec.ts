@@ -136,6 +136,8 @@ const createLegacyImageRenderer = (): Omit<IRenderer, "destroy"> => {
     save() {},
     restore() {},
     getCanvas() {
+      // Test-only runtime contract break: createLegacyImageRenderer omits
+      // destroy() while providing the members this cache path uses.
       return createLegacyImageRenderer() as IRenderer;
     },
     drawImage() {},
@@ -148,6 +150,8 @@ class LegacyImageSourceRenderer extends RecordingRenderer {
   public readonly legacyImages: IRenderer[] = [];
 
   override getCanvas() {
+    // Test-only runtime contract break for LegacyImageSourceRenderer; do not
+    // copy this cast outside legacy compatibility tests.
     const image = createLegacyImageRenderer() as IRenderer;
     this.legacyImages.push(image);
     return image;

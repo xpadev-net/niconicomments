@@ -22,6 +22,8 @@ const imageCacheEntries = new WeakMap<object, Set<string>>();
 const destroyedTextImages = new WeakSet<IRenderer>();
 
 const destroyTextImage = (image: IRenderer) => {
+  // Legacy runtime renderers without destroy() are covered by
+  // html5-resource-bounds tests; only destroyed modern images need tracking.
   if (typeof image.destroy !== "function") return false;
   destroyedTextImages.add(image);
   image.destroy();

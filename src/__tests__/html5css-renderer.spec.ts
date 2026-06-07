@@ -611,9 +611,17 @@ test("HTML5CSSRenderer bounds duplicate owned canvas clones per frame", async ({
         return element;
       }) as typeof document.createElement;
       try {
-        return callback();
-      } finally {
+        const result = callback();
+        if (result instanceof Promise) {
+          return result.finally(() => {
+            document.createElement = originalCreateElement;
+          }) as T;
+        }
         document.createElement = originalCreateElement;
+        return result;
+      } catch (error) {
+        document.createElement = originalCreateElement;
+        throw error;
       }
     };
 

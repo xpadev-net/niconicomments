@@ -19,7 +19,7 @@
     "format:fix": "biome format --write src",
     "lint": "biome check src",
     "lint:fix": "biome check --write --unsafe src",
-    "prepare": "npm run build && (lefthook install || true)",
+    "prepare": "npm run build && (lefthook install || node --eval \"process.exit(0)\")",
     "test": "docker-compose run --rm pw",
     "test-server": "http-server",
     "test:unit": "vitest run",

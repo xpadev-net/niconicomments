@@ -441,4 +441,59 @@ describe("HTML5 comment resource bounds", () => {
     expect(renderer.getSize().width).toBe(canvas.width - 8);
     expect(renderer.getSize().height).toBe(canvas.height - 8);
   });
+
+  test("reapplies padding transform and canvas defaults after setSize resets context state", () => {
+    const context = {
+      textAlign: "left",
+      textBaseline: "top",
+      lineJoin: "miter",
+      translate: vi.fn(),
+      measureText: vi.fn(() => textMetrics(1)),
+    };
+    const resetContextState = () => {
+      context.textAlign = "left";
+      context.textBaseline = "top";
+      context.lineJoin = "miter";
+    };
+    const canvas = {
+      getContext: vi.fn(() => context),
+    } as unknown as HTMLCanvasElement;
+    let canvasWidth = 100;
+    let canvasHeight = 50;
+    Object.defineProperty(canvas, "width", {
+      get: () => canvasWidth,
+      set: (value: number) => {
+        canvasWidth = value;
+        resetContextState();
+      },
+    });
+    Object.defineProperty(canvas, "height", {
+      get: () => canvasHeight,
+      set: (value: number) => {
+        canvasHeight = value;
+        resetContextState();
+      },
+    });
+
+    const renderer = new CanvasRenderer(canvas, undefined, 4);
+
+    expect(context.textAlign).toBe("start");
+    expect(context.textBaseline).toBe("alphabetic");
+    expect(context.lineJoin).toBe("round");
+    expect(context.translate).toHaveBeenCalledTimes(1);
+    expect(context.translate).toHaveBeenLastCalledWith(4, 4);
+    expect(canvas.width).toBe(108);
+    expect(canvas.height).toBe(58);
+
+    renderer.setSize(200, 80);
+
+    expect(context.textAlign).toBe("start");
+    expect(context.textBaseline).toBe("alphabetic");
+    expect(context.lineJoin).toBe("round");
+    expect(context.translate).toHaveBeenCalledTimes(2);
+    expect(context.translate).toHaveBeenLastCalledWith(4, 4);
+    expect(canvas.width).toBe(208);
+    expect(canvas.height).toBe(88);
+    expect(renderer.getSize()).toEqual({ width: 200, height: 80 });
+  });
 });

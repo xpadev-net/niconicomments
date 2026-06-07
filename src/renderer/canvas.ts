@@ -157,7 +157,13 @@ class CanvasRenderer implements IRenderer {
   }
 
   clearRect(x: number, y: number, width: number, height: number): void {
-    this.context.clearRect(x, y, width, height);
+    this.context.save();
+    try {
+      this.context.setTransform(1, 0, 0, 1, 0, 0);
+      this.context.clearRect(x + this.padding, y + this.padding, width, height);
+    } finally {
+      this.context.restore();
+    }
   }
 
   setFont(font: string): void {

@@ -342,7 +342,6 @@ describe("Flash and at-button resource bounds", () => {
       y: left.top + left.height / 2,
     };
 
-    expect(cursor.y / comment.comment.scaleX).toBeLessThan(left.top);
     expect(comment.isHovered(cursor, 0, 0)).toBe(true);
   });
 

@@ -93,6 +93,9 @@ class FlashComment extends BaseComment {
   override get content() {
     return this.comment.rawContent;
   }
+  override get flash() {
+    return true;
+  }
   override set content(input: string) {
     const { content, lineCount, lineOffset } = this.parseContent(input);
     const comment: FormattedCommentWithFont = {
@@ -552,16 +555,16 @@ class FlashComment extends BaseComment {
   override isHovered(_cursor?: Position, _posX?: number, _posY?: number) {
     if (!_cursor || !this.comment.buttonObjects) return false;
     const { left, middle, right } = this.comment.buttonObjects;
-    const scale =
+    const scaleY =
       this._globalScale *
       this.comment.scale *
-      this.comment.scaleX *
       (this.comment.layer === -1 ? this.ctx.options.scale : 1);
-    const posX = (_posX ?? this.pos.x) / scale;
-    const posY = (_posY ?? this.pos.y) / scale;
+    const scaleX = scaleY * this.comment.scaleX;
+    const posX = (_posX ?? this.pos.x) / scaleX;
+    const posY = (_posY ?? this.pos.y) / scaleY;
     const cursor = {
-      x: _cursor.x / scale,
-      y: _cursor.y / scale,
+      x: _cursor.x / scaleX,
+      y: _cursor.y / scaleY,
     };
     if (
       cursor.x < posX ||

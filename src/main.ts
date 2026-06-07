@@ -296,10 +296,6 @@ class NiconiComments {
       pv.push(createCommentInstance(val, this.renderer, index, this.ctx));
       return pv;
     }, []);
-    if (!this.ctx.options.lazy) {
-      this.getCommentPos(instances, instances.length);
-      this.sortTimelineComment();
-    }
 
     const plugins: IPluginList = [];
     for (const plugin of this.ctx.config.plugins) {
@@ -329,9 +325,8 @@ class NiconiComments {
         );
       },
     );
-    if (this.ctx.options.lazy && !this.lazyCommentOrderSortedByVpos) {
-      // Lazy resolution assumes constructor input is vpos-ordered. Preserve
-      // correctness for unsorted input by resolving all comments eagerly once.
+    if (!this.ctx.options.lazy || !this.lazyCommentOrderSortedByVpos) {
+      // Non-lazy rendering and lazy fallback both need final plugin output.
       this.getCommentPos(instances, instances.length);
       this.sortTimelineComment();
     }

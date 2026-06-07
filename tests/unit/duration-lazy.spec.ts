@@ -45,6 +45,7 @@ class FakeRenderer implements IRenderer {
   public readonly rendererName = "FakeRenderer";
   public readonly canvas = {} as HTMLCanvasElement;
   public clearRectCalls = 0;
+  public fillTextCalls: string[] = [];
   private font = "";
   private size = { width: 1920, height: 1080 };
 
@@ -59,7 +60,9 @@ class FakeRenderer implements IRenderer {
   setScale() {}
   fillRect() {}
   strokeRect() {}
-  fillText() {}
+  fillText(text: string) {
+    this.fillTextCalls.push(text);
+  }
   strokeText() {}
   quadraticCurveTo() {}
   clearRect() {
@@ -99,7 +102,10 @@ class FakeRenderer implements IRenderer {
 class ReverseCommentsPlugin {
   static readonly id = "reverse-comments-plugin";
 
-  constructor(_canvas: IRenderer, _comments: IComment[]) {}
+  constructor(canvas: IRenderer, comments: IComment[]) {
+    void canvas;
+    void comments;
+  }
 
   draw() {
     return false;
@@ -107,6 +113,23 @@ class ReverseCommentsPlugin {
 
   transformComments(comments: IComment[]) {
     return [...comments].reverse();
+  }
+}
+
+class FilterSecondCommentPlugin {
+  static readonly id = "filter-second-comment-plugin";
+
+  constructor(canvas: IRenderer, comments: IComment[]) {
+    void canvas;
+    void comments;
+  }
+
+  draw() {
+    return false;
+  }
+
+  transformComments(comments: IComment[]) {
+    return comments.filter((comment) => comment.comment.id !== 2);
   }
 }
 
@@ -378,6 +401,38 @@ describe("duration bounds and lazy timeline expansion", () => {
     expect(state.comments[0]?.posY).not.toBe(-1);
     expect(state.comments[1]?.posY).not.toBe(-1);
     expect(state.timeline[0]).toBeDefined();
+  });
+
+  test("non-lazy constructor builds timeline from plugin-transformed comments", () => {
+    const renderer = new FakeRenderer();
+    const instance = new NiconiComments(
+      renderer,
+      [
+        createComment({ id: 1, vpos: 0, content: "kept", mail: ["ue"] }),
+        createComment({ id: 2, vpos: 0, content: "removed", mail: ["ue"] }),
+      ],
+      {
+        format: "formatted",
+        lazy: false,
+        mode: "html5",
+        showCommentCount: true,
+        config: { plugins: [FilterSecondCommentPlugin] },
+      },
+    );
+    const state = instance as unknown as {
+      comments: IComment[];
+      timeline: Record<number, IComment[]>;
+    };
+
+    expect(state.comments.map((comment) => comment.comment.id)).toEqual([1]);
+    expect(state.timeline[0]?.map((comment) => comment.comment.id)).toEqual([
+      1,
+    ]);
+
+    instance.drawCanvas(0, true);
+
+    expect(renderer.fillTextCalls).toContain("Count:1");
+    expect(renderer.fillTextCalls).not.toContain("Count:2");
   });
 
   test("addComments keeps hostile durations bounded on the production path", () => {

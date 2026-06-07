@@ -194,6 +194,54 @@ describe("HTML5 comment resource bounds", () => {
     expect(renderer.children[0]?.strokeTextCalls).toBe(3);
   });
 
+  test("preserves text on the final allowed HTML5 line", () => {
+    const renderer = new RecordingRenderer();
+    const content = Array.from({ length: 256 }, (_, i) => `line-${i + 1}`).join(
+      "\n",
+    );
+    const comment = new TestHTML5Comment(
+      formattedComment(1, content),
+      renderer,
+      0,
+      createContext(),
+    );
+
+    expect(comment.comment.lineCount).toBe(256);
+    expect(comment.comment.content).toContainEqual(
+      expect.objectContaining({
+        content: expect.stringContaining("line-256"),
+        slicedContent: expect.arrayContaining(["line-256"]),
+      }),
+    );
+  });
+
+  test("clamps over-limit HTML5 lines after preserving the final allowed line", () => {
+    const renderer = new RecordingRenderer();
+    const content = Array.from({ length: 300 }, (_, i) => `line-${i + 1}`).join(
+      "\n",
+    );
+    const comment = new TestHTML5Comment(
+      formattedComment(1, content),
+      renderer,
+      0,
+      createContext(),
+    );
+
+    expect(comment.comment.lineCount).toBe(256);
+    expect(comment.comment.content).toContainEqual(
+      expect.objectContaining({
+        content: expect.stringContaining("line-256"),
+        slicedContent: expect.arrayContaining(["line-256"]),
+      }),
+    );
+    expect(comment.comment.content).not.toContainEqual(
+      expect.objectContaining({
+        content: expect.stringContaining("line-257"),
+        slicedContent: expect.arrayContaining(["line-257"]),
+      }),
+    );
+  });
+
   test.each([
     "ue",
     "shita",

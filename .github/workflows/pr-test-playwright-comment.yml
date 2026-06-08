@@ -152,7 +152,7 @@ jobs:
       - name: Download test results
         id: test-results
         if: ${{ github.event.workflow_run.conclusion == 'failure' && fromJSON(steps.pr-context.outputs.result).trusted && fromJSON(steps.pr-context.outputs.result).artifactDisposition == 'download' && fromJSON(steps.pr-context.outputs.result).testResultsArtifactCount > 0 }}
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
           pattern: test-results-node-*
           path: all-test-results/

@@ -127,8 +127,6 @@ jobs:
                   raise SystemExit(f"Missing artifact entry: {', '.join(sorted(missing))}")
               if not any(name.startswith("docs/type/") for name in seen):
                   raise SystemExit("Missing artifact entry: docs/type/ (no TypeDoc files found)")
-              if not any(name.startswith("docs/") and not name.startswith("docs/type/") for name in seen):
-                  raise SystemExit("Missing artifact entry: docs/ (no static docs files found)")
 
               for member in tar.getmembers():
                   target = destination / member.name

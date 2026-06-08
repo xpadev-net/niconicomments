@@ -58,7 +58,7 @@ jobs:
         run: pnpm build
 
       - name: Package generated artifacts
-        run: find .gitignore docs/type dist/bundle.js -type f -print0 | tar --null --hard-dereference -czf typedoc-artifacts.tgz --files-from -
+        run: find .gitignore docs dist/bundle.js -type f -print0 | tar --null --hard-dereference -czf typedoc-artifacts.tgz --files-from -
 
       - name: Upload generated artifacts
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -103,7 +103,7 @@ jobs:
           seen = set()
 
           def is_allowed(name):
-              return name in required or name.startswith("docs/type/")
+              return name in required or name.startswith("docs/")
 
           with tarfile.open(archive, "r:gz") as tar:
               for member in tar.getmembers():
@@ -127,6 +127,8 @@ jobs:
                   raise SystemExit(f"Missing artifact entry: {', '.join(sorted(missing))}")
               if not any(name.startswith("docs/type/") for name in seen):
                   raise SystemExit("Missing artifact entry: docs/type/ (no TypeDoc files found)")
+              if not any(name.startswith("docs/") and not name.startswith("docs/type/") for name in seen):
+                  raise SystemExit("Missing artifact entry: docs/ (no static docs files found)")
 
               for member in tar.getmembers():
                   target = destination / member.name
@@ -146,11 +148,11 @@ jobs:
           git config user.name "github-actions"
           git checkout -b typedoc
           git rm -rf . --quiet || true
-          mkdir -p dist docs/type
+          mkdir -p dist docs
           cp "${RUNNER_TEMP}/validated-artifacts/.gitignore" .gitignore
           cp "${RUNNER_TEMP}/validated-artifacts/dist/bundle.js" dist/bundle.js
-          if [ -d "${RUNNER_TEMP}/validated-artifacts/docs/type" ]; then
-            cp -a "${RUNNER_TEMP}/validated-artifacts/docs/type/." docs/type/
+          if [ -d "${RUNNER_TEMP}/validated-artifacts/docs" ]; then
+            cp -a "${RUNNER_TEMP}/validated-artifacts/docs/." docs/
           fi
           cp -f dist/bundle.js docs/
           git add .

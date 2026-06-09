@@ -48,12 +48,18 @@ class CanvasRenderer implements IRenderer {
 
   /**
    * measureText 結果のキャッシュ
-   * キー: "font\0text" → 値: TextMetrics
-   * Canvas2D の measureText() は同じ (font, text) ペアに対して決定論的なので安全にキャッシュできる
+   * キー: "font\0text" → 値: TextMetrics (主レンダラースケール)
+   * キー: "@drawScale\0font\0text" → 値: TextMetrics (drawScaleスケール)
    * エントリ数が _MT_CACHE_MAX_SIZE に達した場合はそれ以上追加しない（既存エントリは維持）
    */
   private static readonly _MT_CACHE_MAX_SIZE = 5000;
   private static _mtCache = new Map<string, TextMetrics>();
+
+  /** measureTextAtDrawScale 用の専用キャンバス (スケール依存計測用) */
+  private static _dsCanvas: HTMLCanvasElement | null = null;
+  private static _dsCtx: CanvasRenderingContext2D | null = null;
+  private static _dsScale = 0;
+  private static _dsFont = "";
 
   /** プールから取得した canvas かどうか (destroy 時にプールに返却するため) */
   private readonly pooled: boolean;
@@ -218,8 +224,66 @@ class CanvasRenderer implements IRenderer {
     return result;
   }
 
+  /**
+   * Measure text on a dedicated canvas with `drawScale` applied as the
+   * transform, so font fallback resolution matches the offscreen render canvas.
+   *
+   * In WKWebView (macOS), `measureText()` resolves font fallbacks based on the
+   * effective physical glyph size, which varies with the canvas transform.
+   * Measuring at `drawScale` (= commentScale × fontScale × layerScale) returns
+   * the same metrics the offscreen canvas will produce, preventing clipping.
+   */
+  measureTextAtDrawScale(text: string, drawScale: number): TextMetrics {
+    const font = this.context.font;
+    if (text.length > MAX_MEASURE_TEXT_CACHE_TEXT_LENGTH) {
+      return CanvasRenderer._measureAtScale(text, font, drawScale);
+    }
+    const key = `@${drawScale}\0${font}\0${text}`;
+    const cached = CanvasRenderer._mtCache.get(key);
+    if (cached !== undefined) return cached;
+    const result = CanvasRenderer._measureAtScale(text, font, drawScale);
+    if (CanvasRenderer._mtCache.size < CanvasRenderer._MT_CACHE_MAX_SIZE) {
+      CanvasRenderer._mtCache.set(key, result);
+    }
+    return result;
+  }
+
+  private static _measureAtScale(
+    text: string,
+    font: string,
+    drawScale: number,
+  ): TextMetrics {
+    if (!CanvasRenderer._dsCanvas) {
+      CanvasRenderer._dsCanvas = document.createElement("canvas");
+      CanvasRenderer._dsCanvas.width = 1;
+      CanvasRenderer._dsCanvas.height = 1;
+      CanvasRenderer._dsCtx = CanvasRenderer._dsCanvas.getContext("2d");
+    }
+    const ctx = CanvasRenderer._dsCtx;
+    if (!ctx) {
+      const tmp = document.createElement("canvas");
+      const tCtx = tmp.getContext("2d");
+      if (!tCtx) throw new CanvasRenderingContext2DError();
+      tCtx.setTransform(drawScale, 0, 0, drawScale, 0, 0);
+      tCtx.font = font;
+      return tCtx.measureText(text);
+    }
+    if (CanvasRenderer._dsScale !== drawScale) {
+      ctx.setTransform(drawScale, 0, 0, drawScale, 0, 0);
+      CanvasRenderer._dsScale = drawScale;
+      CanvasRenderer._dsFont = "";
+    }
+    if (CanvasRenderer._dsFont !== font) {
+      ctx.font = font;
+      CanvasRenderer._dsFont = font;
+    }
+    return ctx.measureText(text);
+  }
+
   static resetMeasureTextCache(): void {
     CanvasRenderer._mtCache.clear();
+    CanvasRenderer._dsScale = 0;
+    CanvasRenderer._dsFont = "";
   }
   beginPath(): void {
     this.context.beginPath();

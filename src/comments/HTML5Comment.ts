@@ -239,14 +239,24 @@ class HTML5Comment extends BaseComment {
       comment.full ? "fullWidth" : "width"
     ];
     if (!typeGuard.internal.MeasureInput(comment)) throw new TypeGuardError();
-    const measureResult = measure(comment, this.renderer, this.config);
+    const layerScale = this.comment.layer === -1 ? this.ctx.options.scale : 1;
+    const measureResult = measure(
+      comment,
+      this.renderer,
+      this.config,
+      layerScale,
+    );
     if (comment.loc !== "naka" && measureResult.width > widthLimit) {
-      return this._processResizeX(comment, measureResult.width);
+      return this._processResizeX(comment, measureResult.width, layerScale);
     }
     return measureResult;
   }
 
-  private _processResizeX(comment: MeasureTextInput, width: number) {
+  private _processResizeX(
+    comment: MeasureTextInput,
+    width: number,
+    layerScale = 1,
+  ) {
     const widthLimit = getConfig(this.config.commentStageSize, false)[
       comment.full ? "fullWidth" : "width"
     ];
@@ -287,7 +297,7 @@ class HTML5Comment extends BaseComment {
       workComment.lineHeight =
         legacyBaseLineHeight * (nextCharSize / legacyBaseCharSize);
       workComment.fontSize = nextCharSize * 0.8;
-      return measure(workComment, this.renderer, this.config);
+      return measure(workComment, this.renderer, this.config, layerScale);
     };
 
     if (baseCharSize >= 1) {
@@ -349,6 +359,7 @@ class HTML5Comment extends BaseComment {
         comment as MeasureTextInput & MeasureInput,
         this.renderer,
         this.config,
+        layerScale,
       );
     }
 
@@ -363,7 +374,7 @@ class HTML5Comment extends BaseComment {
         workComment.lineHeight = baseLineHeight * (nextCharSize / baseCharSize);
       }
       workComment.fontSize = (workComment.charSize ?? 0) * 0.8;
-      return measure(workComment, this.renderer, this.config);
+      return measure(workComment, this.renderer, this.config, layerScale);
     };
 
     let best = baseCharSize;
@@ -414,6 +425,7 @@ class HTML5Comment extends BaseComment {
       comment as MeasureTextInput & MeasureInput,
       this.renderer,
       this.config,
+      layerScale,
     );
   }
 

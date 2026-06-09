@@ -69,8 +69,9 @@ const measure = (
   comment: MeasureInput,
   renderer: IRenderer,
   config: BaseConfig,
+  layerScale = 1,
 ) => {
-  const width = measureWidth(comment, renderer, config);
+  const width = measureWidth(comment, renderer, config, layerScale);
   return {
     ...width,
     height: comment.lineHeight * (comment.lineCount - 1) + comment.charSize,
@@ -128,8 +129,10 @@ const measureWidth = (
   comment: MeasureInput,
   renderer: IRenderer,
   config: BaseConfig,
+  layerScale = 1,
 ) => {
   const { fontSize, scale } = getFontSizeAndScale(comment.charSize, config);
+  const drawScale = getConfig(config.commentScale, false) * scale * layerScale;
   const lineWidth: number[] = [];
   const itemWidth: number[][] = [];
   const initialFont = parseFont(comment.font, fontSize, config);
@@ -153,9 +156,11 @@ const measureWidth = (
     for (let j = 0, n = lines.length; j < n; j++) {
       const line = lines[j];
       if (line === undefined) throw new TypeGuardError();
-      const measure = renderer.measureText(line);
-      currentWidth += measure.width;
-      width.push(measure.width);
+      const m =
+        renderer.measureTextAtDrawScale?.(line, drawScale) ??
+        renderer.measureText(line);
+      currentWidth += m.width;
+      width.push(m.width);
       if (j < lines.length - 1) {
         lineWidth.push(Math.ceil(currentWidth * scale));
         currentWidth = 0;

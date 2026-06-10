@@ -236,23 +236,26 @@ class CanvasRenderer implements IRenderer {
   measureTextAtDrawScale(text: string, drawScale: number): TextMetrics {
     const font = this.context.font;
     if (text.length > MAX_MEASURE_TEXT_CACHE_TEXT_LENGTH) {
-      return CanvasRenderer._measureAtScale(text, font, drawScale);
+      return this._measureAtScale(text, font, drawScale);
     }
     const key = `@${drawScale}\0${font}\0${text}`;
     const cached = CanvasRenderer._mtCache.get(key);
     if (cached !== undefined) return cached;
-    const result = CanvasRenderer._measureAtScale(text, font, drawScale);
+    const result = this._measureAtScale(text, font, drawScale);
     if (CanvasRenderer._mtCache.size < CanvasRenderer._MT_CACHE_MAX_SIZE) {
       CanvasRenderer._mtCache.set(key, result);
     }
     return result;
   }
 
-  private static _measureAtScale(
+  private _measureAtScale(
     text: string,
     font: string,
     drawScale: number,
   ): TextMetrics {
+    if (typeof document === "undefined") {
+      return this.context.measureText(text);
+    }
     if (!CanvasRenderer._dsCanvas) {
       CanvasRenderer._dsCanvas = document.createElement("canvas");
       CanvasRenderer._dsCanvas.width = 1;
@@ -261,12 +264,7 @@ class CanvasRenderer implements IRenderer {
     }
     const ctx = CanvasRenderer._dsCtx;
     if (!ctx) {
-      const tmp = document.createElement("canvas");
-      const tCtx = tmp.getContext("2d");
-      if (!tCtx) throw new CanvasRenderingContext2DError();
-      tCtx.setTransform(drawScale, 0, 0, drawScale, 0, 0);
-      tCtx.font = font;
-      return tCtx.measureText(text);
+      return this.context.measureText(text);
     }
     if (CanvasRenderer._dsScale !== drawScale) {
       ctx.setTransform(drawScale, 0, 0, drawScale, 0, 0);

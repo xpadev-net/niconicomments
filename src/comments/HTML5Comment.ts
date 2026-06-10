@@ -239,7 +239,7 @@ class HTML5Comment extends BaseComment {
       comment.full ? "fullWidth" : "width"
     ];
     if (!typeGuard.internal.MeasureInput(comment)) throw new TypeGuardError();
-    const layerScale = this.comment.layer === -1 ? this.ctx.options.scale : 1;
+    const layerScale = comment.layer === -1 ? this.ctx.options.scale : 1;
     const measureResult = measure(
       comment,
       this.renderer,

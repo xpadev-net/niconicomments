@@ -20,6 +20,20 @@ export interface IRenderer {
   setSize(width: number, height: number): void;
   getSize(): { width: number; height: number };
   measureText(text: string): TextMetrics;
+  /**
+   * Measure text on a canvas with the given draw scale applied.
+   *
+   * In some environments (e.g. WKWebView on macOS), `measureText()` returns
+   * different values depending on the canvas transform because font fallback
+   * resolution depends on the effective physical glyph size.  niconicomments
+   * renders comment text on an offscreen canvas at `drawScale`, so measuring
+   * at that same scale avoids the mismatch that causes clipping.
+   *
+   * Optional — implementations that return identical metrics regardless of
+   * scale (Chrome, Firefox, Node-canvas) may omit it.  Callers fall back to
+   * `measureText()` when the method is absent.
+   */
+  measureTextAtDrawScale?(text: string, drawScale: number): TextMetrics;
   beginPath(): void;
   closePath(): void;
   moveTo(x: number, y: number): void;

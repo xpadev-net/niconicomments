@@ -18,7 +18,8 @@ import { getPosX, isBanActive, isReverseActive, parseFont } from "@/utils";
 // Matches strings that contain no visible glyphs: JS \s (covers U+0020,
 // U+00A0, U+FEFF, U+3000, etc.) plus zero-width / Hangul filler codepoints
 // that \s does not include.
-const VISUALLY_BLANK_RE = /^(?:[\s­​‌⁠ᅟᅠㅤﾠ]|‍)*$/;
+const VISUALLY_BLANK_RE =
+  /^[\s\u00AD\u200B-\u200D\u2060\u115F\u1160\u3164\uFFA0]*$/;
 
 const MAX_CACHE_KEY_CONTENT_LENGTH = 512;
 const MAX_CACHE_KEY_EDGE_LENGTH = 256;

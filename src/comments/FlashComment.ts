@@ -251,7 +251,9 @@ class FlashComment extends BaseComment {
     const defaultFontSize = configFontSize.default;
     comment.lineHeight ??= configLineHeight[comment.size].default;
     const widthLimit = configStageSize[comment.full ? "fullWidth" : "width"];
-    const { scaleX, width, height } = this._measureContent(comment);
+    const layerScale = comment.layer === -1 ? this.ctx.options.scale : 1;
+    const drawScale = this._globalScale * layerScale;
+    const { scaleX, width, height } = this._measureContent(comment, drawScale);
     let scale = 1;
     if (isLineBreakResize(comment, this.config)) {
       comment.resized = true;
@@ -338,7 +340,7 @@ class FlashComment extends BaseComment {
     return widthLimit < width;
   }
 
-  private _measureContent(comment: MeasureTextInput) {
+  private _measureContent(comment: MeasureTextInput, drawScale: number) {
     let currentWidth = 0;
     let spacedWidth = 0;
     let leadLineWidth = 1;
@@ -367,7 +369,9 @@ class FlashComment extends BaseComment {
       for (let i = 0, n = lines.length; i < n; i++) {
         const value = lines[i];
         if (value === undefined) continue;
-        const meas = this.renderer.measureText(value);
+        const meas =
+          this.renderer.measureTextAtDrawScale?.(value, drawScale) ??
+          this.renderer.measureText(value);
         currentWidth += meas.width;
         spacedWidth +=
           meas.width +

@@ -15,6 +15,12 @@ import type { CommentInstanceContext } from "@/contexts";
 import { NotImplementedError } from "@/errors/";
 import { getPosX, isBanActive, isReverseActive, parseFont } from "@/utils";
 
+// Matches strings that contain no visible glyphs: JS \s (covers U+0020,
+// U+00A0, U+FEFF, U+3000, etc.) plus zero-width / Hangul filler codepoints
+// that \s does not include.
+const VISUALLY_BLANK_RE =
+  /^[\s\u00AD\u200B-\u200D\u2060\u115F\u1160\u3164\uFFA0]*$/;
+
 const MAX_CACHE_KEY_CONTENT_LENGTH = 512;
 const MAX_CACHE_KEY_EDGE_LENGTH = 256;
 const MAX_IMAGE_CACHE_ENTRIES = 1024;
@@ -376,7 +382,8 @@ class BaseComment implements IComment {
       (this.comment.lineCount === 1 && this.comment.width === 0) ||
       this.comment.height - (this.comment.charSize - this.comment.lineHeight) <=
         0 ||
-      !this.canGenerateTextImage()
+      !this.canGenerateTextImage() ||
+      VISUALLY_BLANK_RE.test(this.comment.rawContent)
     )
       return null;
     const key = this.cacheKey;

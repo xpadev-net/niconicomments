@@ -341,6 +341,9 @@ class FlashComment extends BaseComment {
   }
 
   private _measureContent(comment: MeasureTextInput, drawScale: number) {
+    const measureText = this.renderer.measureTextAtDrawScale
+      ? (val: string) => this.renderer.measureTextAtDrawScale!(val, drawScale)
+      : (val: string) => this.renderer.measureText(val);
     let currentWidth = 0;
     let spacedWidth = 0;
     let leadLineWidth = 1;
@@ -369,9 +372,7 @@ class FlashComment extends BaseComment {
       for (let i = 0, n = lines.length; i < n; i++) {
         const value = lines[i];
         if (value === undefined) continue;
-        const meas =
-          this.renderer.measureTextAtDrawScale?.(value, drawScale) ??
-          this.renderer.measureText(value);
+        const meas = measureText(value);
         currentWidth += meas.width;
         spacedWidth +=
           meas.width +

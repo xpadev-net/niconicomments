@@ -3,7 +3,7 @@ permissions:
   actions: read
   contents: write
   issues: write
-  pull-requests: read
+  pull-requests: write
 on:
   workflow_run:
     workflows: ["Playwright Tests"]

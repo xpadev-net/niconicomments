@@ -10,10 +10,12 @@ const updateConfig = (config: BaseConfig) => {
   defaultConfig = config;
 };
 
+const setConfig = updateConfig;
+
 /**
  * 既定の設定
  */
-const defaultOptions: BaseOptions = {
+const createDefaultOptions = (): BaseOptions => ({
   config: {},
   debug: false,
   enableLegacyPiP: false,
@@ -28,6 +30,23 @@ const defaultOptions: BaseOptions = {
   useLegacy: false,
   video: undefined,
   lazy: false,
+});
+
+const defaultOptions: BaseOptions = createDefaultOptions();
+
+const setOptions = (options: BaseOptions) => {
+  Object.assign(defaultOptions, options);
 };
 
-export { defaultConfig, defaultOptions, updateConfig };
+const resetOptions = () => {
+  Object.assign(defaultOptions, createDefaultOptions());
+};
+
+export {
+  defaultConfig,
+  defaultOptions,
+  resetOptions,
+  setConfig,
+  setOptions,
+  updateConfig,
+};

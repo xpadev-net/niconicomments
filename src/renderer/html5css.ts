@@ -507,8 +507,8 @@ class HTML5CSSRenderer implements IRenderer {
       typeof WeakRef === "undefined"
         ? () => {
             if (inner) {
-              this.ownedCanvases.delete(inner.canvas);
               this.invalidateImage(inner);
+              this.ownedCanvases.delete(inner.canvas);
             }
           }
         : (() => {
@@ -517,8 +517,8 @@ class HTML5CSSRenderer implements IRenderer {
               if (inner) {
                 const parent = parentRef.deref();
                 if (parent) {
-                  parent.ownedCanvases.delete(inner.canvas);
                   parent.invalidateImage(inner);
+                  parent.ownedCanvases.delete(inner.canvas);
                 }
               }
             };
@@ -673,8 +673,10 @@ class HTML5CSSRenderer implements IRenderer {
   }
 
   invalidateImage(image: IRenderer): void {
-    // Eagerly drop and detach the canvas so flush() never touches it again
+    // Eagerly drop and detach owned canvases so flush() never touches them again
     // and a pooled re-acquisition by another renderer finds no ghost in the DOM.
+    // External canvases remain caller-owned; drawImage() copies them instead of
+    // reparenting, so invalidation must not detach the caller's DOM node.
     const source = image.canvas;
     const clones = this.cloneMap.get(source);
     if (clones) {
@@ -688,8 +690,10 @@ class HTML5CSSRenderer implements IRenderer {
     }
     this.prevCanvasSet.delete(source);
     this.activeCanvasSet.delete(source);
-    source.style.display = "none";
-    source.remove();
+    if (this.ownedCanvases.has(source)) {
+      source.style.display = "none";
+      source.remove();
+    }
   }
 
   private getNode(tagName: "div"): HTMLElement {

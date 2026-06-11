@@ -531,6 +531,84 @@ test("HTML5CSSRenderer refreshes drawImage snapshots after sub-renderer resize",
   expect(metrics.height).toBe("5px");
 });
 
+test("HTML5CSSRenderer does not detach external canvases on invalidation", async ({
+  page,
+}) => {
+  await loadBundle(page);
+
+  const metrics = await page.evaluate(() => {
+    const host = document.createElement("div");
+    const root = document.createElement("div");
+    root.dataset.width = "100";
+    root.dataset.height = "100";
+    const externalCanvas = document.createElement("canvas");
+    externalCanvas.style.display = "block";
+    host.appendChild(externalCanvas);
+    document.body.append(host, root);
+    const global = window as typeof window & {
+      NiconiComments: typeof import("@/main").default;
+    };
+    const renderer =
+      new global.NiconiComments.internal.renderer.HTML5CSSRenderer(root);
+    const externalImage =
+      new global.NiconiComments.internal.renderer.CanvasRenderer(
+        externalCanvas,
+      );
+    externalImage.setSize(20, 20);
+    renderer.drawImage(externalImage, 0, 0);
+    renderer.flush();
+    renderer.invalidateImage(externalImage);
+    const attachedAfterInvalidation = host.contains(externalCanvas);
+    const displayAfterInvalidation = externalCanvas.style.display;
+    externalImage.destroy();
+    renderer.destroy();
+    root.remove();
+    host.remove();
+    return { attachedAfterInvalidation, displayAfterInvalidation };
+  });
+
+  expect(metrics.attachedAfterInvalidation).toBe(true);
+  expect(metrics.displayAfterInvalidation).toBe("block");
+});
+
+test("HTML5CSSRenderer detaches owned canvases on sub-renderer destroy", async ({
+  page,
+}) => {
+  await loadBundle(page);
+
+  const metrics = await page.evaluate(() => {
+    const root = document.createElement("div");
+    root.dataset.width = "100";
+    root.dataset.height = "100";
+    document.body.appendChild(root);
+    const global = window as typeof window & {
+      NiconiComments: typeof import("@/main").default;
+    };
+    const renderer =
+      new global.NiconiComments.internal.renderer.HTML5CSSRenderer(root);
+    const image = renderer.getCanvas();
+    image.setSize(20, 20);
+    renderer.drawImage(image, 0, 0);
+    renderer.flush();
+    const source = image.canvas;
+    const attachedBeforeDestroy = root.contains(source);
+    image.destroy();
+    const attachedAfterDestroy = root.contains(source);
+    const displayAfterDestroy = source.style.display;
+    renderer.destroy();
+    root.remove();
+    return {
+      attachedBeforeDestroy,
+      attachedAfterDestroy,
+      displayAfterDestroy,
+    };
+  });
+
+  expect(metrics.attachedBeforeDestroy).toBe(true);
+  expect(metrics.attachedAfterDestroy).toBe(false);
+  expect(metrics.displayAfterDestroy).toBe("none");
+});
+
 test("HTML5CSSRenderer bounds duplicate owned canvas clones per frame", async ({
   page,
 }) => {

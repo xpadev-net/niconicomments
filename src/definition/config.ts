@@ -10,6 +10,8 @@ const updateConfig = (config: BaseConfig) => {
   defaultConfig = config;
 };
 
+const setConfig = updateConfig;
+
 /**
  * 既定の設定
  */
@@ -30,4 +32,8 @@ const defaultOptions: BaseOptions = {
   lazy: false,
 };
 
-export { defaultConfig, defaultOptions, updateConfig };
+const setOptions = (options: BaseOptions) => {
+  Object.assign(defaultOptions, options);
+};
+
+export { defaultConfig, defaultOptions, setConfig, setOptions, updateConfig };

@@ -323,12 +323,27 @@ describe("duration bounds and lazy timeline expansion", () => {
     parseCommandAndNicoScript(
       createComment({
         owner: true,
-        content: "@ジャンプ sm9",
+        content: "@ジャンプ sm9 test",
         mail: ["@0.005"],
       }),
       subCentisecondJumpContext,
     );
+    expect(subCentisecondJumpContext.nicoScripts.jump[0]).toBeDefined();
     expect(subCentisecondJumpContext.nicoScripts.jump[0]?.end).toBeUndefined();
+
+    const zeroJumpContext = createContext();
+    parseCommandAndNicoScript(
+      createComment({
+        owner: true,
+        content: "@ジャンプ sm9 test",
+        mail: ["@0"],
+      }),
+      zeroJumpContext,
+    );
+    expect(zeroJumpContext.nicoScripts.jump[0]).toBeDefined();
+    expect(zeroJumpContext.nicoScripts.jump[0]?.end).toBe(
+      zeroJumpContext.nicoScripts.jump[0]?.start,
+    );
   });
 
   test("widens lazy lookahead for narrower canvas widths", () => {

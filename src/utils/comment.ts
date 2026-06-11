@@ -108,7 +108,7 @@ const normalizeParsedCommandLong = (value: number | undefined) => {
   if (value === undefined) {
     return undefined;
   }
-  if (!Number.isFinite(value) || value <= 0) {
+  if (!Number.isFinite(value) || value < 0) {
     return undefined;
   }
   return value;
@@ -117,6 +117,9 @@ const normalizeParsedCommandLong = (value: number | undefined) => {
 const normalizeOptionalNicoscriptLong = (value: number | undefined) => {
   if (value === undefined) {
     return undefined;
+  }
+  if (value === 0) {
+    return 0;
   }
   return (
     normalizeLongCentiseconds(value * 100, MAX_NICOSCRIPT_LONG) || undefined

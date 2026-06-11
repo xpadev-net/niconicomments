@@ -49,13 +49,13 @@ class CanvasRenderer implements IRenderer {
   /**
    * measureText 結果のキャッシュ
    * キー: "font\0text" → 値: TextMetrics (主レンダラースケール)
-   * キー: "@drawScale\0font\0text" → 値: TextMetrics (drawScaleスケール)
+   * キー: "@drawScale\0font\0text" → 値: TextMetrics (detached 計測キャンバス)
    * エントリ数が _MT_CACHE_MAX_SIZE に達した場合はそれ以上追加しない（既存エントリは維持）
    */
   private static readonly _MT_CACHE_MAX_SIZE = 5000;
   private static _mtCache = new Map<string, TextMetrics>();
 
-  /** measureTextAtDrawScale 用の専用キャンバス (スケール依存計測用) */
+  /** measureTextAtDrawScale 用の専用 detached キャンバス */
   private static _dsCanvas: HTMLCanvasElement | null = null;
   private static _dsCtx: CanvasRenderingContext2D | null = null;
   private static _dsScale = 0;
@@ -225,13 +225,12 @@ class CanvasRenderer implements IRenderer {
   }
 
   /**
-   * Measure text on a dedicated canvas with `drawScale` applied as the
-   * transform, so font fallback resolution matches the offscreen render canvas.
+   * Measure text on a dedicated detached canvas, so WKWebView resolves fonts
+   * like the offscreen render canvas instead of the connected main canvas.
    *
-   * In WKWebView (macOS), `measureText()` resolves font fallbacks based on the
-   * effective physical glyph size, which varies with the canvas transform.
-   * Measuring at `drawScale` (= commentScale × fontScale × layerScale) returns
-   * the same metrics the offscreen canvas will produce, preventing clipping.
+   * The `drawScale` transform is still applied to mirror render-time state and
+   * keep cache keys distinct, but the WKWebView mismatch observed for #323 is
+   * caused by connected-vs-detached canvas font matching, not by the transform.
    */
   measureTextAtDrawScale(text: string, drawScale: number): TextMetrics {
     const font = this.context.font;

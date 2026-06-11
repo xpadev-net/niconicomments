@@ -25,10 +25,13 @@ const emptyTextMetrics = (width: number): TextMetrics =>
 class FakeRenderer implements IRenderer {
   public readonly rendererName = "FakeRenderer";
   public readonly canvas = {} as HTMLCanvasElement;
+  public destroyCalls = 0;
   private font = "";
   private size = { width: 1920, height: 1080 };
 
-  destroy() {}
+  destroy() {
+    this.destroyCalls++;
+  }
   drawVideo() {}
   getFont() {
     return this.font;
@@ -188,6 +191,20 @@ describe("timeline construction", () => {
 
     expect(includesCalls).toBe(0);
     expect(timeline[200]).toHaveLength(500);
+  });
+});
+
+describe("destroy", () => {
+  test("propagates lifecycle cleanup to the renderer", () => {
+    ensureCanvasElement();
+    const renderer = new FakeRenderer();
+    const niconiComments = new NiconiComments(renderer, [], {
+      format: "formatted",
+    });
+
+    niconiComments.destroy();
+
+    expect(renderer.destroyCalls).toBe(1);
   });
 });
 

@@ -2,12 +2,18 @@ import { spawnSync } from "node:child_process";
 import { resolve } from "node:path";
 
 const packageRoot = process.cwd();
-const initCwd = process.env.INIT_CWD
-  ? resolve(process.env.INIT_CWD)
-  : packageRoot;
+const rawInitCwd = process.env.INIT_CWD;
+const hasInitCwd = rawInitCwd !== undefined && rawInitCwd !== "";
+const initCwd = hasInitCwd ? resolve(rawInitCwd) : packageRoot;
 const isLocalInstall = initCwd === packageRoot;
 const packageManager = process.env.npm_execpath;
 const shell = process.platform === "win32";
+
+if (!hasInitCwd) {
+  console.warn(
+    `INIT_CWD is missing; treating prepare as local install. packageRoot=${packageRoot} initCwd=${initCwd} isLocalInstall=${isLocalInstall}`,
+  );
+}
 
 const run = (command, args) => {
   const result = spawnSync(command, args, {

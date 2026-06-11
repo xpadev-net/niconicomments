@@ -507,8 +507,8 @@ class HTML5CSSRenderer implements IRenderer {
       typeof WeakRef === "undefined"
         ? () => {
             if (inner) {
-              this.ownedCanvases.delete(inner.canvas);
               this.invalidateImage(inner);
+              this.ownedCanvases.delete(inner.canvas);
             }
           }
         : (() => {
@@ -517,8 +517,8 @@ class HTML5CSSRenderer implements IRenderer {
               if (inner) {
                 const parent = parentRef.deref();
                 if (parent) {
-                  parent.ownedCanvases.delete(inner.canvas);
                   parent.invalidateImage(inner);
+                  parent.ownedCanvases.delete(inner.canvas);
                 }
               }
             };

@@ -1,10 +1,12 @@
 const DEFAULT_NC_VERSION = "0.2.78";
 const DEFAULT_PLUGIN_VERSION = "0.0.13";
 const DEFAULT_NIWANGO_VERSION = "0.0.1-canary.20231002-1";
+const NC_DEV_URL =
+  "https://cdn.jsdelivr.net/gh/xpadev-net/niconicomments@dev-build/dist/bundle.js";
 const MAX_VERSION_LENGTH = 64;
 const VERSION_PARAM_CONFIG = {
   ncVersion: {
-    aliases: new Set(["local"]),
+    aliases: new Set(["dev"]),
     defaultValue: DEFAULT_NC_VERSION,
   },
   pluginVersion: {
@@ -113,8 +115,8 @@ const loadScript = (src) =>
 
 const encodeVersionForUrl = (value) => encodeURIComponent(value);
 const getNCUrl = (v) =>
-  v === "local"
-    ? "../../dist/bundle.js"
+  v === "dev"
+    ? NC_DEV_URL
     : `https://cdn.jsdelivr.net/npm/@xpadev-net/niconicomments@${encodeVersionForUrl(v)}/dist/bundle.min.js`;
 const getPluginUrl = (v) =>
   `https://cdn.jsdelivr.net/npm/@xpadev-net/niconicomments-plugin-niwango@${encodeVersionForUrl(v)}/dist/bundle.min.js`;

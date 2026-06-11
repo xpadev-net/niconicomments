@@ -6,6 +6,13 @@ const MAX_CANVAS_DIMENSION = 8192;
 export const MAX_CANVAS_AREA = 16_777_216;
 const MAX_MEASURE_TEXT_CACHE_TEXT_LENGTH = 512;
 
+type DrawImageRect = {
+  height: number;
+  width: number;
+  x: number;
+  y: number;
+};
+
 export const clampCanvasSize = (width: number, height: number) => {
   let nextWidth = Number.isFinite(width) ? Math.max(0, Math.floor(width)) : 0;
   let nextHeight = Number.isFinite(height)
@@ -139,9 +146,14 @@ class CanvasRenderer implements IRenderer {
     width?: number,
     height?: number,
   ) {
-    if (width === undefined || height === undefined)
-      this.context.drawImage(image.canvas, x, y);
-    else this.context.drawImage(image.canvas, x, y, width, height);
+    const rect = getDrawImageRect(image, x, y, width, height);
+    this.context.drawImage(
+      image.canvas,
+      rect.x,
+      rect.y,
+      rect.width,
+      rect.height,
+    );
   }
 
   fillRect(x: number, y: number, width: number, height: number): void {
@@ -208,6 +220,10 @@ class CanvasRenderer implements IRenderer {
       width: this.width,
       height: this.height,
     };
+  }
+
+  getImagePadding(): number {
+    return this.padding;
   }
 
   measureText(text: string): TextMetrics {
@@ -323,4 +339,46 @@ class CanvasRenderer implements IRenderer {
   }
 }
 
-export { CanvasRenderer };
+const getDrawImageRect = (
+  image: IRenderer,
+  x: number,
+  y: number,
+  width?: number,
+  height?: number,
+): DrawImageRect => {
+  const source = image.canvas;
+  const sourceWidth = source.width;
+  const sourceHeight = source.height;
+  const hasDestinationSize = width !== undefined && height !== undefined;
+  const defaultRect = {
+    x,
+    y,
+    width: hasDestinationSize ? width : sourceWidth,
+    height: hasDestinationSize ? height : sourceHeight,
+  };
+  if (!(image instanceof CanvasRenderer)) return defaultRect;
+  const padding = image.getImagePadding();
+  if (padding <= 0) return defaultRect;
+
+  const logicalSize = image.getSize();
+  const contentWidth = hasDestinationSize ? width : logicalSize.width;
+  const contentHeight = hasDestinationSize ? height : logicalSize.height;
+  const scaleX =
+    !hasDestinationSize || logicalSize.width <= 0
+      ? 1
+      : width / logicalSize.width;
+  const scaleY =
+    !hasDestinationSize || logicalSize.height <= 0
+      ? 1
+      : height / logicalSize.height;
+  const paddingX = padding * scaleX;
+  const paddingY = padding * scaleY;
+  return {
+    x: x - paddingX,
+    y: y - paddingY,
+    width: contentWidth + paddingX * 2,
+    height: contentHeight + paddingY * 2,
+  };
+};
+
+export { CanvasRenderer, getDrawImageRect };

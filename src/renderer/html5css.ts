@@ -1,5 +1,9 @@
 import type { IRenderer } from "@/@types/";
-import { CanvasRenderer, clampCanvasSize } from "@/renderer/canvas";
+import {
+  CanvasRenderer,
+  clampCanvasSize,
+  getDrawImageRect,
+} from "@/renderer/canvas";
 
 // Must be >= 1; trimHelperSurfaces keeps surfaces[0..helperCursor] after each frame.
 const MAX_HELPER_SURFACES = 8;
@@ -544,6 +548,7 @@ class HTML5CSSRenderer implements IRenderer {
       this.helperDirty = true;
       return;
     }
+    const rect = getDrawImageRect(image, x, y, width, height);
     const deferHelperCommit = this.pathActive;
     if (deferHelperCommit) {
       console.warn(
@@ -623,13 +628,7 @@ class HTML5CSSRenderer implements IRenderer {
     this.layer.appendChild(element);
     element.style.display = "block";
     element.style.opacity = String(this.state.alpha);
-    this.positionNode(
-      element,
-      x,
-      y,
-      width ?? source.width,
-      height ?? source.height,
-    );
+    this.positionNode(element, rect.x, rect.y, rect.width, rect.height);
     this.activeCanvasSet.add(element);
   }
 

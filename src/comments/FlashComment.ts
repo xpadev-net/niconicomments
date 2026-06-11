@@ -341,8 +341,10 @@ class FlashComment extends BaseComment {
   }
 
   private _measureContent(comment: MeasureTextInput, drawScale: number) {
-    const measureText = this.renderer.measureTextAtDrawScale
-      ? (val: string) => this.renderer.measureTextAtDrawScale!(val, drawScale)
+    const measureTextAtDrawScale = this.renderer.measureTextAtDrawScale;
+    const measureText = measureTextAtDrawScale
+      ? (val: string) =>
+          measureTextAtDrawScale.call(this.renderer, val, drawScale)
       : (val: string) => this.renderer.measureText(val);
     let currentWidth = 0;
     let spacedWidth = 0;

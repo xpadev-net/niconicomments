@@ -95,6 +95,7 @@ const areCommentsSortedByVpos = (
 ) => {
   let previousComment = previous;
   for (const item of items) {
+    if (!item) continue;
     if (previousComment && previousComment.vpos > item.vpos) {
       return false;
     }
@@ -474,7 +475,7 @@ class NiconiComments {
     if (this.lazyCommentOrderSortedByVpos) {
       this.lazyCommentOrderSortedByVpos = areCommentsSortedByVpos(
         comments,
-        this.comments.at(-1),
+        this.comments[this.comments.length - 1],
       );
     }
     for (const comment of comments) {

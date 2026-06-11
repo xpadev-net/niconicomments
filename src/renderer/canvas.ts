@@ -2,6 +2,41 @@ import type { IRenderer } from "@/@types/";
 import { CanvasRenderingContext2DError } from "@/errors";
 import { canvasPool } from "@/renderer/canvasPool";
 
+const MAX_CANVAS_DIMENSION = 8192;
+export const MAX_CANVAS_AREA = 16_777_216;
+const MAX_MEASURE_TEXT_CACHE_TEXT_LENGTH = 512;
+
+type DrawImageRect = {
+  height: number;
+  width: number;
+  x: number;
+  y: number;
+};
+
+export const clampCanvasSize = (width: number, height: number) => {
+  let nextWidth = Number.isFinite(width) ? Math.max(0, Math.floor(width)) : 0;
+  let nextHeight = Number.isFinite(height)
+    ? Math.max(0, Math.floor(height))
+    : 0;
+  if (nextWidth > MAX_CANVAS_DIMENSION || nextHeight > MAX_CANVAS_DIMENSION) {
+    const scale = Math.min(
+      MAX_CANVAS_DIMENSION / Math.max(1, nextWidth),
+      MAX_CANVAS_DIMENSION / Math.max(1, nextHeight),
+    );
+    nextWidth = Math.floor(nextWidth * scale);
+    nextHeight = Math.floor(nextHeight * scale);
+  }
+  if (nextWidth * nextHeight > MAX_CANVAS_AREA) {
+    const scale = Math.sqrt(MAX_CANVAS_AREA / (nextWidth * nextHeight));
+    nextWidth = Math.floor(nextWidth * scale);
+    nextHeight = Math.floor(nextHeight * scale);
+  }
+  return {
+    width: nextWidth,
+    height: nextHeight,
+  };
+};
+
 /**
  * Canvasを使ったレンダラー
  * dom/canvas周りのAPIを切り出したもの
@@ -20,12 +55,18 @@ class CanvasRenderer implements IRenderer {
 
   /**
    * measureText 結果のキャッシュ
-   * キー: "font\0text" → 値: TextMetrics
-   * Canvas2D の measureText() は同じ (font, text) ペアに対して決定論的なので安全にキャッシュできる
+   * キー: "font\0text" → 値: TextMetrics (主レンダラースケール)
+   * キー: "@drawScale\0font\0text" → 値: TextMetrics (detached 計測キャンバス)
    * エントリ数が _MT_CACHE_MAX_SIZE に達した場合はそれ以上追加しない（既存エントリは維持）
    */
   private static readonly _MT_CACHE_MAX_SIZE = 5000;
   private static _mtCache = new Map<string, TextMetrics>();
+
+  /** measureTextAtDrawScale 用の専用 detached キャンバス */
+  private static _dsCanvas: HTMLCanvasElement | null = null;
+  private static _dsCtx: CanvasRenderingContext2D | null = null;
+  private static _dsScale = 0;
+  private static _dsFont = "";
 
   /** プールから取得した canvas かどうか (destroy 時にプールに返却するため) */
   private readonly pooled: boolean;
@@ -43,9 +84,6 @@ class CanvasRenderer implements IRenderer {
     const context = this.canvas.getContext("2d");
     if (!context) throw new CanvasRenderingContext2DError();
     this.context = context;
-    this.context.textAlign = "start";
-    this.context.textBaseline = "alphabetic";
-    this.context.lineJoin = "round";
     this.video = video;
     this.padding = padding;
     this.width = this.canvas.width;
@@ -53,6 +91,15 @@ class CanvasRenderer implements IRenderer {
     if (this.padding > 0) {
       this.canvas.width += this.padding * 2;
       this.canvas.height += this.padding * 2;
+    }
+    this.resetContextState();
+  }
+
+  private resetContextState() {
+    this.context.textAlign = "start";
+    this.context.textBaseline = "alphabetic";
+    this.context.lineJoin = "round";
+    if (this.padding > 0) {
       this.context.translate(this.padding, this.padding);
     }
   }
@@ -99,9 +146,14 @@ class CanvasRenderer implements IRenderer {
     width?: number,
     height?: number,
   ) {
-    if (width === undefined || height === undefined)
-      this.context.drawImage(image.canvas, x, y);
-    else this.context.drawImage(image.canvas, x, y, width, height);
+    const rect = getDrawImageRect(image, x, y, width, height);
+    this.context.drawImage(
+      image.canvas,
+      rect.x,
+      rect.y,
+      rect.width,
+      rect.height,
+    );
   }
 
   fillRect(x: number, y: number, width: number, height: number): void {
@@ -123,7 +175,21 @@ class CanvasRenderer implements IRenderer {
   }
 
   clearRect(x: number, y: number, width: number, height: number): void {
-    this.context.clearRect(x, y, width, height);
+    const transform = this.context.getTransform();
+    this.context.save();
+    try {
+      this.context.setTransform(1, 0, 0, 1, 0, 0);
+      // This mapping assumes no rotation/shear; CanvasRenderer only applies
+      // scale and translate, so b/c stay at 0.
+      this.context.clearRect(
+        x * transform.a + transform.e,
+        y * transform.d + transform.f,
+        width * transform.a,
+        height * transform.d,
+      );
+    } finally {
+      this.context.restore();
+    }
   }
 
   setFont(font: string): void {
@@ -142,10 +208,13 @@ class CanvasRenderer implements IRenderer {
     this.context.globalAlpha = alpha;
   }
   setSize(width: number, height: number) {
-    this.width = width;
-    this.height = height;
-    this.canvas.width = width + this.padding * 2;
-    this.canvas.height = height + this.padding * 2;
+    const paddingSize = this.padding * 2;
+    const size = clampCanvasSize(width + paddingSize, height + paddingSize);
+    this.width = Math.max(0, size.width - paddingSize);
+    this.height = Math.max(0, size.height - paddingSize);
+    this.canvas.width = size.width;
+    this.canvas.height = size.height;
+    this.resetContextState();
   }
 
   getSize(): { width: number; height: number } {
@@ -155,7 +224,14 @@ class CanvasRenderer implements IRenderer {
     };
   }
 
+  getImagePadding(): number {
+    return this.padding;
+  }
+
   measureText(text: string): TextMetrics {
+    if (text.length > MAX_MEASURE_TEXT_CACHE_TEXT_LENGTH) {
+      return this.context.measureText(text);
+    }
     const key = `${this.context.font}\0${text}`;
     const cached = CanvasRenderer._mtCache.get(key);
     if (cached !== undefined) return cached;
@@ -166,9 +242,59 @@ class CanvasRenderer implements IRenderer {
     return result;
   }
 
-  static resetMeasureTextCache(): void {
-    CanvasRenderer._mtCache.clear();
+  /**
+   * Measure text on a dedicated detached canvas, so WKWebView resolves fonts
+   * like the offscreen render canvas instead of the connected main canvas.
+   *
+   * The `drawScale` transform is still applied to mirror render-time state and
+   * keep cache keys distinct, but the WKWebView mismatch observed for #323 is
+   * caused by connected-vs-detached canvas font matching, not by the transform.
+   */
+  measureTextAtDrawScale(text: string, drawScale: number): TextMetrics {
+    const font = this.context.font;
+    if (text.length > MAX_MEASURE_TEXT_CACHE_TEXT_LENGTH) {
+      return this._measureAtScale(text, font, drawScale);
+    }
+    const key = `@${drawScale}\0${font}\0${text}`;
+    const cached = CanvasRenderer._mtCache.get(key);
+    if (cached !== undefined) return cached;
+    const result = this._measureAtScale(text, font, drawScale);
+    if (CanvasRenderer._mtCache.size < CanvasRenderer._MT_CACHE_MAX_SIZE) {
+      CanvasRenderer._mtCache.set(key, result);
+    }
+    return result;
   }
+
+  private _measureAtScale(
+    text: string,
+    font: string,
+    drawScale: number,
+  ): TextMetrics {
+    if (typeof document === "undefined") {
+      return this.context.measureText(text);
+    }
+    if (!CanvasRenderer._dsCanvas) {
+      CanvasRenderer._dsCanvas = document.createElement("canvas");
+      CanvasRenderer._dsCanvas.width = 1;
+      CanvasRenderer._dsCanvas.height = 1;
+      CanvasRenderer._dsCtx = CanvasRenderer._dsCanvas.getContext("2d");
+    }
+    const ctx = CanvasRenderer._dsCtx;
+    if (!ctx) {
+      return this.context.measureText(text);
+    }
+    if (CanvasRenderer._dsScale !== drawScale) {
+      ctx.setTransform(drawScale, 0, 0, drawScale, 0, 0);
+      CanvasRenderer._dsScale = drawScale;
+      CanvasRenderer._dsFont = "";
+    }
+    if (CanvasRenderer._dsFont !== font) {
+      ctx.font = font;
+      CanvasRenderer._dsFont = font;
+    }
+    return ctx.measureText(text);
+  }
+
   beginPath(): void {
     this.context.beginPath();
   }
@@ -210,4 +336,46 @@ class CanvasRenderer implements IRenderer {
   }
 }
 
-export { CanvasRenderer };
+const getDrawImageRect = (
+  image: IRenderer,
+  x: number,
+  y: number,
+  width?: number,
+  height?: number,
+): DrawImageRect => {
+  const source = image.canvas;
+  const sourceWidth = source.width;
+  const sourceHeight = source.height;
+  const hasDestinationSize = width !== undefined && height !== undefined;
+  const defaultRect = {
+    x,
+    y,
+    width: hasDestinationSize ? width : sourceWidth,
+    height: hasDestinationSize ? height : sourceHeight,
+  };
+  if (!(image instanceof CanvasRenderer)) return defaultRect;
+  const padding = image.getImagePadding();
+  if (padding <= 0) return defaultRect;
+
+  const logicalSize = image.getSize();
+  const contentWidth = hasDestinationSize ? width : logicalSize.width;
+  const contentHeight = hasDestinationSize ? height : logicalSize.height;
+  const scaleX =
+    !hasDestinationSize || logicalSize.width <= 0
+      ? 1
+      : width / logicalSize.width;
+  const scaleY =
+    !hasDestinationSize || logicalSize.height <= 0
+      ? 1
+      : height / logicalSize.height;
+  const paddingX = padding * scaleX;
+  const paddingY = padding * scaleY;
+  return {
+    x: x - paddingX,
+    y: y - paddingY,
+    width: contentWidth + paddingX * 2,
+    height: contentHeight + paddingY * 2,
+  };
+};
+
+export { CanvasRenderer, getDrawImageRect };

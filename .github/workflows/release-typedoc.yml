@@ -1,39 +1,41 @@
-# This is a basic workflow to help you get started with Actions
-
 name: TypeDoc
-permissions:
-  contents: write
 
-# Controls when the workflow will run
+concurrency:
+  group: ${{ github.repository }}-typedoc
+  cancel-in-progress: true
+
 on:
-  # Triggers the workflow on push or pull request events but only for the master branch
   push:
     branches: [master]
 
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  typedoc:
-    # The type of runner that the job will run on
+  deploy:
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/develop')
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          persist-credentials: false
 
-
-      - uses: pnpm/action-setup@v5
+      - uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093
         name: Install pnpm
         with:
-          version: 10
+          version: 11
           run_install: false
 
       - name: Install Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version: 24
           cache: 'pnpm'
@@ -41,24 +43,20 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      # Runs a set of commands using the runners shell
-      - name: clear output dir
-        run: rm ./docs/type/* -rf
-      - name: update .gitignore
-        run: sed -i -e '/\/docs\/type/d' .gitignore
-      - name: generate typedoc
+      - name: Generate TypeDoc
         run: pnpm typedoc
-      - name: generate dev build
+
+      - name: Build
         run: pnpm build
 
-      - name: Create new Branch
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git config user.email "github-actions@xpadev.net"
-          git config user.name "github-actions"
-          git checkout -b typedoc
-          cp -f ./dist/bundle.js ./docs/
-          git add .
-          git commit -m "auto generate" -n
-          git push -f origin typedoc
+      - name: Copy bundle to docs
+        run: cp dist/bundle.js docs/
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5
+        with:
+          path: docs/
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5

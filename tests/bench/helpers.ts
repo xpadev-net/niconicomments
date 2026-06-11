@@ -6,14 +6,16 @@ import type {
   Timeline,
 } from "@/@types";
 import { HTML5Comment } from "@/comments/HTML5Comment";
-import { resetNicoScripts } from "@/contexts/nicoscript";
+import type { CommentInstanceContext } from "@/contexts";
+import { createNicoScripts, ImageCacheContext } from "@/contexts";
 import {
   defaultConfig,
   defaultOptions,
+  resetOptions,
   setConfig,
-  setOptions,
 } from "@/definition/config";
 import { initConfig } from "@/definition/initConfig";
+import { RangeCacheContext } from "@/utils/rangeCache";
 
 const emptyTextMetrics = (width: number): TextMetrics =>
   ({
@@ -33,7 +35,7 @@ const emptyTextMetrics = (width: number): TextMetrics =>
 
 class FakeRenderer implements IRenderer {
   public readonly rendererName = "FakeRenderer";
-  public readonly canvas = document.createElement("canvas");
+  public readonly canvas = { height: 1080, width: 1920 } as HTMLCanvasElement;
   private font = "";
   private size = { width: 1920, height: 1080 };
 
@@ -61,6 +63,8 @@ class FakeRenderer implements IRenderer {
   setGlobalAlpha() {}
   setSize(width: number, height: number) {
     this.size = { width, height };
+    this.canvas.width = width;
+    this.canvas.height = height;
   }
   getSize() {
     return this.size;
@@ -104,9 +108,16 @@ const mulberry32 = (seed: number) => {
 const resetBenchState = () => {
   initConfig();
   setConfig(defaultConfig);
-  setOptions(defaultOptions);
-  resetNicoScripts();
+  resetOptions();
 };
+
+const createBenchContext = (): CommentInstanceContext => ({
+  config: defaultConfig,
+  options: defaultOptions,
+  nicoScripts: createNicoScripts(),
+  imageCache: new ImageCacheContext(),
+  rangeCache: new RangeCacheContext(),
+});
 
 /**
  * Generate deterministic FormattedComment array
@@ -142,6 +153,7 @@ const generateCommentInstances = (
   seed = 42,
 ): IComment[] => {
   const rng = mulberry32(seed);
+  const ctx = createBenchContext();
   const instances: IComment[] = [];
   for (let i = 0; i < count; i++) {
     const base: FormattedComment = {
@@ -157,7 +169,7 @@ const generateCommentInstances = (
       layer: -1,
       is_my_post: false,
     };
-    const instance = new HTML5Comment(base, renderer, i);
+    const instance = new HTML5Comment(base, renderer, i, ctx);
     instance.posY = -1;
     if (loc === "naka") {
       instance.comment.loc = "naka";

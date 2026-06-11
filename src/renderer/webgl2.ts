@@ -1,5 +1,5 @@
 import type { IRenderer } from "@/@types/";
-import { CanvasRenderer } from "@/renderer/canvas";
+import { CanvasRenderer, getDrawImageRect } from "@/renderer/canvas";
 
 /* ─── Shader Sources ─── */
 
@@ -682,13 +682,14 @@ class WebGL2Renderer implements IRenderer {
     height?: number,
   ): void {
     const source = image.canvas;
+    const rect = getDrawImageRect(image, x, y, width, height);
     this.cmds.push({
       kind: 0,
       source,
-      x,
-      y,
-      w: width ?? source.width,
-      h: height ?? source.height,
+      x: rect.x,
+      y: rect.y,
+      w: rect.width,
+      h: rect.height,
       alpha: this.state.alpha,
     });
   }
@@ -998,7 +999,7 @@ class WebGL2Renderer implements IRenderer {
   /* ═══ Texture invalidation ═══ */
 
   invalidateImage(image: IRenderer): void {
-    if (!(image instanceof CanvasRenderer)) return;
+    if (!image?.canvas) return;
     const entry = this.texMap.get(image.canvas);
     if (entry) {
       this._deleteTiles(entry);

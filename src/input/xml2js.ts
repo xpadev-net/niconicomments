@@ -3,6 +3,8 @@ import { parse } from "valibot";
 import type { FormattedComment, InputParser, Xml2jsPacket } from "@/@types";
 import { ZXml2jsPacket } from "@/@types/";
 
+import { assignUserId } from "./xmlDocument";
+
 export const Xml2jsParser: InputParser = {
   key: ["xml2js"],
   parse: (input) => {
@@ -12,7 +14,7 @@ export const Xml2jsParser: InputParser = {
 
 const fromXml2js = (data: Xml2jsPacket): FormattedComment[] => {
   const data_: FormattedComment[] = [];
-  const userList: string[] = [];
+  const userIdMap = new Map<string, number>();
   let index = data.packet.chat.length;
   for (const item of data.packet.chat) {
     const tmpParam: FormattedComment = {
@@ -31,14 +33,7 @@ const fromXml2js = (data: Xml2jsPacket): FormattedComment[] => {
     if (tmpParam.content.startsWith("/") && tmpParam.owner) {
       tmpParam.mail.push("invisible");
     }
-    const userId = item.$.user_id ?? "";
-    const isUserExist = userList.indexOf(userId);
-    if (isUserExist === -1) {
-      tmpParam.user_id = userList.length;
-      userList.push(userId);
-    } else {
-      tmpParam.user_id = isUserExist;
-    }
+    tmpParam.user_id = assignUserId(userIdMap, item.$.user_id ?? "");
     data_.push(tmpParam);
   }
   return data_;

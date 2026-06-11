@@ -15,14 +15,22 @@ npm： https://www.npmjs.com/package/@xpadev-net/niconicomments
 
 ## Installation
 
+CDN から読み込む場合は、可変エイリアスではなく固定バージョンを指定してください。
+
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@xpadev-net/niconicomments@latest/dist/bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@xpadev-net/niconicomments@0.2.78/dist/bundle.min.js"></script>
 ```
 
 or
 
-```
+```shell
 npm i @xpadev-net/niconicomments
+```
+
+npm で読み込む場合:
+
+```javascript
+import NiconiComments from "@xpadev-net/niconicomments";
 ```
 
 ## Examples
@@ -34,10 +42,40 @@ const req = await fetch("sample.json");
 const res = await req.json();
 const niconiComments = new NiconiComments(canvas, res);
 //video.ontimeupdateを使用すると、呼び出し回数の関係でコメントカクつく
-setInterval(
-  () => niconiComments.drawCanvas(video.currentTime * 100),
-  10
-);
+let animationFrameId = null;
+
+const stopDrawing = () => {
+  if (animationFrameId === null) return;
+  cancelAnimationFrame(animationFrameId);
+  animationFrameId = null;
+};
+
+const draw = () => {
+  animationFrameId = null;
+  niconiComments.drawCanvas(video.currentTime * 100);
+  if (!video.paused && document.visibilityState !== "hidden") {
+    animationFrameId = requestAnimationFrame(draw);
+  }
+};
+
+const startDrawing = () => {
+  if (animationFrameId === null && document.visibilityState !== "hidden") {
+    animationFrameId = requestAnimationFrame(draw);
+  }
+};
+
+video.addEventListener("play", startDrawing);
+video.addEventListener("pause", () => {
+  stopDrawing();
+  niconiComments.drawCanvas(video.currentTime * 100);
+});
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "hidden" || video.paused) {
+    stopDrawing();
+  } else {
+    startDrawing();
+  }
+});
 ```
 
 ## Sample
@@ -48,4 +86,4 @@ setInterval(
 ### このライブラリを使用される方へ
 
 このライブラリを使用するかどうかに関わらず、リアルタイムでコメントを取得、画面を描画、コメントの投稿という一連の流れを実装した場合、ニコニコの特許を侵害する可能性があります  
-詳しくはこちら[ニコニコが保有する特許について](https://github.com/xpadev-net/niconicomments/blob/develop/ABOUT_PATENT.md)を参照してください  
+詳しくはこちら[ニコニコが保有する特許について](https://github.com/xpadev-net/niconicomments/blob/develop/ABOUT_PATENT.md)を参照してください

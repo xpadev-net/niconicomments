@@ -1,4 +1,5 @@
 import type {
+  BaseConfig,
   FormattedComment,
   FormattedCommentWithFont,
   FormattedCommentWithSize,
@@ -10,17 +11,70 @@ import type {
   ParseContentResult,
   Position,
 } from "@/@types/";
-import { imageCache } from "@/contexts";
-import { isDebug } from "@/contexts/debug";
-import { config } from "@/definition/config";
+import type { CommentInstanceContext } from "@/contexts";
 import { NotImplementedError } from "@/errors/";
 import { getPosX, isBanActive, isReverseActive, parseFont } from "@/utils";
+
+// Matches strings that contain no visible glyphs: JS \s (covers U+0020,
+// U+00A0, U+FEFF, U+3000, etc.) plus zero-width / Hangul filler codepoints
+// that \s does not include.
+const VISUALLY_BLANK_RE =
+  /^[\s\u00AD\u200B-\u200D\u2060\u115F\u1160\u3164\uFFA0]*$/;
+
+const MAX_CACHE_KEY_CONTENT_LENGTH = 512;
+const MAX_CACHE_KEY_EDGE_LENGTH = 256;
+const MAX_IMAGE_CACHE_ENTRIES = 1024;
+const imageCacheEntries = new WeakMap<object, Set<string>>();
+const destroyedTextImages = new WeakSet<IRenderer>();
+
+const destroyTextImage = (image: IRenderer) => {
+  // Legacy runtime renderers without destroy() are covered by
+  // html5-resource-bounds tests; only destroyed modern images need tracking.
+  if (typeof image.destroy !== "function") return false;
+  destroyedTextImages.add(image);
+  image.destroy();
+  return true;
+};
+
+const hashString = (input: string) => {
+  let hash = 2166136261;
+  for (let i = 0, n = input.length; i < n; i++) {
+    hash ^= input.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+  return (hash >>> 0).toString(36);
+};
+
+const boundedCachePart = (input: string) => {
+  if (input.length <= MAX_CACHE_KEY_CONTENT_LENGTH) return input;
+  return `${input.slice(0, MAX_CACHE_KEY_EDGE_LENGTH)}\0${input.slice(-MAX_CACHE_KEY_EDGE_LENGTH)}\0${input.length}\0${hashString(input)}`;
+};
+
+const isOutsideStage = (
+  posX: number,
+  posY: number,
+  width: number,
+  height: number,
+  config: BaseConfig,
+) =>
+  !Number.isFinite(posX) ||
+  !Number.isFinite(posY) ||
+  !Number.isFinite(width) ||
+  !Number.isFinite(height) ||
+  width <= 0 ||
+  height <= 0 ||
+  posX >= config.canvasWidth ||
+  posY >= config.canvasHeight ||
+  posX + width <= 0 ||
+  posY + height <= 0;
 
 /**
  * コメントの描画を行うクラスの基底クラス
  */
 class BaseComment implements IComment {
   protected readonly renderer: IRenderer;
+  protected readonly config: BaseConfig;
+  protected readonly ctx: CommentInstanceContext;
   protected cacheKey: string;
   public comment: FormattedCommentWithSize;
   public pos: {
@@ -38,12 +92,20 @@ class BaseComment implements IComment {
    * @param comment 処理対象のコメント
    * @param renderer 描画対象のレンダラークラス
    * @param index コメントのインデックス
+   * @param ctx インスタンスコンテキスト
    */
-  constructor(comment: FormattedComment, renderer: IRenderer, index: number) {
+  constructor(
+    comment: FormattedComment,
+    renderer: IRenderer,
+    index: number,
+    ctx: CommentInstanceContext,
+  ) {
     this.renderer = renderer;
+    this.ctx = ctx;
+    this.config = ctx.config;
     this.posY = -1;
     this.pos = { x: 0, y: 0 };
-    comment.content = comment.content.replace(/\t/g, "\u2003\u2003");
+    comment.content = comment.content.replace(/\t/g, "  ");
     this.comment = this.convertComment(comment);
     this.cacheKey = this.getCacheKey();
     this.index = index;
@@ -158,20 +220,35 @@ class BaseComment implements IComment {
     cursor?: Position,
     frameActiveState?: FrameActiveState,
   ) {
-    const banActive = frameActiveState?.banActive ?? isBanActive(vpos);
+    const { nicoScripts, rangeCache } = this.ctx;
+    const banActive =
+      frameActiveState?.banActive ?? isBanActive(vpos, nicoScripts, rangeCache);
     if (banActive) return;
     const reverse = this.comment.owner
-      ? (frameActiveState?.reverseActiveOwner ?? isReverseActive(vpos, true))
-      : (frameActiveState?.reverseActiveViewer ?? isReverseActive(vpos, false));
-    const posX = getPosX(this.comment, vpos, reverse);
+      ? (frameActiveState?.reverseActiveOwner ??
+        isReverseActive(vpos, true, nicoScripts, rangeCache))
+      : (frameActiveState?.reverseActiveViewer ??
+        isReverseActive(vpos, false, nicoScripts, rangeCache));
+    const posX = getPosX(this.comment, vpos, this.config, reverse);
     const posY =
       this.comment.loc === "shita"
-        ? config.canvasHeight - this.posY - this.comment.height
+        ? this.config.canvasHeight - this.posY - this.comment.height
         : this.posY;
     this.pos = {
       x: posX,
       y: posY,
     };
+    if (
+      isOutsideStage(
+        posX,
+        posY,
+        this.comment.width,
+        this.comment.height,
+        this.config,
+      )
+    ) {
+      return;
+    }
     this._drawBackgroundColor(posX, posY);
     this._draw(posX, posY, cursor);
     this._drawRectColor(posX, posY);
@@ -186,6 +263,9 @@ class BaseComment implements IComment {
    * @param cursor カーソルの位置
    */
   protected _draw(posX: number, posY: number, cursor?: Position) {
+    if (this.image && destroyedTextImages.has(this.image)) {
+      this.image = undefined;
+    }
     if (this.image === undefined) {
       this.image = this.getTextImage();
     }
@@ -194,19 +274,22 @@ class BaseComment implements IComment {
         typeof this.comment.opacity === "number"
           ? this.comment.opacity
           : this.comment._live
-            ? config.contextFillLiveOpacity
+            ? this.config.contextFillLiveOpacity
             : 1;
       if (effectiveAlpha !== 1) {
         this.renderer.save();
         this.renderer.setGlobalAlpha(effectiveAlpha);
       }
-      if (this.comment.button && !this.comment.button.hidden) {
-        const button = this.getButtonImage(posX, posY, cursor);
-        button && this.renderer.drawImage(button, posX, posY);
-      }
-      this.renderer.drawImage(this.image, posX, posY);
-      if (effectiveAlpha !== 1) {
-        this.renderer.restore();
+      try {
+        if (this.comment.button && !this.comment.button.hidden) {
+          const button = this.getButtonImage(posX, posY, cursor);
+          button && this.renderer.drawImage(button, posX, posY);
+        }
+        this.renderer.drawImage(this.image, posX, posY);
+      } finally {
+        if (effectiveAlpha !== 1) {
+          this.renderer.restore();
+        }
       }
     }
   }
@@ -219,14 +302,17 @@ class BaseComment implements IComment {
   protected _drawRectColor(posX: number, posY: number) {
     if (this.comment.wakuColor) {
       this.renderer.save();
-      this.renderer.setStrokeStyle(this.comment.wakuColor);
-      this.renderer.strokeRect(
-        posX,
-        posY,
-        this.comment.width,
-        this.comment.height,
-      );
-      this.renderer.restore();
+      try {
+        this.renderer.setStrokeStyle(this.comment.wakuColor);
+        this.renderer.strokeRect(
+          posX,
+          posY,
+          this.comment.width,
+          this.comment.height,
+        );
+      } finally {
+        this.renderer.restore();
+      }
     }
   }
 
@@ -238,14 +324,17 @@ class BaseComment implements IComment {
   protected _drawBackgroundColor(posX: number, posY: number) {
     if (this.comment.fillColor) {
       this.renderer.save();
-      this.renderer.setFillStyle(this.comment.fillColor);
-      this.renderer.fillRect(
-        posX,
-        posY,
-        this.comment.width,
-        this.comment.height,
-      );
-      this.renderer.restore();
+      try {
+        this.renderer.setFillStyle(this.comment.fillColor);
+        this.renderer.fillRect(
+          posX,
+          posY,
+          this.comment.width,
+          this.comment.height,
+        );
+      } finally {
+        this.renderer.restore();
+      }
     }
   }
 
@@ -255,12 +344,15 @@ class BaseComment implements IComment {
    * @param posY 描画位置
    */
   protected _drawDebugInfo(posX: number, posY: number) {
-    if (isDebug) {
+    if (this.ctx.options.debug) {
       this.renderer.save();
-      this.renderer.setFont(parseFont("defont", 30));
-      this.renderer.setFillStyle("#ff00ff");
-      this.renderer.fillText(this.comment.mail.join(","), posX, posY + 30);
-      this.renderer.restore();
+      try {
+        this.renderer.setFont(parseFont("defont", 30, this.config));
+        this.renderer.setFillStyle("#ff00ff");
+        this.renderer.fillText(this.comment.mail.join(","), posX, posY + 30);
+      } finally {
+        this.renderer.restore();
+      }
     }
   }
 
@@ -289,12 +381,19 @@ class BaseComment implements IComment {
       this.comment.invisible ||
       (this.comment.lineCount === 1 && this.comment.width === 0) ||
       this.comment.height - (this.comment.charSize - this.comment.lineHeight) <=
-        0
+        0 ||
+      !this.canGenerateTextImage() ||
+      VISUALLY_BLANK_RE.test(this.comment.rawContent)
     )
       return null;
     const key = this.cacheKey;
-    const cache = imageCache[key];
+    const { imageCache, config } = this.ctx;
+    const cache = imageCache.get(key);
     if (cache) {
+      const entries = imageCacheEntries.get(imageCache);
+      if (entries?.delete(key)) {
+        entries.add(key);
+      }
       this.image = cache.image;
       window.setTimeout(
         () => {
@@ -303,10 +402,14 @@ class BaseComment implements IComment {
         this.comment.long * 10 + config.cacheAge,
       );
       clearTimeout(cache.timeout);
+      const cachedImage = cache.image;
       cache.timeout = window.setTimeout(
         () => {
-          imageCache[key]?.image.destroy();
-          delete imageCache[key];
+          if (imageCache.get(key)?.image === cachedImage) {
+            destroyTextImage(cachedImage);
+            imageCache.delete(key);
+            imageCacheEntries.get(imageCache)?.delete(key);
+          }
         },
         this.comment.long * 10 + config.cacheAge,
       );
@@ -332,47 +435,71 @@ class BaseComment implements IComment {
    */
   protected _cacheImage(image: IRenderer) {
     const key = this.cacheKey;
+    const { imageCache, config } = this.ctx;
+    const lifetime = this.comment.long * 10 + config.cacheAge;
+    let entries = imageCacheEntries.get(imageCache);
+    if (!entries) {
+      entries = new Set();
+      imageCacheEntries.set(imageCache, entries);
+    }
     this.image = image;
-    window.setTimeout(
-      () => {
-        this.image = undefined;
-      },
-      this.comment.long * 10 + config.cacheAge,
-    );
-    imageCache[key] = {
-      timeout: window.setTimeout(
-        () => {
-          imageCache[key]?.image.destroy();
-          delete imageCache[key];
-        },
-        this.comment.long * 10 + config.cacheAge,
-      ),
+    if (!entries.has(key) && entries.size >= MAX_IMAGE_CACHE_ENTRIES) {
+      for (const entryKey of entries) {
+        if (!imageCache.get(entryKey)) entries.delete(entryKey);
+      }
+    }
+    if (!entries.has(key) && entries.size >= MAX_IMAGE_CACHE_ENTRIES) {
+      const oldestKey = entries.keys().next().value;
+      if (oldestKey !== undefined) {
+        const oldest = imageCache.get(oldestKey);
+        if (oldest) {
+          clearTimeout(oldest.timeout);
+          destroyTextImage(oldest.image);
+        }
+        imageCache.delete(oldestKey);
+        entries.delete(oldestKey);
+      }
+    }
+    window.setTimeout(() => {
+      this.image = undefined;
+    }, lifetime);
+    imageCache.set(key, {
+      timeout: window.setTimeout(() => {
+        if (imageCache.get(key)?.image === image) {
+          destroyTextImage(image);
+          imageCache.delete(key);
+          imageCacheEntries.get(imageCache)?.delete(key);
+        }
+      }, lifetime),
       image,
-    };
+    });
+    entries.delete(key);
+    entries.add(key);
+  }
+
+  protected canGenerateTextImage(): boolean {
+    return true;
   }
 
   protected getButtonImage(
-    posX: number,
-    posY: number,
-    cursor?: Position,
+    _posX: number,
+    _posY: number,
+    _cursor?: Position,
   ): IRenderer | undefined {
-    console.error(
-      "getButtonImage method is not implemented",
-      posX,
-      posY,
-      cursor,
-    );
-    throw new NotImplementedError(this.pluginName, "getButtonImage");
+    return undefined;
   }
 
-  public isHovered(cursor?: Position, posX?: number, posY?: number): boolean {
-    console.error("isHovered method is not implemented", posX, posY, cursor);
-    throw new NotImplementedError(this.pluginName, "getButtonImage");
+  public isHovered(
+    _cursor?: Position,
+    _posX?: number,
+    _posY?: number,
+  ): boolean {
+    return false;
   }
 
   protected getCacheKey() {
-    const sortedMail = [...this.comment.mail].sort().join(",");
-    return `${this.pluginName}\0${sortedMail}\0${this.comment.rawContent}`;
+    const mail = boundedCachePart(JSON.stringify(this.comment.mail ?? []));
+    return `${this.pluginName}\0${mail}\0${boundedCachePart(this.comment.rawContent)}`;
   }
 }
 

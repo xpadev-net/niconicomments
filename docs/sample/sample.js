@@ -1,7 +1,27 @@
+const DEFAULT_NC_VERSION = "0.2.78";
+const DEFAULT_PLUGIN_VERSION = "0.0.13";
+const DEFAULT_NIWANGO_VERSION = "0.0.1-canary.20231002-1";
 const NC_DEV_URL =
   "https://cdn.jsdelivr.net/gh/xpadev-net/niconicomments@dev-build/dist/bundle.js";
-const NIWANGO_DEV_URL =
-  "https://cdn.jsdelivr.net/gh/xpadev-net/niwango.js@dev-build/dist/bundle.js";
+const MAX_VERSION_LENGTH = 64;
+const VERSION_PARAM_CONFIG = {
+  ncVersion: {
+    aliases: new Set(["dev"]),
+    defaultValue: DEFAULT_NC_VERSION,
+  },
+  pluginVersion: {
+    aliases: new Set(),
+    defaultValue: DEFAULT_PLUGIN_VERSION,
+  },
+  niwangoVersion: {
+    aliases: new Set(),
+    defaultValue: DEFAULT_NIWANGO_VERSION,
+  },
+};
+const EXACT_SEMVER_RE =
+  /^v?(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/;
+const SAFE_VERSION_CHARS_RE = /^[0-9A-Za-z.-]+$/;
+const RAW_BLOCKED_VERSION_CHARS_RE = /[%/?#\\]/;
 const getControlsBarHeight = () =>
   parseFloat(
     getComputedStyle(document.documentElement).getPropertyValue(
@@ -10,12 +30,78 @@ const getControlsBarHeight = () =>
   ) || 0;
 
 const urlParams = new URLSearchParams(window.location.search);
+const rawQueryString = window.location.search.startsWith("?")
+  ? window.location.search.slice(1)
+  : "";
+
+const getRawQueryParamValue = (name) => {
+  const encodedName = encodeURIComponent(name);
+  for (const pair of rawQueryString.split("&")) {
+    if (!pair) continue;
+    const separatorIndex = pair.indexOf("=");
+    const rawName =
+      separatorIndex === -1 ? pair : pair.slice(0, separatorIndex);
+    if (rawName !== encodedName) continue;
+    return separatorIndex === -1 ? "" : pair.slice(separatorIndex + 1);
+  }
+  return null;
+};
+
+const invalidVersionParams = [];
+const markInvalidVersionParam = (paramName, reason) => {
+  invalidVersionParams.push({
+    paramName,
+    reason,
+  });
+  return VERSION_PARAM_CONFIG[paramName].defaultValue;
+};
+
+const isSafeVersionValue = (value, aliases) => {
+  if (aliases.has(value)) return true;
+  if (!value || value.length > MAX_VERSION_LENGTH) return false;
+  if (!SAFE_VERSION_CHARS_RE.test(value)) return false;
+  return EXACT_SEMVER_RE.test(value);
+};
+
+const readVersionParam = (paramName) => {
+  const rawValue = getRawQueryParamValue(paramName);
+  if (rawValue == null) {
+    return VERSION_PARAM_CONFIG[paramName].defaultValue;
+  }
+  if (
+    rawValue.length === 0 ||
+    rawValue.length > MAX_VERSION_LENGTH ||
+    RAW_BLOCKED_VERSION_CHARS_RE.test(rawValue)
+  ) {
+    return markInvalidVersionParam(paramName, "unsafe raw value");
+  }
+  const decodedValue = urlParams.get(paramName);
+  if (
+    decodedValue == null ||
+    !isSafeVersionValue(decodedValue, VERSION_PARAM_CONFIG[paramName].aliases)
+  ) {
+    return markInvalidVersionParam(paramName, "unsafe decoded value");
+  }
+  return decodedValue;
+};
+
 let video = Number(urlParams.get("video") || 0),
   noVideo = !!urlParams.get("novideo"),
   time = Number(urlParams.get("time") || -1);
-const ncVersion = urlParams.get("ncVersion") || "dev";
-const pluginVersion = urlParams.get("pluginVersion") || "latest";
-const niwangoVersion = urlParams.get("niwangoVersion") || "dev-build";
+const ncVersion = readVersionParam("ncVersion");
+const pluginVersion = readVersionParam("pluginVersion");
+const niwangoVersion = readVersionParam("niwangoVersion");
+
+for (const { paramName } of invalidVersionParams) {
+  urlParams.set(paramName, VERSION_PARAM_CONFIG[paramName].defaultValue);
+}
+if (invalidVersionParams.length > 0) {
+  const sanitizedSearch = urlParams.toString();
+  const nextUrl = `${window.location.pathname}${
+    sanitizedSearch ? `?${sanitizedSearch}` : ""
+  }${window.location.hash}`;
+  window.history.replaceState(null, "", nextUrl);
+}
 
 // --- Dynamic script loading ---
 const loadScript = (src) =>
@@ -27,16 +113,15 @@ const loadScript = (src) =>
     document.head.appendChild(s);
   });
 
+const encodeVersionForUrl = (value) => encodeURIComponent(value);
 const getNCUrl = (v) =>
   v === "dev"
     ? NC_DEV_URL
-    : `https://cdn.jsdelivr.net/npm/@xpadev-net/niconicomments@${v}/dist/bundle.min.js`;
+    : `https://cdn.jsdelivr.net/npm/@xpadev-net/niconicomments@${encodeVersionForUrl(v)}/dist/bundle.min.js`;
 const getPluginUrl = (v) =>
-  `https://cdn.jsdelivr.net/npm/@xpadev-net/niconicomments-plugin-niwango@${v}/dist/bundle.min.js`;
+  `https://cdn.jsdelivr.net/npm/@xpadev-net/niconicomments-plugin-niwango@${encodeVersionForUrl(v)}/dist/bundle.min.js`;
 const getNiwangoUrl = (v) =>
-  v === "dev-build"
-    ? NIWANGO_DEV_URL
-    : `https://cdn.jsdelivr.net/npm/@xpadev-net/niwango@${v}/dist/bundle.js`;
+  `https://cdn.jsdelivr.net/npm/@xpadev-net/niwango@${encodeVersionForUrl(v)}/dist/bundle.js`;
 
 let resolveScripts;
 let scriptsLoadError = null;
@@ -282,6 +367,10 @@ let player,
   nicoIframe,
   nico = null,
   mode = "default",
+  rendererType = (() => {
+    const v = urlParams.get("renderer");
+    return ["auto", "canvas", "webgl", "css"].includes(v) ? v : "auto";
+  })(),
   showFPS = false,
   showCollision = false,
   showCommentCount = false,
@@ -293,10 +382,12 @@ let player,
   isPaused = true,
   duration = 0,
   seekDragging = false,
-  interval = null,
+  animationFrameId = null,
   loadGeneration = 0,
   nicoLoadId = 0,
   videoChangeGeneration = 0;
+/** @type {InstanceType<typeof NiconiComments.internal.renderer.HTML5CSSRenderer> | null} */
+let activeCssRenderer = null;
 
 // --- DOM references ---
 /** @type {HTMLDivElement} */
@@ -323,9 +414,13 @@ const controlToggleElement = document.getElementById("toggle");
 /** @type {HTMLDivElement} */
 const container = document.getElementById("container");
 /** @type {HTMLCanvasElement} */
-const canvasElement = document.getElementById("canvas");
+let canvasElement = document.getElementById("canvas");
+/** @type {HTMLDivElement} */
+const cssRendererElement = document.getElementById("css-renderer");
 /** @type {HTMLDivElement} */
 const backgroundElement = document.getElementById("background");
+/** @type {HTMLSelectElement} */
+const controlRendererElement = document.getElementById("control-renderer");
 /** @type {HTMLSelectElement} */
 const ncVersionElement = document.getElementById("nc-version");
 /** @type {HTMLSelectElement} */
@@ -353,6 +448,7 @@ const ensureVersionOption = (selectEl, version) => {
 ensureVersionOption(ncVersionElement, ncVersion);
 ensureVersionOption(pluginVersionElement, pluginVersion);
 ensureVersionOption(niwangoVersionElement, niwangoVersion);
+controlRendererElement.value = rendererType;
 
 const fetchVersions = async (packageName) => {
   try {
@@ -417,6 +513,36 @@ const showScriptError = (message) => {
   document.body.appendChild(el);
 };
 
+let versionWarningShown = false;
+const showVersionWarning = () => {
+  if (
+    versionWarningShown ||
+    invalidVersionParams.length === 0 ||
+    !document.body
+  ) {
+    return;
+  }
+  versionWarningShown = true;
+  const el = document.createElement("div");
+  el.style.cssText =
+    "position:fixed;top:0;left:0;right:0;z-index:99;background:#8a4b00;" +
+    "color:#fff;padding:12px 16px;font-family:monospace;font-size:13px;";
+  const invalidParamNames = invalidVersionParams.map(
+    ({ paramName }) => paramName,
+  );
+  el.textContent =
+    `Ignored unsafe version query parameter${invalidParamNames.length > 1 ? "s" : ""}: ` +
+    `${invalidParamNames.join(", ")}. Using safe defaults instead.`;
+  document.body.appendChild(el);
+};
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", showVersionWarning, {
+    once: true,
+  });
+} else {
+  showVersionWarning();
+}
+
 const formatTime = (sec) => {
   const h = Math.floor(sec / 3600);
   const m = Math.floor((sec % 3600) / 60);
@@ -458,6 +584,34 @@ const updateTime = (currentTime_, paused) => {
   }
 };
 
+const shouldRunRenderLoop = () =>
+  Boolean(nico && !isPaused && document.visibilityState !== "hidden");
+
+const stopRenderLoop = () => {
+  if (animationFrameId === null) return;
+  cancelAnimationFrame(animationFrameId);
+  animationFrameId = null;
+};
+
+const scheduleRenderLoop = () => {
+  if (animationFrameId !== null || !shouldRunRenderLoop()) return;
+  animationFrameId = requestAnimationFrame(renderFrame);
+};
+
+const updateRenderLoop = () => {
+  if (shouldRunRenderLoop()) {
+    scheduleRenderLoop();
+  } else {
+    stopRenderLoop();
+  }
+};
+
+const renderFrame = () => {
+  animationFrameId = null;
+  updateCanvas();
+  scheduleRenderLoop();
+};
+
 const updateCanvas = () => {
   if (!nico) return;
   let vpos;
@@ -488,13 +642,80 @@ const loadComments = async () => {
   const gen = ++loadGeneration;
   const videoItem = getVideoItem();
   if (!videoItem) return;
-  canvasElement.style.transform = `scale(${videoItem.scale ?? 100}%)`;
+  const displayScale = `scale(${videoItem.scale ?? 100}%)`;
   const req = await fetch(`./commentdata/${video}.json`);
   if (!req.ok) throw new Error(`Failed to load comment data: ${req.status}`);
   const res = await req.json();
   if (gen !== loadGeneration) return;
-  const renderer =
-    NiconiComments.internal.renderer.createRenderer(canvasElement);
+  activeCssRenderer?.destroy();
+  activeCssRenderer = null;
+  let renderer;
+  if (rendererType === "css") {
+    // Guard: HTML5CSSRenderer is only available in recent builds; older CDN
+    // versions won't have it.
+    if (!NiconiComments.internal?.renderer?.HTML5CSSRenderer) {
+      canvasElement.hidden = false;
+      cssRendererElement.hidden = true;
+      console.error(
+        "CSS renderer is not available in this version of the library.",
+      );
+      nico = null;
+      return;
+    }
+    canvasElement.hidden = true;
+    cssRendererElement.hidden = false;
+    // Apply the same displayScale as the canvas path. CSS transforms do not
+    // affect layout, so the ResizeObserver-computed layer scale (based on the
+    // element's layout dimensions) stays correct. The outer transform just
+    // scales the whole layer visually — no stale state.
+    cssRendererElement.style.transform = displayScale;
+    try {
+      activeCssRenderer = new NiconiComments.internal.renderer.HTML5CSSRenderer(
+        cssRendererElement,
+      );
+    } catch (e) {
+      canvasElement.hidden = false;
+      cssRendererElement.hidden = true;
+      console.error("CSS renderer failed to initialise:", e);
+      nico = null;
+      return;
+    }
+    renderer = activeCssRenderer;
+  } else {
+    // Replace the canvas with a fresh element on every load so that switching
+    // between Canvas 2D and WebGL2 works — browsers do not allow changing a
+    // canvas's context type once acquired.
+    const freshCanvas = canvasElement.ownerDocument.createElement("canvas");
+    for (const { name, value } of canvasElement.attributes) {
+      freshCanvas.setAttribute(name, value);
+    }
+    canvasElement.replaceWith(freshCanvas);
+    canvasElement = freshCanvas;
+    canvasElement.style.transform = displayScale;
+    canvasElement.hidden = false;
+    cssRendererElement.hidden = true;
+    if (rendererType === "canvas") {
+      renderer = new NiconiComments.internal.renderer.CanvasRenderer(
+        canvasElement,
+      );
+    } else if (rendererType === "webgl") {
+      try {
+        renderer = new NiconiComments.internal.renderer.WebGL2Renderer(
+          canvasElement,
+        );
+      } catch (e) {
+        canvasElement.hidden = true;
+        console.error(
+          "WebGL2 renderer is not available in this environment:",
+          e,
+        );
+        nico = null;
+        return;
+      }
+    } else {
+      renderer = NiconiComments.internal.renderer.createRenderer(canvasElement);
+    }
+  }
   nico = new NiconiComments(renderer, res, {
     mode: mode,
     keepCA: keepCA,
@@ -513,13 +734,16 @@ const loadComments = async () => {
   document.body.appendChild(elem);
   const background = getById(videos, video).bg;
   backgroundElement.style.background = background || "none";
+  let didSeek = false;
   if (time >= 0) {
     seekTo(time);
     time = -1;
+    didSeek = true;
   }
-  if (!interval) {
-    interval = setInterval(updateCanvas, 1);
+  if (!didSeek) {
+    updateCanvas();
   }
+  updateRenderLoop();
   if (debug) {
     const handler = (e) => {
       console.log(e);
@@ -549,8 +773,7 @@ const loadVideo = async () => {
   isPaused = true;
   videoMicroSec = false;
   nico = undefined;
-  clearInterval(interval);
-  interval = null;
+  stopRenderLoop();
   resetVideoControls();
   if (videoItem.yt) {
     await loadYTVideo(videoItem.yt);
@@ -630,6 +853,7 @@ const loadYTVideo = (ytId) => {
           isPaused = e.data !== YT.PlayerState.PLAYING;
           updateTime(currentTime, isPaused);
           updatePlayPauseButton();
+          updateRenderLoop();
           const d = player.getDuration();
           if (d > 0 && duration !== d) {
             duration = d;
@@ -647,6 +871,7 @@ const loadYTVideo = (ytId) => {
 
 const seekTo = (time_) => {
   currentTime = time_;
+  updateTime(currentTime, isPaused);
   if (player) {
     player.seekTo(time_, true);
   } else {
@@ -662,6 +887,8 @@ const seekTo = (time_) => {
       "https://embed.nicovideo.jp",
     );
   }
+  updateCanvas();
+  updateRenderLoop();
 };
 
 const togglePlayback = () => {
@@ -743,6 +970,16 @@ if (!noVideo) {
     mode = e.target.value;
     void loadComments();
   };
+  controlRendererElement.onchange = (e) => {
+    rendererType = e.target.value;
+    urlParams.set("renderer", rendererType);
+    history.replaceState(
+      "",
+      "",
+      `${window.location.pathname}?${urlParams.toString()}`,
+    );
+    void loadComments();
+  };
   controlKeepCAElement.onchange = (e) => {
     keepCA = e.target.checked;
     void loadComments();
@@ -772,12 +1009,17 @@ window.addEventListener("message", (e) => {
       vcSeekElement.disabled = false;
     }
     updateTime(currentTime, isPaused);
+    updateRenderLoop();
   } else if (e.data.eventName === "playerStatusChange") {
     isPaused = e.data.data.playerStatus !== 2;
     updateTime(currentTime, isPaused);
     updatePlayPauseButton();
+    updateRenderLoop();
   }
 });
+
+document.addEventListener("visibilitychange", updateRenderLoop);
+window.addEventListener("pagehide", stopRenderLoop);
 
 // --- Main initialization ---
 const onYouTubeIframeAPIReady = async () => {

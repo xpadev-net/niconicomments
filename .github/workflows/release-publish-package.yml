@@ -1,30 +1,31 @@
 name: publish package
 
-permissions:
-  contents: write
-  id-token: write
-
 on:
   push:
     branches:
       - master
-  workflow_dispatch:
 
 jobs:
-  release:
+  publish:
     name: Publish npm package
     runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+    permissions:
+      contents: read # Checkout repository contents for the publish build.
+      id-token: write # Request an OIDC token for npm provenance.
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          persist-credentials: false
 
-      - uses: pnpm/action-setup@v5
+      - uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093
         name: Install pnpm
         with:
-          version: 10
+          version: 11
           run_install: false
 
       - name: Install Node
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version: '24'
           registry-url: https://registry.npmjs.org
@@ -33,13 +34,28 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pnpm install
+          pnpm install --frozen-lockfile
 
       - name: Publish package
         run: npm publish --provenance
 
+  release:
+    name: Create GitHub release
+    runs-on: ubuntu-latest
+    needs: publish
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+    permissions:
+      contents: write # Create the GitHub release for the published ref.
+    steps:
+      - name: Validate release ref
+        run: |
+          if [ "${GITHUB_REF}" != "refs/heads/master" ]; then
+            echo "::error::Ref ${GITHUB_REF} is not allowed to create a release"
+            exit 1
+          fi
+
       - name: Create GitHub release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda
         with:
           tag_name: ${{ github.ref_name }}
           name: Release ${{ github.ref_name }}

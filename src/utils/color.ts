@@ -1,5 +1,4 @@
-import type { FormattedCommentWithSize } from "@/@types";
-import { config } from "@/definition/config";
+import type { BaseConfig, FormattedCommentWithSize } from "@/@types";
 
 /**
  * Hexからrgbに変換する(_live用)
@@ -55,9 +54,13 @@ const hex2rgba = (_hex: string) => {
 /**
  * コメントの枠色を取得する
  * @param comment コメント
+ * @param config インスタンス設定
  * @returns 枠色
  */
-const getStrokeColor = (comment: FormattedCommentWithSize) => {
+const getStrokeColor = (
+  comment: FormattedCommentWithSize,
+  config: BaseConfig,
+) => {
   if (comment.strokeColor) {
     const color = comment.strokeColor.slice(1);
     const length = color.length;

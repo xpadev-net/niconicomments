@@ -20,6 +20,23 @@ export interface IRenderer {
   setSize(width: number, height: number): void;
   getSize(): { width: number; height: number };
   measureText(text: string): TextMetrics;
+  /**
+   * Measure text in the same canvas context class used for comment rendering.
+   *
+   * In WKWebView on macOS, font matching can depend on whether the canvas was
+   * connected to the document when its context first resolved the font. The
+   * main renderer is connected, while comment text is rendered on detached
+   * offscreen canvases. Implementations can use this hook to measure with a
+   * detached canvas as well, avoiding connected-vs-detached font metric
+   * mismatches that cause clipping. `drawScale` is supplied so implementations
+   * can mirror render-time state, although WKWebView's observed mismatch is
+   * caused by canvas connection state rather than the transform itself.
+   *
+   * Optional — implementations that return identical metrics regardless of
+   * context state (Chrome, Firefox, Node-canvas) may omit it. Callers fall
+   * back to `measureText()` when the method is absent.
+   */
+  measureTextAtDrawScale?(text: string, drawScale: number): TextMetrics;
   beginPath(): void;
   closePath(): void;
   moveTo(x: number, y: number): void;

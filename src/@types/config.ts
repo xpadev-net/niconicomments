@@ -5,6 +5,7 @@ import type {
   PlatformFont,
 } from "@/@types/";
 import type { BaseComment } from "@/comments/";
+import type { BaseOptions } from "./options";
 
 export type ConfigItem<T> = T | MultiConfigItem<T>;
 
@@ -75,7 +76,11 @@ export type BaseConfig = {
   plugins: IPluginConstructor[];
   commentPlugins: {
     class: typeof BaseComment;
-    condition: (comment: FormattedComment) => boolean;
+    condition: (
+      comment: FormattedComment,
+      config: BaseConfig,
+      options: BaseOptions,
+    ) => boolean;
   }[];
   commentLimit: number | undefined;
   hideCommentOrder: "asc" | "desc";

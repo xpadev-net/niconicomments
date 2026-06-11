@@ -1,8 +1,5 @@
 name: Dev Build
 
-permissions:
-  contents: write
-
 on:
   push:
     branches: [develop]
@@ -14,19 +11,23 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  dev-build:
+  build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          persist-credentials: false
 
-      - uses: pnpm/action-setup@v5
+      - uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093
         name: Install pnpm
         with:
-          version: 10
+          version: 11
           run_install: false
 
       - name: Install Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version: 24
           cache: 'pnpm'
@@ -37,6 +38,82 @@ jobs:
       - name: Build
         run: pnpm build
 
+      - name: Package build artifact
+        run: tar --hard-dereference -czf dev-build-artifacts.tgz dist/bundle.js
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: dev-build-artifacts
+          path: dev-build-artifacts.tgz
+          if-no-files-found: error
+          retention-days: 1
+
+  push-dev-build:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop'
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          persist-credentials: false
+
+      - name: Download build artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: dev-build-artifacts
+          path: ${{ runner.temp }}/dev-build-artifacts
+
+      - name: Validate build artifact
+        run: |
+          archive="${RUNNER_TEMP}/dev-build-artifacts/dev-build-artifacts.tgz"
+          validated_dir="${RUNNER_TEMP}/validated-artifacts"
+          rm -rf "$validated_dir"
+          mkdir -p "$validated_dir"
+          python3 - "$archive" "$validated_dir" <<'PY'
+          import pathlib
+          import shutil
+          import sys
+          import tarfile
+
+          archive = sys.argv[1]
+          destination = pathlib.Path(sys.argv[2])
+          allowed = {"dist/bundle.js"}
+          seen = set()
+
+          with tarfile.open(archive, "r:gz") as tar:
+              for member in tar.getmembers():
+                  name = member.name
+                  normalized_name = pathlib.PurePosixPath(name).as_posix()
+                  parts = pathlib.PurePosixPath(name).parts
+                  if (
+                      pathlib.PurePosixPath(name).is_absolute()
+                      or name != normalized_name
+                      or ".." in parts
+                      or ".git" in parts
+                      or normalized_name not in allowed
+                      or normalized_name in seen
+                      or not member.isfile()
+                  ):
+                      raise SystemExit(f"Unexpected artifact entry: {name!r}")
+                  seen.add(normalized_name)
+
+              if seen != allowed:
+                  missing = ", ".join(sorted(allowed - seen))
+                  raise SystemExit(f"Missing artifact entry: {missing}")
+
+              for member in tar.getmembers():
+                  target = destination / member.name
+                  target.parent.mkdir(parents=True, exist_ok=True)
+                  source = tar.extractfile(member)
+                  if source is None:
+                      raise SystemExit(f"Unable to read artifact entry: {member.name!r}")
+                  with source, target.open("wb") as output:
+                      shutil.copyfileobj(source, output)
+          PY
+
       - name: Push to dev-build branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -45,6 +122,9 @@ jobs:
           git config user.name "github-actions"
           git checkout --orphan dev-build
           git rm -rf . --quiet || true
+          mkdir -p dist
+          cp "${RUNNER_TEMP}/validated-artifacts/dist/bundle.js" dist/bundle.js
           git add dist/bundle.js -f
-          git commit -m "dev build"
+          git -c core.hooksPath=/dev/null commit -m "dev build"
+          git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           git push -f origin dev-build

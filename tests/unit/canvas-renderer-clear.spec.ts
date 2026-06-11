@@ -85,6 +85,24 @@ class RecordingCanvasContext {
       `fillRect(${x},${y},${width},${height})@${this.transform.scaleX},${this.transform.scaleY}`,
     );
   }
+
+  drawImage(
+    _image: HTMLCanvasElement,
+    x: number,
+    y: number,
+    width?: number,
+    height?: number,
+  ) {
+    if (width === undefined || height === undefined) {
+      this.calls.push(
+        `drawImage(${x},${y})@${this.transform.scaleX},${this.transform.scaleY}`,
+      );
+    } else {
+      this.calls.push(
+        `drawImage(${x},${y},${width},${height})@${this.transform.scaleX},${this.transform.scaleY}`,
+      );
+    }
+  }
 }
 
 const createRenderer = (padding = 0) => {
@@ -144,6 +162,40 @@ describe("CanvasRenderer.clearRect", () => {
       "setTransform(1,0,0,1,0,0)",
       "clearRect(0,0,1280,720)",
       "restore",
+    ]);
+  });
+
+  test("draws padded sub-renderers without shifting their content origin", () => {
+    const { context, renderer } = createRenderer();
+    const { renderer: image } = createRenderer(4);
+    image.setSize(100, 40);
+
+    renderer.drawImage(image, 10, 20);
+
+    expect(context.calls).toEqual(["drawImage(6,16,108,48)@1,1"]);
+  });
+
+  test("ignores incomplete destination size when drawing padded sub-renderers", () => {
+    const { context, renderer } = createRenderer();
+    const { renderer: image } = createRenderer(4);
+    image.setSize(100, 40);
+
+    renderer.drawImage(image, 10, 20, 200);
+
+    expect(context.calls).toEqual(["drawImage(6,16,108,48)@1,1"]);
+  });
+
+  test("scales padded sub-renderer offsets with explicit destination size", () => {
+    const { context, renderer } = createRenderer();
+    const { renderer: image } = createRenderer(4);
+    image.setSize(100, 40);
+
+    renderer.setScale(0.5);
+    renderer.drawImage(image, 10, 20, 200, 80);
+
+    expect(context.calls).toEqual([
+      "scale(0.5,0.5)",
+      "drawImage(2,12,216,96)@0.5,0.5",
     ]);
   });
 });

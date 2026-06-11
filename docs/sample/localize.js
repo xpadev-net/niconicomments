@@ -10,7 +10,7 @@ const localize = {
   keepCA: ["keep Comment Art", "CA衝突回避"],
   debug: ["debug", "デバッグ"],
   ncVersion: ["niconicomments version", "niconicommentsバージョン"],
-  pluginVersion: ["plugin version", "プラグインバージョン"],
+  pluginVersion: ["niwango plugin version", "niwangoプラグインバージョン"],
   niwangoVersion: ["niwango version", "niwangoバージョン"],
   devBuild: ["dev build", "devビルド"],
   localBuild: ["local build", "ローカルビルド"],

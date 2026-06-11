@@ -179,6 +179,8 @@ class CanvasRenderer implements IRenderer {
     this.context.save();
     try {
       this.context.setTransform(1, 0, 0, 1, 0, 0);
+      // This mapping assumes no rotation/shear; CanvasRenderer only applies
+      // scale and translate, so b/c stay at 0.
       this.context.clearRect(
         x * transform.a + transform.e,
         y * transform.d + transform.f,
@@ -293,11 +295,6 @@ class CanvasRenderer implements IRenderer {
     return ctx.measureText(text);
   }
 
-  static resetMeasureTextCache(): void {
-    CanvasRenderer._mtCache.clear();
-    CanvasRenderer._dsScale = 0;
-    CanvasRenderer._dsFont = "";
-  }
   beginPath(): void {
     this.context.beginPath();
   }

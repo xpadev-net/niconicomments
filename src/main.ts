@@ -89,6 +89,21 @@ const hasNakaComment = (items: readonly IComment[]) => {
   return hasNaka;
 };
 
+const areCommentsSortedByVpos = (
+  items: readonly IComment[],
+  previous?: IComment,
+) => {
+  let previousComment = previous;
+  for (const item of items) {
+    if (!item) continue;
+    if (previousComment && previousComment.vpos > item.vpos) {
+      return false;
+    }
+    previousComment = item;
+  }
+  return true;
+};
+
 const rendererHasVideoSurface = (renderer: IRenderer) =>
   "video" in renderer &&
   (renderer as IRenderer & { readonly video?: unknown }).video != null;
@@ -249,6 +264,7 @@ class NiconiComments {
 
   public destroy() {
     this.ctx.imageCache.reset();
+    this.renderer.destroy();
   }
 
   private _rebuildCommentArrayIndex(comments: IComment[]) {
@@ -315,16 +331,7 @@ class NiconiComments {
     }
 
     this.plugins = plugins;
-    this.lazyCommentOrderSortedByVpos = instances.every(
-      (comment, index, comments) => {
-        const previousComment = comments[index - 1];
-        return (
-          index === 0 ||
-          previousComment === undefined ||
-          previousComment.vpos <= comment.vpos
-        );
-      },
-    );
+    this.lazyCommentOrderSortedByVpos = areCommentsSortedByVpos(instances);
     if (!this.ctx.options.lazy || !this.lazyCommentOrderSortedByVpos) {
       // Non-lazy rendering and lazy fallback both need final plugin output.
       this.getCommentPos(instances, instances.length);
@@ -464,6 +471,12 @@ class NiconiComments {
       } catch (e) {
         console.error("Failed to add comments", e);
       }
+    }
+    if (this.lazyCommentOrderSortedByVpos) {
+      this.lazyCommentOrderSortedByVpos = areCommentsSortedByVpos(
+        comments,
+        this.comments[this.comments.length - 1],
+      );
     }
     for (const comment of comments) {
       if (comment.invisible) continue;

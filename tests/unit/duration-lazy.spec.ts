@@ -403,6 +403,23 @@ describe("duration bounds and lazy timeline expansion", () => {
     expect(state.timeline[0]).toBeDefined();
   });
 
+  test("addComments disables sorted lazy scanning for out-of-order appends", () => {
+    const instance = new NiconiComments(
+      new FakeRenderer(),
+      [createComment({ id: 1, vpos: 1000, mail: ["ue"] })],
+      { format: "formatted", lazy: true, mode: "html5" },
+    );
+    const state = instance as unknown as {
+      lazyCommentOrderSortedByVpos: boolean;
+    };
+
+    expect(state.lazyCommentOrderSortedByVpos).toBe(true);
+
+    instance.addComments(createComment({ id: 2, vpos: 100, mail: ["ue"] }));
+
+    expect(state.lazyCommentOrderSortedByVpos).toBe(false);
+  });
+
   test("non-lazy constructor builds timeline from plugin-transformed comments", () => {
     const renderer = new FakeRenderer();
     const instance = new NiconiComments(

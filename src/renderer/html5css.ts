@@ -536,7 +536,6 @@ class HTML5CSSRenderer implements IRenderer {
     height?: number,
   ): void {
     const source = image.canvas;
-    const rect = getDrawImageRect(image, x, y, width, height);
     if (this.shouldDrawOnOverflowHelper()) {
       this.helper.save();
       this.helper.setGlobalAlpha(this.state.alpha);
@@ -549,6 +548,7 @@ class HTML5CSSRenderer implements IRenderer {
       this.helperDirty = true;
       return;
     }
+    const rect = getDrawImageRect(image, x, y, width, height);
     const deferHelperCommit = this.pathActive;
     if (deferHelperCommit) {
       console.warn(

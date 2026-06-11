@@ -11,8 +11,8 @@ import { createNicoScripts, ImageCacheContext } from "@/contexts";
 import {
   defaultConfig,
   defaultOptions,
+  resetOptions,
   setConfig,
-  setOptions,
 } from "@/definition/config";
 import { initConfig } from "@/definition/initConfig";
 import { RangeCacheContext } from "@/utils/rangeCache";
@@ -108,7 +108,7 @@ const mulberry32 = (seed: number) => {
 const resetBenchState = () => {
   initConfig();
   setConfig(defaultConfig);
-  setOptions(defaultOptions);
+  resetOptions();
 };
 
 const createBenchContext = (): CommentInstanceContext => ({

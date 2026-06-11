@@ -32,8 +32,21 @@ const defaultOptions: BaseOptions = {
   lazy: false,
 };
 
+const initialOptions: BaseOptions = { ...defaultOptions };
+
 const setOptions = (options: BaseOptions) => {
   Object.assign(defaultOptions, options);
 };
 
-export { defaultConfig, defaultOptions, setConfig, setOptions, updateConfig };
+const resetOptions = () => {
+  Object.assign(defaultOptions, initialOptions);
+};
+
+export {
+  defaultConfig,
+  defaultOptions,
+  resetOptions,
+  setConfig,
+  setOptions,
+  updateConfig,
+};

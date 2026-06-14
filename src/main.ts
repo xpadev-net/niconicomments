@@ -136,6 +136,7 @@ class NiconiComments {
   public showFPS: boolean;
   public showCommentCount: boolean;
   private lastVpos: number;
+  private lastCursor?: Position;
   private lastFrameBanActive: boolean;
   private get lastVposInt() {
     return Math.floor(this.lastVpos);
@@ -560,12 +561,20 @@ class NiconiComments {
     const vposInt = Math.floor(vpos);
     const drawCanvasStart = performance.now();
     const requiresVideoRedraw = rendererHasVideoSurface(this.renderer);
+    const cursorChanged =
+      (cursor === undefined) !== (this.lastCursor === undefined) ||
+      (cursor !== undefined &&
+        this.lastCursor !== undefined &&
+        (cursor.x !== this.lastCursor.x || cursor.y !== this.lastCursor.y));
+    this.lastCursor =
+      cursor === undefined ? undefined : { x: cursor.x, y: cursor.y };
     const requiresDynamicFrameRedraw =
       requiresVideoRedraw ||
       this.plugins.length > 0 ||
       this.showCollision ||
       this.showFPS ||
-      this.showCommentCount;
+      this.showCommentCount ||
+      cursorChanged;
     if (
       this.lastVpos === vpos &&
       !forceRendering &&

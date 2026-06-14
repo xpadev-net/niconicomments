@@ -328,6 +328,23 @@ describe("renderer draw robustness", () => {
     expect(renderer.clearRectCalls).toBe(1);
   });
 
+  test("redraws identical vpos frames when the cursor changes", () => {
+    const renderer = new RecordingRenderer();
+    const instance = new NiconiComments(
+      renderer,
+      [createComment({ content: "static", mail: ["ue"] })],
+      {
+        format: "formatted",
+        mode: "html5",
+      },
+    );
+
+    expect(instance.drawCanvas(1, false, { x: 0, y: 0 })).toBe(true);
+    expect(instance.drawCanvas(1, false, { x: 0, y: 0 })).toBe(false);
+    expect(instance.drawCanvas(1, false, { x: 1, y: 0 })).toBe(true);
+    expect(renderer.clearRectCalls).toBe(2);
+  });
+
   test("draws a base-style custom comment with button metadata as a no-op button", () => {
     const renderer = new RecordingRenderer();
     const instance = new NiconiComments(

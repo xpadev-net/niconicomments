@@ -91,6 +91,7 @@ let video = Number(urlParams.get("video") || 0),
   noVideo = !!urlParams.get("novideo"),
   time = Number(urlParams.get("time") || -1);
 const ncVersion = readVersionParam("ncVersion");
+const selectedNcVersion = USE_LOCAL_NC_DEV_BUILD ? "dev" : ncVersion;
 const pluginVersion = readVersionParam("pluginVersion");
 const niwangoVersion = readVersionParam("niwangoVersion");
 
@@ -131,15 +132,15 @@ const scriptsLoaded = new Promise((resolve) => {
   resolveScripts = resolve;
 });
 Promise.all([
-  loadScript(getNCUrl(ncVersion)),
+  loadScript(getNCUrl(selectedNcVersion)),
   loadScript(getPluginUrl(pluginVersion)),
   loadScript(getNiwangoUrl(niwangoVersion)),
 ])
   .then(resolveScripts)
   .catch((err) => {
     console.error("Failed to load scripts:", err, {
-      ncVersion,
-      ncUrl: getNCUrl(ncVersion),
+      ncVersion: selectedNcVersion,
+      ncUrl: getNCUrl(selectedNcVersion),
       pluginVersion,
       pluginUrl: getPluginUrl(pluginVersion),
       niwangoVersion,
@@ -447,7 +448,10 @@ const ensureVersionOption = (selectEl, version) => {
   selectEl.value = version;
 };
 
-ensureVersionOption(ncVersionElement, ncVersion);
+if (!USE_LOCAL_NC_DEV_BUILD) {
+  ncVersionElement.querySelector('option[value="dev"]')?.remove();
+}
+ensureVersionOption(ncVersionElement, selectedNcVersion);
 ensureVersionOption(pluginVersionElement, pluginVersion);
 ensureVersionOption(niwangoVersionElement, niwangoVersion);
 controlRendererElement.value = rendererType;
@@ -485,7 +489,7 @@ Promise.all([
   fetchVersions("@xpadev-net/niconicomments-plugin-niwango"),
   fetchVersions("@xpadev-net/niwango"),
 ]).then(([ncVersions, pluginVersions, niwangoVersions]) => {
-  appendVersionOptions(ncVersionElement, ncVersions, ncVersion);
+  appendVersionOptions(ncVersionElement, ncVersions, selectedNcVersion);
   appendVersionOptions(pluginVersionElement, pluginVersions, pluginVersion);
   appendVersionOptions(niwangoVersionElement, niwangoVersions, niwangoVersion);
 });
@@ -511,7 +515,7 @@ const showScriptError = (message) => {
     "color:#fff;padding:12px 16px;font-family:monospace;font-size:13px;";
   el.textContent =
     message ||
-    `Script load failed (ncVersion=${ncVersion}, pluginVersion=${pluginVersion}, niwangoVersion=${niwangoVersion}). Check version selectors.`;
+    `Script load failed (ncVersion=${selectedNcVersion}, pluginVersion=${pluginVersion}, niwangoVersion=${niwangoVersion}). Check version selectors.`;
   document.body.appendChild(el);
 };
 

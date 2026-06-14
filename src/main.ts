@@ -108,6 +108,9 @@ const rendererHasVideoSurface = (renderer: IRenderer) =>
   "video" in renderer &&
   (renderer as IRenderer & { readonly video?: unknown }).video != null;
 
+const getRendererClear = (renderer: IRenderer) =>
+  (renderer as IRenderer & { clear?: () => void }).clear;
+
 const removeUndefinedConfigValues = (
   config: NonNullable<Options["config"]>,
 ): NonNullable<Options["config"]> =>
@@ -875,8 +878,13 @@ class NiconiComments {
    * キャンバスを消去する
    */
   public clear() {
-    const size = this.renderer.getSize();
-    this.renderer.clearRect(0, 0, size.width, size.height);
+    const clear = getRendererClear(this.renderer);
+    if (clear) {
+      clear.call(this.renderer);
+    } else {
+      const size = this.renderer.getSize();
+      this.renderer.clearRect(0, 0, size.width, size.height);
+    }
     this.renderer.flush();
   }
 

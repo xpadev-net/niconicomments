@@ -79,7 +79,10 @@ class HTML5CSSRenderer implements IRenderer {
     HTMLCanvasElement,
     DuplicateCloneBudget
   >();
-  private externalCanvasSet = new WeakSet<HTMLCanvasElement>();
+  private externalCanvasCopyFrameBudget: DuplicateCloneBudget = {
+    bytes: 0,
+    count: 0,
+  };
   // Canvases created by this renderer's getCanvas() — safe to reparent in drawImage.
   // External canvases are never reparented; pixels are copied instead.
   private readonly ownedCanvases = new WeakSet<HTMLCanvasElement>();
@@ -573,23 +576,20 @@ class HTML5CSSRenderer implements IRenderer {
     // occurrences to be independently positioned.
     let element: HTMLCanvasElement;
     if (!this.ownedCanvases.has(source)) {
-      const cloneBytes = this.getCanvasByteSize(source);
-      const seenExternalCanvas = this.externalCanvasSet.has(source);
-      if (seenExternalCanvas && !this.reserveDuplicateClone(source, cloneBytes))
-        return;
+      const copyBytes = this.getCanvasByteSize(source);
+      if (!this.reserveExternalCanvasCopy(source, copyBytes)) return;
       element = this.root.ownerDocument.createElement("canvas");
       element.width = source.width;
       element.height = source.height;
       const ctx = element.getContext("2d");
       if (!ctx) {
-        if (seenExternalCanvas) this.releaseDuplicateClone(source, cloneBytes);
+        this.releaseExternalCanvasCopy(source, copyBytes);
         console.warn(
           "HTML5CSSRenderer: failed to acquire 2D context for canvas copy.",
         );
         return;
       }
       ctx.drawImage(source, 0, 0);
-      this.externalCanvasSet.add(source);
     } else if (this.activeCanvasSet.has(source)) {
       const cloneBytes = this.getCanvasByteSize(source);
       if (!this.reserveDuplicateClone(source, cloneBytes)) return;
@@ -928,6 +928,32 @@ class HTML5CSSRenderer implements IRenderer {
       : 0;
   }
 
+  private canReserveCanvasCopyBudget(
+    budget: DuplicateCloneBudget,
+    bytes: number,
+  ): boolean {
+    return (
+      budget.count < MAX_DUPLICATE_CANVAS_CLONES_PER_FRAME &&
+      budget.bytes + bytes <= MAX_DUPLICATE_CANVAS_CLONE_BYTES_PER_FRAME
+    );
+  }
+
+  private incrementCanvasCopyBudget(
+    budget: DuplicateCloneBudget,
+    bytes: number,
+  ): void {
+    budget.count++;
+    budget.bytes += bytes;
+  }
+
+  private decrementCanvasCopyBudget(
+    budget: DuplicateCloneBudget,
+    bytes: number,
+  ): void {
+    budget.count = Math.max(0, budget.count - 1);
+    budget.bytes = Math.max(0, budget.bytes - bytes);
+  }
+
   private reserveDuplicateClone(
     source: HTMLCanvasElement,
     bytes: number,
@@ -936,15 +962,34 @@ class HTML5CSSRenderer implements IRenderer {
       bytes: 0,
       count: 0,
     };
+    if (!this.canReserveCanvasCopyBudget(budget, bytes)) {
+      return false;
+    }
+    this.incrementCanvasCopyBudget(budget, bytes);
+    this.duplicateCloneBudgetMap.set(source, budget);
+    return true;
+  }
+
+  private reserveExternalCanvasCopy(
+    source: HTMLCanvasElement,
+    bytes: number,
+  ): boolean {
+    const sourceBudget = this.duplicateCloneBudgetMap.get(source) ?? {
+      bytes: 0,
+      count: 0,
+    };
     if (
-      budget.count >= MAX_DUPLICATE_CANVAS_CLONES_PER_FRAME ||
-      budget.bytes + bytes > MAX_DUPLICATE_CANVAS_CLONE_BYTES_PER_FRAME
+      !this.canReserveCanvasCopyBudget(sourceBudget, bytes) ||
+      !this.canReserveCanvasCopyBudget(
+        this.externalCanvasCopyFrameBudget,
+        bytes,
+      )
     ) {
       return false;
     }
-    budget.count++;
-    budget.bytes += bytes;
-    this.duplicateCloneBudgetMap.set(source, budget);
+    this.incrementCanvasCopyBudget(sourceBudget, bytes);
+    this.incrementCanvasCopyBudget(this.externalCanvasCopyFrameBudget, bytes);
+    this.duplicateCloneBudgetMap.set(source, sourceBudget);
     return true;
   }
 
@@ -954,16 +999,26 @@ class HTML5CSSRenderer implements IRenderer {
   ): void {
     const budget = this.duplicateCloneBudgetMap.get(source);
     if (!budget) return;
-    budget.count = Math.max(0, budget.count - 1);
-    budget.bytes = Math.max(0, budget.bytes - bytes);
+    this.decrementCanvasCopyBudget(budget, bytes);
     if (budget.count === 0 && budget.bytes === 0) {
       this.duplicateCloneBudgetMap.delete(source);
     }
   }
 
+  private releaseExternalCanvasCopy(
+    source: HTMLCanvasElement,
+    bytes: number,
+  ): void {
+    this.releaseDuplicateClone(source, bytes);
+    this.decrementCanvasCopyBudget(this.externalCanvasCopyFrameBudget, bytes);
+  }
+
   private resetDuplicateCloneAccounting(): void {
     this.duplicateCloneBudgetMap.clear();
-    this.externalCanvasSet = new WeakSet();
+    this.externalCanvasCopyFrameBudget = {
+      bytes: 0,
+      count: 0,
+    };
   }
 
   private trimHelperSurfaces(): void {

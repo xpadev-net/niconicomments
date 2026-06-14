@@ -1,12 +1,14 @@
 const DEFAULT_NC_VERSION = "0.2.78";
 const DEFAULT_PLUGIN_VERSION = "0.0.13";
 const DEFAULT_NIWANGO_VERSION = "0.0.1-canary.20231002-1";
+// Manual local-development switch; do not derive this from URL query params.
+const USE_LOCAL_NC_DEV_BUILD = false;
 const NC_DEV_URL =
   "https://cdn.jsdelivr.net/gh/xpadev-net/niconicomments@dev-build/dist/bundle.js";
 const MAX_VERSION_LENGTH = 64;
 const VERSION_PARAM_CONFIG = {
   ncVersion: {
-    aliases: new Set(["dev"]),
+    aliases: new Set(),
     defaultValue: DEFAULT_NC_VERSION,
   },
   pluginVersion: {
@@ -115,7 +117,7 @@ const loadScript = (src) =>
 
 const encodeVersionForUrl = (value) => encodeURIComponent(value);
 const getNCUrl = (v) =>
-  v === "dev"
+  USE_LOCAL_NC_DEV_BUILD
     ? NC_DEV_URL
     : `https://cdn.jsdelivr.net/npm/@xpadev-net/niconicomments@${encodeVersionForUrl(v)}/dist/bundle.min.js`;
 const getPluginUrl = (v) =>

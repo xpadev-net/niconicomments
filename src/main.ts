@@ -19,7 +19,7 @@ import { initConfig } from "@/definition/initConfig";
 import { InvalidOptionError } from "@/errors/";
 import { EventHandler } from "@/eventHandler";
 import convert2formattedComment from "@/inputParser";
-import { CanvasRenderer, createRenderer } from "@/renderer";
+import { createRenderer } from "@/renderer";
 import typeGuard from "@/typeGuard";
 import {
   arrayEqual,
@@ -107,6 +107,9 @@ const areCommentsSortedByVpos = (
 const rendererHasVideoSurface = (renderer: IRenderer) =>
   "video" in renderer &&
   (renderer as IRenderer & { readonly video?: unknown }).video != null;
+
+const getRendererClear = (renderer: IRenderer) =>
+  (renderer as IRenderer & { clear?: () => void }).clear;
 
 const removeUndefinedConfigValues = (
   config: NonNullable<Options["config"]>,
@@ -875,8 +878,9 @@ class NiconiComments {
    * キャンバスを消去する
    */
   public clear() {
-    if (this.renderer instanceof CanvasRenderer) {
-      this.renderer.clear();
+    const clear = getRendererClear(this.renderer);
+    if (clear) {
+      clear.call(this.renderer);
     } else {
       const size = this.renderer.getSize();
       this.renderer.clearRect(0, 0, size.width, size.height);

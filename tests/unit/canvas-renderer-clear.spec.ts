@@ -179,6 +179,7 @@ describe("CanvasRenderer.clearRect", () => {
     const niconiComments = new NiconiComments(renderer, [], {
       format: "formatted",
     });
+    renderer.setScale(0.5);
     context.calls = [];
 
     niconiComments.clear();

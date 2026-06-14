@@ -1,5 +1,6 @@
 import { describe, expect, test, vi } from "vitest";
 
+import NiconiComments from "@/main";
 import { CanvasRenderer } from "@/renderer/canvas";
 
 type Transform = {
@@ -161,6 +162,31 @@ describe("CanvasRenderer.clearRect", () => {
       "save",
       "setTransform(1,0,0,1,0,0)",
       "clearRect(0,0,1280,720)",
+      "restore",
+    ]);
+  });
+
+  test("clears the entire backing canvas through NiconiComments.clear when renderer scale is reduced", () => {
+    if (!("HTMLCanvasElement" in globalThis)) {
+      Object.defineProperty(globalThis, "HTMLCanvasElement", {
+        configurable: true,
+        value: class HTMLCanvasElement {},
+      });
+    }
+    const { context, renderer } = createRenderer();
+
+    renderer.setSize(320, 180);
+    const niconiComments = new NiconiComments(renderer, [], {
+      format: "formatted",
+    });
+    context.calls = [];
+
+    niconiComments.clear();
+
+    expect(context.calls).toEqual([
+      "save",
+      "setTransform(1,0,0,1,0,0)",
+      "clearRect(0,0,320,180)",
       "restore",
     ]);
   });

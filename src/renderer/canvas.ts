@@ -192,6 +192,16 @@ class CanvasRenderer implements IRenderer {
     }
   }
 
+  clear(): void {
+    this.context.save();
+    try {
+      this.context.setTransform(1, 0, 0, 1, 0, 0);
+      this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    } finally {
+      this.context.restore();
+    }
+  }
+
   setFont(font: string): void {
     this.context.font = font;
   }

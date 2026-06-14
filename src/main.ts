@@ -19,7 +19,7 @@ import { initConfig } from "@/definition/initConfig";
 import { InvalidOptionError } from "@/errors/";
 import { EventHandler } from "@/eventHandler";
 import convert2formattedComment from "@/inputParser";
-import { createRenderer } from "@/renderer";
+import { CanvasRenderer, createRenderer } from "@/renderer";
 import typeGuard from "@/typeGuard";
 import {
   arrayEqual,
@@ -875,8 +875,12 @@ class NiconiComments {
    * キャンバスを消去する
    */
   public clear() {
-    const size = this.renderer.getSize();
-    this.renderer.clearRect(0, 0, size.width, size.height);
+    if (this.renderer instanceof CanvasRenderer) {
+      this.renderer.clear();
+    } else {
+      const size = this.renderer.getSize();
+      this.renderer.clearRect(0, 0, size.width, size.height);
+    }
     this.renderer.flush();
   }
 

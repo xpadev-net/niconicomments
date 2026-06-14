@@ -8,6 +8,7 @@ import type {
   MeasureInput,
   MeasureTextInput,
   MeasureTextResult,
+  Position,
 } from "@/@types/";
 import type { CommentInstanceContext } from "@/contexts/";
 import { TypeGuardError } from "@/errors/TypeGuardError";
@@ -36,6 +37,11 @@ const HTML5_COMMENT_IMAGE_PADDING = 4;
 const MAX_HTML5_COMMENT_IMAGE_WIDTH = 8192 - HTML5_COMMENT_IMAGE_PADDING * 2;
 const MAX_HTML5_COMMENT_IMAGE_HEIGHT = 8192 - HTML5_COMMENT_IMAGE_PADDING * 2;
 const MAX_HTML5_COMMENT_IMAGE_AREA = MAX_CANVAS_AREA;
+
+type TextImageBounds = {
+  height: number;
+  paddingTop: number;
+};
 
 const clampHTML5Content = (input: string) => {
   let lineCount = 1;
@@ -71,6 +77,11 @@ const isWithinImageBounds = (width: number, height: number) => {
 
 class HTML5Comment extends BaseComment {
   override readonly pluginName: string = "HTML5Comment";
+  private readonly textImageBoundsCache = new WeakMap<
+    object,
+    TextImageBounds
+  >();
+
   constructor(
     comment: FormattedComment,
     context: IRenderer,
@@ -465,7 +476,35 @@ class HTML5Comment extends BaseComment {
   }
 
   protected override canGenerateTextImage(): boolean {
-    return isWithinImageBounds(this.comment.width, this.comment.height);
+    return isWithinImageBounds(
+      this.comment.width,
+      this.getTextImageBounds().height,
+    );
+  }
+
+  private getTextImageBounds() {
+    const cached = this.textImageBoundsCache.get(this.comment);
+    if (cached !== undefined) return cached;
+    const { scale } = getFontSizeAndScale(this.comment.charSize, this.config);
+    const paddingTop =
+      (10 - scale * 10) *
+      ((this.comment.lineCount + 1) / this.config.html5HiResCommentCorrection);
+    const layerScale = this.comment.layer === -1 ? this.ctx.options.scale : 1;
+    const paddingTopHeight =
+      this.comment.lineHeight *
+      paddingTop *
+      getConfig(this.config.commentScale, false) *
+      layerScale;
+    const bounds = {
+      height: this.comment.height + paddingTopHeight,
+      paddingTop: paddingTopHeight,
+    };
+    this.textImageBoundsCache.set(this.comment, bounds);
+    return bounds;
+  }
+
+  protected override _draw(posX: number, posY: number, cursor?: Position) {
+    super._draw(posX, posY - this.getTextImageBounds().paddingTop, cursor);
   }
 
   override _generateTextImage(): IRenderer {
@@ -481,7 +520,7 @@ class HTML5Comment extends BaseComment {
       scale *
       (this.comment.layer === -1 ? this.ctx.options.scale : 1);
     const image = this.renderer.getCanvas(HTML5_COMMENT_IMAGE_PADDING);
-    image.setSize(this.comment.width, this.comment.height);
+    image.setSize(this.comment.width, this.getTextImageBounds().height);
     image.setStrokeStyle(getStrokeColor(this.comment, this.config));
     image.setFillStyle(this.comment.color);
     image.setLineWidth(getConfig(this.config.contextLineWidth, false));

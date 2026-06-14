@@ -472,12 +472,6 @@ class NiconiComments {
         console.error("Failed to add comments", e);
       }
     }
-    if (this.lazyCommentOrderSortedByVpos) {
-      this.lazyCommentOrderSortedByVpos = areCommentsSortedByVpos(
-        comments,
-        this.comments[this.comments.length - 1],
-      );
-    }
     for (const comment of comments) {
       if (comment.invisible) continue;
       if (comment.loc === "naka") {

@@ -480,6 +480,7 @@ const appendVersionOptions = (selectEl, versions, currentVersion) => {
     opt.value = ver;
     opt.text = ver;
     selectEl.appendChild(opt);
+    existingValues.add(ver);
   }
   selectEl.value = currentVersion;
 };

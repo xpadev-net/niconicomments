@@ -418,21 +418,40 @@ describe("duration bounds and lazy timeline expansion", () => {
     expect(state.timeline[0]).toBeDefined();
   });
 
-  test("addComments disables sorted lazy scanning for out-of-order appends", () => {
+  test("lazy addComments keeps sorted tail early break for out-of-order live appends", () => {
+    const farVpos = MAX_LAZY_COMMENT_LOOKAHEAD + MAX_COMMENT_LONG + 500;
     const instance = new NiconiComments(
       new FakeRenderer(),
-      [createComment({ id: 1, vpos: 1000, mail: ["ue"] })],
+      [
+        createComment({ id: 1, vpos: 0, mail: ["ue"] }),
+        createComment({
+          id: 2,
+          vpos: MAX_LAZY_COMMENT_LOOKAHEAD,
+          mail: ["ue"],
+        }),
+        createComment({ id: 3, vpos: farVpos, mail: ["ue"] }),
+      ],
       { format: "formatted", lazy: true, mode: "html5" },
     );
     const state = instance as unknown as {
+      comments: { posY: number }[];
       lazyCommentOrderSortedByVpos: boolean;
+      processedCommentIndex: number;
+      timeline: Record<number, IComment[]>;
     };
 
     expect(state.lazyCommentOrderSortedByVpos).toBe(true);
 
-    instance.addComments(createComment({ id: 2, vpos: 100, mail: ["ue"] }));
+    instance.addComments(createComment({ id: 4, vpos: 100, mail: ["ue"] }));
+    instance.drawCanvas(0, true);
 
-    expect(state.lazyCommentOrderSortedByVpos).toBe(false);
+    expect(state.lazyCommentOrderSortedByVpos).toBe(true);
+    expect(state.processedCommentIndex).toBe(1);
+    expect(state.comments[2]?.posY).toBe(-1);
+    expect(state.comments[3]?.posY).not.toBe(-1);
+    expect(state.timeline[100]?.map((comment) => comment.comment.id)).toContain(
+      4,
+    );
   });
 
   test("non-lazy constructor builds timeline from plugin-transformed comments", () => {

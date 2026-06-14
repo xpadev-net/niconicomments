@@ -38,7 +38,7 @@ const replaceExpected = (content, pattern, replacement, path) => {
       `${path}: expected exactly one niconicomments version target, found ${matches.length}`,
     );
   }
-  return content.replace(pattern, replacement);
+  return content.replace(matchPattern, replacement);
 };
 
 const targets = [
@@ -67,8 +67,8 @@ const targets = [
     update: (content) =>
       replaceExpected(
         content,
-        /^const DEFAULT_NC_VERSION = "[^"]+";$/m,
-        `const DEFAULT_NC_VERSION = "${version}";`,
+        /^const DEFAULT_NC_VERSION = "[^"]+";(\r?)$/m,
+        `const DEFAULT_NC_VERSION = "${version}";$1`,
         "docs/sample/sample.js",
       ),
   },
@@ -77,7 +77,7 @@ const targets = [
     update: (content) =>
       replaceExpected(
         content,
-        /(<select name="nc-version" id="nc-version" autocomplete="off">\n\s*)<option value="[^"]+">[^<]+<\/option>/,
+        /(<select name="nc-version" id="nc-version" autocomplete="off">\r?\n\s*)<option value="[^"]+">[^<]+<\/option>/,
         `$1<option value="${version}">${version}</option>`,
         "docs/sample/index.html",
       ),

@@ -28,6 +28,13 @@ class RecordingRenderer implements IRenderer {
   public readonly rendererName = "RecordingRenderer";
   public readonly canvas = {} as HTMLCanvasElement;
   public readonly children: RecordingRenderer[] = [];
+  public readonly drawImageCalls: { image: IRenderer; x: number; y: number }[] =
+    [];
+  public readonly fillTextCallsByPosition: {
+    text: string;
+    x: number;
+    y: number;
+  }[] = [];
   public measureCalls = 0;
   public fillTextCalls = 0;
   public strokeTextCalls = 0;
@@ -48,8 +55,9 @@ class RecordingRenderer implements IRenderer {
   setScale() {}
   fillRect() {}
   strokeRect() {}
-  fillText() {
+  fillText(text: string, x: number, y: number) {
     this.fillTextCalls++;
+    this.fillTextCallsByPosition.push({ text, x, y });
   }
   strokeText() {
     this.strokeTextCalls++;
@@ -86,7 +94,9 @@ class RecordingRenderer implements IRenderer {
     this.children.push(child);
     return child;
   }
-  drawImage() {}
+  drawImage(image: IRenderer, x: number, y: number) {
+    this.drawImageCalls.push({ image, x, y });
+  }
   flush() {}
   invalidateImage() {}
 }
@@ -352,6 +362,34 @@ describe("HTML5 comment resource bounds", () => {
     expect(image).not.toBeNull();
     expect(image?.getSize().width).toBeLessThanOrEqual(widthLimit);
     expect(image?.getSize().height).toBeGreaterThan(0);
+  });
+
+  test.each([
+    "ue",
+    "shita",
+  ] as const)("reserves and offsets HTML5 offscreen top padding for long %s comments", (loc) => {
+    const renderer = new RecordingRenderer();
+    const comment = new TestHTML5Comment(
+      formattedComment(1, "x".repeat(5000), [loc]),
+      renderer,
+      0,
+      createContext(),
+    );
+
+    const image = comment.exposeTextImage() as RecordingRenderer | null;
+
+    expect(image).not.toBeNull();
+    const paddingHeight =
+      (image?.getSize().height ?? 0) - comment.comment.height;
+    expect(paddingHeight).toBeGreaterThan(0);
+    expect(image?.fillTextCallsByPosition[0]?.y).toBeGreaterThan(0);
+
+    comment.drawBodyForTest();
+
+    expect(renderer.drawImageCalls).toHaveLength(1);
+    expect(renderer.drawImageCalls[0]?.image).toBe(image);
+    expect(renderer.drawImageCalls[0]?.x).toBe(0);
+    expect(renderer.drawImageCalls[0]?.y).toBeCloseTo(-paddingHeight, 5);
   });
 
   test("keeps fixed-comment resize measurement bounded at max content length", () => {

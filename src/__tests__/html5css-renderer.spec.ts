@@ -767,6 +767,65 @@ test("HTML5CSSRenderer bounds duplicate owned canvas clones per frame", async ({
     externalImage.destroy();
     externalCase.renderer.destroy();
     externalCase.root.remove();
+
+    const externalManySourceCountCase = createRenderer();
+    const externalManySourceCountImages: InstanceType<
+      typeof global.NiconiComments.internal.renderer.CanvasRenderer
+    >[] = [];
+    for (let i = 0; i < 1200; i++) {
+      const element = document.createElement("canvas");
+      const image = new global.NiconiComments.internal.renderer.CanvasRenderer(
+        element,
+      );
+      image.setSize(10, 10);
+      externalManySourceCountImages.push(image);
+      externalManySourceCountCase.renderer.drawImage(
+        image,
+        i % 200,
+        Math.floor(i / 200) * 12,
+      );
+    }
+    externalManySourceCountCase.renderer.flush();
+    const externalManySourceCountVisibleCanvases = countVisibleLayerCanvases(
+      externalManySourceCountCase.layer,
+    );
+    const externalManySourceCountConnectedCanvases = countLayerCanvases(
+      externalManySourceCountCase.layer,
+    );
+
+    for (const image of externalManySourceCountImages) image.destroy();
+    externalManySourceCountCase.renderer.destroy();
+    externalManySourceCountCase.root.remove();
+
+    const externalManySourceByteCase = createRenderer();
+    const externalManySourceByteImages: InstanceType<
+      typeof global.NiconiComments.internal.renderer.CanvasRenderer
+    >[] = [];
+    withVirtualCreatedCanvases(() => {
+      for (let i = 0; i < 40; i++) {
+        const element = document.createElement("canvas");
+        const image =
+          new global.NiconiComments.internal.renderer.CanvasRenderer(element);
+        image.setSize(2048, 2048);
+        externalManySourceByteImages.push(image);
+        externalManySourceByteCase.renderer.drawImage(
+          image,
+          i % 200,
+          Math.floor(i / 200) * 12,
+        );
+      }
+    });
+    externalManySourceByteCase.renderer.flush();
+    const externalManySourceByteVisibleCanvases = countVisibleLayerCanvases(
+      externalManySourceByteCase.layer,
+    );
+    const externalManySourceByteConnectedCanvases = countLayerCanvases(
+      externalManySourceByteCase.layer,
+    );
+
+    for (const image of externalManySourceByteImages) image.destroy();
+    externalManySourceByteCase.renderer.destroy();
+    externalManySourceByteCase.root.remove();
     return {
       countCappedFrameVisibleCanvases,
       countCappedFrameConnectedCanvases,
@@ -776,6 +835,10 @@ test("HTML5CSSRenderer bounds duplicate owned canvas clones per frame", async ({
       byteCappedFrameConnectedCanvases,
       externalByteCappedFrameVisibleCanvases,
       externalByteCappedFrameConnectedCanvases,
+      externalManySourceCountVisibleCanvases,
+      externalManySourceCountConnectedCanvases,
+      externalManySourceByteVisibleCanvases,
+      externalManySourceByteConnectedCanvases,
     };
   });
 
@@ -787,11 +850,16 @@ test("HTML5CSSRenderer bounds duplicate owned canvas clones per frame", async ({
   // the source canvas plus 32 duplicate clones.
   expect(result.byteCappedFrameVisibleCanvases).toBe(33);
   expect(result.byteCappedFrameConnectedCanvases).toBe(33);
-  // External canvases are copied instead of reparented. The first copy of a
-  // source is allowed, then repeated copies of that source consume the same
-  // 512 MiB budget, allowing 32 more copied canvases.
-  expect(result.externalByteCappedFrameVisibleCanvases).toBe(33);
-  expect(result.externalByteCappedFrameConnectedCanvases).toBe(33);
+  // External canvases are copied instead of reparented. The first copy also
+  // consumes the 512 MiB budget, allowing 32 copied canvases total.
+  expect(result.externalByteCappedFrameVisibleCanvases).toBe(32);
+  expect(result.externalByteCappedFrameConnectedCanvases).toBe(32);
+  // Many distinct external source canvases share the same per-frame copy count
+  // and byte budgets instead of each getting an independent first copy.
+  expect(result.externalManySourceCountVisibleCanvases).toBe(1024);
+  expect(result.externalManySourceCountConnectedCanvases).toBe(1024);
+  expect(result.externalManySourceByteVisibleCanvases).toBe(32);
+  expect(result.externalManySourceByteConnectedCanvases).toBe(32);
   expect(result.recoveredFrameVisibleCanvases).toBe(2);
   expect(result.recoveredFrameConnectedCanvases).toBe(2);
 });

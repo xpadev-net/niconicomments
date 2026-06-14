@@ -560,7 +560,17 @@ class NiconiComments {
     const vposInt = Math.floor(vpos);
     const drawCanvasStart = performance.now();
     const requiresVideoRedraw = rendererHasVideoSurface(this.renderer);
-    if (this.lastVpos === vpos && !forceRendering && !requiresVideoRedraw) {
+    const requiresDynamicFrameRedraw =
+      requiresVideoRedraw ||
+      this.plugins.length > 0 ||
+      this.showCollision ||
+      this.showFPS ||
+      this.showCommentCount;
+    if (
+      this.lastVpos === vpos &&
+      !forceRendering &&
+      !requiresDynamicFrameRedraw
+    ) {
       return false;
     }
     const triggerHandlerStart = profile ? performance.now() : 0;
@@ -585,8 +595,7 @@ class NiconiComments {
     this._cachedSplit = { vpos: vposInt, hasNaka: currentHasNaka };
     if (
       !forceRendering &&
-      !requiresVideoRedraw &&
-      this.plugins.length === 0 &&
+      !requiresDynamicFrameRedraw &&
       !currentHasNaka &&
       !lastHasNaka &&
       frameBanActive === this.lastFrameBanActive

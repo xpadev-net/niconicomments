@@ -1,14 +1,5 @@
 import type { InferOutput } from "valibot";
-import {
-  notValue,
-  object,
-  optional,
-  pipe,
-  record,
-  string,
-  union,
-  unknown,
-} from "valibot";
+import { object, optional, record, string, unknown } from "valibot";
 
 import {
   ZCommentDate,
@@ -33,10 +24,7 @@ export const ZApiChat = object({
 });
 export type ApiChat = InferOutput<typeof ZApiChat>;
 
-export const ZRawApiResponse = union([
-  object({ chat: unknown() }),
-  record(pipe(string(), notValue("chat")), unknown()),
-]);
+export const ZRawApiResponse = record(string(), unknown());
 export type RawApiResponse = InferOutput<typeof ZRawApiResponse>;
 
 /**

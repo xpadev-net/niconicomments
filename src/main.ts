@@ -623,10 +623,10 @@ class NiconiComments {
     const triggerHandlerStart = profile ? performance.now() : 0;
     this.eventHandler.trigger(
       vposInt,
-      Math.floor(this.lastEventVpos),
+      this.lastEventVpos,
       this.ctx.nicoScripts,
     );
-    this.lastEventVpos = vpos;
+    this.lastEventVpos = vposInt;
     setProfile("triggerHandler", triggerHandlerStart);
     const frameBanActive = isBanActive(
       vpos,

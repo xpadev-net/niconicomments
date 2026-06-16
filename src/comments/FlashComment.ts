@@ -114,6 +114,11 @@ class FlashComment extends BaseComment {
     this.image = undefined;
   }
 
+  override destroy(): void {
+    super.destroy();
+    this._buttonImageState = undefined;
+  }
+
   override convertComment(comment: FormattedComment): FormattedCommentWithSize {
     this._globalScale = getConfig(this.config.commentScale, true);
     return getButtonParts(

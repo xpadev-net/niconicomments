@@ -53,7 +53,7 @@ class HTML5CSSRenderer implements IRenderer {
   private pathActive = false;
   private textDrawnBeforeDom = false;
   private readonly helperSurfaces: CanvasRenderer[] = [];
-  private readonly videoSurface?: CanvasRenderer;
+  private videoSurface?: CanvasRenderer;
   private width = 0;
   private height = 0;
   private state: CssRenderState = { ...DEFAULT_CSS_RENDER_STATE };
@@ -63,6 +63,7 @@ class HTML5CSSRenderer implements IRenderer {
   private activeCanvasSet = new Set<HTMLCanvasElement>();
   private prevCanvasSet = new Set<HTMLCanvasElement>();
   private readonly setupCanvases = new WeakSet<HTMLCanvasElement>();
+  private destroyed = false;
   // Maps source canvas → set of clone canvases created for it this frame.
   // Clones are created when the same IRenderer is drawn more than once per frame.
   private readonly cloneMap = new Map<
@@ -184,6 +185,8 @@ class HTML5CSSRenderer implements IRenderer {
   }
 
   destroy(): void {
+    if (this.destroyed) return;
+    this.destroyed = true;
     // If the caller still holds live sub-renderers obtained via getCanvas(),
     // layer.remove() below detaches their canvases from the DOM implicitly.
     // prevCanvasSet/activeCanvasSet are cleared, so any subsequent
@@ -194,11 +197,15 @@ class HTML5CSSRenderer implements IRenderer {
       this.teardownSurfaceCanvas(helper);
       helper.destroy();
     }
+    this.helperSurfaces.length = 0;
+    (this.helper as CanvasRenderer | undefined) = undefined;
     if (this.videoSurface) {
       this.teardownSurfaceCanvas(this.videoSurface);
       this.videoSurface.destroy();
+      this.videoSurface = undefined;
     }
     this.nodes.length = 0;
+    this.stateStack.length = 0;
     this.prevCanvasSet.clear();
     this.activeCanvasSet.clear();
     this.cloneMap.clear();

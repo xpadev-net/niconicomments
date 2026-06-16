@@ -494,7 +494,9 @@ class FlashComment extends BaseComment {
         isLastButton = !!item.isButton;
       }
     } catch (e) {
-      renderer.destroy();
+      if (typeof renderer.destroy === "function") {
+        renderer.destroy();
+      }
       throw e;
     }
     return renderer;

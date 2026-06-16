@@ -552,7 +552,9 @@ class HTML5Comment extends BaseComment {
         }
       }
     } catch (e) {
-      image.destroy();
+      if (typeof image.destroy === "function") {
+        image.destroy();
+      }
       throw e;
     }
     return image;

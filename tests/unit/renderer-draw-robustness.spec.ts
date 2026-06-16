@@ -8,6 +8,7 @@ import type {
 import { BaseComment } from "@/comments";
 import { initConfig } from "@/definition/initConfig";
 import NiconiComments from "@/main";
+import { WebGL2Renderer } from "@/renderer/webgl2";
 
 class HTMLCanvasElementMock {}
 
@@ -109,6 +110,28 @@ class VideoSurfaceRenderer extends RecordingRenderer {
 class NullVideoRenderer extends RecordingRenderer {
   public readonly video = null;
 }
+
+type WebGLTextureSetupMock = {
+  readonly TEXTURE_2D: number;
+  readonly TEXTURE_MIN_FILTER: number;
+  readonly TEXTURE_MAG_FILTER: number;
+  readonly TEXTURE_WRAP_S: number;
+  readonly TEXTURE_WRAP_T: number;
+  readonly LINEAR: number;
+  readonly CLAMP_TO_EDGE: number;
+  readonly RGBA: number;
+  readonly UNSIGNED_BYTE: number;
+  createTexture: ReturnType<typeof vi.fn<() => WebGLTexture>>;
+  bindTexture: ReturnType<typeof vi.fn>;
+  texParameteri: ReturnType<typeof vi.fn>;
+  texImage2D: ReturnType<typeof vi.fn>;
+  deleteTexture: ReturnType<typeof vi.fn>;
+};
+
+type WebGL2RendererTexturePrivate = {
+  gl: WebGLTextureSetupMock;
+  _createTexture(uploadSource: HTMLCanvasElement): WebGLTexture;
+};
 
 class BaseStyleCommentWithoutButtons extends BaseComment {
   protected override convertComment(
@@ -392,5 +415,42 @@ describe("renderer draw robustness", () => {
     expect(() => instance.click(0, { x: 50, y: 10 })).not.toThrow();
     expect(state.comments).toHaveLength(1);
     expect(state.comments[0]?.comment.button?.limit).toBe(1);
+  });
+
+  test("deletes and unbinds a new WebGL texture when upload fails", () => {
+    const texture = {} as WebGLTexture;
+    const uploadError = new Error("upload failed");
+    const gl: WebGLTextureSetupMock = {
+      TEXTURE_2D: 1,
+      TEXTURE_MIN_FILTER: 2,
+      TEXTURE_MAG_FILTER: 3,
+      TEXTURE_WRAP_S: 4,
+      TEXTURE_WRAP_T: 5,
+      LINEAR: 6,
+      CLAMP_TO_EDGE: 7,
+      RGBA: 8,
+      UNSIGNED_BYTE: 9,
+      createTexture: vi.fn(() => texture),
+      bindTexture: vi.fn(),
+      texParameteri: vi.fn(),
+      texImage2D: vi.fn(() => {
+        throw uploadError;
+      }),
+      deleteTexture: vi.fn(),
+    };
+    const renderer = Object.create(
+      WebGL2Renderer.prototype,
+    ) as WebGL2RendererTexturePrivate;
+    renderer.gl = gl;
+
+    expect(() => renderer._createTexture({} as HTMLCanvasElement)).toThrow(
+      uploadError,
+    );
+
+    expect(gl.bindTexture).toHaveBeenNthCalledWith(1, gl.TEXTURE_2D, texture);
+    expect(gl.bindTexture).toHaveBeenNthCalledWith(2, gl.TEXTURE_2D, null);
+    expect(gl.bindTexture).toHaveBeenCalledTimes(2);
+    expect(gl.deleteTexture).toHaveBeenCalledTimes(1);
+    expect(gl.deleteTexture).toHaveBeenCalledWith(texture);
   });
 });

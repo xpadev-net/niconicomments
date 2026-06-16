@@ -11,8 +11,5 @@ services:
     dns:
       - 1.1.1.1
       - 8.8.8.8
-    volumes:
-      - ./:/home/pwuser/app/
-      - /home/pwuser/app/node_modules
     working_dir: /home/pwuser/app
     entrypoint: pnpm run test:playwright

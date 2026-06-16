@@ -536,6 +536,7 @@ const typeGuard = {
           check((i) => {
             const lists = i.split(/\r\n|\r|\n/);
             for (const list of lists) {
+              if (list.trim() === "") continue;
               if (list.split(":").length < 3) {
                 return false;
               }

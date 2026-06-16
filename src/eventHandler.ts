@@ -47,13 +47,13 @@ const getRangeScanState = <T extends EventRange>(
 const rangeEndsAfter = (range: EventRange, vpos: number) =>
   range.end === undefined || vpos < range.end;
 
-const lowerBoundStart = <T extends EventRange>(ranges: T[], vpos: number) => {
+const upperBoundStart = <T extends EventRange>(ranges: T[], vpos: number) => {
   let low = 0;
   let high = ranges.length;
   while (low < high) {
     const mid = Math.floor((low + high) / 2);
     const range = ranges[mid];
-    if (range && range.start < vpos) {
+    if (range && range.start <= vpos) {
       low = mid + 1;
     } else {
       high = mid;
@@ -77,6 +77,19 @@ const upperBoundEnd = <T extends EventRange>(ranges: T[], vpos: number) => {
   return low;
 };
 
+const hasActiveRange = <T extends EventRange>(
+  ranges: T[],
+  vpos: number,
+  scanCache: WeakMap<T[], EventRangeScanState<T>>,
+) => {
+  if (!Number.isFinite(vpos)) return false;
+  const state = getRangeScanState(ranges, scanCache);
+  return (
+    upperBoundStart(state.sortedByStart, vpos) >
+    upperBoundEnd(state.sortedByEnd, vpos)
+  );
+};
+
 const getTransitionRanges = <T extends EventRange>(
   ranges: T[],
   vpos: number,
@@ -92,8 +105,8 @@ const getTransitionRanges = <T extends EventRange>(
 
   if (lastVpos <= vpos) {
     for (
-      let i = lowerBoundStart(state.sortedByStart, lastVpos),
-        end = lowerBoundStart(state.sortedByStart, vpos);
+      let i = upperBoundStart(state.sortedByStart, lastVpos),
+        end = upperBoundStart(state.sortedByStart, vpos);
       i < end;
       i++
     ) {
@@ -109,7 +122,7 @@ const getTransitionRanges = <T extends EventRange>(
       i++
     ) {
       const range = state.sortedByEnd[i];
-      if (range && range.start < lastVpos) {
+      if (range && range.start <= lastVpos) {
         exited.push(range);
       }
     }
@@ -121,13 +134,13 @@ const getTransitionRanges = <T extends EventRange>(
       i++
     ) {
       const range = state.sortedByEnd[i];
-      if (range && range.start < vpos) {
+      if (range && range.start <= vpos) {
         entered.push(range);
       }
     }
     for (
-      let i = lowerBoundStart(state.sortedByStart, vpos),
-        end = lowerBoundStart(state.sortedByStart, lastVpos);
+      let i = upperBoundStart(state.sortedByStart, vpos),
+        end = upperBoundStart(state.sortedByStart, lastVpos);
       i < end;
       i++
     ) {
@@ -211,20 +224,24 @@ class EventHandler {
       this.handlerCounts.commentEnable < 1
     )
       return;
-    const { entered, exited } = getTransitionRanges(
+    const wasActive = hasActiveRange(
       nicoScripts.ban,
-      vpos,
       lastVpos,
       this.banActiveRangeScans,
     );
-    for (const _range of entered) {
+    const active = hasActiveRange(
+      nicoScripts.ban,
+      vpos,
+      this.banActiveRangeScans,
+    );
+    if (!wasActive && active) {
       this._execute("commentDisable", {
         type: "commentDisable",
         timeStamp: Date.now(),
         vpos,
       });
     }
-    for (const _range of exited) {
+    if (wasActive && !active) {
       this._execute("commentEnable", {
         type: "commentEnable",
         timeStamp: Date.now(),
@@ -240,20 +257,24 @@ class EventHandler {
   ) {
     if (this.handlerCounts.seekDisable < 1 && this.handlerCounts.seekEnable < 1)
       return;
-    const { entered, exited } = getTransitionRanges(
+    const wasActive = hasActiveRange(
       nicoScripts.seekDisable,
-      vpos,
       lastVpos,
       this.seekDisableActiveRangeScans,
     );
-    for (const _range of entered) {
+    const active = hasActiveRange(
+      nicoScripts.seekDisable,
+      vpos,
+      this.seekDisableActiveRangeScans,
+    );
+    if (!wasActive && active) {
       this._execute("seekDisable", {
         type: "seekDisable",
         timeStamp: Date.now(),
         vpos,
       });
     }
-    for (const _range of exited) {
+    if (wasActive && !active) {
       this._execute("seekEnable", {
         type: "seekEnable",
         timeStamp: Date.now(),

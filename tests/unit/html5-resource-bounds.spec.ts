@@ -37,12 +37,16 @@ class RecordingRenderer implements IRenderer {
   }[] = [];
   public measureCalls = 0;
   public fillTextCalls = 0;
+  public fillTextFailuresRemaining = 0;
   public strokeTextCalls = 0;
+  public destroyCalls = 0;
   public destroyed = false;
+  public nextChildFillTextFailuresRemaining = 0;
   private font = "10px sans-serif";
   private size = { width: 0, height: 0 };
 
   destroy() {
+    this.destroyCalls++;
     this.destroyed = true;
   }
   drawVideo() {}
@@ -57,6 +61,10 @@ class RecordingRenderer implements IRenderer {
   strokeRect() {}
   fillText(text: string, x: number, y: number) {
     this.fillTextCalls++;
+    if (this.fillTextFailuresRemaining > 0) {
+      this.fillTextFailuresRemaining--;
+      throw new Error("fillText failed");
+    }
     this.fillTextCallsByPosition.push({ text, x, y });
   }
   strokeText() {
@@ -91,6 +99,8 @@ class RecordingRenderer implements IRenderer {
   restore() {}
   getCanvas() {
     const child = new RecordingRenderer();
+    child.fillTextFailuresRemaining = this.nextChildFillTextFailuresRemaining;
+    this.nextChildFillTextFailuresRemaining = 0;
     this.children.push(child);
     return child;
   }
@@ -180,6 +190,10 @@ class TestHTML5Comment extends HTML5Comment {
   }
   drawBodyForTest() {
     this._draw(0, 0);
+  }
+  forceInvalidFontForTest() {
+    (this.comment as { font: unknown }).font = "invalid-font";
+    this.image = undefined;
   }
 }
 
@@ -308,6 +322,25 @@ describe("HTML5 comment resource bounds", () => {
         slicedContent: expect.arrayContaining(["line-256"]),
       }),
     );
+  });
+
+  test("destroys allocated HTML5 text images when type validation fails", () => {
+    const renderer = new RecordingRenderer();
+    const comment = new TestHTML5Comment(
+      formattedComment(1, "invalid font after allocation"),
+      renderer,
+      0,
+      createContext(),
+    );
+    comment.forceInvalidFontForTest();
+
+    expect(() => comment.exposeTextImage()).toThrow();
+    expect(() => comment.exposeTextImage()).toThrow();
+
+    expect(renderer.children).toHaveLength(2);
+    expect(renderer.children.map((child) => child.destroyCalls)).toEqual([
+      1, 1,
+    ]);
   });
 
   test("clamps over-limit HTML5 lines after preserving the final allowed line", () => {

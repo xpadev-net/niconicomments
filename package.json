@@ -23,8 +23,9 @@
     "lint": "\"$npm_execpath\" run check-docs-version && biome check src",
     "lint:fix": "\"$npm_execpath\" run sync-docs-version && biome check --write --unsafe src",
     "prepare": "node scripts/prepare.mjs",
-    "test": "docker-compose run --rm pw",
+    "test": "docker-compose run --rm --build pw",
     "test-server": "http-server",
+    "test:playwright": "\"$npm_execpath\" run build && playwright test",
     "test:unit": "vitest run",
     "bench": "vitest bench --run"
   },

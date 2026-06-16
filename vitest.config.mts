@@ -12,7 +12,7 @@ export default defineConfig({
   test: {
     environment: "node",
     include: ["tests/unit/**/*.spec.ts"],
-    passWithNoTests: true,
+    passWithNoTests: false,
     benchmark: {
       include: ["tests/bench/**/*.bench.ts"],
     },

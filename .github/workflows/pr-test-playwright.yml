@@ -33,9 +33,13 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          pnpm install
+          pnpm install --frozen-lockfile
           pnpm playwright install-deps
           pnpm playwright install firefox
+
+      - name: Check types
+        run: pnpm check-types
+
       - name: Building niconicomments
         run: |
           pnpm build

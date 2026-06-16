@@ -35,6 +35,7 @@ export const ZCommentDate = rangedNumber();
 export const ZCommentDateUsec = rangedNumber({ max: 999_999 });
 export const ZCommentUserId = rangedNumber({ min: -1 });
 export const ZCommentLayer = rangedNumber({ min: -1 });
+export const ZCommentScore = rangedNumber({ min: MIN_SAFE_TIMELINE_VALUE });
 
 export const toFiniteNumberInRange = (
   value: unknown,

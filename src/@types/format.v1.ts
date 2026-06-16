@@ -9,7 +9,7 @@ import {
   unknown,
 } from "valibot";
 
-import { ZCommentId, ZCommentVpos } from "./format.numeric";
+import { ZCommentId, ZCommentScore, ZCommentVpos } from "./format.numeric";
 
 export const ZV1Comment = object({
   id: string(),
@@ -19,7 +19,7 @@ export const ZV1Comment = object({
   commands: array(string()),
   userId: string(),
   isPremium: boolean(),
-  score: ZCommentId,
+  score: ZCommentScore,
   postedAt: string(),
   nicoruCount: ZCommentId,
   nicoruId: nullable(string()),

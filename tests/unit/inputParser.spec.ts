@@ -316,6 +316,19 @@ describe("convert2formattedComment", () => {
         "v1",
       ),
     ).toMatchObject([{ id: 1, vpos: 10, content: "ok" }]);
+
+    expect(
+      convert2formattedComment(
+        [
+          {
+            id: "thread",
+            fork: "main",
+            comments: [{ ...validComment, score: -100 }],
+          },
+        ],
+        "v1",
+      ),
+    ).toMatchObject([{ id: 1, vpos: 10, content: "ok" }]);
   });
 
   it("drops malformed XMLDocument chat items while keeping valid comments", () => {
@@ -355,6 +368,17 @@ describe("convert2formattedComment", () => {
         "xml2js",
       ),
     ).toMatchObject([{ id: 1, vpos: -9200, content: "early" }]);
+  });
+
+  it("defaults missing XMLDocument date to zero", () => {
+    expect(
+      convert2formattedComment(
+        createXmlDocument([
+          createXmlElement({ no: "1", vpos: "10" }, "missing date"),
+        ]),
+        "XMLDocument",
+      ),
+    ).toMatchObject([{ id: 1, vpos: 10, date: 0, content: "missing date" }]);
   });
 
   it("drops malformed xml2js chat items while keeping valid comments", () => {

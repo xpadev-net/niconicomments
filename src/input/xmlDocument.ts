@@ -53,7 +53,8 @@ const parseXMLDocument = (data: XMLDocument): FormattedComment[] => {
     const vpos = toFiniteNumberInRange(item.getAttribute("vpos"), {
       min: Number.MIN_SAFE_INTEGER,
     });
-    const date = toFiniteNumberInRange(item.getAttribute("date"));
+    const rawDate = item.getAttribute("date");
+    const date = rawDate === null ? 0 : toFiniteNumberInRange(rawDate);
     const rawDateUsec = item.getAttribute("date_usec");
     const dateUsec =
       rawDateUsec === null

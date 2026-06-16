@@ -224,6 +224,7 @@ class EventHandler {
       this.handlerCounts.commentEnable < 1
     )
       return;
+    if (nicoScripts.ban.length === 0) return;
     const wasActive = hasActiveRange(
       nicoScripts.ban,
       lastVpos,
@@ -257,6 +258,7 @@ class EventHandler {
   ) {
     if (this.handlerCounts.seekDisable < 1 && this.handlerCounts.seekEnable < 1)
       return;
+    if (nicoScripts.seekDisable.length === 0) return;
     const wasActive = hasActiveRange(
       nicoScripts.seekDisable,
       lastVpos,

@@ -425,13 +425,14 @@ const nicoscriptReplaceIgnoreable = (
     item.target === "全" ||
     item.target === "含む" ||
     item.target === "含まない";
+  if (!targetMatches) return true;
   const conditionMatches =
     item.condition === "完全一致"
       ? comment.content === item.keyword
       : comment.content.includes(item.keyword);
   const contentMatches =
     item.target === "含まない" ? !conditionMatches : conditionMatches;
-  return !targetMatches || !contentMatches;
+  return !contentMatches;
 };
 
 /**

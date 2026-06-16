@@ -322,7 +322,7 @@ const markTimelineProcessed = (timeline: Timeline, comment: IComment) => {
 };
 
 const isValidTimelineCommentRange = (comment: IComment) =>
-  isFiniteNumberInRange(comment.vpos) &&
+  isFiniteNumberInRange(comment.vpos, { min: Number.MIN_SAFE_INTEGER }) &&
   isFiniteNumberInRange(comment.long, { min: 1, max: MAX_COMMENT_LONG }) &&
   isFiniteNumberInRange(comment.height, { integer: false });
 

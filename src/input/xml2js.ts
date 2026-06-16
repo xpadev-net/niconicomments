@@ -27,7 +27,9 @@ const fromXml2js = (data: Xml2jsPacket): FormattedComment[] => {
       rawNo === undefined
         ? index++
         : (toFiniteNumberInRange(rawNo) ?? undefined);
-    const vpos = toFiniteNumberInRange(item.$.vpos);
+    const vpos = toFiniteNumberInRange(item.$.vpos, {
+      min: Number.MIN_SAFE_INTEGER,
+    });
     const date = toFiniteNumberInRange(item.$.date);
     const dateUsec = toFiniteNumberInRange(item.$.date_usec, {
       max: 999_999,

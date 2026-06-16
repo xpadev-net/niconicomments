@@ -50,7 +50,9 @@ const parseXMLDocument = (data: XMLDocument): FormattedComment[] => {
     const rawNo = item.getAttribute("no");
     const id =
       rawNo === null ? index++ : (toFiniteNumberInRange(rawNo) ?? undefined);
-    const vpos = toFiniteNumberInRange(item.getAttribute("vpos"));
+    const vpos = toFiniteNumberInRange(item.getAttribute("vpos"), {
+      min: Number.MIN_SAFE_INTEGER,
+    });
     const date = toFiniteNumberInRange(item.getAttribute("date"));
     const rawDateUsec = item.getAttribute("date_usec");
     const dateUsec =

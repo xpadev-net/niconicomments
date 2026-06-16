@@ -209,6 +209,29 @@ describe("convert2formattedComment", () => {
     ).toThrow();
   });
 
+  it("accepts negative finite formatted vpos values", () => {
+    const output = convert2formattedComment(
+      [
+        {
+          id: 1,
+          vpos: -9200,
+          content: "early",
+          date: 1,
+          date_usec: 0,
+          owner: false,
+          premium: false,
+          mail: [],
+          user_id: 1,
+          layer: -1,
+          is_my_post: false,
+        },
+      ],
+      "formatted",
+    );
+
+    expect(output).toMatchObject([{ id: 1, vpos: -9200, content: "early" }]);
+  });
+
   it("drops malformed legacy API chat items while keeping valid comments", () => {
     const output = convert2formattedComment(
       [
@@ -310,6 +333,28 @@ describe("convert2formattedComment", () => {
     );
 
     expect(output).toMatchObject([{ id: 1, vpos: 10, content: "ok" }]);
+  });
+
+  it("keeps negative finite XML vpos values", () => {
+    expect(
+      convert2formattedComment(
+        createXmlDocument([
+          createXmlElement({ no: "1", vpos: "-9200", date: "1" }, "early"),
+        ]),
+        "XMLDocument",
+      ),
+    ).toMatchObject([{ id: 1, vpos: -9200, content: "early" }]);
+
+    expect(
+      convert2formattedComment(
+        {
+          packet: {
+            chat: [{ _: "early", $: { no: "1", vpos: "-9200", date: "1" } }],
+          },
+        },
+        "xml2js",
+      ),
+    ).toMatchObject([{ id: 1, vpos: -9200, content: "early" }]);
   });
 
   it("drops malformed xml2js chat items while keeping valid comments", () => {

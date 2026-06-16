@@ -7,6 +7,7 @@ type NumberRangeOptions = {
 };
 
 const MAX_SAFE_TIMELINE_VALUE = Number.MAX_SAFE_INTEGER;
+const MIN_SAFE_TIMELINE_VALUE = Number.MIN_SAFE_INTEGER;
 
 export const isFiniteNumberInRange = (
   value: unknown,
@@ -29,7 +30,7 @@ const rangedNumber = (options?: NumberRangeOptions) =>
   );
 
 export const ZCommentId = rangedNumber();
-export const ZCommentVpos = rangedNumber();
+export const ZCommentVpos = rangedNumber({ min: MIN_SAFE_TIMELINE_VALUE });
 export const ZCommentDate = rangedNumber();
 export const ZCommentDateUsec = rangedNumber({ max: 999_999 });
 export const ZCommentUserId = rangedNumber({ min: -1 });

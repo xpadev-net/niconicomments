@@ -10,7 +10,10 @@ const packageJson = JSON.parse(
 const { version } = packageJson;
 const packageName = "@xpadev-net/niconicomments";
 const packageCdnUrl = `https://cdn.jsdelivr.net/npm/${packageName}@${version}/dist/bundle.js`;
-const files = new Set(packageJson.files ?? []);
+const packageFileEntries = Array.isArray(packageJson.files)
+  ? packageJson.files.filter((file) => typeof file === "string")
+  : [];
+const files = new Set(packageFileEntries);
 const errors = [];
 
 const readText = (path) => readFile(join(rootDir, path), "utf8");
@@ -20,6 +23,14 @@ const fileExists = (path) =>
     () => true,
     () => false,
   );
+const isFileIncluded = (path) => {
+  if (files.has(path)) return true;
+  for (const file of files) {
+    const prefix = file.endsWith("/") ? file : `${file}/`;
+    if (path.startsWith(prefix)) return true;
+  }
+  return false;
+};
 
 if (typeof version !== "string" || version.length === 0) {
   addError("package.json version must be a non-empty string.");
@@ -34,12 +45,18 @@ if (packageJson.types !== "dist/bundle.d.ts") {
 }
 
 for (const requiredFile of ["dist/bundle.js", "dist/bundle.d.ts"]) {
-  if (!files.has(requiredFile)) {
+  if (!isFileIncluded(requiredFile)) {
     addError(`package.json files must include ${requiredFile}.`);
   }
 }
 
-const distPackageFiles = [...files].filter((file) => file.startsWith("dist/"));
+const distPackageFiles = [
+  ...new Set([
+    ...packageFileEntries.filter((file) => file.startsWith("dist/")),
+    "dist/bundle.js",
+    "dist/bundle.d.ts",
+  ]),
+];
 const distArtifactsPresent = (
   await Promise.all(distPackageFiles.map((file) => fileExists(file)))
 ).some(Boolean);
@@ -107,7 +124,7 @@ if (sampleCdnMatches.length !== 1) {
   if (sampleArtifactName !== "bundle.js") {
     addError("docs/sample/sample.js npm CDN artifact must be dist/bundle.js.");
   }
-  if (!files.has(`dist/${sampleArtifactName}`)) {
+  if (!isFileIncluded(`dist/${sampleArtifactName}`)) {
     addError(
       `package.json files must include dist/${sampleArtifactName} used by docs/sample/sample.js.`,
     );
@@ -129,7 +146,7 @@ if (bundleDts != null) {
   const dtsMapRef = bundleDts.match(/sourceMappingURL=(\S+)$/m)?.[1];
   if (dtsMapRef != null) {
     const dtsMapFile = `dist/${dtsMapRef}`;
-    if (!files.has(dtsMapFile)) {
+    if (!isFileIncluded(dtsMapFile)) {
       addError(`package.json files must include ${dtsMapFile}.`);
     }
     await readDistText(dtsMapFile);

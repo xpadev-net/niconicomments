@@ -1,7 +1,6 @@
 import type { InferOutput } from "valibot";
 import {
   notValue,
-  number,
   object,
   optional,
   pipe,
@@ -11,19 +10,26 @@ import {
   unknown,
 } from "valibot";
 
+import {
+  ZCommentDate,
+  ZCommentDateUsec,
+  ZCommentId,
+  ZCommentVpos,
+} from "./format.numeric";
+
 export const ZApiChat = object({
   thread: optional(string(), ""),
-  no: optional(number(), 0),
-  vpos: number(),
-  date: optional(number(), 0),
-  date_usec: optional(number(), 0),
-  nicoru: optional(number(), 0),
-  premium: optional(number(), 0),
-  anonymity: optional(number(), 0),
+  no: optional(ZCommentId, 0),
+  vpos: ZCommentVpos,
+  date: optional(ZCommentDate, 0),
+  date_usec: optional(ZCommentDateUsec, 0),
+  nicoru: optional(ZCommentId, 0),
+  premium: optional(ZCommentId, 0),
+  anonymity: optional(ZCommentId, 0),
   user_id: optional(string(), ""),
   mail: optional(string(), ""),
   content: string(),
-  deleted: optional(number(), 0),
+  deleted: optional(ZCommentId, 0),
 });
 export type ApiChat = InferOutput<typeof ZApiChat>;
 
@@ -48,11 +54,11 @@ export type ApiPing = InferOutput<typeof ZApiPing>;
  * @deprecated
  */
 export const ZApiThread = object({
-  resultcode: number(),
+  resultcode: ZCommentId,
   thread: string(),
-  server_time: number(),
+  server_time: ZCommentDate,
   ticket: string(),
-  revision: number(),
+  revision: ZCommentId,
 });
 /**
  * @deprecated
@@ -64,7 +70,7 @@ export type ApiThread = InferOutput<typeof ZApiThread>;
  */
 export const ZApiLeaf = object({
   thread: string(),
-  count: number(),
+  count: ZCommentId,
 });
 /**
  * @deprecated
@@ -76,7 +82,7 @@ export type ApiLeaf = InferOutput<typeof ZApiLeaf>;
  */
 export const ZApiGlobalNumRes = object({
   thread: string(),
-  num_res: number(),
+  num_res: ZCommentId,
 });
 /**
  * @deprecated

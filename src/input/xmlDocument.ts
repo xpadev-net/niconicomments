@@ -1,4 +1,8 @@
-import type { FormattedComment, InputParser } from "@/@types";
+import {
+  type FormattedComment,
+  type InputParser,
+  toFiniteNumberInRange,
+} from "@/@types";
 import { InvalidFormatError } from "@/errors";
 import typeGuard from "@/typeGuard";
 
@@ -43,12 +47,30 @@ const parseXMLDocument = (data: XMLDocument): FormattedComment[] => {
   let index = Array.from(data.documentElement.children).length;
   for (const item of Array.from(data.documentElement.children)) {
     if (item.nodeName !== "chat") continue;
+    const rawNo = item.getAttribute("no");
+    const id =
+      rawNo === null ? index++ : (toFiniteNumberInRange(rawNo) ?? undefined);
+    const vpos = toFiniteNumberInRange(item.getAttribute("vpos"));
+    const date = toFiniteNumberInRange(item.getAttribute("date"));
+    const rawDateUsec = item.getAttribute("date_usec");
+    const dateUsec =
+      rawDateUsec === null
+        ? 0
+        : toFiniteNumberInRange(rawDateUsec, { max: 999_999 });
+    if (
+      id === undefined ||
+      vpos === undefined ||
+      date === undefined ||
+      dateUsec === undefined
+    ) {
+      continue;
+    }
     const tmpParam: FormattedComment = {
-      id: Number(item.getAttribute("no")) || index++,
-      vpos: Number(item.getAttribute("vpos")),
+      id,
+      vpos,
       content: item.textContent ?? "",
-      date: Number(item.getAttribute("date")) || 0,
-      date_usec: Number(item.getAttribute("date_usec")) || 0,
+      date,
+      date_usec: dateUsec,
       owner: !item.getAttribute("user_id"),
       premium: item.getAttribute("premium") === "1",
       mail: [],

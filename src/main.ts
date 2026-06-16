@@ -1,3 +1,5 @@
+import { safeParse } from "valibot";
+
 import type {
   Collision,
   CommentEventHandlerMap,
@@ -11,6 +13,7 @@ import type {
   Position,
   Timeline,
 } from "@/@types/";
+import { ZFormattedComment } from "@/@types/";
 import { FlashComment } from "@/comments/";
 import type { CommentInstanceContext } from "@/contexts/";
 import { createNicoScripts, ImageCacheContext } from "@/contexts/";
@@ -44,6 +47,18 @@ const EMPTY_TIMELINE = Object.freeze([]) as readonly IComment[];
 const BAN_FRAME_POSITION_RESOLUTION_BUDGET = 256;
 const TIMELINE_COMMENT_SORT = (a: IComment, b: IComment) =>
   Number(a.owner) - Number(b.owner) || a.index - b.index;
+const isFiniteVpos = (vpos: number) => Number.isFinite(vpos);
+const isFinitePosition = (pos: Position) =>
+  Number.isFinite(pos.x) && Number.isFinite(pos.y);
+const rejectInvalidCommentPosition = (comment: IComment) => {
+  comment.comment.invisible = true;
+  try {
+    comment.invisible = true;
+  } catch (_e) {
+    // Built-in comments expose invisible as a getter over comment.invisible.
+  }
+  comment.posY = 0;
+};
 
 const toIntegerOrInfinity = (value: number) => {
   if (Number.isNaN(value) || value === 0) return 0;
@@ -293,6 +308,11 @@ class NiconiComments {
           );
     while (this.nextUnprocessedCommentIndex < scanEndIndex) {
       const comment = comments[this.nextUnprocessedCommentIndex];
+      if (comment && !isFiniteVpos(comment.vpos)) {
+        rejectInvalidCommentPosition(comment);
+        this.nextUnprocessedCommentIndex++;
+        continue;
+      }
       if (comment && !comment.invisible && comment.posY < 0) {
         break;
       }
@@ -413,6 +433,10 @@ class NiconiComments {
     let endIndex = startIndex - 1;
     for (let i = startIndex; i < scanEndIndex; i++) {
       const comment = this.comments[i];
+      if (comment && !isFiniteVpos(comment.vpos)) {
+        rejectInvalidCommentPosition(comment);
+        continue;
+      }
       if (!comment || comment.invisible || comment.posY > -1) {
         continue;
       }
@@ -456,9 +480,15 @@ class NiconiComments {
    * @param rawComments コメントデータ
    */
   public addComments(...rawComments: FormattedComment[]) {
+    const validComments = rawComments.reduce<FormattedComment[]>((pv, val) => {
+      const parsedComment = safeParse(ZFormattedComment, val);
+      if (parsedComment.success) pv.push(parsedComment.output);
+      return pv;
+    }, []);
+    if (validComments.length === 0) return;
     this.ctx.rangeCache.reset();
     const touchedTimeline = new Set<number>();
-    const comments = rawComments.reduce<IComment[]>((pv, val, index) => {
+    const comments = validComments.reduce<IComment[]>((pv, val, index) => {
       pv.push(
         createCommentInstance(
           val,
@@ -536,6 +566,7 @@ class NiconiComments {
     forceRendering = false,
     cursor?: Position,
   ): boolean {
+    if (!isFiniteVpos(vpos)) return false;
     const profile: DrawCanvasProfile | undefined = this.ctx.options.debug
       ? {
           triggerHandler: 0,
@@ -912,7 +943,8 @@ class NiconiComments {
    * @param pos カーソルの位置
    */
   public click(vpos: number, pos: Position) {
-    const _comments = this.timeline[vpos];
+    if (!isFiniteVpos(vpos) || !isFinitePosition(pos)) return;
+    const _comments = this.timeline[Math.floor(vpos)];
     if (!_comments) return;
     for (let i = _comments.length - 1; i >= 0; i--) {
       const comment = _comments[i];

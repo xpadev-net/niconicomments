@@ -7,6 +7,7 @@ export * from "./event";
 export * from "./fonts";
 export * from "./format.formatted";
 export * from "./format.legacy";
+export * from "./format.numeric";
 export * from "./format.owner";
 export * from "./format.v1";
 export * from "./format.xml2js";

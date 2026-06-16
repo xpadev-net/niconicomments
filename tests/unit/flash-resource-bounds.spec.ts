@@ -45,12 +45,17 @@ class RecordingRenderer implements IRenderer {
   public readonly children: RecordingRenderer[] = [];
   public measureCalls = 0;
   public fillTextCalls = 0;
+  public fillTextFailuresRemaining = 0;
   public setSizeCalls = 0;
   public strokeTextCalls = 0;
+  public destroyCalls = 0;
   private font = "10px sans-serif";
   private size = { width: 0, height: 0 };
+  public nextChildFillTextFailuresRemaining = 0;
 
-  destroy() {}
+  destroy() {
+    this.destroyCalls++;
+  }
   drawVideo() {}
   getFont() {
     return this.font;
@@ -63,6 +68,10 @@ class RecordingRenderer implements IRenderer {
   strokeRect() {}
   fillText() {
     this.fillTextCalls++;
+    if (this.fillTextFailuresRemaining > 0) {
+      this.fillTextFailuresRemaining--;
+      throw new Error("fillText failed");
+    }
   }
   strokeText() {
     this.strokeTextCalls++;
@@ -97,6 +106,8 @@ class RecordingRenderer implements IRenderer {
   restore() {}
   getCanvas() {
     const child = new RecordingRenderer();
+    child.fillTextFailuresRemaining = this.nextChildFillTextFailuresRemaining;
+    this.nextChildFillTextFailuresRemaining = 0;
     this.children.push(child);
     return child;
   }
@@ -239,6 +250,26 @@ describe("Flash and at-button resource bounds", () => {
     );
 
     expect(comment.flash).toBe(true);
+  });
+
+  test("destroys allocated Flash text images when drawing fails", () => {
+    const renderer = new RecordingRenderer();
+    const comment = new TestFlashComment(
+      formattedComment("draw failure"),
+      renderer,
+      0,
+      createContext(),
+    );
+
+    renderer.nextChildFillTextFailuresRemaining = 1;
+    expect(() => comment.exposeTextImage()).toThrow("fillText failed");
+    renderer.nextChildFillTextFailuresRemaining = 1;
+    expect(() => comment.exposeTextImage()).toThrow("fillText failed");
+
+    expect(renderer.children).toHaveLength(2);
+    expect(renderer.children.map((child) => child.destroyCalls)).toEqual([
+      1, 1,
+    ]);
   });
 
   test("does not allocate Flash text images outside bounded dimensions", () => {

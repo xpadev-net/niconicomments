@@ -520,35 +520,42 @@ class HTML5Comment extends BaseComment {
       scale *
       (this.comment.layer === -1 ? this.ctx.options.scale : 1);
     const image = this.renderer.getCanvas(HTML5_COMMENT_IMAGE_PADDING);
-    image.setSize(this.comment.width, this.getTextImageBounds().height);
-    image.setStrokeStyle(getStrokeColor(this.comment, this.config));
-    image.setFillStyle(this.comment.color);
-    image.setLineWidth(getConfig(this.config.contextLineWidth, false));
-    image.setFont(parseFont(this.comment.font, fontSize, this.config));
-    image.setScale(drawScale);
-    let lineCount = 0;
-    if (!typeGuard.internal.HTML5Fonts(this.comment.font))
-      throw new TypeGuardError();
-    const offsetY =
-      (this.comment.charSize - this.comment.lineHeight) / 2 +
-      this.comment.lineHeight * -0.16 +
-      (this.config.fonts.html5[this.comment.font]?.offset || 0);
-    for (const item of this.comment.content) {
-      if (item?.type === "spacer") {
-        lineCount += item.count * item.charWidth * this.comment.fontSize;
-        continue;
+    try {
+      image.setSize(this.comment.width, this.getTextImageBounds().height);
+      image.setStrokeStyle(getStrokeColor(this.comment, this.config));
+      image.setFillStyle(this.comment.color);
+      image.setLineWidth(getConfig(this.config.contextLineWidth, false));
+      image.setFont(parseFont(this.comment.font, fontSize, this.config));
+      image.setScale(drawScale);
+      let lineCount = 0;
+      if (!typeGuard.internal.HTML5Fonts(this.comment.font))
+        throw new TypeGuardError();
+      const offsetY =
+        (this.comment.charSize - this.comment.lineHeight) / 2 +
+        this.comment.lineHeight * -0.16 +
+        (this.config.fonts.html5[this.comment.font]?.offset || 0);
+      for (const item of this.comment.content) {
+        if (item?.type === "spacer") {
+          lineCount += item.count * item.charWidth * this.comment.fontSize;
+          continue;
+        }
+        const lines = item.slicedContent;
+        for (let j = 0, n = lines.length; j < n; j++) {
+          const line = lines[j];
+          if (line === undefined) continue;
+          const posY =
+            (this.comment.lineHeight * (lineCount + 1 + paddingTop) + offsetY) /
+            scale;
+          image.strokeText(line, 0, posY);
+          image.fillText(line, 0, posY);
+          lineCount += 1;
+        }
       }
-      const lines = item.slicedContent;
-      for (let j = 0, n = lines.length; j < n; j++) {
-        const line = lines[j];
-        if (line === undefined) continue;
-        const posY =
-          (this.comment.lineHeight * (lineCount + 1 + paddingTop) + offsetY) /
-          scale;
-        image.strokeText(line, 0, posY);
-        image.fillText(line, 0, posY);
-        lineCount += 1;
+    } catch (e) {
+      if (typeof image.destroy === "function") {
+        image.destroy();
       }
+      throw e;
     }
     return image;
   }

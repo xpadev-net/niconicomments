@@ -123,6 +123,52 @@ test("HTML5CSSRenderer commits direct canvas drawing into its DOM layer", async 
   expect(renderedChildren).toBeGreaterThan(0);
 });
 
+test("HTML5CSSRenderer destroy is idempotent and releases helper surfaces", async ({
+  page,
+}) => {
+  await loadBundle(page);
+
+  const result = await page.evaluate(() => {
+    const root = document.createElement("div");
+    root.dataset.width = "100";
+    root.dataset.height = "100";
+    document.body.appendChild(root);
+    const global = window as typeof window & {
+      NiconiComments: typeof import("@/main").default;
+    };
+    const renderer =
+      new global.NiconiComments.internal.renderer.HTML5CSSRenderer(root);
+    renderer.fillText("text", 0, 10);
+    renderer.flush();
+    renderer.destroy();
+    renderer.destroy();
+    const state = renderer as unknown as {
+      helper?: unknown;
+      helperSurfaces: unknown[];
+      videoSurface?: unknown;
+    };
+    const output = {
+      hasRendererClass: root.classList.contains(
+        "niconicomments-html5css-renderer",
+      ),
+      helperCleared: state.helper === undefined,
+      helperSurfaceCount: state.helperSurfaces.length,
+      rootChildCount: root.childElementCount,
+      videoSurfaceCleared: state.videoSurface === undefined,
+    };
+    root.remove();
+    return output;
+  });
+
+  expect(result).toEqual({
+    hasRendererClass: false,
+    helperCleared: true,
+    helperSurfaceCount: 0,
+    rootChildCount: 0,
+    videoSurfaceCleared: true,
+  });
+});
+
 test("HTML5CSSRenderer preserves display scale across clearRect", async ({
   page,
 }) => {

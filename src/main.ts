@@ -167,6 +167,7 @@ class NiconiComments {
   private commentArrayIndexMap: WeakMap<IComment, number>;
   private processedCommentIndex: number;
   private comments: IComment[];
+  private destroyed = false;
   private readonly renderer: IRenderer;
   private readonly collision: Collision;
   private readonly timeline: Timeline;
@@ -286,8 +287,54 @@ class NiconiComments {
   }
 
   public destroy() {
+    if (this.destroyed) return;
+    this.destroyed = true;
+    for (const comment of this.comments) {
+      try {
+        comment.destroy?.();
+      } catch (e) {
+        console.error("Failed to destroy comment", e);
+      }
+    }
+    this.comments = [];
+    this.commentArrayIndexMap = new WeakMap();
+    this._clearTimeline();
+    this._clearCollision();
+    this.ctx.rangeCache.reset();
+    for (const plugin of this.plugins) {
+      try {
+        plugin.instance.destroy?.();
+      } catch (e) {
+        console.error("Failed to destroy plugin", e);
+      }
+      try {
+        plugin.canvas.destroy?.();
+      } catch (e) {
+        console.error("Failed to destroy plugin canvas", e);
+      }
+    }
+    this.plugins = [];
     this.ctx.imageCache.reset();
-    this.renderer.destroy();
+    this.renderer.destroy?.();
+  }
+
+  private _clearTimeline() {
+    for (const key of Object.keys(this.timeline)) {
+      delete this.timeline[Number(key)];
+    }
+  }
+
+  private _clearCollision() {
+    for (const collision of [
+      this.collision.ue,
+      this.collision.shita,
+      this.collision.left,
+      this.collision.right,
+    ]) {
+      for (const key of Object.keys(collision)) {
+        delete collision[Number(key)];
+      }
+    }
   }
 
   private _rebuildCommentArrayIndex(comments: IComment[]) {

@@ -33,5 +33,12 @@ export interface IComment {
     cursor?: Position,
     frameActiveState?: FrameActiveState,
   ) => void;
+  /**
+   * Release comment-owned renderer surfaces and pending timeout handles.
+   *
+   * Implementations must be idempotent. NiconiComments calls this during
+   * instance teardown before clearing shared image caches.
+   */
+  destroy?: () => void;
   isHovered: (cursor?: Position, posX?: number, posY?: number) => boolean;
 }

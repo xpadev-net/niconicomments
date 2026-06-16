@@ -31,6 +31,7 @@ const destroyTextImage = (image: IRenderer) => {
   // Legacy runtime renderers without destroy() are covered by
   // html5-resource-bounds tests; only destroyed modern images need tracking.
   if (typeof image.destroy !== "function") return false;
+  if (destroyedTextImages.has(image)) return false;
   destroyedTextImages.add(image);
   image.destroy();
   return true;
@@ -86,6 +87,8 @@ class BaseComment implements IComment {
   public image?: IRenderer | null;
   public buttonImage?: IRenderer | null;
   public index: number;
+  private readonly _timeoutIds = new Set<number>();
+  private _destroyed = false;
 
   /**
    * コンストラクタ
@@ -377,6 +380,7 @@ class BaseComment implements IComment {
    * @returns 生成した画像
    */
   protected getTextImage(): IRenderer | null {
+    if (this._destroyed) return null;
     if (
       this.comment.invisible ||
       (this.comment.lineCount === 1 && this.comment.width === 0) ||
@@ -395,22 +399,14 @@ class BaseComment implements IComment {
         entries.add(key);
       }
       this.image = cache.image;
-      window.setTimeout(
-        () => {
-          this.image = undefined;
-        },
+      this._setCommentImageClearTimeout(
         this.comment.long * 10 + config.cacheAge,
       );
       clearTimeout(cache.timeout);
       const cachedImage = cache.image;
-      cache.timeout = window.setTimeout(
-        () => {
-          if (imageCache.get(key)?.image === cachedImage) {
-            destroyTextImage(cachedImage);
-            imageCache.delete(key);
-            imageCacheEntries.get(imageCache)?.delete(key);
-          }
-        },
+      cache.timeout = this._setCacheImageExpiryTimeout(
+        key,
+        cachedImage,
         this.comment.long * 10 + config.cacheAge,
       );
       return cache.image;
@@ -460,17 +456,10 @@ class BaseComment implements IComment {
         entries.delete(oldestKey);
       }
     }
-    window.setTimeout(() => {
-      this.image = undefined;
-    }, lifetime);
+    this._setCommentImageClearTimeout(lifetime);
+    const timeout = this._setCacheImageExpiryTimeout(key, image, lifetime);
     imageCache.set(key, {
-      timeout: window.setTimeout(() => {
-        if (imageCache.get(key)?.image === image) {
-          destroyTextImage(image);
-          imageCache.delete(key);
-          imageCacheEntries.get(imageCache)?.delete(key);
-        }
-      }, lifetime),
+      timeout,
       image,
     });
     entries.delete(key);
@@ -500,6 +489,52 @@ class BaseComment implements IComment {
   protected getCacheKey() {
     const mail = boundedCachePart(JSON.stringify(this.comment.mail ?? []));
     return `${this.pluginName}\0${mail}\0${boundedCachePart(this.comment.rawContent)}`;
+  }
+
+  private _setCommentImageClearTimeout(lifetime: number): void {
+    const timeout = window.setTimeout(() => {
+      this._timeoutIds.delete(timeout);
+      this.image = undefined;
+    }, lifetime);
+    this._timeoutIds.add(timeout);
+  }
+
+  private _setCacheImageExpiryTimeout(
+    key: string,
+    image: IRenderer,
+    lifetime: number,
+  ): number {
+    const timeout = window.setTimeout(() => {
+      this._timeoutIds.delete(timeout);
+      if (this.ctx.imageCache.get(key)?.image === image) {
+        destroyTextImage(image);
+        this.ctx.imageCache.delete(key);
+        imageCacheEntries.get(this.ctx.imageCache)?.delete(key);
+      }
+    }, lifetime);
+    this._timeoutIds.add(timeout);
+    return timeout;
+  }
+
+  public destroy(): void {
+    if (this._destroyed) return;
+    this._destroyed = true;
+    for (const timeout of this._timeoutIds) {
+      clearTimeout(timeout);
+    }
+    this._timeoutIds.clear();
+    const textImage = this.image;
+    if (textImage) {
+      const cachedImage = this.ctx.imageCache.get(this.cacheKey)?.image;
+      if (cachedImage !== textImage) {
+        destroyTextImage(textImage);
+      }
+    }
+    this.image = null;
+    if (this.buttonImage && this.buttonImage !== textImage) {
+      destroyTextImage(this.buttonImage);
+    }
+    this.buttonImage = null;
   }
 }
 

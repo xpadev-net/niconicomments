@@ -308,14 +308,14 @@ class NiconiComments {
         console.error("Failed to destroy plugin", e);
       }
       try {
-        plugin.canvas.destroy();
+        plugin.canvas.destroy?.();
       } catch (e) {
         console.error("Failed to destroy plugin canvas", e);
       }
     }
     this.plugins = [];
     this.ctx.imageCache.reset();
-    this.renderer.destroy();
+    this.renderer.destroy?.();
   }
 
   private _clearTimeline() {

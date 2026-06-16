@@ -529,8 +529,6 @@ class BaseComment implements IComment {
       if (cachedImage !== textImage) {
         destroyTextImage(textImage);
       }
-    } else {
-      this.image = null;
     }
     this.image = null;
     if (this.buttonImage && this.buttonImage !== textImage) {

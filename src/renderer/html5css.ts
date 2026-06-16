@@ -198,7 +198,7 @@ class HTML5CSSRenderer implements IRenderer {
       helper.destroy();
     }
     this.helperSurfaces.length = 0;
-    this.helper = undefined as unknown as CanvasRenderer;
+    (this.helper as CanvasRenderer | undefined) = undefined;
     if (this.videoSurface) {
       this.teardownSurfaceCanvas(this.videoSurface);
       this.videoSurface.destroy();

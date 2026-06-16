@@ -11,10 +11,11 @@
     "build:dts": "rolldown -c rolldown.config.dts.mjs",
     "watch": "rolldown -c rolldown.config.mjs -w",
     "typedoc": "typedoc --entryPointStrategy Expand --out ./docs/type/ ./src/",
-    "prepublishOnly": "\"$npm_execpath\" run check-docs-version && \"$npm_execpath\" run check-types && \"$npm_execpath\" run build",
+    "prepublishOnly": "\"$npm_execpath\" run check-docs-version && \"$npm_execpath\" run check-package-artifacts -- --allow-missing-dist && \"$npm_execpath\" run check-types && \"$npm_execpath\" run build && \"$npm_execpath\" run check-package-artifacts",
     "check-types": "tsc --noEmit --jsx react --types node --project tsconfig.json",
     "sync-docs-version": "node scripts/sync-docs-version.mjs",
     "check-docs-version": "node scripts/sync-docs-version.mjs --check",
+    "check-package-artifacts": "node scripts/check-package-artifacts.mjs",
     "version": "\"$npm_execpath\" run sync-docs-version",
     "eslint": "biome lint src",
     "eslint:fix": "biome lint --write src",
@@ -47,7 +48,8 @@
   },
   "files": [
     "dist/bundle.js",
-    "dist/bundle.d.ts"
+    "dist/bundle.d.ts",
+    "dist/bundle.d.ts.map"
   ],
   "homepage": "https://xpadev-net.github.io/niconicomments/",
   "license": "MIT",

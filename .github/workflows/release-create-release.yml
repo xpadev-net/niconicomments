@@ -69,7 +69,7 @@ jobs:
       - name: Update package.json version
         run: |
           pnpm version ${{ steps.version.outputs.new_version }} --no-git-tag-version
-          git add package.json pnpm-lock.yaml README.md docs/index.html docs/sample/sample.js docs/sample/index.html
+          git add package.json pnpm-lock.yaml README.md README.en.md docs/index.html docs/sample/sample.js docs/sample/index.html
           git commit -m "chore: bump version to v${{ steps.version.outputs.new_version }}"
           git push origin develop
           

@@ -40,5 +40,11 @@ jobs:
       - name: Run unit tests
         run: pnpm test:unit
 
+      - name: Check package docs before build
+        run: pnpm check-package-artifacts --allow-missing-dist
+
       - name: Building niconicomments
         run: pnpm build
+
+      - name: Check package artifacts
+        run: pnpm check-package-artifacts

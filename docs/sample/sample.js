@@ -120,7 +120,7 @@ const encodeVersionForUrl = (value) => encodeURIComponent(value);
 const getNCUrl = (v) =>
   USE_LOCAL_NC_DEV_BUILD
     ? NC_DEV_URL
-    : `https://cdn.jsdelivr.net/npm/@xpadev-net/niconicomments@${encodeVersionForUrl(v)}/dist/bundle.min.js`;
+    : `https://cdn.jsdelivr.net/npm/@xpadev-net/niconicomments@${encodeVersionForUrl(v)}/dist/bundle.js`;
 const getPluginUrl = (v) =>
   `https://cdn.jsdelivr.net/npm/@xpadev-net/niconicomments-plugin-niwango@${encodeVersionForUrl(v)}/dist/bundle.min.js`;
 const getNiwangoUrl = (v) =>

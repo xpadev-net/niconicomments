@@ -23,10 +23,10 @@ const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 const packageCdnUrlPattern = new RegExp(
   `${escapeRegExp(
     "https://cdn.jsdelivr.net/npm/@xpadev-net/niconicomments@",
-  )}[^/"'<>]+${escapeRegExp("/dist/bundle.min.js")}`,
+  )}[^/"'<>]+${escapeRegExp("/dist/bundle.js")}`,
   "g",
 );
-const packageCdnUrl = `https://cdn.jsdelivr.net/npm/@xpadev-net/niconicomments@${version}/dist/bundle.min.js`;
+const packageCdnUrl = `https://cdn.jsdelivr.net/npm/@xpadev-net/niconicomments@${version}/dist/bundle.js`;
 
 const replaceExpected = (content, pattern, replacement, path) => {
   const matchPattern = pattern.global
@@ -50,6 +50,16 @@ const targets = [
         packageCdnUrlPattern,
         packageCdnUrl,
         "README.md",
+      ),
+  },
+  {
+    path: "README.en.md",
+    update: (content) =>
+      replaceExpected(
+        content,
+        packageCdnUrlPattern,
+        packageCdnUrl,
+        "README.en.md",
       ),
   },
   {

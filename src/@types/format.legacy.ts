@@ -34,7 +34,7 @@ export const ZApiChat = object({
 export type ApiChat = InferOutput<typeof ZApiChat>;
 
 export const ZRawApiResponse = union([
-  object({ chat: ZApiChat }),
+  object({ chat: unknown() }),
   record(pipe(string(), notValue("chat")), unknown()),
 ]);
 export type RawApiResponse = InferOutput<typeof ZRawApiResponse>;

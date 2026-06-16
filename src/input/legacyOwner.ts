@@ -21,10 +21,10 @@ export const LegacyOwnerParser: InputParser = {
  */
 const fromLegacyOwner = (data: string): FormattedComment[] => {
   const data_: FormattedComment[] = [];
-  const comments = data.split("\n");
+  const comments = data.split(/\r\n|\r|\n/);
   for (let i = 0, n = comments.length; i < n; i++) {
-    const value = comments[i];
-    if (!value) continue;
+    const value = comments[i] ?? "";
+    if (value.trim() === "") continue;
     const commentData = value.split(":");
     if (commentData.length < 3) {
       continue;

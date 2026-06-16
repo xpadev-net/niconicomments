@@ -271,6 +271,23 @@ describe("convert2formattedComment", () => {
     expect(output).toMatchObject([{ id: 1, vpos: 10, content: "ok" }]);
   });
 
+  it("skips deleted and partial legacy API chat items without rejecting the response", () => {
+    const output = convert2formattedComment(
+      [
+        {
+          chat: { no: 1, vpos: 10, date: 1, user_id: "alice", content: "ok" },
+        },
+        { chat: { deleted: 1 } },
+        { chat: { no: 2, vpos: 20, date: 2 } },
+        { ping: { content: "rs:0" } },
+        null,
+      ],
+      "legacy",
+    );
+
+    expect(output).toMatchObject([{ id: 1, vpos: 10, content: "ok" }]);
+  });
+
   it("rejects non-finite v1 numeric fields and drops invalid postedAt comments", () => {
     const validComment = {
       id: "1",
@@ -381,6 +398,26 @@ describe("convert2formattedComment", () => {
     ).toMatchObject([{ id: 1, vpos: 10, date: 0, content: "missing date" }]);
   });
 
+  it("defaults missing xml2js chat bodies to empty text like XMLDocument", () => {
+    expect(
+      convert2formattedComment(
+        {
+          packet: {
+            chat: [{ $: { no: "1", vpos: "10", date: "1" } }],
+          },
+        },
+        "xml2js",
+      ),
+    ).toMatchObject([{ id: 1, vpos: 10, content: "" }]);
+
+    expect(
+      convert2formattedComment(
+        createXmlDocument([createXmlElement({ no: "1", vpos: "10" }, "")]),
+        "XMLDocument",
+      ),
+    ).toMatchObject([{ id: 1, vpos: 10, content: "" }]);
+  });
+
   it("drops malformed xml2js chat items while keeping valid comments", () => {
     const output = convert2formattedComment(
       {
@@ -404,11 +441,38 @@ describe("convert2formattedComment", () => {
 
   it("drops legacy owner text lines with malformed time fields", () => {
     const output = convert2formattedComment(
-      "10:ue:ok\nNaN:ue:bad\nInfinity:ue:bad\nabc:ue:bad",
+      "10:ue:ok\nNaN:ue:bad\nInfinity:ue:bad\nabc:ue:bad\n-1:ue:bad",
       "legacyOwner",
     );
 
     expect(output).toMatchObject([{ id: 0, vpos: 1000, content: "ok" }]);
+  });
+
+  it("accepts trailing blank lines in legacy owner text", () => {
+    const output = convert2formattedComment(
+      "10:ue:ok\n20::no command\r\n\r\n  \n",
+      "legacyOwner",
+    );
+
+    expect(output).toMatchObject([
+      { id: 0, vpos: 1000, content: "ok", mail: ["ue"] },
+      { id: 1, vpos: 2000, content: "no command", mail: [] },
+    ]);
+  });
+
+  it("defaults missing owner commands to an empty mail list", () => {
+    const output = convert2formattedComment(
+      [
+        { time: "0", comment: "no command" },
+        { time: "1", command: "ue", comment: "has command" },
+      ],
+      "owner",
+    );
+
+    expect(output).toMatchObject([
+      { id: 0, vpos: 0, content: "no command", mail: [] },
+      { id: 1, vpos: 100, content: "has command", mail: ["ue"] },
+    ]);
   });
 
   it("drops owner comments with malformed time fields", () => {

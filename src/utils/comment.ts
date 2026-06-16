@@ -185,6 +185,11 @@ type TimedRange = {
   end: number;
 };
 
+type TimedDuration = {
+  start: number;
+  long: number | undefined;
+};
+
 type ActiveRangeScanState<T extends TimedRange> = {
   sourceLength: number;
   sortedByStart: T[];
@@ -261,6 +266,12 @@ const changeReverseTargetCount = (
   counts[range.target] += delta;
 };
 
+const durationEndsAfter = (range: TimedDuration, vpos: number) =>
+  range.long === undefined || vpos < range.start + range.long;
+
+const isDurationRangeActive = (range: TimedDuration, vpos: number) =>
+  range.start <= vpos && durationEndsAfter(range, vpos);
+
 const getActiveRangeState = <T extends TimedRange>(
   ranges: T[],
   vpos: number,
@@ -286,7 +297,7 @@ const getActiveRangeState = <T extends TimedRange>(
 
   while (state.startIndex < state.sortedByStart.length) {
     const range = state.sortedByStart[state.startIndex];
-    if (!range || vpos <= range.start) break;
+    if (!range || vpos < range.start) break;
     state.startIndex++;
     state.activeCount++;
     if (state.targetCounts) {
@@ -298,7 +309,7 @@ const getActiveRangeState = <T extends TimedRange>(
     const range = state.sortedByEnd[state.endIndex];
     if (!range || vpos < range.end) break;
     state.endIndex++;
-    if (range.start < vpos) {
+    if (range.start <= vpos) {
       state.activeCount--;
       if (state.targetCounts) {
         changeTargetCount?.(state.targetCounts, range, -1);
@@ -369,7 +380,7 @@ const getDefaultCommand = (
     for (let i = 0; i < nicoScripts.default.length; i++) {
       const item = nicoScripts.default[i];
       if (!item) continue;
-      if (item.long === undefined || item.start + item.long >= vpos) {
+      if (durationEndsAfter(item, vpos)) {
         nicoScripts.default[writeIdx++] = item;
       }
     }
@@ -380,6 +391,7 @@ const getDefaultCommand = (
   let font: CommentFont | undefined;
   let loc: CommentLoc | undefined;
   for (const item of nicoScripts.default) {
+    if (!isDurationRangeActive(item, vpos)) continue;
     if (item.loc) {
       loc = item.loc;
     }
@@ -406,13 +418,22 @@ const getDefaultCommand = (
 const nicoscriptReplaceIgnoreable = (
   comment: FormattedComment,
   item: NicoScriptReplace,
-) =>
-  ((item.target === "コメ" || item.target === "含まない") && comment.owner) ||
-  (item.target === "投コメ" && !comment.owner) ||
-  (item.target === "含まない" && comment.owner) ||
-  (item.condition === "完全一致" && comment.content !== item.keyword) ||
-  (item.condition === "部分一致" &&
-    comment.content.indexOf(item.keyword) === -1);
+) => {
+  const targetMatches =
+    (item.target === "コメ" && !comment.owner) ||
+    (item.target === "投コメ" && comment.owner) ||
+    item.target === "全" ||
+    item.target === "含む" ||
+    item.target === "含まない";
+  if (!targetMatches) return true;
+  const conditionMatches =
+    item.condition === "完全一致"
+      ? comment.content === item.keyword
+      : comment.content.includes(item.keyword);
+  const contentMatches =
+    item.target === "含まない" ? !conditionMatches : conditionMatches;
+  return !contentMatches;
+};
 
 /**
  * 置換コマンドを適用する
@@ -430,13 +451,14 @@ const applyNicoScriptReplace = (
     for (let i = 0; i < nicoScripts.replace.length; i++) {
       const item = nicoScripts.replace[i];
       if (!item) continue;
-      if (item.long === undefined || item.start + item.long >= comment.vpos) {
+      if (durationEndsAfter(item, comment.vpos)) {
         nicoScripts.replace[writeIdx++] = item;
       }
     }
     nicoScripts.replace.length = writeIdx;
   }
   for (const item of nicoScripts.replace) {
+    if (!isDurationRangeActive(item, comment.vpos)) continue;
     if (nicoscriptReplaceIgnoreable(comment, item)) continue;
     if (item.range === "単") {
       comment.content = comment.content.replaceAll(item.keyword, item.replace);

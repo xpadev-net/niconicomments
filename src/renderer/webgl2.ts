@@ -156,6 +156,7 @@ class WebGL2Renderer implements IRenderer {
   // Canvas 2D helper for text & path operations
   private helper: CanvasRenderer;
   private helperDirty = false;
+  private redrawNeeded = false;
 
   // Color parsing
   private readonly colorCtx: CanvasRenderingContext2D;
@@ -559,6 +560,7 @@ class WebGL2Renderer implements IRenderer {
     this.rectLocColor = res.rectLocColor;
     this.quadVAO = res.quadVAO;
     this.quadBuf = res.quadBuf;
+    this.redrawNeeded = true;
   }
 
   /* ═══ IRenderer: State ═══ */
@@ -919,6 +921,7 @@ class WebGL2Renderer implements IRenderer {
   flush(): void {
     const gl = this.gl;
     gl.bindVertexArray(this.quadVAO);
+    let flushSucceeded = false;
 
     try {
       let currentProg: WebGLProgram | null = null;
@@ -989,11 +992,13 @@ class WebGL2Renderer implements IRenderer {
           gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
         }
       }
+      flushSucceeded = true;
     } finally {
       gl.bindVertexArray(null);
       this.cmds.length = 0;
       this.helperDirty = false;
       this.frameCount++;
+      this.redrawNeeded = !flushSucceeded;
     }
 
     // Periodic texture GC
@@ -1011,6 +1016,10 @@ class WebGL2Renderer implements IRenderer {
       this._deleteTiles(entry);
       this.texMap.delete(image.canvas);
     }
+  }
+
+  needsRedraw(): boolean {
+    return this.redrawNeeded;
   }
 
   /* ═══ Lifecycle ═══ */

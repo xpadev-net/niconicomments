@@ -66,5 +66,13 @@ export interface IRenderer {
    * AFTER all drawImage calls within a single frame.
    */
   flush(): void;
+  /**
+   * Return true when the renderer's committed surface is no longer trustworthy
+   * and the owner should redraw even if its frame inputs are unchanged.
+   *
+   * Implementations that report true should keep doing so until a subsequent
+   * successful `flush()` commits a fresh frame.
+   */
+  needsRedraw?(): boolean;
   invalidateImage(image: IRenderer): void;
 }

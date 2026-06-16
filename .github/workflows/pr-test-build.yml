@@ -32,7 +32,13 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          pnpm install
+          pnpm install --frozen-lockfile
+
+      - name: Check types
+        run: pnpm check-types
+
+      - name: Run unit tests
+        run: pnpm test:unit
 
       - name: Building niconicomments
         run: pnpm build

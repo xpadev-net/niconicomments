@@ -13,5 +13,6 @@ services:
       - 8.8.8.8
     volumes:
       - ./:/home/pwuser/app/
+      - /home/pwuser/app/node_modules
     working_dir: /home/pwuser/app
-    entrypoint: pnpm playwright test
+    entrypoint: pnpm run test:playwright

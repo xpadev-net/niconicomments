@@ -2,7 +2,7 @@ import type { InferOutput } from "valibot";
 import { array, object, optional, string } from "valibot";
 
 export const ZXml2jsChatItem = object({
-  _: string(),
+  _: optional(string(), ""),
   $: object({
     no: optional(string()),
     vpos: string(),

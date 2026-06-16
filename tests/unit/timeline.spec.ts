@@ -1,10 +1,16 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
-import type { FormattedComment, IComment, IRenderer, Timeline } from "@/@types";
+import type {
+  Collision,
+  FormattedComment,
+  IComment,
+  IRenderer,
+  Timeline,
+} from "@/@types";
 import { defaultConfig } from "@/definition/config";
 import { initConfig } from "@/definition/initConfig";
 import NiconiComments from "@/main";
-import { processFixedComment } from "@/utils/comment";
+import { processFixedComment, processMovableComment } from "@/utils/comment";
 
 const emptyTextMetrics = (width: number): TextMetrics =>
   ({
@@ -127,6 +133,13 @@ const createFixedComment = (index: number, vpos: number, long: number) =>
     isHovered: () => false,
   }) as IComment;
 
+const createMovableComment = (index: number, vpos: number, long: number) =>
+  ({
+    ...createFixedComment(index, vpos, long),
+    loc: "naka",
+    mail: [],
+  }) as IComment;
+
 describe("timeline construction", () => {
   beforeEach(() => {
     initConfig();
@@ -192,6 +205,58 @@ describe("timeline construction", () => {
     expect(includesCalls).toBe(0);
     expect(timeline[200]).toHaveLength(500);
   });
+
+  test.each([
+    ["fixed", createFixedComment(1, Infinity, 30)],
+    ["fixed", createFixedComment(1, Number.NaN, 30)],
+    ["fixed", createFixedComment(1, 100, Infinity)],
+  ])("does not populate buckets for malformed %s comments", (_, comment) => {
+    const timeline: Timeline = {};
+    const collision: Timeline = {};
+    const touchedTimeline = new Set<number>();
+
+    processFixedComment(
+      comment,
+      collision,
+      timeline,
+      false,
+      defaultConfig,
+      touchedTimeline,
+    );
+
+    expect(Object.keys(timeline)).toHaveLength(0);
+    expect(Object.keys(collision)).toHaveLength(0);
+    expect(touchedTimeline.size).toBe(0);
+    expect(comment.invisible).toBe(true);
+    expect(comment.posY).toBe(0);
+  });
+
+  test.each([
+    ["movable", createMovableComment(1, Infinity, 30)],
+    ["movable", createMovableComment(1, Number.NaN, 30)],
+    ["movable", createMovableComment(1, 100, Infinity)],
+    ["movable", { ...createMovableComment(1, 100, 30), width: Infinity }],
+  ])("does not populate buckets for malformed %s comments", (_, comment) => {
+    const timeline: Timeline = {};
+    const collision: Collision = { ue: {}, shita: {}, left: {}, right: {} };
+    const touchedTimeline = new Set<number>();
+
+    processMovableComment(
+      comment as IComment,
+      collision,
+      timeline,
+      false,
+      defaultConfig,
+      touchedTimeline,
+    );
+
+    expect(Object.keys(timeline)).toHaveLength(0);
+    expect(Object.keys(collision.left)).toHaveLength(0);
+    expect(Object.keys(collision.right)).toHaveLength(0);
+    expect(touchedTimeline.size).toBe(0);
+    expect((comment as IComment).invisible).toBe(true);
+    expect((comment as IComment).posY).toBe(0);
+  });
 });
 
 describe("destroy", () => {
@@ -209,6 +274,46 @@ describe("destroy", () => {
 });
 
 describe("addComments", () => {
+  test("ignores malformed runtime input before creating comment instances", () => {
+    ensureCanvasElement();
+    const niconiComments = new NiconiComments(new FakeRenderer(), [], {
+      format: "formatted",
+    });
+    const state = niconiComments as unknown as {
+      comments: IComment[];
+      timeline: Timeline;
+    };
+
+    niconiComments.addComments(
+      formattedComment(1, Infinity) as unknown as FormattedComment,
+    );
+
+    expect(state.comments).toHaveLength(0);
+    expect(Object.keys(state.timeline)).toHaveLength(0);
+  });
+
+  test("adds valid runtime comments from a batch that also contains malformed input", () => {
+    ensureCanvasElement();
+    const niconiComments = new NiconiComments(new FakeRenderer(), [], {
+      format: "formatted",
+    });
+    const state = niconiComments as unknown as {
+      comments: IComment[];
+      timeline: Timeline;
+    };
+
+    niconiComments.addComments(
+      formattedComment(1, 100),
+      formattedComment(2, Infinity) as unknown as FormattedComment,
+    );
+
+    expect(state.comments).toHaveLength(1);
+    expect(state.timeline[100]?.map((comment) => comment.comment.id)).toEqual([
+      1,
+    ]);
+    expect(Object.hasOwn(state.timeline, "Infinity")).toBe(false);
+  });
+
   test("sorts overlapping touched buckets without resorting unrelated timeline buckets", () => {
     ensureCanvasElement();
     const renderer = new FakeRenderer();

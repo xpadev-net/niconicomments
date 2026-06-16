@@ -3,6 +3,7 @@ import { beforeAll, beforeEach, describe, expect, test, vi } from "vitest";
 import type {
   FormattedComment,
   FormattedCommentWithSize,
+  IComment,
   IRenderer,
 } from "@/@types";
 import { BaseComment } from "@/comments";
@@ -193,6 +194,26 @@ class BaseStyleCommentWithoutButtons extends BaseComment {
   protected override _drawCollision() {}
 }
 
+class NaNVposFirstCommentPlugin {
+  static readonly id = "nan-vpos-first-comment-plugin";
+
+  constructor(canvas: IRenderer, comments: IComment[]) {
+    void canvas;
+    void comments;
+  }
+
+  draw() {
+    return false;
+  }
+
+  transformComments(comments: IComment[]) {
+    if (comments[0]) {
+      comments[0].comment.vpos = Number.NaN;
+    }
+    return comments;
+  }
+}
+
 const createComment = (
   overrides: Partial<FormattedComment> = {},
 ): FormattedComment => ({
@@ -240,6 +261,59 @@ describe("renderer draw robustness", () => {
 
     expect(renderer.children).toHaveLength(0);
     expect(renderer.drawImageCalls).toBe(0);
+  });
+
+  test.each([
+    Number.NaN,
+    Infinity,
+    -Infinity,
+  ])("ignores non-finite drawCanvas vpos %s before lazy work", (vpos) => {
+    const renderer = new RecordingRenderer();
+    const instance = new NiconiComments(
+      renderer,
+      [createComment({ vpos: 1000, content: "lazy" })],
+      { format: "formatted", mode: "html5", lazy: true },
+    );
+    const state = instance as unknown as {
+      processedCommentIndex: number;
+      nextUnprocessedCommentIndex: number;
+    };
+
+    expect(instance.drawCanvas(vpos)).toBe(false);
+
+    expect(renderer.clearRectCalls).toBe(0);
+    expect(state.processedCommentIndex).toBe(-1);
+    expect(state.nextUnprocessedCommentIndex).toBe(0);
+  });
+
+  test("skips malformed plugin comment vpos without starving later lazy comments", () => {
+    const renderer = new RecordingRenderer();
+    const instance = new NiconiComments(
+      renderer,
+      [
+        createComment({ id: 1, vpos: 1000, content: "plugin-malformed" }),
+        createComment({ id: 2, vpos: 1000, content: "valid", mail: ["ue"] }),
+      ],
+      {
+        format: "formatted",
+        mode: "html5",
+        lazy: true,
+        config: { plugins: [NaNVposFirstCommentPlugin] },
+      },
+    );
+    const state = instance as unknown as {
+      comments: IComment[];
+      timeline: Record<number, IComment[]>;
+    };
+
+    expect(instance.drawCanvas(1000, true)).toBe(true);
+
+    expect(state.comments[0]?.invisible).toBe(true);
+    expect(state.comments[0]?.posY).toBe(0);
+    expect(state.timeline[1000]?.map((comment) => comment.comment.id)).toEqual([
+      2,
+    ]);
+    expect(Object.hasOwn(state.timeline, "NaN")).toBe(false);
   });
 
   test.each([
@@ -415,6 +489,48 @@ describe("renderer draw robustness", () => {
     expect(() => instance.click(0, { x: 50, y: 10 })).not.toThrow();
     expect(state.comments).toHaveLength(1);
     expect(state.comments[0]?.comment.button?.limit).toBe(1);
+  });
+
+  test("ignores non-finite click vpos before reading timeline buckets", () => {
+    const instance = new NiconiComments(new RecordingRenderer(), [], {
+      format: "formatted",
+      mode: "html5",
+    });
+    const state = instance as unknown as {
+      timeline: Record<string, IComment[]>;
+    };
+    state.timeline.NaN = [
+      {
+        isHovered: () => {
+          throw new Error("NaN bucket should not be read");
+        },
+      } as IComment,
+    ];
+
+    expect(() => instance.click(Number.NaN, { x: 0, y: 0 })).not.toThrow();
+  });
+
+  test.each([
+    { x: Number.NaN, y: 0 },
+    { x: 0, y: Infinity },
+    { x: -Infinity, y: 0 },
+  ])("ignores non-finite click position %# before reading timeline", (pos) => {
+    const instance = new NiconiComments(new RecordingRenderer(), [], {
+      format: "formatted",
+      mode: "html5",
+    });
+    const state = instance as unknown as {
+      timeline: Record<string, IComment[]>;
+    };
+    state.timeline[0] = [
+      {
+        isHovered: () => {
+          throw new Error("invalid cursor should not read timeline");
+        },
+      } as IComment,
+    ];
+
+    expect(() => instance.click(0, pos)).not.toThrow();
   });
 
   test("deletes and unbinds a new WebGL texture when upload fails", () => {

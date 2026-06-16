@@ -19,7 +19,12 @@ import type {
   ParsedCommand,
   Timeline,
 } from "@/@types/";
-import { ZCommentFont, ZCommentLoc, ZCommentSize } from "@/@types/";
+import {
+  isFiniteNumberInRange,
+  ZCommentFont,
+  ZCommentLoc,
+  ZCommentSize,
+} from "@/@types/";
 import type { CommentInstanceContext } from "@/contexts/";
 import { colors } from "@/definition/colors";
 import typeGuard from "@/typeGuard";
@@ -314,6 +319,25 @@ const markTimelineProcessed = (timeline: Timeline, comment: IComment) => {
     return;
   }
   processedTimelineComments.set(comment, new WeakSet([timeline]));
+};
+
+const isValidTimelineCommentRange = (comment: IComment) =>
+  isFiniteNumberInRange(comment.vpos, { min: Number.MIN_SAFE_INTEGER }) &&
+  isFiniteNumberInRange(comment.long, { min: 1, max: MAX_COMMENT_LONG }) &&
+  isFiniteNumberInRange(comment.height, { integer: false });
+
+const isValidMovableCommentRange = (comment: IComment) =>
+  isValidTimelineCommentRange(comment) &&
+  isFiniteNumberInRange(comment.width, { integer: false });
+
+const rejectInvalidTimelineComment = (comment: IComment) => {
+  comment.comment.invisible = true;
+  try {
+    comment.invisible = true;
+  } catch (_e) {
+    // Built-in comments expose invisible as a getter over comment.invisible.
+  }
+  comment.posY = 0;
 };
 
 /**
@@ -1008,6 +1032,10 @@ const processFixedComment = (
   config: BaseConfig,
   touchedTimeline?: Set<number>,
 ) => {
+  if (!isValidTimelineCommentRange(comment)) {
+    rejectInvalidTimelineComment(comment);
+    return;
+  }
   const commentVpos = comment.vpos;
   const commentLong = comment.long;
   const collisionEnd = Math.max(commentLong - 20, 0);
@@ -1042,6 +1070,10 @@ const processMovableComment = (
   config: BaseConfig,
   touchedTimeline?: Set<number>,
 ) => {
+  if (!isValidMovableCommentRange(comment)) {
+    rejectInvalidTimelineComment(comment);
+    return;
+  }
   const commentWidth = comment.width;
   const commentLong = comment.long;
   const commentVpos = comment.vpos;

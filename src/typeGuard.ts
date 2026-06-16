@@ -399,7 +399,7 @@ const typeGuard = {
     if (!document.documentElement.children) return false;
     for (const element of Array.from(document.documentElement.children)) {
       if (element?.nodeName !== "chat") continue;
-      if (!typeAttributeVerify(element, ["vpos", "date"])) return false;
+      if (!typeAttributeVerify(element, ["vpos"])) return false;
     }
     return true;
   },

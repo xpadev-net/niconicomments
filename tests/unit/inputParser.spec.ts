@@ -182,6 +182,249 @@ describe("convert2formattedComment", () => {
     ).toMatchObject([{ id: 1, content: "array", user_id: 99 }]);
   });
 
+  it.each([
+    Number.NaN,
+    Infinity,
+    -Infinity,
+  ])("rejects non-finite formatted vpos %s", (vpos) => {
+    expect(() =>
+      convert2formattedComment(
+        [
+          {
+            id: 1,
+            vpos,
+            content: "bad",
+            date: 1,
+            date_usec: 0,
+            owner: false,
+            premium: false,
+            mail: [],
+            user_id: 1,
+            layer: -1,
+            is_my_post: false,
+          },
+        ],
+        "formatted",
+      ),
+    ).toThrow();
+  });
+
+  it("accepts negative finite formatted vpos values", () => {
+    const output = convert2formattedComment(
+      [
+        {
+          id: 1,
+          vpos: -9200,
+          content: "early",
+          date: 1,
+          date_usec: 0,
+          owner: false,
+          premium: false,
+          mail: [],
+          user_id: 1,
+          layer: -1,
+          is_my_post: false,
+        },
+      ],
+      "formatted",
+    );
+
+    expect(output).toMatchObject([{ id: 1, vpos: -9200, content: "early" }]);
+  });
+
+  it("drops malformed legacy API chat items while keeping valid comments", () => {
+    const output = convert2formattedComment(
+      [
+        { chat: { no: 1, vpos: 10, date: 1, user_id: "alice", content: "ok" } },
+        {
+          chat: {
+            no: 2,
+            vpos: Infinity,
+            date: 1,
+            user_id: "bob",
+            content: "bad vpos",
+          },
+        },
+        {
+          chat: {
+            no: Number.NaN,
+            vpos: 20,
+            date: 1,
+            user_id: "carol",
+            content: "bad id",
+          },
+        },
+        {
+          chat: {
+            no: 3,
+            vpos: 30,
+            date_usec: Infinity,
+            date: 1,
+            user_id: "dave",
+            content: "bad date_usec",
+          },
+        },
+      ],
+      "legacy",
+    );
+
+    expect(output).toMatchObject([{ id: 1, vpos: 10, content: "ok" }]);
+  });
+
+  it("rejects non-finite v1 numeric fields and drops invalid postedAt comments", () => {
+    const validComment = {
+      id: "1",
+      no: 1,
+      vposMs: 100,
+      body: "ok",
+      commands: [],
+      userId: "alice",
+      isPremium: false,
+      score: 0,
+      postedAt: "2024-01-01T00:00:01.000Z",
+      nicoruCount: 0,
+      nicoruId: null,
+      source: "nicovideo",
+      isMyPost: false,
+    };
+
+    expect(() =>
+      convert2formattedComment(
+        [
+          {
+            id: "thread",
+            fork: "main",
+            comments: [{ ...validComment, vposMs: Infinity }],
+          },
+        ],
+        "v1",
+      ),
+    ).toThrow();
+
+    expect(
+      convert2formattedComment(
+        [
+          {
+            id: "thread",
+            fork: "main",
+            comments: [
+              validComment,
+              { ...validComment, id: "2", no: 2, postedAt: "not-a-date" },
+            ],
+          },
+        ],
+        "v1",
+      ),
+    ).toMatchObject([{ id: 1, vpos: 10, content: "ok" }]);
+
+    expect(
+      convert2formattedComment(
+        [
+          {
+            id: "thread",
+            fork: "main",
+            comments: [{ ...validComment, score: -100 }],
+          },
+        ],
+        "v1",
+      ),
+    ).toMatchObject([{ id: 1, vpos: 10, content: "ok" }]);
+  });
+
+  it("drops malformed XMLDocument chat items while keeping valid comments", () => {
+    const output = convert2formattedComment(
+      createXmlDocument([
+        createXmlElement({ no: "1", vpos: "10", date: "1" }, "ok"),
+        createXmlElement({ no: "2", vpos: "Infinity", date: "1" }, "bad"),
+        createXmlElement({ no: "3", vpos: "20", date: "NaN" }, "bad"),
+        createXmlElement(
+          { no: "4", vpos: "30", date: "1", date_usec: "1000000" },
+          "bad",
+        ),
+      ]),
+      "XMLDocument",
+    );
+
+    expect(output).toMatchObject([{ id: 1, vpos: 10, content: "ok" }]);
+  });
+
+  it("keeps negative finite XML vpos values", () => {
+    expect(
+      convert2formattedComment(
+        createXmlDocument([
+          createXmlElement({ no: "1", vpos: "-9200", date: "1" }, "early"),
+        ]),
+        "XMLDocument",
+      ),
+    ).toMatchObject([{ id: 1, vpos: -9200, content: "early" }]);
+
+    expect(
+      convert2formattedComment(
+        {
+          packet: {
+            chat: [{ _: "early", $: { no: "1", vpos: "-9200", date: "1" } }],
+          },
+        },
+        "xml2js",
+      ),
+    ).toMatchObject([{ id: 1, vpos: -9200, content: "early" }]);
+  });
+
+  it("defaults missing XMLDocument date to zero", () => {
+    expect(
+      convert2formattedComment(
+        createXmlDocument([
+          createXmlElement({ no: "1", vpos: "10" }, "missing date"),
+        ]),
+        "XMLDocument",
+      ),
+    ).toMatchObject([{ id: 1, vpos: 10, date: 0, content: "missing date" }]);
+  });
+
+  it("drops malformed xml2js chat items while keeping valid comments", () => {
+    const output = convert2formattedComment(
+      {
+        packet: {
+          chat: [
+            { _: "ok", $: { no: "1", vpos: "10", date: "1" } },
+            { _: "bad", $: { no: "2", vpos: "NaN", date: "1" } },
+            { _: "bad", $: { no: "3", vpos: "20", date: "Infinity" } },
+            {
+              _: "bad",
+              $: { no: "4", vpos: "30", date: "1", date_usec: "nonsense" },
+            },
+          ],
+        },
+      },
+      "xml2js",
+    );
+
+    expect(output).toMatchObject([{ id: 1, vpos: 10, content: "ok" }]);
+  });
+
+  it("drops legacy owner text lines with malformed time fields", () => {
+    const output = convert2formattedComment(
+      "10:ue:ok\nNaN:ue:bad\nInfinity:ue:bad\nabc:ue:bad",
+      "legacyOwner",
+    );
+
+    expect(output).toMatchObject([{ id: 0, vpos: 1000, content: "ok" }]);
+  });
+
+  it("drops owner comments with malformed time fields", () => {
+    const output = convert2formattedComment(
+      [
+        { time: "1:23.45", command: "ue", comment: "ok" },
+        { time: "abc", command: "ue", comment: "bad" },
+        { time: "Infinity", command: "ue", comment: "bad" },
+        { time: "9".repeat(400), command: "ue", comment: "bad" },
+      ],
+      "owner",
+    );
+
+    expect(output).toMatchObject([{ id: 0, vpos: 8345, content: "ok" }]);
+  });
+
   it("keeps first-seen user_id assignment stable after the final sort", () => {
     const output = convert2formattedComment(
       [

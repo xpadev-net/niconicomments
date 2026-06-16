@@ -3,24 +3,25 @@ import {
   array,
   boolean,
   nullable,
-  number,
   object,
   optional,
   string,
   unknown,
 } from "valibot";
 
+import { ZCommentId, ZCommentScore, ZCommentVpos } from "./format.numeric";
+
 export const ZV1Comment = object({
   id: string(),
-  no: number(),
-  vposMs: number(),
+  no: ZCommentId,
+  vposMs: ZCommentVpos,
   body: string(),
   commands: array(string()),
   userId: string(),
   isPremium: boolean(),
-  score: number(),
+  score: ZCommentScore,
   postedAt: string(),
-  nicoruCount: number(),
+  nicoruCount: ZCommentId,
   nicoruId: nullable(string()),
   source: string(),
   isMyPost: boolean(),
@@ -30,7 +31,7 @@ export type V1Comment = InferOutput<typeof ZV1Comment>;
 export const ZV1Thread = object({
   id: unknown(),
   fork: string(),
-  commentCount: optional(number(), 0),
+  commentCount: optional(ZCommentId, 0),
   comments: array(ZV1Comment),
 });
 export type V1Thread = InferOutput<typeof ZV1Thread>;

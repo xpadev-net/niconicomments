@@ -1,19 +1,13 @@
-import { array, parse, safeParse } from "valibot";
+import { array, parse, safeParse, unknown as unknownSchema } from "valibot";
 
-import type { InputParser } from "@/@types";
-import {
-  type FormattedComment,
-  type RawApiResponse,
-  ZApiChat,
-  ZRawApiResponse,
-} from "@/@types";
+import { type FormattedComment, type InputParser, ZApiChat } from "@/@types";
 
 import { assignUserId } from "./xmlDocument";
 
 export const LegacyParser: InputParser = {
   key: ["legacy"],
   parse: (input) => {
-    return fromLegacy(parse(array(ZRawApiResponse), input));
+    return fromLegacy(parse(array(unknownSchema()), input));
   },
 };
 
@@ -22,11 +16,15 @@ export const LegacyParser: InputParser = {
  * @param data legacy apiから帰ってきたデータ
  * @returns 変換後のデータ
  */
-const fromLegacy = (data: RawApiResponse[]): FormattedComment[] => {
+const fromLegacy = (data: unknown[]): FormattedComment[] => {
   const data_: FormattedComment[] = [];
   const userIdMap = new Map<string, number>();
   for (const _val of data) {
-    const val = safeParse(ZApiChat, _val.chat);
+    const chat =
+      typeof _val === "object" && _val !== null && "chat" in _val
+        ? _val.chat
+        : undefined;
+    const val = safeParse(ZApiChat, chat);
     if (!val.success) continue;
     const value = val.output;
     if (value.deleted !== 1) {

@@ -37,6 +37,9 @@ class RecordingRenderer implements IRenderer {
   public drawImageCalls = 0;
   public drawImageFailuresRemaining = 0;
   public drawVideoCalls = 0;
+  public flushCalls = 0;
+  public flushFailuresRemaining = 0;
+  public rendererNeedsRedraw = false;
   public saveDepth = 0;
   private font = "10px sans-serif";
   private size = { width: 1920, height: 1080 };
@@ -100,7 +103,17 @@ class RecordingRenderer implements IRenderer {
       throw new Error("invalid draw source");
     }
   }
-  flush() {}
+  flush() {
+    this.flushCalls++;
+    if (this.flushFailuresRemaining > 0) {
+      this.flushFailuresRemaining--;
+      throw new Error("flush failed");
+    }
+    this.rendererNeedsRedraw = false;
+  }
+  needsRedraw() {
+    return this.rendererNeedsRedraw;
+  }
   invalidateImage() {}
 }
 
@@ -132,6 +145,43 @@ type WebGLTextureSetupMock = {
 type WebGL2RendererTexturePrivate = {
   gl: WebGLTextureSetupMock;
   _createTexture(uploadSource: HTMLCanvasElement): WebGLTexture;
+};
+
+type WebGLRestoreSetupMock = {
+  readonly BLEND: number;
+  readonly ONE: number;
+  readonly ONE_MINUS_SRC_ALPHA: number;
+  readonly UNPACK_PREMULTIPLY_ALPHA_WEBGL: number;
+  enable: ReturnType<typeof vi.fn>;
+  blendFunc: ReturnType<typeof vi.fn>;
+  pixelStorei: ReturnType<typeof vi.fn>;
+  viewport: ReturnType<typeof vi.fn>;
+  bindVertexArray: ReturnType<typeof vi.fn>;
+};
+
+type WebGL2RendererRestorePrivate = {
+  gl: WebGLRestoreSetupMock;
+  canvas: { width: number; height: number };
+  texMap: Map<unknown, unknown>;
+  cmds: unknown[];
+  helperDirty: boolean;
+  frameCount: number;
+  quadVAO: WebGLVertexArrayObject;
+  _initGLResources(): {
+    spriteProg: WebGLProgram;
+    spriteLocRect: WebGLUniformLocation;
+    spriteLocProj: WebGLUniformLocation;
+    spriteLocAlpha: WebGLUniformLocation;
+    rectProg: WebGLProgram;
+    rectLocRect: WebGLUniformLocation;
+    rectLocProj: WebGLUniformLocation;
+    rectLocColor: WebGLUniformLocation;
+    quadVAO: WebGLVertexArrayObject;
+    quadBuf: WebGLBuffer;
+  };
+  _rebuildGLResources(): void;
+  flush(): void;
+  needsRedraw(): boolean;
 };
 
 class BaseStyleCommentWithoutButtons extends BaseComment {
@@ -425,6 +475,69 @@ describe("renderer draw robustness", () => {
     expect(renderer.clearRectCalls).toBe(1);
   });
 
+  test("retries an unchanged frame after renderer flush fails", () => {
+    const renderer = new RecordingRenderer();
+    renderer.flushFailuresRemaining = 1;
+    const instance = new NiconiComments(renderer, [], {
+      format: "formatted",
+      mode: "html5",
+    });
+
+    expect(() => instance.drawCanvas(1)).toThrow("flush failed");
+    expect(instance.drawCanvas(1)).toBe(true);
+
+    expect(renderer.clearRectCalls).toBe(2);
+    expect(renderer.flushCalls).toBe(2);
+  });
+
+  test("does not replay NicoScript transitions when retrying after flush fails", () => {
+    const renderer = new RecordingRenderer();
+    renderer.flushFailuresRemaining = 1;
+    const instance = new NiconiComments(
+      renderer,
+      [
+        createComment({
+          content: "@ジャンプ sm9 retry-safe",
+          owner: true,
+        }),
+      ],
+      {
+        format: "formatted",
+        mode: "html5",
+      },
+    );
+    const jumpHandler = vi.fn();
+    instance.addEventListener("jump", jumpHandler);
+
+    expect(() => instance.drawCanvas(1)).toThrow("flush failed");
+    expect(jumpHandler).toHaveBeenCalledTimes(1);
+
+    expect(instance.drawCanvas(1)).toBe(true);
+
+    expect(jumpHandler).toHaveBeenCalledTimes(1);
+    expect(jumpHandler).toHaveBeenCalledWith(
+      expect.objectContaining({ to: "sm9", message: "retry-safe" }),
+    );
+  });
+
+  test("redraws unchanged frames when renderer reports restored resources", () => {
+    const renderer = new RecordingRenderer();
+    const instance = new NiconiComments(renderer, [], {
+      format: "formatted",
+      mode: "html5",
+    });
+
+    expect(instance.drawCanvas(1)).toBe(true);
+    expect(instance.drawCanvas(1)).toBe(false);
+
+    renderer.rendererNeedsRedraw = true;
+
+    expect(instance.drawCanvas(1)).toBe(true);
+    expect(instance.drawCanvas(1)).toBe(false);
+    expect(renderer.clearRectCalls).toBe(2);
+    expect(renderer.flushCalls).toBe(2);
+  });
+
   test("redraws identical vpos frames when the cursor changes", () => {
     const renderer = new RecordingRenderer();
     const instance = new NiconiComments(
@@ -568,5 +681,48 @@ describe("renderer draw robustness", () => {
     expect(gl.bindTexture).toHaveBeenCalledTimes(2);
     expect(gl.deleteTexture).toHaveBeenCalledTimes(1);
     expect(gl.deleteTexture).toHaveBeenCalledWith(texture);
+  });
+
+  test("WebGL resource rebuild marks the renderer dirty until flush succeeds", () => {
+    const gl: WebGLRestoreSetupMock = {
+      BLEND: 1,
+      ONE: 2,
+      ONE_MINUS_SRC_ALPHA: 3,
+      UNPACK_PREMULTIPLY_ALPHA_WEBGL: 4,
+      enable: vi.fn(),
+      blendFunc: vi.fn(),
+      pixelStorei: vi.fn(),
+      viewport: vi.fn(),
+      bindVertexArray: vi.fn(),
+    };
+    const renderer = Object.create(
+      WebGL2Renderer.prototype,
+    ) as WebGL2RendererRestorePrivate;
+    renderer.gl = gl;
+    renderer.canvas = { width: 1920, height: 1080 };
+    renderer.texMap = new Map();
+    renderer.cmds = [];
+    renderer.helperDirty = false;
+    renderer.frameCount = 0;
+    renderer._initGLResources = vi.fn(() => ({
+      spriteProg: {} as WebGLProgram,
+      spriteLocRect: {} as WebGLUniformLocation,
+      spriteLocProj: {} as WebGLUniformLocation,
+      spriteLocAlpha: {} as WebGLUniformLocation,
+      rectProg: {} as WebGLProgram,
+      rectLocRect: {} as WebGLUniformLocation,
+      rectLocProj: {} as WebGLUniformLocation,
+      rectLocColor: {} as WebGLUniformLocation,
+      quadVAO: {} as WebGLVertexArrayObject,
+      quadBuf: {} as WebGLBuffer,
+    }));
+
+    renderer._rebuildGLResources();
+
+    expect(renderer.needsRedraw()).toBe(true);
+
+    renderer.flush();
+
+    expect(renderer.needsRedraw()).toBe(false);
   });
 });

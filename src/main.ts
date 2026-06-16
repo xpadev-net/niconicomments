@@ -151,8 +151,10 @@ class NiconiComments {
   public showFPS: boolean;
   public showCommentCount: boolean;
   private lastVpos: number;
+  private lastEventVpos: number;
   private lastCursor?: Position;
   private lastFrameBanActive: boolean;
+  private frameDirty: boolean;
   private get lastVposInt() {
     return Math.floor(this.lastVpos);
   }
@@ -264,7 +266,9 @@ class NiconiComments {
       right: {},
     };
     this.lastVpos = -1;
+    this.lastEventVpos = -1;
     this.lastFrameBanActive = false;
+    this.frameDirty = true;
     this.lazyCommentOrderSortedByVpos = true;
     this.nextUnprocessedCommentIndex = 0;
     this.commentArrayIndexMap = new WeakMap();
@@ -592,6 +596,7 @@ class NiconiComments {
     const vposInt = Math.floor(vpos);
     const drawCanvasStart = performance.now();
     const requiresVideoRedraw = rendererHasVideoSurface(this.renderer);
+    const rendererNeedsRedraw = this.renderer.needsRedraw?.() ?? false;
     const cursorChanged =
       (cursor === undefined) !== (this.lastCursor === undefined) ||
       (cursor !== undefined &&
@@ -601,6 +606,8 @@ class NiconiComments {
       cursor === undefined ? undefined : { x: cursor.x, y: cursor.y };
     const requiresDynamicFrameRedraw =
       requiresVideoRedraw ||
+      rendererNeedsRedraw ||
+      this.frameDirty ||
       this.plugins.length > 0 ||
       this.showCollision ||
       this.showFPS ||
@@ -614,7 +621,12 @@ class NiconiComments {
       return false;
     }
     const triggerHandlerStart = profile ? performance.now() : 0;
-    this.eventHandler.trigger(vposInt, this.lastVposInt, this.ctx.nicoScripts);
+    this.eventHandler.trigger(
+      vposInt,
+      Math.floor(this.lastEventVpos),
+      this.ctx.nicoScripts,
+    );
+    this.lastEventVpos = vpos;
     setProfile("triggerHandler", triggerHandlerStart);
     const frameBanActive = isBanActive(
       vpos,
@@ -642,14 +654,13 @@ class NiconiComments {
     ) {
       if (arrayEqual(timelineRange, lastTimelineRange)) return false;
     }
+    this.frameDirty = true;
     this.renderer.clearRect(
       0,
       0,
       this.ctx.config.canvasWidth,
       this.ctx.config.canvasHeight,
     );
-    this.lastVpos = vpos;
-    this.lastFrameBanActive = frameBanActive;
 
     const drawVideoStart = profile ? performance.now() : 0;
     this._drawVideo();
@@ -693,6 +704,9 @@ class NiconiComments {
     const flushStart = profile ? performance.now() : 0;
     this.renderer.flush();
     setProfile("flush", flushStart);
+    this.lastVpos = vpos;
+    this.lastFrameBanActive = frameBanActive;
+    this.frameDirty = false;
 
     if (profile) {
       profile.total = performance.now() - drawCanvasStart;

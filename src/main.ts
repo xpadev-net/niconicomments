@@ -123,8 +123,10 @@ const rendererHasVideoSurface = (renderer: IRenderer) =>
   "video" in renderer &&
   (renderer as IRenderer & { readonly video?: unknown }).video != null;
 
-const getRendererClear = (renderer: IRenderer) =>
-  (renderer as IRenderer & { clear?: () => void }).clear;
+const getRendererClear = (renderer: IRenderer): (() => void) | undefined => {
+  const clear = (renderer as IRenderer & { clear?: unknown }).clear;
+  return typeof clear === "function" ? (clear as () => void) : undefined;
+};
 
 const removeUndefinedConfigValues = (
   config: NonNullable<Options["config"]>,

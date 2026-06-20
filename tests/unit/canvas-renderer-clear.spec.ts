@@ -192,6 +192,34 @@ describe("CanvasRenderer.clearRect", () => {
     ]);
   });
 
+  test("falls back to clearRect when a custom renderer has a non-function clear property", () => {
+    if (!("HTMLCanvasElement" in globalThis)) {
+      Object.defineProperty(globalThis, "HTMLCanvasElement", {
+        configurable: true,
+        value: class HTMLCanvasElement {},
+      });
+    }
+    const { context, renderer } = createRenderer();
+    Object.defineProperty(renderer, "clear", {
+      configurable: true,
+      value: true,
+    });
+    const flush = vi.spyOn(renderer, "flush");
+    const niconiComments = new NiconiComments(renderer, [], {
+      format: "formatted",
+    });
+    context.calls = [];
+
+    expect(() => niconiComments.clear()).not.toThrow();
+    expect(context.calls).toEqual([
+      "save",
+      "setTransform(1,0,0,1,0,0)",
+      "clearRect(0,0,213.33333333333331,120)",
+      "restore",
+    ]);
+    expect(flush).toHaveBeenCalledTimes(1);
+  });
+
   test("draws padded sub-renderers without shifting their content origin", () => {
     const { context, renderer } = createRenderer();
     const { renderer: image } = createRenderer(4);

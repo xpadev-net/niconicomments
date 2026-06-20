@@ -114,16 +114,16 @@ jobs:
           );
           replaceExpected(
             'docs/sample/sample.js',
-            /^const DEFAULT_NC_VERSION = "[^"]+";(\r?)$/m,
+            /^const DEFAULT_NC_VERSION = "[^"]+";(\r?)$/gm,
             `const DEFAULT_NC_VERSION = "${version}";$1`,
           );
           replaceExpected(
             'docs/sample/index.html',
-            /(<select name="nc-version" id="nc-version" autocomplete="off">\r?\n\s*)<option value="[^"]+">[^<]+<\/option>/,
+            /(<select name="nc-version" id="nc-version" autocomplete="off">\r?\n\s*)<option value="[^"]+">[^<]+<\/option>/g,
             `$1<option value="${version}">${version}</option>`,
           );
           NODE
-          git add package.json pnpm-lock.yaml README.md README.en.md docs/index.html docs/sample/sample.js docs/sample/index.html
+          git add package.json README.md README.en.md docs/index.html docs/sample/sample.js docs/sample/index.html
           git commit -m "chore: bump version to v${{ needs.calculate-version.outputs.new_version }}"
 
       - name: Push version bump
@@ -136,12 +136,14 @@ jobs:
         id: create-pr
         run: |
           PR_URL=$(gh pr create --base master --head develop \
-            --title "Release v${{ needs.calculate-version.outputs.new_version }}" \
-            --body "## Release v${{ needs.calculate-version.outputs.new_version }}\n\nThis PR was automatically created by the release workflow.\n\nRelease type: ${{ github.event.inputs.release_type }}")
+            --title "Release v${NEW_VERSION}" \
+            --body "## Release v${NEW_VERSION}\n\nThis PR was automatically created by the release workflow.\n\nRelease type: ${RELEASE_TYPE}")
           echo "PR URL: $PR_URL"
           PR_NUMBER=$(echo $PR_URL | grep -o '[0-9]\+$')
           echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NEW_VERSION: ${{ needs.calculate-version.outputs.new_version }}
+          RELEASE_TYPE: ${{ github.event.inputs.release_type }}
 
       # GitHub release will only be created after the PR is merged manually

@@ -8,7 +8,6 @@ import type {
   MeasureInput,
   MeasureTextInput,
   MeasureTextResult,
-  Position,
 } from "@/@types/";
 import type { CommentInstanceContext } from "@/contexts/";
 import { TypeGuardError } from "@/errors/TypeGuardError";
@@ -501,10 +500,6 @@ class HTML5Comment extends BaseComment {
     };
     this.textImageBoundsCache.set(this.comment, bounds);
     return bounds;
-  }
-
-  protected override _draw(posX: number, posY: number, cursor?: Position) {
-    super._draw(posX, posY - this.getTextImageBounds().paddingTop, cursor);
   }
 
   override _generateTextImage(): IRenderer {

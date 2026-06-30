@@ -1,10 +1,13 @@
 import type { PlaywrightTestConfig } from "@playwright/test";
 import { devices } from "@playwright/test";
 
+const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? "http://127.0.0.1:8080";
+const serverPort = new URL(baseURL).port || "8080";
+
 const config: PlaywrightTestConfig = {
   testDir: "./src/__tests__",
   use: {
-    baseURL: "http://127.0.0.1:8080",
+    baseURL,
   },
   projects: [
     {
@@ -13,8 +16,8 @@ const config: PlaywrightTestConfig = {
     },
   ],
   webServer: {
-    command: "npm run test-server",
-    url: "http://127.0.0.1:8080/docs/sample/index.html",
+    command: `npm run test-server -- -p ${serverPort}`,
+    url: `${baseURL}/docs/sample/index.html`,
     reuseExistingServer: !process.env.CI,
   },
 };

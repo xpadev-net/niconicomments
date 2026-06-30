@@ -57,7 +57,7 @@ async function loadRenderer(
   renderer: string,
 ): Promise<boolean> {
   await page.goto(
-    `http://localhost:8080/docs/sample/test.html?time=${time}&video=${video}&renderer=${renderer}`,
+    `/docs/sample/test.html?time=${time}&video=${video}&renderer=${renderer}`,
   );
   await Promise.race([
     page.waitForSelector("div#loaded", { state: "attached" }),

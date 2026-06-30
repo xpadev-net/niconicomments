@@ -1,5 +1,5 @@
 # Prebuilt MS image matching the lockfile's Playwright version.
-FROM mcr.microsoft.com/playwright:v1.60.0-noble
+FROM mcr.microsoft.com/playwright:v1.61.0-noble
 
 ENV PWUSER pwuser
 

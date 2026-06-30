@@ -34,10 +34,12 @@ test("22(ヨワイボクラハウタウ)", async ({ page }) => {
   await compare(page, 22, 140);
 });
 
+test("-1(regression fixtures)", async ({ page }) => {
+  await compare(page, -1, 30);
+});
+
 const compare = async (page: Page, video: number, time: number) => {
-  await page.goto(
-    `http://localhost:8080/docs/sample/test.html?time=${time}&video=${video}`,
-  );
+  await page.goto(`/docs/sample/test.html?time=${time}&video=${video}`);
   await Promise.all([
     page.waitForSelector("div#loaded", { state: "attached" }),
     page.waitForSelector("div#__bs_notify__", { state: "detached" }),

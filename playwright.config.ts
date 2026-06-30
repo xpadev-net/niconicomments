@@ -1,8 +1,13 @@
 import type { PlaywrightTestConfig } from "@playwright/test";
 import { devices } from "@playwright/test";
 
-const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? "http://127.0.0.1:8080";
-const serverPort = new URL(baseURL).port || "8080";
+const configuredBaseURL = new URL(
+  process.env.PLAYWRIGHT_BASE_URL ?? "http://127.0.0.1:8080",
+);
+configuredBaseURL.port ||= "8080";
+
+const baseURL = configuredBaseURL.origin;
+const serverPort = configuredBaseURL.port;
 
 const config: PlaywrightTestConfig = {
   testDir: "./src/__tests__",

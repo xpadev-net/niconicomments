@@ -8,6 +8,7 @@ import type {
   MeasureInput,
   MeasureTextInput,
   MeasureTextResult,
+  Position,
 } from "@/@types/";
 import type { CommentInstanceContext } from "@/contexts/";
 import { TypeGuardError } from "@/errors/TypeGuardError";
@@ -500,6 +501,17 @@ class HTML5Comment extends BaseComment {
     };
     this.textImageBoundsCache.set(this.comment, bounds);
     return bounds;
+  }
+
+  protected override _draw(posX: number, posY: number, cursor?: Position) {
+    const bounds = this.getTextImageBounds();
+    // Owner fixed comments resized by NicoScript replacement match v0.3.0
+    // vertical placement; applying the padding offset shifts them too high.
+    const drawY =
+      this.comment.owner && this.comment.resizedX
+        ? posY
+        : posY - bounds.paddingTop;
+    super._draw(posX, drawY, cursor);
   }
 
   override _generateTextImage(): IRenderer {

@@ -197,11 +197,23 @@ class TestHTML5Comment extends HTML5Comment {
   }
 }
 
+type FormattedCommentOverride = Pick<
+  Partial<FormattedComment>,
+  | "date"
+  | "date_usec"
+  | "is_my_post"
+  | "layer"
+  | "owner"
+  | "premium"
+  | "user_id"
+  | "vpos"
+>;
+
 const formattedComment = (
   id: number,
   content: string,
   mail: string[] = [],
-  overrides: Partial<FormattedComment> = {},
+  overrides: FormattedCommentOverride = {},
 ): FormattedComment => ({
   id,
   vpos: overrides.vpos ?? 0,
@@ -401,7 +413,7 @@ describe("HTML5 comment resource bounds", () => {
   test.each([
     "ue",
     "shita",
-  ] as const)("reserves HTML5 offscreen top padding without moving long %s comments", (loc) => {
+  ] as const)("reserves and offsets HTML5 offscreen top padding for long %s comments", (loc) => {
     const renderer = new RecordingRenderer();
     const comment = new TestHTML5Comment(
       formattedComment(1, "x".repeat(5000), [loc]),
@@ -423,7 +435,7 @@ describe("HTML5 comment resource bounds", () => {
     expect(renderer.drawImageCalls).toHaveLength(1);
     expect(renderer.drawImageCalls[0]?.image).toBe(image);
     expect(renderer.drawImageCalls[0]?.x).toBe(0);
-    expect(renderer.drawImageCalls[0]?.y).toBe(0);
+    expect(renderer.drawImageCalls[0]?.y).toBeCloseTo(-paddingHeight, 5);
   });
 
   test("keeps owner @置換 resized fixed-comment draw origin stable", () => {
@@ -454,9 +466,9 @@ describe("HTML5 comment resource bounds", () => {
     const image = comment.exposeTextImage() as RecordingRenderer | null;
 
     expect(image).not.toBeNull();
-    expect(
-      (image?.getSize().height ?? 0) - comment.comment.height,
-    ).toBeGreaterThan(0);
+    const paddingHeight =
+      (image?.getSize().height ?? 0) - comment.comment.height;
+    expect(paddingHeight).toBeGreaterThan(0);
 
     comment.drawBodyForTest();
 

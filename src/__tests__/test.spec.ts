@@ -1,5 +1,7 @@
 import type { Page } from "@playwright/test";
 import { expect, test } from "@playwright/test";
+import pixelmatch from "pixelmatch";
+import { PNG } from "pngjs";
 
 test("0(レッツゴー陰陽師)", async ({ page }) => {
   await compare(page, 0, 20);
@@ -35,18 +37,66 @@ test("22(ヨワイボクラハウタウ)", async ({ page }) => {
 });
 
 test("-1(regression fixtures)", async ({ page }) => {
-  await compare(page, -1, 30);
+  await compareWithVersion(page, -1, 45.95, "0.2.76");
+  await compareWithVersion(page, -1, 46, "0.2.76");
 });
 
 const compare = async (page: Page, video: number, time: number) => {
-  await page.goto(`/docs/sample/test.html?time=${time}&video=${video}`);
-  await Promise.all([
-    page.waitForSelector("div#loaded", { state: "attached" }),
-    page.waitForSelector("div#__bs_notify__", { state: "detached" }),
-  ]);
+  await loadSample(page, video, time);
   await expect(page).toHaveScreenshot(`${video}-${time}.png`);
   expect(await page.screenshot({ fullPage: true })).toMatchSnapshot(
     `${video}-${time}.png`,
     { threshold: 0.075 },
   );
+};
+
+const compareWithVersion = async (
+  page: Page,
+  video: number,
+  time: number,
+  ncVersion: string,
+) => {
+  await loadSample(page, video, time, ncVersion);
+  const expected = PNG.sync.read(await page.screenshot({ fullPage: true }));
+
+  await loadSample(page, video, time);
+  const actual = PNG.sync.read(await page.screenshot({ fullPage: true }));
+
+  expect(actual.width).toBe(expected.width);
+  expect(actual.height).toBe(expected.height);
+
+  const diff = new PNG({ width: actual.width, height: actual.height });
+  const diffPixels = pixelmatch(
+    expected.data,
+    actual.data,
+    diff.data,
+    actual.width,
+    actual.height,
+    { threshold: 0.075 },
+  );
+
+  expect(
+    diffPixels,
+    `${video}-${time} differs from ${ncVersion}`,
+  ).toBeLessThanOrEqual(64);
+};
+
+const loadSample = async (
+  page: Page,
+  video: number,
+  time: number,
+  ncVersion?: string,
+) => {
+  const query = new URLSearchParams({
+    time: String(time),
+    video: String(video),
+  });
+  if (ncVersion) {
+    query.set("ncVersion", ncVersion);
+  }
+  await page.goto(`/docs/sample/test.html?${query}`);
+  await Promise.all([
+    page.waitForSelector("div#loaded", { state: "attached" }),
+    page.waitForSelector("div#__bs_notify__", { state: "detached" }),
+  ]);
 };

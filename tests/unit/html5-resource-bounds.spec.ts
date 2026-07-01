@@ -111,6 +111,15 @@ class RecordingRenderer implements IRenderer {
   invalidateImage() {}
 }
 
+class ThresholdWidthRenderer extends RecordingRenderer {
+  override measureText(text: string) {
+    this.measureCalls++;
+    const fontSize = Number(/([0-9.]+)px/.exec(this.getFont())?.[1] ?? 10);
+    const thresholdOvershoot = fontSize < 12 ? 80 : 0;
+    return textMetrics(text.length * fontSize * 0.5 + thresholdOvershoot);
+  }
+}
+
 const createLegacyImageRenderer = (): Omit<IRenderer, "destroy"> => {
   let font = "10px sans-serif";
   let size = { width: 0, height: 0 };
@@ -436,6 +445,20 @@ describe("HTML5 comment resource bounds", () => {
     expect(renderer.drawImageCalls[0]?.image).toBe(image);
     expect(renderer.drawImageCalls[0]?.x).toBe(0);
     expect(renderer.drawImageCalls[0]?.y).toBeCloseTo(-paddingHeight, 5);
+  });
+
+  test("uses v0.2.76 fixed-comment resize step when scaled text still exceeds the stage", () => {
+    const renderer = new ThresholdWidthRenderer();
+    const comment = new TestHTML5Comment(
+      formattedComment(1, "x".repeat(128), ["ue"]),
+      renderer,
+      0,
+      createContext(),
+    );
+
+    expect(comment.comment.resizedX).toBe(true);
+    expect(comment.comment.charSize).toBeGreaterThan(9);
+    expect(comment.comment.charSize).toBeLessThan(10);
   });
 
   test("keeps owner @置換 resized fixed-comment draw origin stable", () => {

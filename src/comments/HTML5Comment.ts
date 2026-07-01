@@ -318,12 +318,12 @@ class HTML5Comment extends BaseComment {
       if (result.width > widthLimit) {
         let remainingIterations = MAX_RESIZE_ITERATIONS;
         while (
-          result.width >= widthLimit &&
+          result.width > widthLimit &&
           resizedCharSize > 1 &&
           remainingIterations-- > 0
         ) {
           const originalCharSize = resizedCharSize;
-          resizedCharSize -= 1;
+          resizedCharSize = Math.max(1, resizedCharSize - 1);
           resizedLineHeight *= resizedCharSize / originalCharSize;
           workComment.lineHeight = resizedLineHeight;
           result = getLegacyMeasured(resizedCharSize);

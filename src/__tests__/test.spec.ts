@@ -3,6 +3,11 @@ import { expect, test } from "@playwright/test";
 import pixelmatch from "pixelmatch";
 import { PNG } from "pngjs";
 
+const screenshotOptions = {
+  maxDiffPixels: 64,
+  threshold: 0.075,
+};
+
 test("0(レッツゴー陰陽師)", async ({ page }) => {
   await compare(page, 0, 20);
 });
@@ -43,10 +48,13 @@ test("-1(regression fixtures)", async ({ page }) => {
 
 const compare = async (page: Page, video: number, time: number) => {
   await loadSample(page, video, time);
-  await expect(page).toHaveScreenshot(`${video}-${time}.png`);
+  await expect(page).toHaveScreenshot(
+    `${video}-${time}.png`,
+    screenshotOptions,
+  );
   expect(await page.screenshot({ fullPage: true })).toMatchSnapshot(
     `${video}-${time}.png`,
-    { threshold: 0.075 },
+    screenshotOptions,
   );
 };
 

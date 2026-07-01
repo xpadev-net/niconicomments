@@ -111,6 +111,15 @@ class RecordingRenderer implements IRenderer {
   invalidateImage() {}
 }
 
+class ThresholdWidthRenderer extends RecordingRenderer {
+  override measureText(text: string) {
+    this.measureCalls++;
+    const fontSize = Number(/([0-9.]+)px/.exec(this.getFont())?.[1] ?? 10);
+    const thresholdOvershoot = fontSize < 12 ? 80 : 0;
+    return textMetrics(text.length * fontSize * 0.5 + thresholdOvershoot);
+  }
+}
+
 const createLegacyImageRenderer = (): Omit<IRenderer, "destroy"> => {
   let font = "10px sans-serif";
   let size = { width: 0, height: 0 };
@@ -197,22 +206,35 @@ class TestHTML5Comment extends HTML5Comment {
   }
 }
 
+type FormattedCommentOverride = Pick<
+  Partial<FormattedComment>,
+  | "date"
+  | "date_usec"
+  | "is_my_post"
+  | "layer"
+  | "owner"
+  | "premium"
+  | "user_id"
+  | "vpos"
+>;
+
 const formattedComment = (
   id: number,
   content: string,
   mail: string[] = [],
+  overrides: FormattedCommentOverride = {},
 ): FormattedComment => ({
   id,
-  vpos: 0,
+  vpos: overrides.vpos ?? 0,
   content,
-  date: 1_700_000_000,
-  date_usec: 0,
-  owner: false,
-  premium: false,
+  date: overrides.date ?? 1_700_000_000,
+  date_usec: overrides.date_usec ?? 0,
+  owner: overrides.owner ?? false,
+  premium: overrides.premium ?? false,
   mail,
-  user_id: id,
-  layer: -1,
-  is_my_post: false,
+  user_id: overrides.user_id ?? id,
+  layer: overrides.layer ?? -1,
+  is_my_post: overrides.is_my_post ?? false,
 });
 
 const createContext = () => ({
@@ -423,6 +445,60 @@ describe("HTML5 comment resource bounds", () => {
     expect(renderer.drawImageCalls[0]?.image).toBe(image);
     expect(renderer.drawImageCalls[0]?.x).toBe(0);
     expect(renderer.drawImageCalls[0]?.y).toBeCloseTo(-paddingHeight, 5);
+  });
+
+  test("uses v0.2.76 fixed-comment resize step when scaled text still exceeds the stage", () => {
+    const renderer = new ThresholdWidthRenderer();
+    const comment = new TestHTML5Comment(
+      formattedComment(1, "x".repeat(128), ["ue"]),
+      renderer,
+      0,
+      createContext(),
+    );
+
+    expect(comment.comment.resizedX).toBe(true);
+    expect(comment.comment.charSize).toBeGreaterThan(9);
+    expect(comment.comment.charSize).toBeLessThan(10);
+  });
+
+  test("keeps owner @置換 resized fixed-comment draw origin stable", () => {
+    const ctx = createContext();
+    const replacedContent = "x".repeat(4096);
+    const scriptRenderer = new RecordingRenderer();
+    new TestHTML5Comment(
+      formattedComment(1, `@置換 "needle" "${replacedContent}" 全 投コメ`, [], {
+        owner: true,
+      }),
+      scriptRenderer,
+      0,
+      ctx,
+    );
+    const renderer = new RecordingRenderer();
+    const comment = new TestHTML5Comment(
+      formattedComment(2, "needle", ["ue"], { owner: true, vpos: 1 }),
+      renderer,
+      1,
+      ctx,
+    );
+
+    expect(comment.comment.resizedX).toBe(true);
+    expect(comment.comment.content).toContainEqual(
+      expect.objectContaining({ content: replacedContent }),
+    );
+
+    const image = comment.exposeTextImage() as RecordingRenderer | null;
+
+    expect(image).not.toBeNull();
+    const paddingHeight =
+      (image?.getSize().height ?? 0) - comment.comment.height;
+    expect(paddingHeight).toBeGreaterThan(0);
+
+    comment.drawBodyForTest();
+
+    expect(renderer.drawImageCalls).toHaveLength(1);
+    expect(renderer.drawImageCalls[0]?.image).toBe(image);
+    expect(renderer.drawImageCalls[0]?.x).toBe(0);
+    expect(renderer.drawImageCalls[0]?.y).toBe(0);
   });
 
   test("keeps fixed-comment resize measurement bounded at max content length", () => {

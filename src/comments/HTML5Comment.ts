@@ -312,58 +312,45 @@ class HTML5Comment extends BaseComment {
     };
 
     if (baseCharSize >= 1) {
-      let low = Math.max(1, Math.floor(legacyBaseCharSize * 0.5));
-      let high = Math.max(low, Math.ceil(legacyBaseCharSize * 1.5));
-      let best = legacyBaseCharSize;
-      let bestResult = getLegacyMeasured(legacyBaseCharSize);
-      if (bestResult.width > widthLimit) {
-        high = legacyBaseCharSize;
+      let resizedCharSize = legacyBaseCharSize;
+      let resizedLineHeight = legacyBaseLineHeight;
+      let result = getLegacyMeasured(resizedCharSize);
+      if (result.width > widthLimit) {
         let remainingIterations = MAX_RESIZE_ITERATIONS;
-        while (remainingIterations-- > 0) {
-          const candidate = getLegacyMeasured(low);
-          const nextLow = Math.max(1, Math.floor(low * 0.5));
-          if (candidate.width <= widthLimit || nextLow === low) {
-            best = low;
-            bestResult = candidate;
-            break;
-          }
-          high = low;
-          low = nextLow;
+        while (
+          result.width > widthLimit &&
+          resizedCharSize > 1 &&
+          remainingIterations-- > 0
+        ) {
+          const originalCharSize = resizedCharSize;
+          resizedCharSize = Math.max(1, resizedCharSize - 1);
+          resizedLineHeight *= resizedCharSize / originalCharSize;
+          workComment.lineHeight = resizedLineHeight;
+          result = getLegacyMeasured(resizedCharSize);
         }
       } else {
+        let lastCharSize = resizedCharSize;
+        let lastLineHeight = resizedLineHeight;
         let remainingIterations = MAX_RESIZE_ITERATIONS;
-        while (remainingIterations-- > 0) {
-          const candidate = getLegacyMeasured(high);
-          if (candidate.width > widthLimit) break;
-          best = high;
-          bestResult = candidate;
-          const nextHigh = Math.ceil(high * 1.5);
-          if (nextHigh === high) break;
-          high = nextHigh;
+        while (result.width < widthLimit && remainingIterations-- > 0) {
+          lastCharSize = resizedCharSize;
+          lastLineHeight = resizedLineHeight;
+          const originalCharSize = resizedCharSize;
+          resizedCharSize += 1;
+          resizedLineHeight *= resizedCharSize / originalCharSize;
+          workComment.lineHeight = resizedLineHeight;
+          result = getLegacyMeasured(resizedCharSize);
         }
-      }
-      if (bestResult.width <= widthLimit && low < high) {
-        let left = best;
-        let right = high;
-        while (left <= right) {
-          const mid = Math.floor((left + right) / 2);
-          const candidate = getLegacyMeasured(mid);
-          if (candidate.width <= widthLimit) {
-            best = mid;
-            bestResult = candidate;
-            left = mid + 1;
-          } else {
-            right = mid - 1;
-          }
-        }
+        resizedCharSize = lastCharSize;
+        resizedLineHeight = lastLineHeight;
       }
       if (comment.resizedY) {
-        const resizeScale = best / (comment.charSize ?? 1);
+        const resizeScale = resizedCharSize / (comment.charSize ?? 1);
         comment.charSize = resizeScale * charSize;
         comment.lineHeight = resizeScale * lineHeight;
       } else {
-        comment.charSize = best;
-        comment.lineHeight = legacyBaseLineHeight * (best / legacyBaseCharSize);
+        comment.charSize = resizedCharSize;
+        comment.lineHeight = resizedLineHeight;
       }
       comment.fontSize = (comment.charSize ?? 0) * 0.8;
       return measure(
@@ -504,7 +491,14 @@ class HTML5Comment extends BaseComment {
   }
 
   protected override _draw(posX: number, posY: number, cursor?: Position) {
-    super._draw(posX, posY - this.getTextImageBounds().paddingTop, cursor);
+    const bounds = this.getTextImageBounds();
+    // Owner fixed comments resized by NicoScript replacement match v0.3.0
+    // vertical placement; applying the padding offset shifts them too high.
+    const drawY =
+      this.comment.owner && this.comment.resizedX
+        ? posY
+        : posY - bounds.paddingTop;
+    super._draw(posX, drawY, cursor);
   }
 
   override _generateTextImage(): IRenderer {

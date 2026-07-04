@@ -114,6 +114,11 @@ class FlashComment extends BaseComment {
     this.image = undefined;
   }
 
+  override destroy(): void {
+    super.destroy();
+    this._buttonImageState = undefined;
+  }
+
   override convertComment(comment: FormattedComment): FormattedCommentWithSize {
     this._globalScale = getConfig(this.config.commentScale, true);
     return getButtonParts(
@@ -439,57 +444,65 @@ class FlashComment extends BaseComment {
 
   override _generateTextImage(): IRenderer {
     const renderer = this.renderer.getCanvas();
-    this._setupCanvas(renderer);
-    const atButtonPadding = getConfig(this.config.atButtonPadding, true);
-    const lineOffset = this.comment.lineOffset;
-    const lineHeight = this.comment.fontSize * this.comment.lineHeight;
-    const offsetKey = this.comment.resizedY ? "resized" : "default";
-    const offsetY =
-      this.config.flashCommentYPaddingTop[offsetKey] +
-      this.comment.fontSize *
-        this.comment.lineHeight *
-        this.config.flashCommentYOffset[this.comment.size][offsetKey];
-    let lastFont = this.comment.font;
-    let leftOffset = 0;
-    let lineCount = 0;
-    let isLastButton = false;
-    for (const item of this.comment.content) {
-      if (item.type === "spacer") {
-        leftOffset += item.count * item.charWidth * this.comment.fontSize;
-        isLastButton = !!item.isButton;
-        continue;
-      }
-      const font = item.font ?? this.comment.font;
-      if (lastFont !== font) {
-        lastFont = font;
-        renderer.setFont(parseFont(font, this.comment.fontSize, this.config));
-      }
-      const lines = item.slicedContent;
-      for (
-        let lineIndex = 0, lineLength = lines.length;
-        lineIndex < lineLength;
-        lineIndex++
-      ) {
-        const line = lines[lineIndex];
-        if (line === undefined) continue;
-        const posY = (lineOffset + lineCount + 1) * lineHeight + offsetY;
-        const partWidth = item.width[lineIndex] ?? 0;
-        if (
-          this.comment.button &&
-          !this.comment.button.hidden &&
-          ((!isLastButton && item.isButton) || (isLastButton && !item.isButton))
+    try {
+      this._setupCanvas(renderer);
+      const atButtonPadding = getConfig(this.config.atButtonPadding, true);
+      const lineOffset = this.comment.lineOffset;
+      const lineHeight = this.comment.fontSize * this.comment.lineHeight;
+      const offsetKey = this.comment.resizedY ? "resized" : "default";
+      const offsetY =
+        this.config.flashCommentYPaddingTop[offsetKey] +
+        this.comment.fontSize *
+          this.comment.lineHeight *
+          this.config.flashCommentYOffset[this.comment.size][offsetKey];
+      let lastFont = this.comment.font;
+      let leftOffset = 0;
+      let lineCount = 0;
+      let isLastButton = false;
+      for (const item of this.comment.content) {
+        if (item.type === "spacer") {
+          leftOffset += item.count * item.charWidth * this.comment.fontSize;
+          isLastButton = !!item.isButton;
+          continue;
+        }
+        const font = item.font ?? this.comment.font;
+        if (lastFont !== font) {
+          lastFont = font;
+          renderer.setFont(parseFont(font, this.comment.fontSize, this.config));
+        }
+        const lines = item.slicedContent;
+        for (
+          let lineIndex = 0, lineLength = lines.length;
+          lineIndex < lineLength;
+          lineIndex++
         ) {
-          leftOffset += atButtonPadding * 2;
+          const line = lines[lineIndex];
+          if (line === undefined) continue;
+          const posY = (lineOffset + lineCount + 1) * lineHeight + offsetY;
+          const partWidth = item.width[lineIndex] ?? 0;
+          if (
+            this.comment.button &&
+            !this.comment.button.hidden &&
+            ((!isLastButton && item.isButton) ||
+              (isLastButton && !item.isButton))
+          ) {
+            leftOffset += atButtonPadding * 2;
+          }
+          renderer.strokeText(line, leftOffset, posY);
+          renderer.fillText(line, leftOffset, posY);
+          leftOffset += partWidth;
+          if (lineIndex < lineLength - 1) {
+            leftOffset = 0;
+            lineCount += 1;
+          }
         }
-        renderer.strokeText(line, leftOffset, posY);
-        renderer.fillText(line, leftOffset, posY);
-        leftOffset += partWidth;
-        if (lineIndex < lineLength - 1) {
-          leftOffset = 0;
-          lineCount += 1;
-        }
+        isLastButton = !!item.isButton;
       }
-      isLastButton = !!item.isButton;
+    } catch (e) {
+      if (typeof renderer.destroy === "function") {
+        renderer.destroy();
+      }
+      throw e;
     }
     return renderer;
   }

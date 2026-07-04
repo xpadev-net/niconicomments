@@ -14,7 +14,7 @@ npm： https://www.npmjs.com/package/@xpadev-net/niconicomments
 ## Installation
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@xpadev-net/niconicomments@latest/dist/bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@xpadev-net/niconicomments@0.3.1/dist/bundle.js"></script>
 ```
 
 or

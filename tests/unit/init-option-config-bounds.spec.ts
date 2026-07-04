@@ -238,6 +238,138 @@ describe("init option and config bounds", () => {
     ).toThrow(InvalidOptionError);
   });
 
+  test.each([
+    [
+      "bad flashChar regex source",
+      () => ({
+        flashChar: {
+          ...defaultConfig.flashChar,
+          gulim: "[",
+        },
+      }),
+    ],
+    [
+      "bad flashScriptChar regex source",
+      () => ({
+        flashScriptChar: {
+          ...defaultConfig.flashScriptChar,
+          super: "(",
+        },
+      }),
+    ],
+    [
+      "invalid flashMode",
+      () => ({
+        flashMode: "legacy" as BaseConfig["flashMode"],
+      }),
+    ],
+    [
+      "missing compatSpacer.flash replacement",
+      () => ({
+        compatSpacer: {
+          html5: {},
+        } as unknown as BaseConfig["compatSpacer"],
+      }),
+    ],
+    [
+      "missing flash font family replacement",
+      () => ({
+        fonts: {
+          html5: defaultConfig.fonts.html5,
+          flash: {
+            gulim: defaultConfig.fonts.flash.gulim,
+          },
+        } as unknown as BaseConfig["fonts"],
+      }),
+    ],
+    [
+      "missing html5 font family replacement",
+      () => ({
+        fonts: {
+          flash: defaultConfig.fonts.flash,
+          html5: {
+            gothic: defaultConfig.fonts.html5.gothic,
+            mincho: defaultConfig.fonts.html5.mincho,
+          },
+        } as unknown as BaseConfig["fonts"],
+      }),
+    ],
+    [
+      "null color map",
+      () => ({
+        colors: null as unknown as BaseConfig["colors"],
+      }),
+    ],
+    [
+      "malformed color map value",
+      () => ({
+        colors: {
+          white: "white",
+        },
+      }),
+    ],
+    [
+      "malformed stroke color",
+      () => ({
+        contextStrokeColor: "black",
+      }),
+    ],
+    [
+      "malformed stroke inversion color",
+      () => ({
+        contextStrokeInversionColor: "white",
+      }),
+    ],
+    [
+      "empty compatSpacer key",
+      () => ({
+        compatSpacer: {
+          flash: {},
+          html5: {
+            "": {
+              defont: 1,
+            },
+          },
+        } as unknown as BaseConfig["compatSpacer"],
+      }),
+    ],
+    [
+      "multi-character compatSpacer key",
+      () => ({
+        compatSpacer: {
+          flash: {},
+          html5: {
+            ab: {
+              defont: 1,
+            },
+          },
+        } as unknown as BaseConfig["compatSpacer"],
+      }),
+    ],
+    [
+      "structurally invalid compatSpacer font map",
+      () => ({
+        compatSpacer: {
+          flash: {
+            " ": {
+              missing: 1,
+            },
+          },
+          html5: {},
+        } as unknown as BaseConfig["compatSpacer"],
+      }),
+    ],
+  ])("rejects invalid structured config: %s", (_, createConfig) => {
+    expect(
+      () =>
+        new NiconiComments(new FakeRenderer(), [], {
+          format: "formatted",
+          mode: "html5",
+          config: createConfig(),
+        }),
+    ).toThrow(InvalidOptionError);
+  });
+
   test("accepts the explicit default config", () => {
     expect(
       () =>

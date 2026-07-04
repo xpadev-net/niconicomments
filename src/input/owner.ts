@@ -1,9 +1,10 @@
 import { array, parse } from "valibot";
 
-import type { InputParser } from "@/@types";
 import {
   type FormattedComment,
+  type InputParser,
   type OwnerComment,
+  toFiniteNumberInRange,
   ZOwnerComment,
 } from "@/@types";
 
@@ -24,9 +25,11 @@ const fromOwner = (data: OwnerComment[]): FormattedComment[] => {
   for (let i = 0, n = data.length; i < n; i++) {
     const value = data[i];
     if (!value) continue;
+    const vpos = time2vpos(value.time);
+    if (vpos === undefined) continue;
     const tmpParam: FormattedComment = {
       id: i,
-      vpos: time2vpos(value.time),
+      vpos,
       content: value.comment,
       date: i,
       date_usec: 0,
@@ -53,32 +56,33 @@ const fromOwner = (data: OwnerComment[]): FormattedComment[] => {
  * @param input 分:秒.秒・分:秒・秒.秒・秒
  * @returns vpos
  */
-const time2vpos = (input: string): number => {
+const time2vpos = (input: string): number | undefined => {
   const time = RegExp(
     /^(?:(\d+):(\d+)\.(\d+)|(\d+):(\d+)|(\d+)\.(\d+)|(\d+))$/,
   ).exec(input);
+  let vpos: number | undefined;
   if (time) {
     if (
       time[1] !== undefined &&
       time[2] !== undefined &&
       time[3] !== undefined
     ) {
-      return (
+      vpos =
         (Number(time[1]) * 60 + Number(time[2])) * 100 +
-        Number(time[3]) / 10 ** (time[3].length - 2)
-      );
+        Number(time[3]) / 10 ** (time[3].length - 2);
     }
     if (time[4] !== undefined && time[5] !== undefined) {
-      return (Number(time[4]) * 60 + Number(time[5])) * 100;
+      vpos = (Number(time[4]) * 60 + Number(time[5])) * 100;
     }
     if (time[6] !== undefined && time[7] !== undefined) {
-      return (
-        Number(time[6]) * 100 + Number(time[7]) / 10 ** (time[7].length - 2)
-      );
+      vpos =
+        Number(time[6]) * 100 + Number(time[7]) / 10 ** (time[7].length - 2);
     }
     if (time[8] !== undefined) {
-      return Number(time[8]) * 100;
+      vpos = Number(time[8]) * 100;
     }
   }
-  return 0;
+  return toFiniteNumberInRange(
+    vpos === undefined ? undefined : Math.floor(vpos),
+  );
 };

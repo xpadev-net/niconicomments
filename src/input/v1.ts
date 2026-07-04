@@ -25,11 +25,13 @@ const fromV1 = (data: V1Thread[]): FormattedComment[] => {
     const val = item.comments;
     const forkName = item.fork;
     for (const value of val) {
+      const date = date2time(value.postedAt);
+      if (date === undefined) continue;
       const tmpParam: FormattedComment = {
         id: value.no,
         vpos: Math.floor(value.vposMs / 10),
         content: value.body,
-        date: date2time(value.postedAt),
+        date,
         date_usec: 0,
         owner: forkName === "owner",
         premium: value.isPremium,
@@ -53,4 +55,7 @@ const fromV1 = (data: V1Thread[]): FormattedComment[] => {
  * @param date ISO 8601 timestamp
  * @returns unix timestamp
  */
-const date2time = (date: string): number => Math.floor(Date.parse(date) / 1000);
+const date2time = (date: string): number | undefined => {
+  const time = Math.floor(Date.parse(date) / 1000);
+  return Number.isFinite(time) && time >= 0 ? time : undefined;
+};

@@ -6,24 +6,33 @@
 class CanvasPool {
   private readonly maxSize: number;
   private pool: HTMLCanvasElement[] = [];
+  private pooledCanvases = new WeakSet<HTMLCanvasElement>();
 
   constructor(maxSize = 16) {
     this.maxSize = maxSize;
   }
 
   acquire(): HTMLCanvasElement {
-    return this.pool.pop() ?? document.createElement("canvas");
+    const canvas = this.pool.pop();
+    if (canvas) {
+      this.pooledCanvases.delete(canvas);
+      return canvas;
+    }
+    return document.createElement("canvas");
   }
 
   release(canvas: HTMLCanvasElement): void {
+    if (this.pooledCanvases.has(canvas)) return;
     if (this.pool.length >= this.maxSize) return;
     canvas.width = 0;
     canvas.height = 0;
+    this.pooledCanvases.add(canvas);
     this.pool.push(canvas);
   }
 
   clear(): void {
     this.pool.length = 0;
+    this.pooledCanvases = new WeakSet<HTMLCanvasElement>();
   }
 }
 

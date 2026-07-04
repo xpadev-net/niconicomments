@@ -18,7 +18,7 @@ npm： https://www.npmjs.com/package/@xpadev-net/niconicomments
 CDN から読み込む場合は、可変エイリアスではなく固定バージョンを指定してください。
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@xpadev-net/niconicomments@0.2.78/dist/bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@xpadev-net/niconicomments@0.3.1/dist/bundle.js"></script>
 ```
 
 or

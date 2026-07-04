@@ -1,5 +1,6 @@
 import { describe, expect, test, vi } from "vitest";
 
+import NiconiComments from "@/main";
 import { CanvasRenderer } from "@/renderer/canvas";
 
 type Transform = {
@@ -163,6 +164,60 @@ describe("CanvasRenderer.clearRect", () => {
       "clearRect(0,0,1280,720)",
       "restore",
     ]);
+  });
+
+  test("clears the entire backing canvas through NiconiComments.clear when renderer scale is reduced", () => {
+    if (!("HTMLCanvasElement" in globalThis)) {
+      Object.defineProperty(globalThis, "HTMLCanvasElement", {
+        configurable: true,
+        value: class HTMLCanvasElement {},
+      });
+    }
+    const { context, renderer } = createRenderer();
+
+    renderer.setSize(320, 180);
+    const niconiComments = new NiconiComments(renderer, [], {
+      format: "formatted",
+    });
+    renderer.setScale(0.5);
+    context.calls = [];
+
+    niconiComments.clear();
+
+    expect(context.calls).toEqual([
+      "save",
+      "setTransform(1,0,0,1,0,0)",
+      "clearRect(0,0,320,180)",
+      "restore",
+    ]);
+  });
+
+  test("falls back to clearRect when a custom renderer has a non-function clear property", () => {
+    if (!("HTMLCanvasElement" in globalThis)) {
+      Object.defineProperty(globalThis, "HTMLCanvasElement", {
+        configurable: true,
+        value: class HTMLCanvasElement {},
+      });
+    }
+    const { context, renderer } = createRenderer();
+    Object.defineProperty(renderer, "clear", {
+      configurable: true,
+      value: true,
+    });
+    const flush = vi.spyOn(renderer, "flush");
+    const niconiComments = new NiconiComments(renderer, [], {
+      format: "formatted",
+    });
+    context.calls = [];
+
+    expect(() => niconiComments.clear()).not.toThrow();
+    expect(context.calls).toEqual([
+      "save",
+      "setTransform(1,0,0,1,0,0)",
+      "clearRect(0,0,213.33333333333331,120)",
+      "restore",
+    ]);
+    expect(flush).toHaveBeenCalledTimes(1);
   });
 
   test("draws padded sub-renderers without shifting their content origin", () => {

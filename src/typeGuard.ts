@@ -81,6 +81,17 @@ const MAX_CONFIG_RATIO = 64;
 const MAX_CONFIG_SPACING = 1024;
 const COMMENT_SIZES = ["big", "medium", "small"] as const;
 const RESIZED_KEYS = ["default", "resized"] as const;
+const FLASH_CHAR_KEYS = [
+  "simsunStrong",
+  "simsunWeak",
+  "gulim",
+  "gothic",
+] as const;
+const FLASH_SCRIPT_CHAR_KEYS = ["super", "sub"] as const;
+const FLASH_FONT_KEYS = ["gulim", "simsun"] as const;
+const HTML5_FONT_KEYS = ["gothic", "mincho", "defont"] as const;
+const FLASH_SPACER_FONT_KEYS = ["gulim", "simsun", "defont"] as const;
+const COLOR_CODE_PATTERN = /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
 
 /**
  * 入力がBooleanかどうかを返す
@@ -91,6 +102,12 @@ const isBoolean = (i: unknown): i is boolean => typeof i === "boolean";
 
 const isRecord = (i: unknown): i is Record<string, unknown> =>
   typeof i === "object" && i !== null;
+
+const isPlainRecord = (i: unknown): i is Record<string, unknown> =>
+  isRecord(i) &&
+  !Array.isArray(i) &&
+  (Object.getPrototypeOf(i) === Object.prototype ||
+    Object.getPrototypeOf(i) === null);
 
 const isFiniteNumberInRange = (
   i: unknown,
@@ -127,6 +144,24 @@ const hasConfigKeys = (
   item: Record<string, unknown>,
   keys: readonly string[],
 ): boolean => keys.every((key) => Object.hasOwn(item, key));
+
+const hasOnlyConfigKeys = (
+  item: Record<string, unknown>,
+  keys: readonly string[],
+): boolean => Object.keys(item).every((key) => keys.includes(key));
+
+const isColorCode = (item: unknown): item is string =>
+  typeof item === "string" && COLOR_CODE_PATTERN.test(item);
+
+const isRegexSource = (item: unknown): item is string => {
+  if (typeof item !== "string") return false;
+  try {
+    new RegExp(item);
+    return true;
+  } catch {
+    return false;
+  }
+};
 
 const isBoundedNumberConfigItem = (
   item: unknown,
@@ -264,6 +299,83 @@ const isValidCommentLimit = (item: unknown): boolean =>
     integer: true,
   });
 
+const isValidColors = (item: unknown): boolean =>
+  isPlainRecord(item) && Object.values(item).every(isColorCode);
+
+const isValidFlashChar = (item: unknown): boolean =>
+  isPlainRecord(item) &&
+  hasConfigKeys(item, FLASH_CHAR_KEYS) &&
+  FLASH_CHAR_KEYS.every((key) => isRegexSource(item[key]));
+
+const isValidFlashMode = (item: unknown): boolean =>
+  item === "xp" || item === "vista";
+
+const isValidFlashScriptChar = (item: unknown): boolean =>
+  isPlainRecord(item) &&
+  hasConfigKeys(item, FLASH_SCRIPT_CHAR_KEYS) &&
+  FLASH_SCRIPT_CHAR_KEYS.every((key) => isRegexSource(item[key]));
+
+const isValidFontFamily = (item: unknown): boolean =>
+  typeof item === "string" && item.length > 0;
+
+const isValidFontItem = (item: unknown): boolean =>
+  isPlainRecord(item) &&
+  isValidFontFamily(item.font) &&
+  isFiniteNumberInRange(item.offset, {
+    min: -MAX_CONFIG_SPACING,
+    max: MAX_CONFIG_SPACING,
+  }) &&
+  isFiniteNumberInRange(item.weight, {
+    min: Number.MIN_VALUE,
+    max: 1000,
+  });
+
+const isValidFonts = (item: unknown): boolean => {
+  if (!isPlainRecord(item) || !hasConfigKeys(item, ["flash", "html5"])) {
+    return false;
+  }
+  const flash = item.flash;
+  if (!isPlainRecord(flash) || !hasConfigKeys(flash, FLASH_FONT_KEYS)) {
+    return false;
+  }
+  if (!FLASH_FONT_KEYS.every((key) => isValidFontFamily(flash[key]))) {
+    return false;
+  }
+  const html5 = item.html5;
+  if (!isPlainRecord(html5) || !hasConfigKeys(html5, HTML5_FONT_KEYS)) {
+    return false;
+  }
+  return HTML5_FONT_KEYS.every((key) => isValidFontItem(html5[key]));
+};
+
+const isValidCompatSpacerFontMap = (
+  item: unknown,
+  keys: readonly string[],
+): boolean => {
+  if (!isPlainRecord(item) || !hasOnlyConfigKeys(item, keys)) return false;
+  return Object.values(item).every((value) =>
+    isFiniteNumberInRange(value, { max: MAX_CONFIG_RATIO }),
+  );
+};
+
+const isValidCompatSpacerKey = (key: string): boolean => key.length === 1;
+
+const isValidCompatSpacerGroup = (
+  item: unknown,
+  keys: readonly string[],
+): boolean =>
+  isPlainRecord(item) &&
+  Object.entries(item).every(
+    ([key, value]) =>
+      isValidCompatSpacerKey(key) && isValidCompatSpacerFontMap(value, keys),
+  );
+
+const isValidCompatSpacer = (item: unknown): boolean =>
+  isPlainRecord(item) &&
+  hasConfigKeys(item, ["flash", "html5"]) &&
+  isValidCompatSpacerGroup(item.flash, FLASH_SPACER_FONT_KEYS) &&
+  isValidCompatSpacerGroup(item.html5, HTML5_FONT_KEYS);
+
 const isValidConfig = (item: unknown): boolean => {
   if (!isRecord(item)) return false;
   const validators: Record<string, (i: unknown) => boolean> = {
@@ -282,6 +394,7 @@ const isValidConfig = (item: unknown): boolean => {
     atButtonRadius: isBoundedSpacing,
     collisionPadding: isBoundedSpacing,
     collisionRange: isBoundedCollisionRange,
+    colors: isValidColors,
     commentDrawPadding: (i) =>
       isFiniteNumberInRange(i, { max: MAX_CANVAS_DIMENSION }),
     commentDrawRange: (i) =>
@@ -300,10 +413,16 @@ const isValidConfig = (item: unknown): boolean => {
       isBoundedNumberConfigItem(i, (value) =>
         isFiniteNumberInRange(value, { max: MAX_CONFIG_SPACING }),
       ),
+    contextStrokeColor: isColorCode,
+    contextStrokeInversionColor: isColorCode,
     contextStrokeOpacity: (i) => isFiniteNumberInRange(i, { max: 1 }),
     contextFillLiveOpacity: (i) => isFiniteNumberInRange(i, { max: 1 }),
+    compatSpacer: isValidCompatSpacer,
+    fonts: isValidFonts,
+    flashChar: isValidFlashChar,
     flashLetterSpacing: (i) =>
       isFiniteNumberInRange(i, { max: MAX_CONFIG_SPACING }),
+    flashMode: isValidFlashMode,
     flashCommentYPaddingTop: (i) => isBoundedResizedItem(i, isBoundedSpacing),
     flashCommentYOffset: (i) =>
       isBoundedSizeItem(i, (sizeValue) =>
@@ -319,6 +438,7 @@ const isValidConfig = (item: unknown): boolean => {
       ),
     flashScriptCharOffset: (i) =>
       isFiniteNumberInRange(i, { max: MAX_CONFIG_RATIO }),
+    flashScriptChar: isValidFlashScriptChar,
     flashThreshold: (i) =>
       isFiniteNumberInRange(i, { max: MAX_UNIX_TIME_SECONDS }),
     fontSize: isBoundedFontSizeConfig,
@@ -399,7 +519,7 @@ const typeGuard = {
     if (!document.documentElement.children) return false;
     for (const element of Array.from(document.documentElement.children)) {
       if (element?.nodeName !== "chat") continue;
-      if (!typeAttributeVerify(element, ["vpos", "date"])) return false;
+      if (!typeAttributeVerify(element, ["vpos"])) return false;
     }
     return true;
   },
@@ -416,6 +536,7 @@ const typeGuard = {
           check((i) => {
             const lists = i.split(/\r\n|\r|\n/);
             for (const list of lists) {
+              if (list.trim() === "") continue;
               if (list.split(":").length < 3) {
                 return false;
               }

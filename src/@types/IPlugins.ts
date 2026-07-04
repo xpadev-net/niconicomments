@@ -15,6 +15,13 @@ export interface IPlugin {
   draw?: (vpos: number) => boolean | undefined;
   addComments?: (comments: IComment[]) => void;
   transformComments?: (comments: IComment[]) => IComment[];
+  /**
+   * Release plugin-owned resources before the plugin canvas is destroyed.
+   *
+   * Implementations must be idempotent because NiconiComments.destroy() may be
+   * called repeatedly by SPA lifecycles.
+   */
+  destroy?: () => void;
 }
 
 export type IPluginList = {

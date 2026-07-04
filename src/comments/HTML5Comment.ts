@@ -8,6 +8,7 @@ import type {
   MeasureInput,
   MeasureTextInput,
   MeasureTextResult,
+  Position,
 } from "@/@types/";
 import type { CommentInstanceContext } from "@/contexts/";
 import { TypeGuardError } from "@/errors/TypeGuardError";
@@ -36,6 +37,11 @@ const HTML5_COMMENT_IMAGE_PADDING = 4;
 const MAX_HTML5_COMMENT_IMAGE_WIDTH = 8192 - HTML5_COMMENT_IMAGE_PADDING * 2;
 const MAX_HTML5_COMMENT_IMAGE_HEIGHT = 8192 - HTML5_COMMENT_IMAGE_PADDING * 2;
 const MAX_HTML5_COMMENT_IMAGE_AREA = MAX_CANVAS_AREA;
+
+type TextImageBounds = {
+  height: number;
+  paddingTop: number;
+};
 
 const clampHTML5Content = (input: string) => {
   let lineCount = 1;
@@ -71,6 +77,11 @@ const isWithinImageBounds = (width: number, height: number) => {
 
 class HTML5Comment extends BaseComment {
   override readonly pluginName: string = "HTML5Comment";
+  private readonly textImageBoundsCache = new WeakMap<
+    object,
+    TextImageBounds
+  >();
+
   constructor(
     comment: FormattedComment,
     context: IRenderer,
@@ -301,58 +312,45 @@ class HTML5Comment extends BaseComment {
     };
 
     if (baseCharSize >= 1) {
-      let low = Math.max(1, Math.floor(legacyBaseCharSize * 0.5));
-      let high = Math.max(low, Math.ceil(legacyBaseCharSize * 1.5));
-      let best = legacyBaseCharSize;
-      let bestResult = getLegacyMeasured(legacyBaseCharSize);
-      if (bestResult.width > widthLimit) {
-        high = legacyBaseCharSize;
+      let resizedCharSize = legacyBaseCharSize;
+      let resizedLineHeight = legacyBaseLineHeight;
+      let result = getLegacyMeasured(resizedCharSize);
+      if (result.width > widthLimit) {
         let remainingIterations = MAX_RESIZE_ITERATIONS;
-        while (remainingIterations-- > 0) {
-          const candidate = getLegacyMeasured(low);
-          const nextLow = Math.max(1, Math.floor(low * 0.5));
-          if (candidate.width <= widthLimit || nextLow === low) {
-            best = low;
-            bestResult = candidate;
-            break;
-          }
-          high = low;
-          low = nextLow;
+        while (
+          result.width > widthLimit &&
+          resizedCharSize > 1 &&
+          remainingIterations-- > 0
+        ) {
+          const originalCharSize = resizedCharSize;
+          resizedCharSize = Math.max(1, resizedCharSize - 1);
+          resizedLineHeight *= resizedCharSize / originalCharSize;
+          workComment.lineHeight = resizedLineHeight;
+          result = getLegacyMeasured(resizedCharSize);
         }
       } else {
+        let lastCharSize = resizedCharSize;
+        let lastLineHeight = resizedLineHeight;
         let remainingIterations = MAX_RESIZE_ITERATIONS;
-        while (remainingIterations-- > 0) {
-          const candidate = getLegacyMeasured(high);
-          if (candidate.width > widthLimit) break;
-          best = high;
-          bestResult = candidate;
-          const nextHigh = Math.ceil(high * 1.5);
-          if (nextHigh === high) break;
-          high = nextHigh;
+        while (result.width < widthLimit && remainingIterations-- > 0) {
+          lastCharSize = resizedCharSize;
+          lastLineHeight = resizedLineHeight;
+          const originalCharSize = resizedCharSize;
+          resizedCharSize += 1;
+          resizedLineHeight *= resizedCharSize / originalCharSize;
+          workComment.lineHeight = resizedLineHeight;
+          result = getLegacyMeasured(resizedCharSize);
         }
-      }
-      if (bestResult.width <= widthLimit && low < high) {
-        let left = best;
-        let right = high;
-        while (left <= right) {
-          const mid = Math.floor((left + right) / 2);
-          const candidate = getLegacyMeasured(mid);
-          if (candidate.width <= widthLimit) {
-            best = mid;
-            bestResult = candidate;
-            left = mid + 1;
-          } else {
-            right = mid - 1;
-          }
-        }
+        resizedCharSize = lastCharSize;
+        resizedLineHeight = lastLineHeight;
       }
       if (comment.resizedY) {
-        const resizeScale = best / (comment.charSize ?? 1);
+        const resizeScale = resizedCharSize / (comment.charSize ?? 1);
         comment.charSize = resizeScale * charSize;
         comment.lineHeight = resizeScale * lineHeight;
       } else {
-        comment.charSize = best;
-        comment.lineHeight = legacyBaseLineHeight * (best / legacyBaseCharSize);
+        comment.charSize = resizedCharSize;
+        comment.lineHeight = resizedLineHeight;
       }
       comment.fontSize = (comment.charSize ?? 0) * 0.8;
       return measure(
@@ -465,7 +463,42 @@ class HTML5Comment extends BaseComment {
   }
 
   protected override canGenerateTextImage(): boolean {
-    return isWithinImageBounds(this.comment.width, this.comment.height);
+    return isWithinImageBounds(
+      this.comment.width,
+      this.getTextImageBounds().height,
+    );
+  }
+
+  private getTextImageBounds() {
+    const cached = this.textImageBoundsCache.get(this.comment);
+    if (cached !== undefined) return cached;
+    const { scale } = getFontSizeAndScale(this.comment.charSize, this.config);
+    const paddingTop =
+      (10 - scale * 10) *
+      ((this.comment.lineCount + 1) / this.config.html5HiResCommentCorrection);
+    const layerScale = this.comment.layer === -1 ? this.ctx.options.scale : 1;
+    const paddingTopHeight =
+      this.comment.lineHeight *
+      paddingTop *
+      getConfig(this.config.commentScale, false) *
+      layerScale;
+    const bounds = {
+      height: this.comment.height + paddingTopHeight,
+      paddingTop: paddingTopHeight,
+    };
+    this.textImageBoundsCache.set(this.comment, bounds);
+    return bounds;
+  }
+
+  protected override _draw(posX: number, posY: number, cursor?: Position) {
+    const bounds = this.getTextImageBounds();
+    // Owner fixed comments resized by NicoScript replacement match v0.3.0
+    // vertical placement; applying the padding offset shifts them too high.
+    const drawY =
+      this.comment.owner && this.comment.resizedX
+        ? posY
+        : posY - bounds.paddingTop;
+    super._draw(posX, drawY, cursor);
   }
 
   override _generateTextImage(): IRenderer {
@@ -481,35 +514,42 @@ class HTML5Comment extends BaseComment {
       scale *
       (this.comment.layer === -1 ? this.ctx.options.scale : 1);
     const image = this.renderer.getCanvas(HTML5_COMMENT_IMAGE_PADDING);
-    image.setSize(this.comment.width, this.comment.height);
-    image.setStrokeStyle(getStrokeColor(this.comment, this.config));
-    image.setFillStyle(this.comment.color);
-    image.setLineWidth(getConfig(this.config.contextLineWidth, false));
-    image.setFont(parseFont(this.comment.font, fontSize, this.config));
-    image.setScale(drawScale);
-    let lineCount = 0;
-    if (!typeGuard.internal.HTML5Fonts(this.comment.font))
-      throw new TypeGuardError();
-    const offsetY =
-      (this.comment.charSize - this.comment.lineHeight) / 2 +
-      this.comment.lineHeight * -0.16 +
-      (this.config.fonts.html5[this.comment.font]?.offset || 0);
-    for (const item of this.comment.content) {
-      if (item?.type === "spacer") {
-        lineCount += item.count * item.charWidth * this.comment.fontSize;
-        continue;
+    try {
+      image.setSize(this.comment.width, this.getTextImageBounds().height);
+      image.setStrokeStyle(getStrokeColor(this.comment, this.config));
+      image.setFillStyle(this.comment.color);
+      image.setLineWidth(getConfig(this.config.contextLineWidth, false));
+      image.setFont(parseFont(this.comment.font, fontSize, this.config));
+      image.setScale(drawScale);
+      let lineCount = 0;
+      if (!typeGuard.internal.HTML5Fonts(this.comment.font))
+        throw new TypeGuardError();
+      const offsetY =
+        (this.comment.charSize - this.comment.lineHeight) / 2 +
+        this.comment.lineHeight * -0.16 +
+        (this.config.fonts.html5[this.comment.font]?.offset || 0);
+      for (const item of this.comment.content) {
+        if (item?.type === "spacer") {
+          lineCount += item.count * item.charWidth * this.comment.fontSize;
+          continue;
+        }
+        const lines = item.slicedContent;
+        for (let j = 0, n = lines.length; j < n; j++) {
+          const line = lines[j];
+          if (line === undefined) continue;
+          const posY =
+            (this.comment.lineHeight * (lineCount + 1 + paddingTop) + offsetY) /
+            scale;
+          image.strokeText(line, 0, posY);
+          image.fillText(line, 0, posY);
+          lineCount += 1;
+        }
       }
-      const lines = item.slicedContent;
-      for (let j = 0, n = lines.length; j < n; j++) {
-        const line = lines[j];
-        if (line === undefined) continue;
-        const posY =
-          (this.comment.lineHeight * (lineCount + 1 + paddingTop) + offsetY) /
-          scale;
-        image.strokeText(line, 0, posY);
-        image.fillText(line, 0, posY);
-        lineCount += 1;
+    } catch (e) {
+      if (typeof image.destroy === "function") {
+        image.destroy();
       }
+      throw e;
     }
     return image;
   }

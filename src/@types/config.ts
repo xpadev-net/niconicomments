@@ -104,4 +104,10 @@ export type BaseConfig = {
   };
 };
 
+/**
+ * Instance config overrides are shallow: each provided top-level key replaces
+ * the matching default config value. Nested objects are full replacements and
+ * must contain the complete structure described by BaseConfig, except where
+ * BaseConfig itself marks nested entries as partial.
+ */
 export type Config = Partial<BaseConfig>;

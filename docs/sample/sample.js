@@ -1,12 +1,14 @@
-const DEFAULT_NC_VERSION = "0.2.78";
+const DEFAULT_NC_VERSION = "0.3.1";
 const DEFAULT_PLUGIN_VERSION = "0.0.13";
 const DEFAULT_NIWANGO_VERSION = "0.0.1-canary.20231002-1";
+// Manual local-development switch; do not derive this from URL query params.
+const USE_LOCAL_NC_DEV_BUILD = false;
 const NC_DEV_URL =
   "https://cdn.jsdelivr.net/gh/xpadev-net/niconicomments@dev-build/dist/bundle.js";
 const MAX_VERSION_LENGTH = 64;
 const VERSION_PARAM_CONFIG = {
   ncVersion: {
-    aliases: new Set(["dev"]),
+    aliases: new Set(),
     defaultValue: DEFAULT_NC_VERSION,
   },
   pluginVersion: {
@@ -89,6 +91,7 @@ let video = Number(urlParams.get("video") || 0),
   noVideo = !!urlParams.get("novideo"),
   time = Number(urlParams.get("time") || -1);
 const ncVersion = readVersionParam("ncVersion");
+const selectedNcVersion = USE_LOCAL_NC_DEV_BUILD ? "dev" : ncVersion;
 const pluginVersion = readVersionParam("pluginVersion");
 const niwangoVersion = readVersionParam("niwangoVersion");
 
@@ -115,9 +118,9 @@ const loadScript = (src) =>
 
 const encodeVersionForUrl = (value) => encodeURIComponent(value);
 const getNCUrl = (v) =>
-  v === "dev"
+  USE_LOCAL_NC_DEV_BUILD
     ? NC_DEV_URL
-    : `https://cdn.jsdelivr.net/npm/@xpadev-net/niconicomments@${encodeVersionForUrl(v)}/dist/bundle.min.js`;
+    : `https://cdn.jsdelivr.net/npm/@xpadev-net/niconicomments@${encodeVersionForUrl(v)}/dist/bundle.js`;
 const getPluginUrl = (v) =>
   `https://cdn.jsdelivr.net/npm/@xpadev-net/niconicomments-plugin-niwango@${encodeVersionForUrl(v)}/dist/bundle.min.js`;
 const getNiwangoUrl = (v) =>
@@ -129,15 +132,15 @@ const scriptsLoaded = new Promise((resolve) => {
   resolveScripts = resolve;
 });
 Promise.all([
-  loadScript(getNCUrl(ncVersion)),
+  loadScript(getNCUrl(selectedNcVersion)),
   loadScript(getPluginUrl(pluginVersion)),
   loadScript(getNiwangoUrl(niwangoVersion)),
 ])
   .then(resolveScripts)
   .catch((err) => {
     console.error("Failed to load scripts:", err, {
-      ncVersion,
-      ncUrl: getNCUrl(ncVersion),
+      ncVersion: selectedNcVersion,
+      ncUrl: getNCUrl(selectedNcVersion),
       pluginVersion,
       pluginUrl: getPluginUrl(pluginVersion),
       niwangoVersion,
@@ -445,7 +448,10 @@ const ensureVersionOption = (selectEl, version) => {
   selectEl.value = version;
 };
 
-ensureVersionOption(ncVersionElement, ncVersion);
+if (!USE_LOCAL_NC_DEV_BUILD) {
+  ncVersionElement.querySelector('option[value="dev"]')?.remove();
+}
+ensureVersionOption(ncVersionElement, selectedNcVersion);
 ensureVersionOption(pluginVersionElement, pluginVersion);
 ensureVersionOption(niwangoVersionElement, niwangoVersion);
 controlRendererElement.value = rendererType;
@@ -474,6 +480,7 @@ const appendVersionOptions = (selectEl, versions, currentVersion) => {
     opt.value = ver;
     opt.text = ver;
     selectEl.appendChild(opt);
+    existingValues.add(ver);
   }
   selectEl.value = currentVersion;
 };
@@ -483,7 +490,7 @@ Promise.all([
   fetchVersions("@xpadev-net/niconicomments-plugin-niwango"),
   fetchVersions("@xpadev-net/niwango"),
 ]).then(([ncVersions, pluginVersions, niwangoVersions]) => {
-  appendVersionOptions(ncVersionElement, ncVersions, ncVersion);
+  appendVersionOptions(ncVersionElement, ncVersions, selectedNcVersion);
   appendVersionOptions(pluginVersionElement, pluginVersions, pluginVersion);
   appendVersionOptions(niwangoVersionElement, niwangoVersions, niwangoVersion);
 });
@@ -509,7 +516,7 @@ const showScriptError = (message) => {
     "color:#fff;padding:12px 16px;font-family:monospace;font-size:13px;";
   el.textContent =
     message ||
-    `Script load failed (ncVersion=${ncVersion}, pluginVersion=${pluginVersion}, niwangoVersion=${niwangoVersion}). Check version selectors.`;
+    `Script load failed (ncVersion=${selectedNcVersion}, pluginVersion=${pluginVersion}, niwangoVersion=${niwangoVersion}). Check version selectors.`;
   document.body.appendChild(el);
 };
 

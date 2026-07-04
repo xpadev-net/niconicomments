@@ -1,4 +1,8 @@
-import type { FormattedComment, InputParser } from "@/@types";
+import {
+  type FormattedComment,
+  type InputParser,
+  toFiniteNumberInRange,
+} from "@/@types";
 import { InvalidFormatError } from "@/errors";
 import typeGuard from "@/typeGuard";
 
@@ -17,10 +21,10 @@ export const LegacyOwnerParser: InputParser = {
  */
 const fromLegacyOwner = (data: string): FormattedComment[] => {
   const data_: FormattedComment[] = [];
-  const comments = data.split("\n");
+  const comments = data.split(/\r\n|\r|\n/);
   for (let i = 0, n = comments.length; i < n; i++) {
-    const value = comments[i];
-    if (!value) continue;
+    const value = comments[i] ?? "";
+    if (value.trim() === "") continue;
     const commentData = value.split(":");
     if (commentData.length < 3) {
       continue;
@@ -30,9 +34,13 @@ const fromLegacyOwner = (data: string): FormattedComment[] => {
         commentData[2] += `:${commentData[j]}`;
       }
     }
+    const seconds = toFiniteNumberInRange(commentData[0], {
+      max: Math.floor(Number.MAX_SAFE_INTEGER / 100),
+    });
+    if (seconds === undefined) continue;
     const tmpParam: FormattedComment = {
       id: i,
-      vpos: Number(commentData[0]) * 100,
+      vpos: seconds * 100,
       content: commentData[2] ?? "",
       date: i,
       date_usec: 0,

@@ -71,6 +71,7 @@ class CanvasRenderer implements IRenderer {
   /** プールから取得した canvas かどうか (destroy 時にプールに返却するため) */
   private readonly pooled: boolean;
   private readonly _onDestroy?: () => void;
+  private _destroyed = false;
 
   constructor(
     canvas?: HTMLCanvasElement,
@@ -187,6 +188,16 @@ class CanvasRenderer implements IRenderer {
         width * transform.a,
         height * transform.d,
       );
+    } finally {
+      this.context.restore();
+    }
+  }
+
+  clear(): void {
+    this.context.save();
+    try {
+      this.context.setTransform(1, 0, 0, 1, 0, 0);
+      this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     } finally {
       this.context.restore();
     }
@@ -329,6 +340,8 @@ class CanvasRenderer implements IRenderer {
   }
 
   destroy() {
+    if (this._destroyed) return;
+    this._destroyed = true;
     this._onDestroy?.();
     if (this.pooled) {
       canvasPool.release(this.canvas);

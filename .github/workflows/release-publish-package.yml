@@ -47,6 +47,10 @@ jobs:
     permissions:
       contents: write # Create the GitHub release for the published ref.
     steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          persist-credentials: false
+
       - name: Validate release ref
         run: |
           if [ "${GITHUB_REF}" != "refs/heads/master" ]; then
@@ -54,11 +58,24 @@ jobs:
             exit 1
           fi
 
+      - name: Resolve release tag
+        id: release-meta
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          if [[ ! "${VERSION}" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$ ]]; then
+            echo "::error::Unsupported package version ${VERSION}"
+            exit 1
+          fi
+
+          echo "tag=v${VERSION}" >> "${GITHUB_OUTPUT}"
+          echo "name=Release v${VERSION}" >> "${GITHUB_OUTPUT}"
+
       - name: Create GitHub release
         uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b
         with:
-          tag_name: ${{ github.ref_name }}
-          name: Release ${{ github.ref_name }}
+          tag_name: ${{ steps.release-meta.outputs.tag }}
+          name: ${{ steps.release-meta.outputs.name }}
+          target_commitish: ${{ github.sha }}
           draft: false
           prerelease: false
           generate_release_notes: true

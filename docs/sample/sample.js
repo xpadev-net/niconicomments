@@ -1,4 +1,4 @@
-const DEFAULT_NC_VERSION = "0.3.0";
+const DEFAULT_NC_VERSION = "0.3.1";
 const DEFAULT_PLUGIN_VERSION = "0.0.13";
 const DEFAULT_NIWANGO_VERSION = "0.0.1-canary.20231002-1";
 // Manual local-development switch; do not derive this from URL query params.

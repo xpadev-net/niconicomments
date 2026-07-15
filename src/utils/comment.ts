@@ -210,6 +210,31 @@ const getMovableCommentActiveRange = (comment: IComment) => ({
   end: comment.vpos + comment.long + 125,
 });
 
+const getMovableCommentCollisionRange = (
+  comment: IComment,
+  activeRange: ReturnType<typeof getMovableCommentActiveRange>,
+  config: BaseConfig,
+  speed: number,
+) => {
+  const initialLeft = config.commentDrawPadding + config.commentDrawRange;
+  return {
+    start: Math.max(
+      activeRange.start,
+      comment.vpos - 100 + (initialLeft - config.collisionRange.right) / speed,
+    ),
+    end: Math.min(
+      activeRange.end,
+      comment.vpos -
+        100 +
+        (initialLeft +
+          comment.width +
+          config.collisionPadding -
+          config.collisionRange.left) /
+          speed,
+    ),
+  };
+};
+
 const forEachMovableCollisionBucket = (
   comment: IComment,
   callback: (bucket: number) => void,
@@ -242,34 +267,43 @@ const registerMovableCollisionComment = (
 
 const doMovableTrajectoriesIntersect = (
   comment: IComment,
+  commentCollisionRange: ReturnType<typeof getMovableCommentCollisionRange>,
+  commentSpeed: number,
   candidate: IComment,
   config: BaseConfig,
 ) => {
-  const commentRange = getMovableCommentActiveRange(comment);
-  const candidateRange = getMovableCommentActiveRange(candidate);
-  const sharedStart = Math.max(commentRange.start, candidateRange.start);
-  const sharedEnd = Math.min(commentRange.end, candidateRange.end);
-  if (sharedStart >= sharedEnd) return false;
-
-  const commentSpeed =
-    (config.commentDrawRange + comment.width * config.nakaCommentSpeedOffset) /
-    (comment.long + 100);
   const candidateSpeed =
     (config.commentDrawRange +
       candidate.width * config.nakaCommentSpeedOffset) /
     (candidate.long + 100);
-  const getRelativeLeft = (vpos: number) =>
-    (vpos - candidate.vpos + 100) * candidateSpeed -
-    (vpos - comment.vpos + 100) * commentSpeed;
-  const relativeAtStart = getRelativeLeft(sharedStart);
-  const relativeAtEnd = getRelativeLeft(sharedEnd);
+  const candidateCollisionRange = getMovableCommentCollisionRange(
+    candidate,
+    getMovableCommentActiveRange(candidate),
+    config,
+    candidateSpeed,
+  );
+  const sharedStart = Math.max(
+    commentCollisionRange.start,
+    candidateCollisionRange.start,
+  );
+  const sharedEnd = Math.min(
+    commentCollisionRange.end,
+    candidateCollisionRange.end,
+  );
+  if (sharedStart >= sharedEnd) return false;
+
+  const getCandidateLeftRelativeToComment = (vpos: number) =>
+    (vpos - comment.vpos + 100) * commentSpeed -
+    (vpos - candidate.vpos + 100) * candidateSpeed;
+  const relativeAtStart = getCandidateLeftRelativeToComment(sharedStart);
+  const relativeAtEnd = getCandidateLeftRelativeToComment(sharedEnd);
   const minRelativeLeft = Math.min(relativeAtStart, relativeAtEnd);
   const maxRelativeLeft = Math.max(relativeAtStart, relativeAtEnd);
   const padding = config.collisionPadding;
 
   return (
-    minRelativeLeft <= candidate.width + padding &&
-    maxRelativeLeft >= -(comment.width + padding)
+    minRelativeLeft <= comment.width + padding &&
+    maxRelativeLeft >= -(candidate.width + padding)
   );
 };
 
@@ -283,6 +317,16 @@ const getAnalyticMovableCollisionCandidates = (
   if (index.durations.size === 1 && index.durations.has(comment.long)) {
     return undefined;
   }
+  const commentRange = getMovableCommentActiveRange(comment);
+  const commentSpeed =
+    (config.commentDrawRange + comment.width * config.nakaCommentSpeedOffset) /
+    (comment.long + 100);
+  const commentCollisionRange = getMovableCommentCollisionRange(
+    comment,
+    commentRange,
+    config,
+    commentSpeed,
+  );
   const seen = new Set<IComment>();
   const candidates: IComment[] = [];
   forEachMovableCollisionBucket(comment, (bucket) => {
@@ -297,7 +341,15 @@ const getAnalyticMovableCollisionCandidates = (
         continue;
       }
       seen.add(candidate);
-      if (doMovableTrajectoriesIntersect(comment, candidate, config)) {
+      if (
+        doMovableTrajectoriesIntersect(
+          comment,
+          commentCollisionRange,
+          commentSpeed,
+          candidate,
+          config,
+        )
+      ) {
         candidates.push(candidate);
       }
     }

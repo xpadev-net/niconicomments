@@ -90,6 +90,32 @@ describe("movable comment collision", () => {
     expect(muchLaterNormal.posY).toBe(0);
   });
 
+  test("allows comments that overlap only outside the collision judgment region to share a row", () => {
+    const collision = createCollision();
+    const timeline: Timeline = {};
+    const earlierSlow = createMovableComment(1, 0, 600, { width: 50 });
+    const laterNormal = createMovableComment(2, 365, 300, { width: 50 });
+
+    process(earlierSlow, collision, timeline);
+    process(laterNormal, collision, timeline);
+
+    expect(earlierSlow.posY).toBe(0);
+    expect(laterNormal.posY).toBe(0);
+  });
+
+  test("separates unequal-width mixed-duration comments that collide inside the judgment region", () => {
+    const collision = createCollision();
+    const timeline: Timeline = {};
+    const widerSlow = createMovableComment(1, 0, 600, { width: 200 });
+    const narrowNormal = createMovableComment(2, 305, 300, { width: 20 });
+
+    process(widerSlow, collision, timeline);
+    process(narrowNormal, collision, timeline);
+
+    expect(widerSlow.posY).toBe(0);
+    expect(narrowNormal.posY).toBe(widerSlow.height);
+  });
+
   test("preserves sampled-line collision placement for equal custom durations", () => {
     const collision = createCollision();
     const timeline: Timeline = {};

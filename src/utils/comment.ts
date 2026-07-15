@@ -180,6 +180,131 @@ const hasParsedMailCommand = (commands: string[], target: string) => {
 
 const processedTimelineComments = new WeakMap<IComment, WeakSet<Timeline>>();
 
+const MOVABLE_COLLISION_BUCKET_SIZE = 100;
+
+type MovableCollisionIndex = {
+  buckets: Map<number, IComment[]>;
+  durations: Set<number>;
+  registeredComments: WeakSet<IComment>;
+};
+
+const movableCollisionIndexes = new WeakMap<Collision, MovableCollisionIndex>();
+
+const getMovableCollisionIndex = (collision: Collision) => {
+  const current = movableCollisionIndexes.get(collision);
+  if (current) return current;
+  const created: MovableCollisionIndex = {
+    buckets: new Map(),
+    durations: new Set(),
+    registeredComments: new WeakSet(),
+  };
+  movableCollisionIndexes.set(collision, created);
+  return created;
+};
+
+const getMovableCommentBeforeVpos = (comment: IComment) =>
+  Math.round(-288 / ((1632 + comment.width) / (comment.long + 125))) - 100;
+
+const getMovableCommentActiveRange = (comment: IComment) => ({
+  start: comment.vpos + getMovableCommentBeforeVpos(comment),
+  end: comment.vpos + comment.long + 125,
+});
+
+const forEachMovableCollisionBucket = (
+  comment: IComment,
+  callback: (bucket: number) => void,
+) => {
+  const { start, end } = getMovableCommentActiveRange(comment);
+  const firstBucket = Math.floor(start / MOVABLE_COLLISION_BUCKET_SIZE);
+  const lastBucket = Math.floor((end - 1) / MOVABLE_COLLISION_BUCKET_SIZE);
+  for (let bucket = firstBucket; bucket <= lastBucket; bucket++) {
+    callback(bucket);
+  }
+};
+
+const registerMovableCollisionComment = (
+  collision: Collision,
+  comment: IComment,
+) => {
+  const index = getMovableCollisionIndex(collision);
+  if (index.registeredComments.has(comment)) return;
+  index.registeredComments.add(comment);
+  index.durations.add(comment.long);
+  forEachMovableCollisionBucket(comment, (bucket) => {
+    const comments = index.buckets.get(bucket);
+    if (comments) {
+      comments.push(comment);
+    } else {
+      index.buckets.set(bucket, [comment]);
+    }
+  });
+};
+
+const doMovableTrajectoriesIntersect = (
+  comment: IComment,
+  candidate: IComment,
+  config: BaseConfig,
+) => {
+  const commentRange = getMovableCommentActiveRange(comment);
+  const candidateRange = getMovableCommentActiveRange(candidate);
+  const sharedStart = Math.max(commentRange.start, candidateRange.start);
+  const sharedEnd = Math.min(commentRange.end, candidateRange.end);
+  if (sharedStart >= sharedEnd) return false;
+
+  const commentSpeed =
+    (config.commentDrawRange + comment.width * config.nakaCommentSpeedOffset) /
+    (comment.long + 100);
+  const candidateSpeed =
+    (config.commentDrawRange +
+      candidate.width * config.nakaCommentSpeedOffset) /
+    (candidate.long + 100);
+  const getRelativeLeft = (vpos: number) =>
+    (vpos - candidate.vpos + 100) * candidateSpeed -
+    (vpos - comment.vpos + 100) * commentSpeed;
+  const relativeAtStart = getRelativeLeft(sharedStart);
+  const relativeAtEnd = getRelativeLeft(sharedEnd);
+  const minRelativeLeft = Math.min(relativeAtStart, relativeAtEnd);
+  const maxRelativeLeft = Math.max(relativeAtStart, relativeAtEnd);
+  const padding = config.collisionPadding;
+
+  return (
+    minRelativeLeft <= candidate.width + padding &&
+    maxRelativeLeft >= -(comment.width + padding)
+  );
+};
+
+const getAnalyticMovableCollisionCandidates = (
+  comment: IComment,
+  collision: Collision,
+  config: BaseConfig,
+) => {
+  const index = getMovableCollisionIndex(collision);
+  if (index.durations.size === 0) return undefined;
+  if (index.durations.size === 1 && index.durations.has(comment.long)) {
+    return undefined;
+  }
+  const seen = new Set<IComment>();
+  const candidates: IComment[] = [];
+  forEachMovableCollisionBucket(comment, (bucket) => {
+    const bucketComments = index.buckets.get(bucket);
+    if (!bucketComments) return;
+    for (const candidate of bucketComments) {
+      if (
+        seen.has(candidate) ||
+        candidate === comment ||
+        candidate.long === comment.long
+      ) {
+        continue;
+      }
+      seen.add(candidate);
+      if (doMovableTrajectoriesIntersect(comment, candidate, config)) {
+        candidates.push(candidate);
+      }
+    }
+  });
+  return candidates;
+};
+
 type TimedRange = {
   start: number;
   end: number;
@@ -1108,8 +1233,7 @@ const processMovableComment = (
   const collisionRight = config.collisionRange.right;
   const collisionLeft = config.collisionRange.left;
 
-  const beforeVpos =
-    Math.round(-288 / ((1632 + commentWidth) / (commentLong + 125))) - 100;
+  const beforeVpos = getMovableCommentBeforeVpos(comment);
   const posY = lazy
     ? -1
     : getMovablePosY(comment, collision, beforeVpos, config, speed);
@@ -1136,6 +1260,7 @@ const processMovableComment = (
     markTimelineProcessed(timeline, comment);
   }
   comment.posY = posY;
+  registerMovableCollisionComment(collision, comment);
 };
 
 const getFixedPosY = (
@@ -1183,6 +1308,11 @@ const getMovablePosY = (
   const collisionRight = config.collisionRange.right;
   const collisionLeft = config.collisionRange.left;
   const n = commentLong + 125;
+  const analyticCandidates = getAnalyticMovableCollisionCandidates(
+    comment,
+    collision,
+    config,
+  );
 
   let posY = 0;
   let isChanged = true;
@@ -1191,6 +1321,10 @@ const getMovablePosY = (
   while (isChanged && count < 10) {
     isChanged = false;
     count++;
+    const analyticResult = getPosY(posY, comment, analyticCandidates, config);
+    posY = analyticResult.currentPos;
+    isChanged ||= analyticResult.isChanged;
+    if (analyticResult.isBreak) return posY;
     for (let j = beforeVpos; j < n; j += 5) {
       const vpos = commentVpos + j;
       const leftPos = drawPadding + drawRange - (j + 100) * speed;

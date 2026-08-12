@@ -45,3 +45,28 @@ Prevention:
 
 Evidence:
 - Focused movable-collision tests pass 10/10, including widths 200/20 with asymmetric start times; TypeScript and Biome checks pass.
+
+## 2026-08-12 — Preserve local indentation during repeated workflow pin edits  [tags: validation, ci]
+
+Context:
+- Plan: `docs/coding-agent/plans/active/consolidate-green-non-typescript-dependency-updates-plan.md`
+- Task/Wave: Task_1 / Wave 1
+- Roles involved: Orchestrator | Worker
+
+Symptom:
+- The first repeated checkout pin replacement changed indentation in one non-uniform workflow step, causing YAML parsing to fail.
+
+Root cause:
+- The replacement assumed every checkout step used the same leading whitespace, but `pr-test-codeql-analysis.yml` has a structurally different checkout step.
+
+Fix applied:
+- Restored the original indentation for that step and reran YAML parsing across every workflow successfully.
+
+Prevention:
+- Dispatch/plan guardrail:
+  - Preserve each matched workflow line's existing indentation during repeated pin updates and require an all-workflow YAML parse immediately after the edit.
+- Residual risk / waiver:
+  - none
+
+Evidence:
+- The initial Ruby YAML parse failed at the changed CodeQL workflow; after the indentation correction, the same parse and `git diff --check` passed.

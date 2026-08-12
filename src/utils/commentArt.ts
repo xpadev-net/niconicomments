@@ -32,11 +32,13 @@ type IndexedGroupedByTimeItem = GroupedByTimeItem & {
  * CAと思われるコメントのレイヤーを分離する
  * @param rawData コメントデータ
  * @param config インスタンス設定
+ * @param scalePreservedComments 拡大縮小を抑制するコメント
  * @returns レイヤー分離後のコメントデータ
  */
 const changeCALayer = (
   rawData: FormattedComment[],
   config: BaseConfig,
+  scalePreservedComments: WeakSet<FormattedComment>,
 ): FormattedComment[] => {
   const userScoreList = getUsersScore(rawData);
   const filteredComments = removeDuplicateCommentArt(rawData, config);
@@ -50,7 +52,7 @@ const changeCALayer = (
     commentArtsGroupedByUser,
     config,
   );
-  updateLayerId(commentArtsGroupedByTimes);
+  updateLayerId(commentArtsGroupedByTimes, scalePreservedComments);
   return filteredComments;
 };
 
@@ -162,13 +164,18 @@ const toBase36 = (value: number) => (value >>> 0).toString(36);
 /**
  * レイヤーIDを更新する
  * @param filteredComments 更新対象のコメントデータ
+ * @param scalePreservedComments 拡大縮小を抑制するコメント
  */
-const updateLayerId = (filteredComments: GroupedByTime) => {
+const updateLayerId = (
+  filteredComments: GroupedByTime,
+  scalePreservedComments: WeakSet<FormattedComment>,
+) => {
   let layerId = 0;
   for (const user of filteredComments) {
     for (const time of user.comments) {
       for (const comment of time.comments) {
         comment.layer = layerId;
+        scalePreservedComments.add(comment);
       }
       layerId++;
     }

@@ -132,6 +132,7 @@ const createContext = () => ({
   nicoScripts: createNicoScripts(),
   imageCache: new ImageCacheContext(),
   rangeCache: new RangeCacheContext(),
+  keepCAScalePreservedComments: new WeakSet(),
 });
 
 const ensureCanvasElement = () => {

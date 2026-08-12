@@ -175,12 +175,12 @@ const localize = {
   p_keepCA: [
     `<p>Suppresses the collapse of comment arts (mainly stacked comments) by another CA or by irrelevant comments.</p>
 <p>If default (<span class="yellow">false</span>), positioning is done as usual</p>
-<p>If <span class="yellow">true</span>, the layer of the user who is presumed to have posted the CA will be positioned separately.</p>
-<p>It also has the effect of suppressing the scaling of the corresponding CA.</p>`,
+<p>If <span class="yellow">true</span>, comments classified as CA are positioned on separate layers.</p>
+<p>Global scaling is also suppressed only for those classified CA comments.</p>`,
     `<p>別のCAや関係ないコメントによってCA(主に積み絵)が崩壊するのを抑制します</p>
 <p>デフォルト(<span class="yellow">false</span>)の場合は通常通り位置決定を行います</p>
-<p><span class="yellow">true</span>の場合はCAを投稿していると推定されるユーザーのレイヤーを分けて位置決定をおこないます</p>
-<p>また、該当CAの拡大縮小を抑制する効果もあります</p>`,
+<p><span class="yellow">true</span>の場合はCAと判定されたコメントのレイヤーを分けて位置決定をおこないます</p>
+<p>グローバルな拡大縮小も、CAと判定されたコメントに対してのみ抑制されます</p>`,
   ],
   p_mode: [
     `<p>Specifies the drawing mode</p>
@@ -196,9 +196,9 @@ const localize = {
   ],
   p_scale: [
     `<p>Scale up or down the display comment size</p>
-<p>It is recommended to use <a href="#p_keepCA">keepCA</a> together</p>`,
+<p>When <a href="#p_keepCA">keepCA</a> is enabled, this scale does not apply to comments classified as CA.</p>`,
     `<p>表示コメントサイズを拡大縮小します</p>
-<p><a href="#p_keepCA">keepCA</a>を併用することを推奨します</p>`,
+<p><a href="#p_keepCA">keepCA</a>が有効な場合、この倍率はCAと判定されたコメントには適用されません</p>`,
   ],
   p_showCollision: [
     `<p><span class="note">This option is effective immediately</span></p>

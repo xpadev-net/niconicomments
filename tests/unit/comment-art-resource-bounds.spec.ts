@@ -64,7 +64,7 @@ describe("comment art resource bounds", () => {
 
     let result: FormattedComment[];
     try {
-      result = changeCALayer(comments, config);
+      result = changeCALayer(comments, config, new WeakSet());
     } finally {
       Array.prototype.find = originalFind;
     }
@@ -93,6 +93,7 @@ describe("comment art resource bounds", () => {
       createConfig({
         sameCATimestampRange: 10,
       }),
+      new WeakSet(),
     );
 
     expect(result.map((comment) => comment.layer)).toEqual([0, 1, 0]);
@@ -110,6 +111,7 @@ describe("comment art resource bounds", () => {
       createConfig({
         sameCATimestampRange: Infinity,
       }),
+      new WeakSet(),
     );
 
     expect(result.map((comment) => comment.layer)).toEqual(
@@ -148,7 +150,7 @@ describe("comment art resource bounds", () => {
 
     let result: FormattedComment[];
     try {
-      result = changeCALayer(comments, config);
+      result = changeCALayer(comments, config, new WeakSet());
     } finally {
       Map.prototype.set = originalSet;
     }
@@ -174,9 +176,49 @@ describe("comment art resource bounds", () => {
       }),
     ];
 
-    const result = changeCALayer(comments, createConfig());
+    const scalePreservedComments = new WeakSet<FormattedComment>();
+    const result = changeCALayer(
+      comments,
+      createConfig(),
+      scalePreservedComments,
+    );
 
     expect(result).toHaveLength(1);
     expect(result[0]?.id).toBe(1);
+    expect(scalePreservedComments.has(comments[0] as FormattedComment)).toBe(
+      true,
+    );
+    expect(scalePreservedComments.has(comments[1] as FormattedComment)).toBe(
+      false,
+    );
+  });
+
+  test("marks only surviving comments classified and assigned as comment art", () => {
+    const classified = formattedComment(1, { mail: ["ca", "full"] });
+    const owner = formattedComment(2, {
+      content: "owner",
+      mail: ["ca", "full"],
+      owner: true,
+    });
+    const manualLayer = formattedComment(3, {
+      content: "manual layer",
+      layer: 7,
+      mail: [],
+      user_id: 2,
+    });
+    const scalePreservedComments = new WeakSet<FormattedComment>();
+
+    const result = changeCALayer(
+      [classified, owner, manualLayer],
+      createConfig(),
+      scalePreservedComments,
+    );
+
+    expect(result).toHaveLength(3);
+    expect(classified.layer).toBe(0);
+    expect(manualLayer.layer).toBe(7);
+    expect(scalePreservedComments.has(classified)).toBe(true);
+    expect(scalePreservedComments.has(owner)).toBe(false);
+    expect(scalePreservedComments.has(manualLayer)).toBe(false);
   });
 });

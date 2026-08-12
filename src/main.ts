@@ -212,8 +212,16 @@ class NiconiComments {
     const nicoScripts = createNicoScripts();
     const imageCache = new ImageCacheContext();
     const rangeCache = new RangeCacheContext();
+    const keepCAScalePreservedComments = new WeakSet<FormattedComment>();
 
-    this.ctx = { config, options, nicoScripts, imageCache, rangeCache };
+    this.ctx = {
+      config,
+      options,
+      nicoScripts,
+      imageCache,
+      rangeCache,
+      keepCAScalePreservedComments,
+    };
     this.eventHandler = new EventHandler();
 
     let renderer = _renderer;
@@ -383,7 +391,11 @@ class NiconiComments {
     let rawData = _rawData;
     const preRenderingStart = performance.now();
     if (this.ctx.options.keepCA) {
-      rawData = changeCALayer(rawData, this.ctx.config);
+      rawData = changeCALayer(
+        rawData,
+        this.ctx.config,
+        this.ctx.keepCAScalePreservedComments,
+      );
     }
     let instances = rawData.reduce<IComment[]>((pv, val, index) => {
       pv.push(createCommentInstance(val, this.renderer, index, this.ctx));

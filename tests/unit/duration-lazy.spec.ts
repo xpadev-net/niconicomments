@@ -157,6 +157,7 @@ const createContext = (): CommentInstanceContext => {
     nicoScripts: createNicoScripts(),
     imageCache: new ImageCacheContext(),
     rangeCache: new RangeCacheContext(),
+    keepCAScalePreservedComments: new WeakSet(),
   };
 };
 

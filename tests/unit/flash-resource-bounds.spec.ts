@@ -182,6 +182,7 @@ const createContext = () => ({
   nicoScripts: createNicoScripts(),
   imageCache: new ImageCacheContext(),
   rangeCache: new RangeCacheContext(),
+  keepCAScalePreservedComments: new WeakSet<FormattedComment>(),
 });
 
 describe("Flash and at-button resource bounds", () => {
@@ -239,40 +240,48 @@ describe("Flash and at-button resource bounds", () => {
     expect(data.renderScale).toBe(2);
   });
 
-  test("nico:scale is absolute and overrides Flash option and layer fallbacks", () => {
-    const createScaledComment = (mail: string[], layer: number) => {
+  test("separates Flash keepCA scale preservation from numeric layers", () => {
+    const createScaledComment = (
+      mail: string[],
+      layer: number,
+      optionScale = 3,
+      keepCAScalePreserved = false,
+    ) => {
       const renderer = new RecordingRenderer();
       const ctx = createContext();
-      ctx.options.scale = 3;
+      ctx.options.scale = optionScale;
       ctx.options.keepCA = true;
-      const comment = new TestFlashComment(
-        formattedComment("scale", mail, { layer }),
-        renderer,
-        0,
-        ctx,
-      );
+      const source = formattedComment("scale", mail, { layer });
+      if (keepCAScalePreserved) {
+        ctx.keepCAScalePreservedComments.add(source);
+      }
+      const comment = new TestFlashComment(source, renderer, 0, ctx);
       return { comment, renderer };
     };
-    const unscaledLayer = createScaledComment([], 4);
+    const baseline = createScaledComment([], 4, 1);
+    const manuallyLayered = createScaledComment([], 4);
     const optionScaled = createScaledComment([], -1);
+    const preservedCA = createScaledComment([], 4, 3, true);
     const commandScaledLayer = createScaledComment(["nico:scale:.5"], 4);
-    const commandScaledDefault = createScaledComment(["nico:scale:.5"], -1);
+    const commandScaledCA = createScaledComment(["nico:scale:.5"], 4, 3, true);
 
-    expect(optionScaled.comment.width).toBeCloseTo(
-      unscaledLayer.comment.width * 3,
+    expect(manuallyLayered.comment.width).toBeCloseTo(
+      baseline.comment.width * 3,
     );
+    expect(optionScaled.comment.width).toBeCloseTo(baseline.comment.width * 3);
+    expect(preservedCA.comment.width).toBeCloseTo(baseline.comment.width);
     expect(commandScaledLayer.comment.width).toBeCloseTo(
-      unscaledLayer.comment.width * 0.5,
+      baseline.comment.width * 0.5,
     );
-    expect(commandScaledDefault.comment.width).toBeCloseTo(
-      unscaledLayer.comment.width * 0.5,
+    expect(commandScaledCA.comment.width).toBeCloseTo(
+      baseline.comment.width * 0.5,
     );
-    expect(commandScaledLayer.comment.comment).toMatchObject({
+    expect(commandScaledCA.comment.comment).toMatchObject({
       renderScale: 0.5,
       scale: 1,
     });
 
-    const unscaledImage = unscaledLayer.comment.exposeTextImage();
+    const unscaledImage = baseline.comment.exposeTextImage();
     const commandScaledImage = commandScaledLayer.comment.exposeTextImage();
     expect(unscaledImage).not.toBeNull();
     expect(commandScaledImage).not.toBeNull();

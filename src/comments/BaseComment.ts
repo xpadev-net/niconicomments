@@ -87,6 +87,7 @@ class BaseComment implements IComment {
   public image?: IRenderer | null;
   public buttonImage?: IRenderer | null;
   public index: number;
+  private readonly keepCAScalePreserved: boolean;
   private readonly _timeoutIds = new Set<number>();
   private _destroyed = false;
 
@@ -106,6 +107,7 @@ class BaseComment implements IComment {
     this.renderer = renderer;
     this.ctx = ctx;
     this.config = ctx.config;
+    this.keepCAScalePreserved = ctx.keepCAScalePreservedComments.has(comment);
     this.posY = -1;
     this.pos = { x: 0, y: 0 };
     comment.content = comment.content.replace(/\t/g, "  ");
@@ -151,11 +153,11 @@ class BaseComment implements IComment {
   }
 
   protected getEffectiveScale(
-    comment: Pick<FormattedCommentWithFont, "layer" | "renderScale"> = this
-      .comment,
+    comment: Pick<FormattedCommentWithFont, "renderScale"> = this.comment,
   ) {
     return (
-      comment.renderScale ?? (comment.layer === -1 ? this.ctx.options.scale : 1)
+      comment.renderScale ??
+      (this.keepCAScalePreserved ? 1 : this.ctx.options.scale)
     );
   }
 

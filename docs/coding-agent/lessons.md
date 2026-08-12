@@ -21,6 +21,31 @@ Purpose:
 
 ## Entries
 
+## 2026-08-12 — Model keepCA scale preservation explicitly instead of inferring it from layer  [tags: assumptions, api-design, review]
+
+Context:
+- Plan: `docs/coding-agent/plans/active/keep-ca-scale-state-decoupling-plan.md`
+- Task/Wave: Task_1 / Wave 1
+- Roles involved: Orchestrator | Researcher | Worker | Reviewer
+
+Symptom:
+- `BaseComment.getEffectiveScale` used `layer === -1` to decide whether global scale applied, even though layer IDs primarily represent collision groups.
+
+Root cause:
+- The first implementation reused keepCA's visible layer mutation as an implicit proxy for a separate rendering-policy decision.
+
+Fix applied:
+- Track comments actually classified by keepCA through explicit internal state and make effective-scale precedence independent of numeric layer values.
+
+Prevention:
+- Review and design guardrail:
+  - When one feature needs policy state and another field merely correlates with it, model the owning feature's state explicitly rather than branching on the incidental representation.
+- Residual risk / waiver:
+  - none
+
+Evidence:
+- User correction identified the non-intuitive condition; implementation and independent review verified explicit classification state, layer-independent precedence, and focused tests passing 72/72.
+
 ## 2026-08-12 — Test scale ownership at geometry boundaries, not only final dimensions  [tags: review, validation]
 
 Context:

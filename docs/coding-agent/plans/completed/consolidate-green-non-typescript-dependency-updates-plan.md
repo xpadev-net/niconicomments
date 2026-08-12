@@ -1,6 +1,6 @@
 # Plan: Green な非TypeScript依存更新 PR の統合
 
-- status: in_progress
+- status: done
 - generated: 2026-08-12
 - last_updated: 2026-08-12
 - work_type: code
@@ -113,6 +113,11 @@ Interpretation:
   - Validation evidence: 全workflowのRuby YAML parse、`git diff --check`、旧SHA=0・新SHA=11/1、変更workflow=9件がpass。actionlintは未導入のためoptional skip。
   - Notes: Worker reportはcontract準拠、変更はowns内、required worker validationsは全pass、blocker/questionなし。独立Reviewerへ進む。
 
+- 2026-08-12 Wave 2 completed: [Task_2]
+  - Summary: 独立Reviewerが統合diffを #403/#397 と照合し、PR #408 上の統合CIを確認した。
+  - Validation evidence: Reviewer `APPROVED`、指摘なし。PR #408はBuild/Linter/Playwright各Node 22/24/26、CodeQL、Socket、Snykの全15 checksがSUCCESSで、CLEAN/MERGEABLE。
+  - Notes: actionlintは未導入のためoptional skip。release workflowの実リリース経路はPRでは実行されない残余リスクを記録済み。
+
 ## Decision Log (append-only; re-plans and major discoveries)
 
 - 2026-08-12 Decision: 計画承認待ちを省略して実行する。
@@ -126,6 +131,12 @@ Interpretation:
   - Plan delta (what changed): なし。元のインデントを復元し、同じrequired validationを再実行してpassした。再発防止を`docs/coding-agent/lessons.md`へ記録した。
   - Tradeoffs considered: 追加の実装変更は不要。最終diffはpinとversionコメントだけに限定されている。
   - User approval: no（計画・scope・契約の変更がなく、required gateが最終的にpassしたため）
+
+- 2026-08-12 Decision: ADRは作成しない。
+  - Trigger / new insight: closeout時に全Decision LogをADR warrant criteriaで確認した。
+  - Plan delta (what changed): なし。
+  - Tradeoffs considered: 対象選定、計画承認waiver、一時的な検証修正はいずれもtask-localで安価に再導出でき、永続的なproduct/architecture境界を定めないためDecision Logをcanonical homeとする。
+  - User approval: no（ADR warrantなし）
 
 ## Notes
 - Quality routing note:

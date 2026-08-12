@@ -320,6 +320,14 @@ const localize = {
     `<p>コメント単位で不透明度を制御できます</p>
 <p>1で不透明、0で透明になります</p>`,
   ],
+  c_scale: [
+    `<p>Set the render scale for an individual comment.</p>
+<p>The scale is an absolute value in the range (0, 8].</p>
+<p>This command takes precedence over the scale option, and the first valid value is used.</p>`,
+    `<p>コメント単位で描画倍率を指定できます</p>
+<p>倍率は0より大きく8以下の絶対値です</p>
+<p>このコマンドはscaleオプションより優先され、最初の有効な指定が使われます</p>`,
+  ],
 };
 const resources = { en: { translation: {} }, ja: { translation: {} } };
 for (const key in localize) {
@@ -332,6 +340,6 @@ i18next.use(i18nextBrowserLanguageDetector).init({
   resources: resources,
 });
 const i18nList = document.querySelectorAll("[data-i18n]");
-i18nList.forEach(function (v) {
+i18nList.forEach((v) => {
   v.innerHTML = i18next.t(v.dataset.i18n);
 });

@@ -27,7 +27,7 @@ import {
 } from "@/@types/";
 import type { CommentInstanceContext } from "@/contexts/";
 import { colors } from "@/definition/colors";
-import typeGuard from "@/typeGuard";
+import typeGuard, { MAX_COMMENT_SCALE } from "@/typeGuard";
 
 import { arrayPush } from "./array";
 import { getConfig } from "./config";
@@ -49,6 +49,7 @@ const RE_STROKE = /^nico:stroke:(.+)$/;
 const RE_WAKU = /^nico:waku:(.+)$/;
 const RE_FILL = /^nico:fill:(.+)$/;
 const RE_OPACITY = /^nico:opacity:(.+)$/;
+const RE_SCALE = /^nico:scale:(?:\d+(?:\.\d+)?|\.\d+)$/;
 const RE_COLOR_CODE = /^#(?:[0-9a-z]{3}|[0-9a-z]{6})$/;
 export const DEFAULT_COMMENT_LONG = 300;
 export const DEFAULT_NICOSCRIPT_LONG = 30 * 100;
@@ -691,6 +692,7 @@ const parseCommandAndNicoScript = (
     wakuColor: commands.wakuColor,
     fillColor: commands.fillColor,
     opacity: commands.opacity,
+    renderScale: commands.renderScale,
     button: commands.button,
   };
 };
@@ -1077,6 +1079,11 @@ const parseCommand = (
     result.opacity ??= opacity;
     return;
   }
+  const renderScale = getRenderScale(command);
+  if (renderScale !== undefined) {
+    result.renderScale ??= renderScale;
+    return;
+  }
   if (is(ZCommentLoc, command)) {
     result.loc ??= command;
     return;
@@ -1130,6 +1137,20 @@ const getOpacity = (match: RegExpMatchArray | null) => {
   if (!match) return;
   const value = Number(match[1]);
   if (!Number.isNaN(value) && value >= 0) {
+    return value;
+  }
+  return;
+};
+
+/**
+ * nico:scaleコマンドから描画倍率を取得する
+ * @param command コマンド
+ * @returns 描画倍率
+ */
+const getRenderScale = (command: string) => {
+  if (!RE_SCALE.test(command)) return;
+  const value = Number(command.slice("nico:scale:".length));
+  if (Number.isFinite(value) && value > 0 && value <= MAX_COMMENT_SCALE) {
     return value;
   }
   return;

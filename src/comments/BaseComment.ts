@@ -150,6 +150,15 @@ class BaseComment implements IComment {
     throw new NotImplementedError(this.pluginName, "set: content");
   }
 
+  protected getEffectiveScale(
+    comment: Pick<FormattedCommentWithFont, "layer" | "renderScale"> = this
+      .comment,
+  ) {
+    return (
+      comment.renderScale ?? (comment.layer === -1 ? this.ctx.options.scale : 1)
+    );
+  }
+
   /**
    * コメントの描画サイズを計算する
    * @param parsedData コメント

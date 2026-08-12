@@ -156,9 +156,10 @@ class FlashComment extends BaseComment {
       parseFont(parsedData.font, parsedData.fontSize, this.config),
     );
     const meas = this.measureText({ ...parsedData, scale: 1 });
-    if (this.ctx.options.scale !== 1 && parsedData.layer === -1) {
-      meas.height *= this.ctx.options.scale;
-      meas.width *= this.ctx.options.scale;
+    const effectiveScale = this.getEffectiveScale(parsedData);
+    if (effectiveScale !== 1) {
+      meas.height *= effectiveScale;
+      meas.width *= effectiveScale;
     }
     this.renderer.restore();
     if (parsedData.button && !parsedData.button.hidden) {
@@ -256,8 +257,7 @@ class FlashComment extends BaseComment {
     const defaultFontSize = configFontSize.default;
     comment.lineHeight ??= configLineHeight[comment.size].default;
     const widthLimit = configStageSize[comment.full ? "fullWidth" : "width"];
-    const layerScale = comment.layer === -1 ? this.ctx.options.scale : 1;
-    const drawScale = this._globalScale * layerScale;
+    const drawScale = this._globalScale * this.getEffectiveScale(comment);
     const { scaleX, width, height } = this._measureContent(comment, drawScale);
     let scale = 1;
     if (isLineBreakResize(comment, this.config)) {
@@ -409,6 +409,8 @@ class FlashComment extends BaseComment {
     if (showCollision) {
       this.renderer.save();
       try {
+        const effectiveScale = this.getEffectiveScale();
+        const commandScale = this.comment.renderScale ?? 1;
         this.renderer.setStrokeStyle("rgba(255,0,255,1)");
         this.renderer.strokeRect(
           posX,
@@ -426,14 +428,14 @@ class FlashComment extends BaseComment {
           this.renderer.setStrokeStyle("rgba(255,255,0,0.25)");
           this.renderer.strokeRect(
             posX,
-            posY + linePosY * this._globalScale,
+            posY + linePosY * this._globalScale * commandScale,
             this.comment.width,
             this.comment.fontSize *
               this.comment.lineHeight *
               -1 *
               this._globalScale *
               this.comment.scale *
-              (this.comment.layer === -1 ? this.ctx.options.scale : 1),
+              effectiveScale,
           );
         }
       } finally {
@@ -576,9 +578,7 @@ class FlashComment extends BaseComment {
     if (!_cursor || !this.comment.buttonObjects) return false;
     const { left, middle, right } = this.comment.buttonObjects;
     const scaleY =
-      this._globalScale *
-      this.comment.scale *
-      (this.comment.layer === -1 ? this.ctx.options.scale : 1);
+      this._globalScale * this.comment.scale * this.getEffectiveScale();
     const scaleX = scaleY * this.comment.scaleX;
     const posX = (_posX ?? this.pos.x) / scaleX;
     const posY = (_posY ?? this.pos.y) / scaleY;
@@ -628,9 +628,7 @@ class FlashComment extends BaseComment {
       parseFont(this.comment.font, this.comment.fontSize, this.config),
     );
     const scale =
-      this._globalScale *
-      this.comment.scale *
-      (this.comment.layer === -1 ? this.ctx.options.scale : 1);
+      this._globalScale * this.comment.scale * this.getEffectiveScale();
     renderer.setScale(scale * this.comment.scaleX, scale);
     return { renderer };
   }

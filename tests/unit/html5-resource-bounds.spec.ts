@@ -42,6 +42,13 @@ class RecordingRenderer implements IRenderer {
   public destroyCalls = 0;
   public destroyed = false;
   public nextChildFillTextFailuresRemaining = 0;
+  public readonly scaleCalls: { x: number; y: number }[] = [];
+  public readonly strokeRectCalls: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  }[] = [];
   private font = "10px sans-serif";
   private size = { width: 0, height: 0 };
 
@@ -56,9 +63,13 @@ class RecordingRenderer implements IRenderer {
   getFillStyle() {
     return "#000000";
   }
-  setScale() {}
+  setScale(x: number, y = x) {
+    this.scaleCalls.push({ x, y });
+  }
   fillRect() {}
-  strokeRect() {}
+  strokeRect(x: number, y: number, width: number, height: number) {
+    this.strokeRectCalls.push({ x, y, width, height });
+  }
   fillText(text: string, x: number, y: number) {
     this.fillTextCalls++;
     if (this.fillTextFailuresRemaining > 0) {
@@ -200,6 +211,9 @@ class TestHTML5Comment extends HTML5Comment {
   drawBodyForTest() {
     this._draw(0, 0);
   }
+  drawCollisionForTest(posX = 10, posY = 20) {
+    this._drawCollision(posX, posY, true);
+  }
   forceInvalidFontForTest() {
     (this.comment as { font: unknown }).font = "invalid-font";
     this.image = undefined;
@@ -289,6 +303,95 @@ describe("HTML5 comment resource bounds", () => {
       setTimeout: vi.fn(() => ++timeoutId),
     });
     vi.stubGlobal("clearTimeout", vi.fn());
+  });
+
+  test("nico:scale is absolute and overrides HTML5 option and layer fallbacks", () => {
+    const createScaledComment = (mail: string[], layer: number) => {
+      const renderer = new RecordingRenderer();
+      const ctx = createContext();
+      ctx.options.scale = 3;
+      ctx.options.keepCA = true;
+      const comment = new TestHTML5Comment(
+        formattedComment(1, "scale", mail, { layer }),
+        renderer,
+        0,
+        ctx,
+      );
+      return { comment, renderer };
+    };
+    const unscaledLayer = createScaledComment([], 4);
+    const optionScaled = createScaledComment([], -1);
+    const commandScaledLayer = createScaledComment(["nico:scale:.5"], 4);
+    const commandScaledDefault = createScaledComment(["nico:scale:.5"], -1);
+
+    expect(optionScaled.comment.width).toBeCloseTo(
+      unscaledLayer.comment.width * 3,
+    );
+    expect(commandScaledLayer.comment.width).toBeCloseTo(
+      unscaledLayer.comment.width * 0.5,
+    );
+    expect(commandScaledDefault.comment.width).toBeCloseTo(
+      unscaledLayer.comment.width * 0.5,
+    );
+    expect(commandScaledLayer.comment.comment).toMatchObject({
+      renderScale: 0.5,
+      scale: 1,
+    });
+
+    const unscaledImage = unscaledLayer.comment.exposeTextImage();
+    const commandScaledImage = commandScaledLayer.comment.exposeTextImage();
+    expect(unscaledImage).not.toBeNull();
+    expect(commandScaledImage).not.toBeNull();
+    expect(
+      (commandScaledImage as RecordingRenderer).scaleCalls[0]?.x,
+    ).toBeCloseTo(
+      ((unscaledImage as RecordingRenderer).scaleCalls[0]?.x ?? 0) * 0.5,
+    );
+  });
+
+  test("scales HTML5 collision guide position and height once for nico:scale", () => {
+    const createCollisionGuide = (mail: string[]) => {
+      const renderer = new RecordingRenderer();
+      const comment = new TestHTML5Comment(
+        formattedComment(1, "guide", mail, { layer: 4 }),
+        renderer,
+        0,
+        createContext(),
+      );
+      comment.drawCollisionForTest();
+      return renderer.strokeRectCalls[1];
+    };
+    const baseline = createCollisionGuide([]);
+    const scaled = createCollisionGuide(["nico:scale:2"]);
+
+    expect(baseline).toBeDefined();
+    expect(scaled).toBeDefined();
+    expect((scaled?.y ?? 20) - 20).toBeCloseTo(((baseline?.y ?? 20) - 20) * 2);
+    expect(scaled?.height).toBeCloseTo((baseline?.height ?? 0) * 2);
+    expect(scaled?.height).not.toBeCloseTo((baseline?.height ?? 0) * 4);
+  });
+
+  test("preserves HTML5 options.scale collision-guide positioning", () => {
+    const createCollisionGuide = (optionScale: number) => {
+      const renderer = new RecordingRenderer();
+      const ctx = createContext();
+      ctx.options.scale = optionScale;
+      const comment = new TestHTML5Comment(
+        formattedComment(1, "guide"),
+        renderer,
+        0,
+        ctx,
+      );
+      comment.drawCollisionForTest();
+      return renderer.strokeRectCalls[1];
+    };
+    const baseline = createCollisionGuide(1);
+    const scaled = createCollisionGuide(3);
+
+    expect(baseline).toBeDefined();
+    expect(scaled).toBeDefined();
+    expect(scaled?.y).toBeCloseTo(baseline?.y ?? 0);
+    expect(scaled?.height).toBeCloseTo((baseline?.height ?? 0) * 3);
   });
 
   test("caps newline-heavy comments before measurement and image generation", () => {
@@ -392,60 +495,60 @@ describe("HTML5 comment resource bounds", () => {
     );
   });
 
-  test.each([
-    "ue",
-    "shita",
-  ] as const)("keeps %s fixed-comment resize measurement bounded for huge text", (loc) => {
-    const renderer = new RecordingRenderer();
-    const comment = new TestHTML5Comment(
-      formattedComment(1, "x".repeat(5000), [loc]),
-      renderer,
-      0,
-      createContext(),
-    );
-    const widthLimit =
-      defaultConfig.commentStageSize.html5.width *
-      defaultConfig.commentScale.html5;
+  test.each(["ue", "shita"] as const)(
+    "keeps %s fixed-comment resize measurement bounded for huge text",
+    (loc) => {
+      const renderer = new RecordingRenderer();
+      const comment = new TestHTML5Comment(
+        formattedComment(1, "x".repeat(5000), [loc]),
+        renderer,
+        0,
+        createContext(),
+      );
+      const widthLimit =
+        defaultConfig.commentStageSize.html5.width *
+        defaultConfig.commentScale.html5;
 
-    expect(comment.comment.resizedX).toBe(true);
-    expect(comment.comment.charSize).toBeLessThan(1);
-    expect(comment.comment.width).toBeLessThanOrEqual(widthLimit);
-    expect(renderer.measureCalls).toBeLessThanOrEqual(80);
+      expect(comment.comment.resizedX).toBe(true);
+      expect(comment.comment.charSize).toBeLessThan(1);
+      expect(comment.comment.width).toBeLessThanOrEqual(widthLimit);
+      expect(renderer.measureCalls).toBeLessThanOrEqual(80);
 
-    const image = comment.exposeTextImage() as RecordingRenderer | null;
+      const image = comment.exposeTextImage() as RecordingRenderer | null;
 
-    expect(image).not.toBeNull();
-    expect(image?.getSize().width).toBeLessThanOrEqual(widthLimit);
-    expect(image?.getSize().height).toBeGreaterThan(0);
-  });
+      expect(image).not.toBeNull();
+      expect(image?.getSize().width).toBeLessThanOrEqual(widthLimit);
+      expect(image?.getSize().height).toBeGreaterThan(0);
+    },
+  );
 
-  test.each([
-    "ue",
-    "shita",
-  ] as const)("reserves and offsets HTML5 offscreen top padding for long %s comments", (loc) => {
-    const renderer = new RecordingRenderer();
-    const comment = new TestHTML5Comment(
-      formattedComment(1, "x".repeat(5000), [loc]),
-      renderer,
-      0,
-      createContext(),
-    );
+  test.each(["ue", "shita"] as const)(
+    "reserves and offsets HTML5 offscreen top padding for long %s comments",
+    (loc) => {
+      const renderer = new RecordingRenderer();
+      const comment = new TestHTML5Comment(
+        formattedComment(1, "x".repeat(5000), [loc]),
+        renderer,
+        0,
+        createContext(),
+      );
 
-    const image = comment.exposeTextImage() as RecordingRenderer | null;
+      const image = comment.exposeTextImage() as RecordingRenderer | null;
 
-    expect(image).not.toBeNull();
-    const paddingHeight =
-      (image?.getSize().height ?? 0) - comment.comment.height;
-    expect(paddingHeight).toBeGreaterThan(0);
-    expect(image?.fillTextCallsByPosition[0]?.y).toBeGreaterThan(0);
+      expect(image).not.toBeNull();
+      const paddingHeight =
+        (image?.getSize().height ?? 0) - comment.comment.height;
+      expect(paddingHeight).toBeGreaterThan(0);
+      expect(image?.fillTextCallsByPosition[0]?.y).toBeGreaterThan(0);
 
-    comment.drawBodyForTest();
+      comment.drawBodyForTest();
 
-    expect(renderer.drawImageCalls).toHaveLength(1);
-    expect(renderer.drawImageCalls[0]?.image).toBe(image);
-    expect(renderer.drawImageCalls[0]?.x).toBe(0);
-    expect(renderer.drawImageCalls[0]?.y).toBeCloseTo(-paddingHeight, 5);
-  });
+      expect(renderer.drawImageCalls).toHaveLength(1);
+      expect(renderer.drawImageCalls[0]?.image).toBe(image);
+      expect(renderer.drawImageCalls[0]?.x).toBe(0);
+      expect(renderer.drawImageCalls[0]?.y).toBeCloseTo(-paddingHeight, 5);
+    },
+  );
 
   test("uses v0.2.76 fixed-comment resize step when scaled text still exceeds the stage", () => {
     const renderer = new ThresholdWidthRenderer();

@@ -68,7 +68,7 @@ import {
 } from "@/@types/";
 import { colors } from "@/definition/colors";
 
-const MAX_OPTION_SCALE = 8;
+export const MAX_COMMENT_SCALE = 8;
 const MAX_CANVAS_DIMENSION = 8192;
 const MAX_CANVAS_AREA = 16_777_216;
 const MAX_FONT_SIZE = 512;
@@ -124,7 +124,7 @@ const isFiniteNumberInRange = (
   (!integer || Number.isInteger(i));
 
 const isValidOptionScale = (i: unknown): i is number =>
-  isFiniteNumberInRange(i, { min: Number.MIN_VALUE, max: MAX_OPTION_SCALE });
+  isFiniteNumberInRange(i, { min: Number.MIN_VALUE, max: MAX_COMMENT_SCALE });
 
 const isMode = (i: unknown): boolean =>
   i === "default" || i === "html5" || i === "flash";

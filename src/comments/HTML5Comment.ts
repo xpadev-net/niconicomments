@@ -136,10 +136,11 @@ class HTML5Comment extends BaseComment {
       parseFont(parsedData.font, parsedData.fontSize, this.config),
     );
     const meas = this.measureText({ ...parsedData, scale: 1 });
-    if (this.ctx.options.scale !== 1 && parsedData.layer === -1) {
-      meas.height *= this.ctx.options.scale;
-      meas.width *= this.ctx.options.scale;
-      meas.fontSize *= this.ctx.options.scale;
+    const effectiveScale = this.getEffectiveScale(parsedData);
+    if (effectiveScale !== 1) {
+      meas.height *= effectiveScale;
+      meas.width *= effectiveScale;
+      meas.fontSize *= effectiveScale;
     }
     this.renderer.restore();
     return {
@@ -250,15 +251,15 @@ class HTML5Comment extends BaseComment {
       comment.full ? "fullWidth" : "width"
     ];
     if (!typeGuard.internal.MeasureInput(comment)) throw new TypeGuardError();
-    const layerScale = comment.layer === -1 ? this.ctx.options.scale : 1;
+    const effectiveScale = this.getEffectiveScale(comment);
     const measureResult = measure(
       comment,
       this.renderer,
       this.config,
-      layerScale,
+      effectiveScale,
     );
     if (comment.loc !== "naka" && measureResult.width > widthLimit) {
-      return this._processResizeX(comment, measureResult.width, layerScale);
+      return this._processResizeX(comment, measureResult.width, effectiveScale);
     }
     return measureResult;
   }
@@ -266,7 +267,7 @@ class HTML5Comment extends BaseComment {
   private _processResizeX(
     comment: MeasureTextInput,
     width: number,
-    layerScale = 1,
+    effectiveScale = 1,
   ) {
     const widthLimit = getConfig(this.config.commentStageSize, false)[
       comment.full ? "fullWidth" : "width"
@@ -308,7 +309,7 @@ class HTML5Comment extends BaseComment {
       workComment.lineHeight =
         legacyBaseLineHeight * (nextCharSize / legacyBaseCharSize);
       workComment.fontSize = nextCharSize * 0.8;
-      return measure(workComment, this.renderer, this.config, layerScale);
+      return measure(workComment, this.renderer, this.config, effectiveScale);
     };
 
     if (baseCharSize >= 1) {
@@ -357,7 +358,7 @@ class HTML5Comment extends BaseComment {
         comment as MeasureTextInput & MeasureInput,
         this.renderer,
         this.config,
-        layerScale,
+        effectiveScale,
       );
     }
 
@@ -372,7 +373,7 @@ class HTML5Comment extends BaseComment {
         workComment.lineHeight = baseLineHeight * (nextCharSize / baseCharSize);
       }
       workComment.fontSize = (workComment.charSize ?? 0) * 0.8;
-      return measure(workComment, this.renderer, this.config, layerScale);
+      return measure(workComment, this.renderer, this.config, effectiveScale);
     };
 
     let best = baseCharSize;
@@ -423,7 +424,7 @@ class HTML5Comment extends BaseComment {
       comment as MeasureTextInput & MeasureInput,
       this.renderer,
       this.config,
-      layerScale,
+      effectiveScale,
     );
   }
 
@@ -432,6 +433,7 @@ class HTML5Comment extends BaseComment {
       this.renderer.save();
       try {
         const scale = getConfig(this.config.commentScale, false);
+        const commandScale = this.comment.renderScale ?? 1;
         this.renderer.setStrokeStyle("rgba(0,255,255,1)");
         this.renderer.strokeRect(
           posX,
@@ -447,7 +449,8 @@ class HTML5Comment extends BaseComment {
               (this.comment.charSize - this.comment.lineHeight) / 2 +
               this.comment.lineHeight * -0.16 +
               (this.config.fonts.html5[this.comment.font]?.offset || 0)) *
-            scale;
+            scale *
+            commandScale;
           this.renderer.setStrokeStyle("rgba(255,255,0,0.5)");
           this.renderer.strokeRect(
             posX,
@@ -476,12 +479,12 @@ class HTML5Comment extends BaseComment {
     const paddingTop =
       (10 - scale * 10) *
       ((this.comment.lineCount + 1) / this.config.html5HiResCommentCorrection);
-    const layerScale = this.comment.layer === -1 ? this.ctx.options.scale : 1;
+    const effectiveScale = this.getEffectiveScale();
     const paddingTopHeight =
       this.comment.lineHeight *
       paddingTop *
       getConfig(this.config.commentScale, false) *
-      layerScale;
+      effectiveScale;
     const bounds = {
       height: this.comment.height + paddingTopHeight,
       paddingTop: paddingTopHeight,
@@ -512,7 +515,7 @@ class HTML5Comment extends BaseComment {
     const drawScale =
       getConfig(this.config.commentScale, false) *
       scale *
-      (this.comment.layer === -1 ? this.ctx.options.scale : 1);
+      this.getEffectiveScale();
     const image = this.renderer.getCanvas(HTML5_COMMENT_IMAGE_PADDING);
     try {
       image.setSize(this.comment.width, this.getTextImageBounds().height);

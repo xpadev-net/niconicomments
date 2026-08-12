@@ -49,6 +49,13 @@ class RecordingRenderer implements IRenderer {
   public setSizeCalls = 0;
   public strokeTextCalls = 0;
   public destroyCalls = 0;
+  public readonly scaleCalls: { x: number; y: number }[] = [];
+  public readonly strokeRectCalls: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  }[] = [];
   private font = "10px sans-serif";
   private size = { width: 0, height: 0 };
   public nextChildFillTextFailuresRemaining = 0;
@@ -63,9 +70,13 @@ class RecordingRenderer implements IRenderer {
   getFillStyle() {
     return "#000000";
   }
-  setScale() {}
+  setScale(x: number, y = x) {
+    this.scaleCalls.push({ x, y });
+  }
   fillRect() {}
-  strokeRect() {}
+  strokeRect(x: number, y: number, width: number, height: number) {
+    this.strokeRectCalls.push({ x, y, width, height });
+  }
   fillText() {
     this.fillTextCalls++;
     if (this.fillTextFailuresRemaining > 0) {
@@ -120,11 +131,15 @@ class TestFlashComment extends FlashComment {
   exposeTextImage() {
     return this.getTextImage();
   }
+  drawCollisionForTest(posX = 10, posY = 20) {
+    this._drawCollision(posX, posY, true);
+  }
 }
 
 const formattedComment = (
   content: string,
   mail: string[] = [],
+  overrides: Pick<Partial<FormattedComment>, "layer"> = {},
 ): FormattedComment => ({
   id: 1,
   vpos: 0,
@@ -135,7 +150,7 @@ const formattedComment = (
   premium: false,
   mail,
   user_id: 1,
-  layer: -1,
+  layer: overrides.layer ?? -1,
   is_my_post: false,
 });
 
@@ -177,6 +192,172 @@ describe("Flash and at-button resource bounds", () => {
       setTimeout: vi.fn(() => ++timeoutId),
     });
     vi.stubGlobal("clearTimeout", vi.fn());
+  });
+
+  test.each([
+    ["nico:scale:1", 1],
+    ["nico:scale:.5", 0.5],
+    ["nico:scale:0.5", 0.5],
+    ["nico:scale:8", 8],
+    ["nico:scale:8.0", 8],
+  ])("parses valid nico:scale syntax %s", (command, expected) => {
+    const data = parseCommandAndNicoScript(
+      formattedComment("scale", [command as string]),
+      createContext(),
+    );
+
+    expect(data.renderScale).toBe(expected);
+  });
+
+  test.each([
+    "nico:scale:+1",
+    "nico:scale:-1",
+    "nico:scale:1e1",
+    "nico:scale:Infinity",
+    "nico:scale:NaN",
+    `nico:scale:${"9".repeat(400)}`,
+    "nico:scale:0",
+    "nico:scale:0.0",
+    "nico:scale:8.0001",
+    "nico:scale:1junk",
+    "nico:scale:1.",
+  ])("ignores invalid nico:scale syntax %s", (command) => {
+    const data = parseCommandAndNicoScript(
+      formattedComment("scale", [command, "nico:scale:2"]),
+      createContext(),
+    );
+
+    expect(data.renderScale).toBe(2);
+  });
+
+  test("uses the first valid nico:scale command", () => {
+    const data = parseCommandAndNicoScript(
+      formattedComment("scale", ["nico:scale:2", "nico:scale:3"]),
+      createContext(),
+    );
+
+    expect(data.renderScale).toBe(2);
+  });
+
+  test("nico:scale is absolute and overrides Flash option and layer fallbacks", () => {
+    const createScaledComment = (mail: string[], layer: number) => {
+      const renderer = new RecordingRenderer();
+      const ctx = createContext();
+      ctx.options.scale = 3;
+      ctx.options.keepCA = true;
+      const comment = new TestFlashComment(
+        formattedComment("scale", mail, { layer }),
+        renderer,
+        0,
+        ctx,
+      );
+      return { comment, renderer };
+    };
+    const unscaledLayer = createScaledComment([], 4);
+    const optionScaled = createScaledComment([], -1);
+    const commandScaledLayer = createScaledComment(["nico:scale:.5"], 4);
+    const commandScaledDefault = createScaledComment(["nico:scale:.5"], -1);
+
+    expect(optionScaled.comment.width).toBeCloseTo(
+      unscaledLayer.comment.width * 3,
+    );
+    expect(commandScaledLayer.comment.width).toBeCloseTo(
+      unscaledLayer.comment.width * 0.5,
+    );
+    expect(commandScaledDefault.comment.width).toBeCloseTo(
+      unscaledLayer.comment.width * 0.5,
+    );
+    expect(commandScaledLayer.comment.comment).toMatchObject({
+      renderScale: 0.5,
+      scale: 1,
+    });
+
+    const unscaledImage = unscaledLayer.comment.exposeTextImage();
+    const commandScaledImage = commandScaledLayer.comment.exposeTextImage();
+    expect(unscaledImage).not.toBeNull();
+    expect(commandScaledImage).not.toBeNull();
+    expect(
+      (commandScaledImage as RecordingRenderer).scaleCalls[0]?.y,
+    ).toBeCloseTo(
+      ((unscaledImage as RecordingRenderer).scaleCalls[0]?.y ?? 0) * 0.5,
+    );
+  });
+
+  test("keeps Flash nico:scale button hover coordinates aligned", () => {
+    const ctx = createContext();
+    ctx.options.scale = 3;
+    ctx.options.keepCA = true;
+    const comment = new TestFlashComment(
+      formattedComment(
+        '@ボタン "[Push]" "posted" "表示" "" "3"',
+        ["nico:scale:2"],
+        { layer: 4 },
+      ),
+      new RecordingRenderer(),
+      0,
+      ctx,
+    );
+    const button = comment.comment.buttonObjects;
+    if (!button) throw new Error("Expected at-button geometry");
+    const image = comment.exposeTextImage() as RecordingRenderer | null;
+    expect(image).not.toBeNull();
+    const transform = image?.scaleCalls[0];
+    expect(transform).toBeDefined();
+    const pos = { x: 40, y: 60 };
+    const cursor = {
+      x:
+        pos.x +
+        (button.left.left + button.left.width / 2) * (transform?.x ?? 0),
+      y:
+        pos.y +
+        (button.left.top + button.left.height / 2) * (transform?.y ?? 0),
+    };
+
+    expect(comment.isHovered(cursor, pos.x, pos.y)).toBe(true);
+  });
+
+  test("scales Flash collision guide position and height for nico:scale", () => {
+    const createCollisionGuide = (mail: string[]) => {
+      const renderer = new RecordingRenderer();
+      const comment = new TestFlashComment(
+        formattedComment("guide", mail, { layer: 4 }),
+        renderer,
+        0,
+        createContext(),
+      );
+      comment.drawCollisionForTest();
+      return renderer.strokeRectCalls[1];
+    };
+    const baseline = createCollisionGuide([]);
+    const scaled = createCollisionGuide(["nico:scale:2"]);
+
+    expect(baseline).toBeDefined();
+    expect(scaled).toBeDefined();
+    expect((scaled?.y ?? 20) - 20).toBeCloseTo(((baseline?.y ?? 20) - 20) * 2);
+    expect(scaled?.height).toBeCloseTo((baseline?.height ?? 0) * 2);
+  });
+
+  test("preserves Flash options.scale collision-guide positioning", () => {
+    const createCollisionGuide = (optionScale: number) => {
+      const renderer = new RecordingRenderer();
+      const ctx = createContext();
+      ctx.options.scale = optionScale;
+      const comment = new TestFlashComment(
+        formattedComment("guide"),
+        renderer,
+        0,
+        ctx,
+      );
+      comment.drawCollisionForTest();
+      return renderer.strokeRectCalls[1];
+    };
+    const baseline = createCollisionGuide(1);
+    const scaled = createCollisionGuide(3);
+
+    expect(baseline).toBeDefined();
+    expect(scaled).toBeDefined();
+    expect(scaled?.y).toBeCloseTo(baseline?.y ?? 0);
+    expect(scaled?.height).toBeCloseTo((baseline?.height ?? 0) * 3);
   });
 
   test("caps newline-heavy Flash comments before measurement and drawing", () => {

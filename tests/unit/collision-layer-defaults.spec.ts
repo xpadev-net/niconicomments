@@ -26,10 +26,24 @@ describe("ZFormattedComment layer default", () => {
     expect(output.layer).toBe(OWNER_DEFAULT_COLLISION_LAYER);
   });
 
-  test("does not override an explicit layer on owner comments", () => {
+  test("does not override an explicit custom layer on owner comments", () => {
     const output = parse(ZFormattedComment, { owner: true, layer: 5 });
 
     expect(output.layer).toBe(5);
+  });
+
+  test("promotes an owner comment carrying the plain viewer sentinel onto the owner sentinel", () => {
+    // A caller (e.g. addComments() re-validating an already-normalized
+    // comment, or an older payload built before owner/viewer separation
+    // existed) may hand in owner:true with layer explicitly set to the
+    // viewer default. That combination must still resolve to the owner
+    // sentinel, or the comment would wrongly collide with viewers.
+    const output = parse(ZFormattedComment, {
+      owner: true,
+      layer: VIEWER_DEFAULT_COLLISION_LAYER,
+    });
+
+    expect(output.layer).toBe(OWNER_DEFAULT_COLLISION_LAYER);
   });
 
   test("preserves an explicit layer across a re-parse (addComments round-trip)", () => {

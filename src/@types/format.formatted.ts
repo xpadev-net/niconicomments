@@ -36,19 +36,23 @@ const ZFormattedCommentEntries = object({
   is_my_post: optional(boolean(), false),
 });
 
-// `layer` doubles as the comment's collision-grouping id. When omitted,
-// the default depends on `owner` so that owner and viewer comments start
-// out on separate collision layers.
+// `layer` doubles as the comment's collision-grouping id. When omitted —
+// or when an owner comment still carries the plain viewer default,
+// e.g. from a caller/older payload built before owner/viewer separation
+// existed — the default depends on `owner` so that owner and viewer
+// comments always start out on separate collision layers.
 export const ZFormattedComment = pipe(
   ZFormattedCommentEntries,
-  transform((input) => ({
-    ...input,
-    layer:
-      input.layer ??
-      (input.owner
-        ? OWNER_DEFAULT_COLLISION_LAYER
-        : VIEWER_DEFAULT_COLLISION_LAYER),
-  })),
+  transform((input) => {
+    const layer = input.layer ?? VIEWER_DEFAULT_COLLISION_LAYER;
+    return {
+      ...input,
+      layer:
+        input.owner && layer === VIEWER_DEFAULT_COLLISION_LAYER
+          ? OWNER_DEFAULT_COLLISION_LAYER
+          : layer,
+    };
+  }),
 );
 export type FormattedComment = InferOutput<typeof ZFormattedComment>;
 

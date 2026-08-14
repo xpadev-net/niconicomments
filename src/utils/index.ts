@@ -1,5 +1,4 @@
 export * from "./array";
-export * from "./collisionLayer";
 export * from "./color";
 export * from "./comment";
 export * from "./commentArt";

@@ -149,8 +149,9 @@ describe("movable comment collision", () => {
 
   test.each([
     // Owner-vs-viewer separation is now expressed purely as distinct
-    // collisionLayer values (see applyDefaultCollisionLayer), not a
-    // separate owner comparison inside getPosY.
+    // collisionLayer values (assigned per-owner at comment construction
+    // time — see ZFormattedComment in src/@types/format.formatted.ts),
+    // not a separate owner comparison inside getPosY.
     ["owner sentinel", { collisionLayer: -2 }],
     ["CA group", { collisionLayer: 0 }],
   ])(

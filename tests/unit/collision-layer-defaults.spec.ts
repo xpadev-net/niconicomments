@@ -1,57 +1,11 @@
 import { parse } from "valibot";
 import { describe, expect, test } from "vitest";
 
-import type { FormattedComment } from "@/@types";
-import { ZFormattedComment } from "@/@types";
 import {
-  applyDefaultCollisionLayer,
   OWNER_DEFAULT_COLLISION_LAYER,
   VIEWER_DEFAULT_COLLISION_LAYER,
-} from "@/utils/collisionLayer";
-
-const formattedComment = (
-  overrides: Partial<FormattedComment> = {},
-): FormattedComment => ({
-  id: 0,
-  vpos: 0,
-  content: "",
-  date: 0,
-  date_usec: 0,
-  owner: false,
-  premium: false,
-  mail: [],
-  user_id: 1,
-  collisionLayer: VIEWER_DEFAULT_COLLISION_LAYER,
-  ignoreScale: false,
-  is_my_post: false,
-  ...overrides,
-});
-
-describe("applyDefaultCollisionLayer", () => {
-  test("normalizes default-layer owner comments onto the owner sentinel", () => {
-    const comments = [formattedComment({ owner: true })];
-
-    applyDefaultCollisionLayer(comments);
-
-    expect(comments[0]?.collisionLayer).toBe(OWNER_DEFAULT_COLLISION_LAYER);
-  });
-
-  test("leaves viewer comments on the viewer default", () => {
-    const comments = [formattedComment({ owner: false })];
-
-    applyDefaultCollisionLayer(comments);
-
-    expect(comments[0]?.collisionLayer).toBe(VIEWER_DEFAULT_COLLISION_LAYER);
-  });
-
-  test("does not override an explicitly assigned collisionLayer on owner comments", () => {
-    const comments = [formattedComment({ owner: true, collisionLayer: 5 })];
-
-    applyDefaultCollisionLayer(comments);
-
-    expect(comments[0]?.collisionLayer).toBe(5);
-  });
-});
+  ZFormattedComment,
+} from "@/@types";
 
 describe("ZFormattedComment layer input", () => {
   test("renames the public layer field onto collisionLayer", () => {
@@ -61,10 +15,22 @@ describe("ZFormattedComment layer input", () => {
     expect(output).not.toHaveProperty("layer");
   });
 
-  test("defaults to the viewer sentinel when layer is not given", () => {
-    const output = parse(ZFormattedComment, {});
+  test("defaults viewer comments to the viewer sentinel when layer is not given", () => {
+    const output = parse(ZFormattedComment, { owner: false });
 
     expect(output.collisionLayer).toBe(VIEWER_DEFAULT_COLLISION_LAYER);
+  });
+
+  test("defaults owner comments to the owner sentinel when layer is not given", () => {
+    const output = parse(ZFormattedComment, { owner: true });
+
+    expect(output.collisionLayer).toBe(OWNER_DEFAULT_COLLISION_LAYER);
+  });
+
+  test("does not override an explicit layer on owner comments", () => {
+    const output = parse(ZFormattedComment, { owner: true, layer: 5 });
+
+    expect(output.collisionLayer).toBe(5);
   });
 
   test("ignores an unrecognized collisionLayer input key in favor of layer", () => {

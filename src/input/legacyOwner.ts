@@ -1,6 +1,7 @@
 import {
   type FormattedComment,
   type InputParser,
+  OWNER_DEFAULT_COLLISION_LAYER,
   toFiniteNumberInRange,
 } from "@/@types";
 import { InvalidFormatError } from "@/errors";
@@ -48,7 +49,7 @@ const fromLegacyOwner = (data: string): FormattedComment[] => {
       premium: true,
       mail: [],
       user_id: -1,
-      collisionLayer: -1,
+      collisionLayer: OWNER_DEFAULT_COLLISION_LAYER,
       ignoreScale: false,
       is_my_post: false,
     };

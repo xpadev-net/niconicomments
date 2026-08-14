@@ -19,7 +19,8 @@ import {
   ZCommentVpos,
 } from "./format.numeric";
 
-const VIEWER_DEFAULT_COLLISION_LAYER = -1;
+export const VIEWER_DEFAULT_COLLISION_LAYER = -1;
+export const OWNER_DEFAULT_COLLISION_LAYER = -2;
 
 const ZFormattedCommentEntries = object({
   id: optional(ZCommentId, 0),
@@ -31,18 +32,26 @@ const ZFormattedCommentEntries = object({
   premium: optional(boolean(), false),
   mail: optional(array(string()), []),
   user_id: optional(ZCommentUserId, 0),
-  layer: optional(ZCommentLayer, VIEWER_DEFAULT_COLLISION_LAYER),
+  layer: optional(ZCommentLayer),
   ignoreScale: optional(boolean(), false),
   is_my_post: optional(boolean(), false),
 });
 
 // The public/JSON input keeps the historical `layer` field name (no
 // breaking change to the formatted-input format). Internally the render
-// and collision pipeline uses `collisionLayer` (see
-// src/utils/collisionLayer.ts), so the schema renames it on the way out.
+// and collision pipeline uses `collisionLayer`, so the schema renames it
+// on the way out. When `layer` is omitted, the default depends on `owner`
+// so that owner and viewer comments start out on separate collision
+// layers without a separate post-parse normalization pass.
 export const ZFormattedComment = pipe(
   ZFormattedCommentEntries,
-  transform(({ layer, ...rest }) => ({ ...rest, collisionLayer: layer })),
+  transform(({ layer, owner, ...rest }) => ({
+    ...rest,
+    owner,
+    collisionLayer:
+      layer ??
+      (owner ? OWNER_DEFAULT_COLLISION_LAYER : VIEWER_DEFAULT_COLLISION_LAYER),
+  })),
 );
 export type FormattedComment = InferOutput<typeof ZFormattedComment>;
 

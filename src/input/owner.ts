@@ -3,6 +3,7 @@ import { array, parse } from "valibot";
 import {
   type FormattedComment,
   type InputParser,
+  OWNER_DEFAULT_COLLISION_LAYER,
   type OwnerComment,
   toFiniteNumberInRange,
   ZOwnerComment,
@@ -37,7 +38,7 @@ const fromOwner = (data: OwnerComment[]): FormattedComment[] => {
       premium: true,
       mail: [],
       user_id: -1,
-      collisionLayer: -1,
+      collisionLayer: OWNER_DEFAULT_COLLISION_LAYER,
       ignoreScale: false,
       is_my_post: false,
     };

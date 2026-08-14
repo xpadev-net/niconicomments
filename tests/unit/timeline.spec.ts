@@ -7,10 +7,10 @@ import type {
   IRenderer,
   Timeline,
 } from "@/@types";
+import { OWNER_DEFAULT_COLLISION_LAYER } from "@/@types";
 import { defaultConfig } from "@/definition/config";
 import { initConfig } from "@/definition/initConfig";
 import NiconiComments from "@/main";
-import { OWNER_DEFAULT_COLLISION_LAYER } from "@/utils/collisionLayer";
 import { processFixedComment, processMovableComment } from "@/utils/comment";
 
 const emptyTextMetrics = (width: number): TextMetrics =>

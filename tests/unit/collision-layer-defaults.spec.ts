@@ -1,6 +1,8 @@
+import { parse } from "valibot";
 import { describe, expect, test } from "vitest";
 
 import type { FormattedComment } from "@/@types";
+import { ZFormattedComment } from "@/@types";
 import {
   applyDefaultCollisionLayer,
   OWNER_DEFAULT_COLLISION_LAYER,
@@ -48,5 +50,26 @@ describe("applyDefaultCollisionLayer", () => {
     applyDefaultCollisionLayer(comments);
 
     expect(comments[0]?.collisionLayer).toBe(5);
+  });
+});
+
+describe("ZFormattedComment legacy layer alias", () => {
+  test("maps the deprecated layer field onto collisionLayer", () => {
+    const output = parse(ZFormattedComment, { layer: 3 });
+
+    expect(output.collisionLayer).toBe(3);
+    expect(output).not.toHaveProperty("layer");
+  });
+
+  test("prefers an explicit collisionLayer over layer when both are given", () => {
+    const output = parse(ZFormattedComment, { layer: 3, collisionLayer: 7 });
+
+    expect(output.collisionLayer).toBe(7);
+  });
+
+  test("defaults to the viewer sentinel when neither field is given", () => {
+    const output = parse(ZFormattedComment, {});
+
+    expect(output.collisionLayer).toBe(VIEWER_DEFAULT_COLLISION_LAYER);
   });
 });

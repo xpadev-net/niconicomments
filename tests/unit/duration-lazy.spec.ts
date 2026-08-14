@@ -145,7 +145,8 @@ const createComment = (
   premium: overrides.premium ?? false,
   mail: overrides.mail ?? [],
   user_id: overrides.user_id ?? 1,
-  layer: overrides.layer ?? -1,
+  collisionLayer: overrides.collisionLayer ?? -1,
+  ignoreScale: overrides.ignoreScale ?? false,
   is_my_post: overrides.is_my_post ?? false,
 });
 

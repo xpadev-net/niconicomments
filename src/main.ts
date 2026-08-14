@@ -541,6 +541,7 @@ class NiconiComments {
       return pv;
     }, []);
     if (validComments.length === 0) return;
+    applyDefaultCollisionLayer(validComments);
     this.ctx.rangeCache.reset();
     const touchedTimeline = new Set<number>();
     const comments = validComments.reduce<IComment[]>((pv, val, index) => {

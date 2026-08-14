@@ -30,7 +30,8 @@ const createComment = (
   premium: overrides.premium ?? false,
   mail: overrides.mail ?? [],
   user_id: overrides.user_id ?? 1,
-  layer: overrides.layer ?? -1,
+  collisionLayer: overrides.collisionLayer ?? -1,
+  ignoreScale: overrides.ignoreScale ?? false,
   is_my_post: overrides.is_my_post ?? false,
 });
 
@@ -387,27 +388,33 @@ describe("@置換 target semantics", () => {
     ["含まない", true, "needle owner", "needle owner"],
     ["含まない", false, "plain viewer", "hit"],
     ["含まない", true, "plain owner", "hit"],
-  ] as const)("%s target maps owner=%s content %j to %j", (target, owner, content, expected) => {
-    expect(applyReplace(target, owner, content)).toBe(expected);
-  });
+  ] as const)(
+    "%s target maps owner=%s content %j to %j",
+    (target, owner, content, expected) => {
+      expect(applyReplace(target, owner, content)).toBe(expected);
+    },
+  );
 
   test.each([
     ["含む", "needle", "hit"],
     ["含む", "needle plus", "needle plus"],
     ["含まない", "needle", "needle"],
     ["含まない", "needle plus", "hit"],
-  ] as const)("%s target honors 完全一致 for %j", (target, content, expected) => {
-    const ctx = createContext();
-    parseScript(ctx, `@置換 "needle" "hit" 全 ${target} 完全一致`);
-    const comment = createComment({
-      id: 4,
-      vpos: START_VPOS,
-      content,
-      owner: false,
-    });
+  ] as const)(
+    "%s target honors 完全一致 for %j",
+    (target, content, expected) => {
+      const ctx = createContext();
+      parseScript(ctx, `@置換 "needle" "hit" 全 ${target} 完全一致`);
+      const comment = createComment({
+        id: 4,
+        vpos: START_VPOS,
+        content,
+        owner: false,
+      });
 
-    parseCommandAndNicoScript(comment, ctx);
+      parseCommandAndNicoScript(comment, ctx);
 
-    expect(comment.content).toBe(expected);
-  });
+      expect(comment.content).toBe(expected);
+    },
+  );
 });

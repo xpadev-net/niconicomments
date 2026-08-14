@@ -208,10 +208,11 @@ class TestHTML5Comment extends HTML5Comment {
 
 type FormattedCommentOverride = Pick<
   Partial<FormattedComment>,
+  | "collisionLayer"
   | "date"
   | "date_usec"
+  | "ignoreScale"
   | "is_my_post"
-  | "layer"
   | "owner"
   | "premium"
   | "user_id"
@@ -233,7 +234,8 @@ const formattedComment = (
   premium: overrides.premium ?? false,
   mail,
   user_id: overrides.user_id ?? id,
-  layer: overrides.layer ?? -1,
+  collisionLayer: overrides.collisionLayer ?? -1,
+  ignoreScale: overrides.ignoreScale ?? false,
   is_my_post: overrides.is_my_post ?? false,
 });
 
@@ -392,60 +394,60 @@ describe("HTML5 comment resource bounds", () => {
     );
   });
 
-  test.each([
-    "ue",
-    "shita",
-  ] as const)("keeps %s fixed-comment resize measurement bounded for huge text", (loc) => {
-    const renderer = new RecordingRenderer();
-    const comment = new TestHTML5Comment(
-      formattedComment(1, "x".repeat(5000), [loc]),
-      renderer,
-      0,
-      createContext(),
-    );
-    const widthLimit =
-      defaultConfig.commentStageSize.html5.width *
-      defaultConfig.commentScale.html5;
+  test.each(["ue", "shita"] as const)(
+    "keeps %s fixed-comment resize measurement bounded for huge text",
+    (loc) => {
+      const renderer = new RecordingRenderer();
+      const comment = new TestHTML5Comment(
+        formattedComment(1, "x".repeat(5000), [loc]),
+        renderer,
+        0,
+        createContext(),
+      );
+      const widthLimit =
+        defaultConfig.commentStageSize.html5.width *
+        defaultConfig.commentScale.html5;
 
-    expect(comment.comment.resizedX).toBe(true);
-    expect(comment.comment.charSize).toBeLessThan(1);
-    expect(comment.comment.width).toBeLessThanOrEqual(widthLimit);
-    expect(renderer.measureCalls).toBeLessThanOrEqual(80);
+      expect(comment.comment.resizedX).toBe(true);
+      expect(comment.comment.charSize).toBeLessThan(1);
+      expect(comment.comment.width).toBeLessThanOrEqual(widthLimit);
+      expect(renderer.measureCalls).toBeLessThanOrEqual(80);
 
-    const image = comment.exposeTextImage() as RecordingRenderer | null;
+      const image = comment.exposeTextImage() as RecordingRenderer | null;
 
-    expect(image).not.toBeNull();
-    expect(image?.getSize().width).toBeLessThanOrEqual(widthLimit);
-    expect(image?.getSize().height).toBeGreaterThan(0);
-  });
+      expect(image).not.toBeNull();
+      expect(image?.getSize().width).toBeLessThanOrEqual(widthLimit);
+      expect(image?.getSize().height).toBeGreaterThan(0);
+    },
+  );
 
-  test.each([
-    "ue",
-    "shita",
-  ] as const)("reserves and offsets HTML5 offscreen top padding for long %s comments", (loc) => {
-    const renderer = new RecordingRenderer();
-    const comment = new TestHTML5Comment(
-      formattedComment(1, "x".repeat(5000), [loc]),
-      renderer,
-      0,
-      createContext(),
-    );
+  test.each(["ue", "shita"] as const)(
+    "reserves and offsets HTML5 offscreen top padding for long %s comments",
+    (loc) => {
+      const renderer = new RecordingRenderer();
+      const comment = new TestHTML5Comment(
+        formattedComment(1, "x".repeat(5000), [loc]),
+        renderer,
+        0,
+        createContext(),
+      );
 
-    const image = comment.exposeTextImage() as RecordingRenderer | null;
+      const image = comment.exposeTextImage() as RecordingRenderer | null;
 
-    expect(image).not.toBeNull();
-    const paddingHeight =
-      (image?.getSize().height ?? 0) - comment.comment.height;
-    expect(paddingHeight).toBeGreaterThan(0);
-    expect(image?.fillTextCallsByPosition[0]?.y).toBeGreaterThan(0);
+      expect(image).not.toBeNull();
+      const paddingHeight =
+        (image?.getSize().height ?? 0) - comment.comment.height;
+      expect(paddingHeight).toBeGreaterThan(0);
+      expect(image?.fillTextCallsByPosition[0]?.y).toBeGreaterThan(0);
 
-    comment.drawBodyForTest();
+      comment.drawBodyForTest();
 
-    expect(renderer.drawImageCalls).toHaveLength(1);
-    expect(renderer.drawImageCalls[0]?.image).toBe(image);
-    expect(renderer.drawImageCalls[0]?.x).toBe(0);
-    expect(renderer.drawImageCalls[0]?.y).toBeCloseTo(-paddingHeight, 5);
-  });
+      expect(renderer.drawImageCalls).toHaveLength(1);
+      expect(renderer.drawImageCalls[0]?.image).toBe(image);
+      expect(renderer.drawImageCalls[0]?.x).toBe(0);
+      expect(renderer.drawImageCalls[0]?.y).toBeCloseTo(-paddingHeight, 5);
+    },
+  );
 
   test("uses v0.2.76 fixed-comment resize step when scaled text still exceeds the stage", () => {
     const renderer = new ThresholdWidthRenderer();

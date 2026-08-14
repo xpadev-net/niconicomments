@@ -10,6 +10,7 @@ import type {
 import { defaultConfig } from "@/definition/config";
 import { initConfig } from "@/definition/initConfig";
 import NiconiComments from "@/main";
+import { OWNER_DEFAULT_COLLISION_LAYER } from "@/utils/collisionLayer";
 import { processFixedComment, processMovableComment } from "@/utils/comment";
 
 const emptyTextMetrics = (width: number): TextMetrics =>
@@ -106,7 +107,8 @@ const formattedComment = (
   premium: false,
   mail: ["ue"],
   user_id: id,
-  layer: -1,
+  collisionLayer: -1,
+  ignoreScale: false,
   is_my_post: false,
 });
 
@@ -126,7 +128,8 @@ const createFixedComment = (index: number, vpos: number, long: number) =>
     flash: false,
     posY: -1,
     owner: false,
-    layer: -1,
+    collisionLayer: -1,
+    ignoreScale: false,
     mail: ["ue"],
     content: `comment ${index}`,
     draw() {},
@@ -312,6 +315,23 @@ describe("addComments", () => {
       1,
     ]);
     expect(Object.hasOwn(state.timeline, "Infinity")).toBe(false);
+  });
+
+  test("normalizes a dynamically added owner comment onto the owner collision layer", () => {
+    ensureCanvasElement();
+    const niconiComments = new NiconiComments(new FakeRenderer(), [], {
+      format: "formatted",
+    });
+    const state = niconiComments as unknown as {
+      comments: IComment[];
+    };
+
+    niconiComments.addComments(formattedComment(1, 100, true));
+
+    expect(state.comments[0]?.comment.owner).toBe(true);
+    expect(state.comments[0]?.comment.collisionLayer).toBe(
+      OWNER_DEFAULT_COLLISION_LAYER,
+    );
   });
 
   test("sorts overlapping touched buckets without resorting unrelated timeline buckets", () => {

@@ -6,10 +6,8 @@ import {
   omit,
   optional,
   pipe,
-  strictObject,
   string,
   transform,
-  union,
 } from "valibot";
 
 import {
@@ -23,7 +21,7 @@ import {
 
 const VIEWER_DEFAULT_COLLISION_LAYER = -1;
 
-const commonEntries = {
+const ZFormattedCommentEntries = object({
   id: optional(ZCommentId, 0),
   vpos: optional(ZCommentVpos, 0),
   content: optional(string(), ""),
@@ -33,49 +31,26 @@ const commonEntries = {
   premium: optional(boolean(), false),
   mail: optional(array(string()), []),
   user_id: optional(ZCommentUserId, 0),
+  layer: optional(ZCommentLayer, VIEWER_DEFAULT_COLLISION_LAYER),
   ignoreScale: optional(boolean(), false),
   is_my_post: optional(boolean(), false),
-};
-
-const ZFormattedCommentEntries = object({
-  ...commonEntries,
-  collisionLayer: optional(ZCommentLayer, VIEWER_DEFAULT_COLLISION_LAYER),
 });
 
-// Strict: unknown keys (including the deprecated `layer`) fail validation,
-// so `union` below falls through to the legacy-layer schema instead of
-// silently dropping them.
-const ZFormattedCommentStrict = strictObject({
-  ...commonEntries,
-  collisionLayer: optional(ZCommentLayer, VIEWER_DEFAULT_COLLISION_LAYER),
-});
-
-/**
- * @deprecated collisionLayer への移行前の互換フォーマット。layer を collisionLayer として扱う。
- */
-const ZFormattedLegacyLayerComment = pipe(
-  object({
-    ...commonEntries,
-    collisionLayer: optional(ZCommentLayer),
-    layer: optional(ZCommentLayer),
-  }),
-  transform(({ layer, collisionLayer, ...rest }) => ({
-    ...rest,
-    collisionLayer: collisionLayer ?? layer ?? VIEWER_DEFAULT_COLLISION_LAYER,
-  })),
+// The public/JSON input keeps the historical `layer` field name (no
+// breaking change to the formatted-input format). Internally the render
+// and collision pipeline uses `collisionLayer` (see
+// src/utils/collisionLayer.ts), so the schema renames it on the way out.
+export const ZFormattedComment = pipe(
+  ZFormattedCommentEntries,
+  transform(({ layer, ...rest }) => ({ ...rest, collisionLayer: layer })),
 );
-
-export const ZFormattedComment = union([
-  ZFormattedCommentStrict,
-  ZFormattedLegacyLayerComment,
-]);
 export type FormattedComment = InferOutput<typeof ZFormattedComment>;
 
 /**
  * @deprecated
  */
 export const ZFormattedLegacyComment = omit(ZFormattedCommentEntries, [
-  "collisionLayer",
+  "layer",
   "ignoreScale",
   "user_id",
   "is_my_post",

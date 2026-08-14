@@ -1,7 +1,9 @@
 import {
   type FormattedComment,
   type InputParser,
+  OWNER_DEFAULT_COLLISION_LAYER,
   toFiniteNumberInRange,
+  VIEWER_DEFAULT_COLLISION_LAYER,
 } from "@/@types";
 import { InvalidFormatError } from "@/errors";
 import typeGuard from "@/typeGuard";
@@ -68,17 +70,21 @@ const parseXMLDocument = (data: XMLDocument): FormattedComment[] => {
     ) {
       continue;
     }
+    const owner = !item.getAttribute("user_id");
     const tmpParam: FormattedComment = {
       id,
       vpos,
       content: item.textContent ?? "",
       date,
       date_usec: dateUsec,
-      owner: !item.getAttribute("user_id"),
+      owner,
       premium: item.getAttribute("premium") === "1",
       mail: [],
       user_id: -1,
-      layer: -1,
+      layer: owner
+        ? OWNER_DEFAULT_COLLISION_LAYER
+        : VIEWER_DEFAULT_COLLISION_LAYER,
+      ignoreScale: false,
       is_my_post: false,
     };
     if (item.getAttribute("mail")) {

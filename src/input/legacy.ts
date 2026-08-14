@@ -1,6 +1,12 @@
 import { array, parse, safeParse, unknown as unknownSchema } from "valibot";
 
-import { type FormattedComment, type InputParser, ZApiChat } from "@/@types";
+import {
+  type FormattedComment,
+  type InputParser,
+  OWNER_DEFAULT_COLLISION_LAYER,
+  VIEWER_DEFAULT_COLLISION_LAYER,
+  ZApiChat,
+} from "@/@types";
 
 import { assignUserId } from "./xmlDocument";
 
@@ -28,17 +34,21 @@ const fromLegacy = (data: unknown[]): FormattedComment[] => {
     if (!val.success) continue;
     const value = val.output;
     if (value.deleted !== 1) {
+      const owner = !value.user_id;
       const tmpParam: FormattedComment = {
         id: value.no,
         vpos: value.vpos,
         content: value.content || "",
         date: value.date,
         date_usec: value.date_usec || 0,
-        owner: !value.user_id,
+        owner,
         premium: value.premium === 1,
         mail: [],
         user_id: -1,
-        layer: -1,
+        layer: owner
+          ? OWNER_DEFAULT_COLLISION_LAYER
+          : VIEWER_DEFAULT_COLLISION_LAYER,
+        ignoreScale: false,
         is_my_post: false,
       };
       if (value.mail) {

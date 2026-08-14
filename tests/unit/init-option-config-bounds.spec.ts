@@ -93,6 +93,7 @@ const createComment = (id: number): FormattedComment => ({
   mail: ["ue"],
   user_id: id,
   layer: -1,
+  ignoreScale: false,
   is_my_post: false,
 });
 
@@ -112,21 +113,19 @@ describe("init option and config bounds", () => {
     vi.stubGlobal("clearTimeout", vi.fn());
   });
 
-  test.each([
-    Infinity,
-    Number.NaN,
-    1e9,
-    0,
-  ])("rejects unsafe scale value %s", (scale) => {
-    expect(
-      () =>
-        new NiconiComments(new FakeRenderer(), [], {
-          format: "formatted",
-          mode: "html5",
-          scale,
-        }),
-    ).toThrow(InvalidOptionError);
-  });
+  test.each([Infinity, Number.NaN, 1e9, 0])(
+    "rejects unsafe scale value %s",
+    (scale) => {
+      expect(
+        () =>
+          new NiconiComments(new FakeRenderer(), [], {
+            format: "formatted",
+            mode: "html5",
+            scale,
+          }),
+      ).toThrow(InvalidOptionError);
+    },
+  );
 
   test("rejects config values that can break allocation or loop bounds", () => {
     const fontSize = defaultConfig.fontSize as MultiFontSizeConfig;

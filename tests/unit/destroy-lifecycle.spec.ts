@@ -123,6 +123,7 @@ const formattedComment = (
   mail,
   user_id: 1,
   layer: -1,
+  ignoreScale: false,
   is_my_post: false,
 });
 
@@ -201,6 +202,7 @@ describe("destroy lifecycle cleanup", () => {
       posY: 0,
       owner: false,
       layer: -1,
+      ignoreScale: false,
       mail: [],
       content: "manual",
       destroy: vi.fn(),

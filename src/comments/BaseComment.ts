@@ -137,6 +137,9 @@ class BaseComment implements IComment {
   get layer() {
     return this.comment.layer;
   }
+  get ignoreScale() {
+    return this.comment.ignoreScale;
+  }
   get owner() {
     return this.comment.owner;
   }

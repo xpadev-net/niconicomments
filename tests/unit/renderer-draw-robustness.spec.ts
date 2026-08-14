@@ -277,6 +277,7 @@ const createComment = (
   mail: overrides.mail ?? [],
   user_id: overrides.user_id ?? 1,
   layer: overrides.layer ?? -1,
+  ignoreScale: overrides.ignoreScale ?? false,
   is_my_post: overrides.is_my_post ?? false,
 });
 
@@ -313,28 +314,27 @@ describe("renderer draw robustness", () => {
     expect(renderer.drawImageCalls).toBe(0);
   });
 
-  test.each([
-    Number.NaN,
-    Infinity,
-    -Infinity,
-  ])("ignores non-finite drawCanvas vpos %s before lazy work", (vpos) => {
-    const renderer = new RecordingRenderer();
-    const instance = new NiconiComments(
-      renderer,
-      [createComment({ vpos: 1000, content: "lazy" })],
-      { format: "formatted", mode: "html5", lazy: true },
-    );
-    const state = instance as unknown as {
-      processedCommentIndex: number;
-      nextUnprocessedCommentIndex: number;
-    };
+  test.each([Number.NaN, Infinity, -Infinity])(
+    "ignores non-finite drawCanvas vpos %s before lazy work",
+    (vpos) => {
+      const renderer = new RecordingRenderer();
+      const instance = new NiconiComments(
+        renderer,
+        [createComment({ vpos: 1000, content: "lazy" })],
+        { format: "formatted", mode: "html5", lazy: true },
+      );
+      const state = instance as unknown as {
+        processedCommentIndex: number;
+        nextUnprocessedCommentIndex: number;
+      };
 
-    expect(instance.drawCanvas(vpos)).toBe(false);
+      expect(instance.drawCanvas(vpos)).toBe(false);
 
-    expect(renderer.clearRectCalls).toBe(0);
-    expect(state.processedCommentIndex).toBe(-1);
-    expect(state.nextUnprocessedCommentIndex).toBe(0);
-  });
+      expect(renderer.clearRectCalls).toBe(0);
+      expect(state.processedCommentIndex).toBe(-1);
+      expect(state.nextUnprocessedCommentIndex).toBe(0);
+    },
+  );
 
   test("skips malformed plugin comment vpos without starving later lazy comments", () => {
     const renderer = new RecordingRenderer();
@@ -366,30 +366,30 @@ describe("renderer draw robustness", () => {
     expect(Object.hasOwn(state.timeline, "NaN")).toBe(false);
   });
 
-  test.each([
-    "html5",
-    "flash",
-  ] as const)("keeps drawing after one %s comment image source fails", (mode) => {
-    const renderer = new RecordingRenderer();
-    renderer.drawImageFailuresRemaining = 1;
-    const instance = new NiconiComments(
-      renderer,
-      [
-        createComment({ id: 1, content: "bad source", mail: ["ue"] }),
-        createComment({
-          id: 2,
-          content: "still draws",
-          mail: ["ue", "nico:opacity:0.5"],
-        }),
-      ],
-      { format: "formatted", mode },
-    );
+  test.each(["html5", "flash"] as const)(
+    "keeps drawing after one %s comment image source fails",
+    (mode) => {
+      const renderer = new RecordingRenderer();
+      renderer.drawImageFailuresRemaining = 1;
+      const instance = new NiconiComments(
+        renderer,
+        [
+          createComment({ id: 1, content: "bad source", mail: ["ue"] }),
+          createComment({
+            id: 2,
+            content: "still draws",
+            mail: ["ue", "nico:opacity:0.5"],
+          }),
+        ],
+        { format: "formatted", mode },
+      );
 
-    expect(() => instance.drawCanvas(0, true)).not.toThrow();
-    expect(renderer.drawImageCalls).toBe(2);
-    expect(renderer.drawImageFailuresRemaining).toBe(0);
-    expect(renderer.saveDepth).toBe(0);
-  });
+      expect(() => instance.drawCanvas(0, true)).not.toThrow();
+      expect(renderer.drawImageCalls).toBe(2);
+      expect(renderer.drawImageFailuresRemaining).toBe(0);
+      expect(renderer.saveDepth).toBe(0);
+    },
+  );
 
   test("redraws static frames when the renderer has a video surface", () => {
     const renderer = new VideoSurfaceRenderer();
@@ -426,22 +426,25 @@ describe("renderer draw robustness", () => {
     ["showFPS", { showFPS: true }],
     ["showCollision", { showCollision: true }],
     ["showCommentCount", { showCommentCount: true }],
-  ] as const)("redraws identical vpos frames when %s is enabled", (_, option) => {
-    const renderer = new RecordingRenderer();
-    const instance = new NiconiComments(
-      renderer,
-      [createComment({ content: "static", mail: ["ue"] })],
-      {
-        format: "formatted",
-        mode: "html5",
-        ...option,
-      },
-    );
+  ] as const)(
+    "redraws identical vpos frames when %s is enabled",
+    (_, option) => {
+      const renderer = new RecordingRenderer();
+      const instance = new NiconiComments(
+        renderer,
+        [createComment({ content: "static", mail: ["ue"] })],
+        {
+          format: "formatted",
+          mode: "html5",
+          ...option,
+        },
+      );
 
-    expect(instance.drawCanvas(1)).toBe(true);
-    expect(instance.drawCanvas(1)).toBe(true);
-    expect(renderer.clearRectCalls).toBe(2);
-  });
+      expect(instance.drawCanvas(1)).toBe(true);
+      expect(instance.drawCanvas(1)).toBe(true);
+      expect(renderer.clearRectCalls).toBe(2);
+    },
+  );
 
   test("forceRendering redraws identical static comment-only frames", () => {
     const renderer = new RecordingRenderer();

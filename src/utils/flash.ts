@@ -9,6 +9,7 @@ import type {
   FormattedComment,
   FormattedCommentWithSize,
 } from "@/@types";
+import { VIEWER_DEFAULT_COLLISION_LAYER } from "@/@types";
 import { getConfig } from "@/utils/config";
 import { nativeSort } from "@/utils/sort";
 
@@ -483,7 +484,8 @@ const buildAtButtonComment = (
     premium: true,
     mail,
     user_id: -10,
-    layer: -1,
+    layer: VIEWER_DEFAULT_COLLISION_LAYER,
+    ignoreScale: false,
     is_my_post: true,
   };
 };

@@ -23,6 +23,7 @@ export type FormattedCommentWithFont = {
   mail: string[];
   user_id: number;
   layer: number;
+  ignoreScale: boolean;
   loc: CommentLoc;
   size: CommentSize;
   fontSize: number;
@@ -56,6 +57,7 @@ export type FormattedCommentWithSize = FormattedCommentWithFont & {
   charSize: number;
   scale: number;
   scaleX: number;
+  layerScale: number;
   buttonObjects?: ButtonList;
 };
 export type ParseContentResult = {
@@ -304,6 +306,7 @@ export type MeasureTextInput = FormattedCommentWithFont & {
   lineHeight?: number;
   charSize?: number;
   scale: number;
+  layerScale: number;
 };
 
 export const ZMeasureInput = object({

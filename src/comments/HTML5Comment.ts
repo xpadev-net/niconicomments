@@ -115,6 +115,7 @@ class HTML5Comment extends BaseComment {
   override getCommentSize(
     parsedData: FormattedCommentWithFont,
   ): FormattedCommentWithSize {
+    const layerScale = parsedData.ignoreScale ? 1 : this.ctx.options.scale;
     if (parsedData.invisible) {
       return {
         ...parsedData,
@@ -129,17 +130,18 @@ class HTML5Comment extends BaseComment {
         content: [],
         scaleX: 1,
         scale: 1,
+        layerScale,
       };
     }
     this.renderer.save();
     this.renderer.setFont(
       parseFont(parsedData.font, parsedData.fontSize, this.config),
     );
-    const meas = this.measureText({ ...parsedData, scale: 1 });
-    if (this.ctx.options.scale !== 1 && parsedData.layer === -1) {
-      meas.height *= this.ctx.options.scale;
-      meas.width *= this.ctx.options.scale;
-      meas.fontSize *= this.ctx.options.scale;
+    const meas = this.measureText({ ...parsedData, scale: 1, layerScale });
+    if (layerScale !== 1) {
+      meas.height *= layerScale;
+      meas.width *= layerScale;
+      meas.fontSize *= layerScale;
     }
     this.renderer.restore();
     return {
@@ -155,6 +157,7 @@ class HTML5Comment extends BaseComment {
       content: meas.content,
       scaleX: meas.scaleX,
       scale: meas.scale,
+      layerScale,
     };
   }
 
@@ -250,7 +253,7 @@ class HTML5Comment extends BaseComment {
       comment.full ? "fullWidth" : "width"
     ];
     if (!typeGuard.internal.MeasureInput(comment)) throw new TypeGuardError();
-    const layerScale = comment.layer === -1 ? this.ctx.options.scale : 1;
+    const layerScale = comment.layerScale;
     const measureResult = measure(
       comment,
       this.renderer,
@@ -476,7 +479,7 @@ class HTML5Comment extends BaseComment {
     const paddingTop =
       (10 - scale * 10) *
       ((this.comment.lineCount + 1) / this.config.html5HiResCommentCorrection);
-    const layerScale = this.comment.layer === -1 ? this.ctx.options.scale : 1;
+    const layerScale = this.comment.layerScale;
     const paddingTopHeight =
       this.comment.lineHeight *
       paddingTop *
@@ -512,7 +515,7 @@ class HTML5Comment extends BaseComment {
     const drawScale =
       getConfig(this.config.commentScale, false) *
       scale *
-      (this.comment.layer === -1 ? this.ctx.options.scale : 1);
+      this.comment.layerScale;
     const image = this.renderer.getCanvas(HTML5_COMMENT_IMAGE_PADDING);
     try {
       image.setSize(this.comment.width, this.getTextImageBounds().height);

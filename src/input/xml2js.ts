@@ -3,7 +3,9 @@ import { parse } from "valibot";
 import {
   type FormattedComment,
   type InputParser,
+  OWNER_DEFAULT_COLLISION_LAYER,
   toFiniteNumberInRange,
+  VIEWER_DEFAULT_COLLISION_LAYER,
   type Xml2jsPacket,
 } from "@/@types";
 import { ZXml2jsPacket } from "@/@types/";
@@ -42,17 +44,21 @@ const fromXml2js = (data: Xml2jsPacket): FormattedComment[] => {
     ) {
       continue;
     }
+    const owner = !(item.$.owner === "0" || item.$.user_id);
     const tmpParam: FormattedComment = {
       id,
       vpos,
       content: item._,
       date,
       date_usec: dateUsec,
-      owner: !(item.$.owner === "0" || item.$.user_id),
+      owner,
       premium: item.$.premium === "1",
       mail: item.$.mail.split(/\s+/g),
       user_id: -1,
-      layer: -1,
+      layer: owner
+        ? OWNER_DEFAULT_COLLISION_LAYER
+        : VIEWER_DEFAULT_COLLISION_LAYER,
+      ignoreScale: false,
       is_my_post: false,
     };
     if (tmpParam.content.startsWith("/") && tmpParam.owner) {

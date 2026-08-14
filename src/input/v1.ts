@@ -37,7 +37,8 @@ const fromV1 = (data: V1Thread[]): FormattedComment[] => {
         premium: value.isPremium,
         mail: value.commands,
         user_id: -1,
-        layer: -1,
+        collisionLayer: -1,
+        ignoreScale: false,
         is_my_post: value.isMyPost,
       };
       if (tmpParam.content.startsWith("/") && tmpParam.owner) {

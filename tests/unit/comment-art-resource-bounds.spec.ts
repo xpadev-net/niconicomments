@@ -18,7 +18,8 @@ const formattedComment = (
   premium: false,
   mail: ["ca"],
   user_id: 1,
-  layer: -1,
+  collisionLayer: -1,
+  ignoreScale: false,
   is_my_post: false,
   ...overrides,
 });
@@ -95,7 +96,7 @@ describe("comment art resource bounds", () => {
       }),
     );
 
-    expect(result.map((comment) => comment.layer)).toEqual([0, 1, 0]);
+    expect(result.map((comment) => comment.collisionLayer)).toEqual([0, 1, 0]);
   });
 
   test("does not expand buckets without bounds for infinite timestamp range", () => {
@@ -112,7 +113,7 @@ describe("comment art resource bounds", () => {
       }),
     );
 
-    expect(result.map((comment) => comment.layer)).toEqual(
+    expect(result.map((comment) => comment.collisionLayer)).toEqual(
       Array.from({ length: comments.length }, () => 0),
     );
   });

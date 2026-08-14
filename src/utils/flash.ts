@@ -483,7 +483,8 @@ const buildAtButtonComment = (
     premium: true,
     mail,
     user_id: -10,
-    layer: -1,
+    collisionLayer: -1,
+    ignoreScale: false,
     is_my_post: true,
   };
 };

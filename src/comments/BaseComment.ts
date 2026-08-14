@@ -134,8 +134,11 @@ class BaseComment implements IComment {
   get flash() {
     return false;
   }
-  get layer() {
-    return this.comment.layer;
+  get collisionLayer() {
+    return this.comment.collisionLayer;
+  }
+  get ignoreScale() {
+    return this.comment.ignoreScale;
   }
   get owner() {
     return this.comment.owner;

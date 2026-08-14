@@ -48,7 +48,8 @@ const fromLegacyOwner = (data: string): FormattedComment[] => {
       premium: true,
       mail: [],
       user_id: -1,
-      layer: -1,
+      collisionLayer: -1,
+      ignoreScale: false,
       is_my_post: false,
     };
     if (commentData[1]) {

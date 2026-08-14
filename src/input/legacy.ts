@@ -38,7 +38,8 @@ const fromLegacy = (data: unknown[]): FormattedComment[] => {
         premium: value.premium === 1,
         mail: [],
         user_id: -1,
-        layer: -1,
+        collisionLayer: -1,
+        ignoreScale: false,
         is_my_post: false,
       };
       if (value.mail) {

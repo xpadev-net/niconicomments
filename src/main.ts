@@ -25,6 +25,7 @@ import convert2formattedComment from "@/inputParser";
 import { createRenderer } from "@/renderer";
 import typeGuard from "@/typeGuard";
 import {
+  applyDefaultCollisionLayer,
   arrayEqual,
   buildAtButtonComment,
   changeCALayer,
@@ -381,6 +382,7 @@ class NiconiComments {
    */
   private preRendering(_rawData: FormattedComment[]) {
     let rawData = _rawData;
+    applyDefaultCollisionLayer(rawData);
     const preRenderingStart = performance.now();
     if (this.ctx.options.keepCA) {
       rawData = changeCALayer(rawData, this.ctx.config);

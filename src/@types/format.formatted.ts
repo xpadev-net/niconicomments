@@ -20,7 +20,8 @@ export const ZFormattedComment = object({
   premium: optional(boolean(), false),
   mail: optional(array(string()), []),
   user_id: optional(ZCommentUserId, 0),
-  layer: optional(ZCommentLayer, -1),
+  collisionLayer: optional(ZCommentLayer, -1),
+  ignoreScale: optional(boolean(), false),
   is_my_post: optional(boolean(), false),
 });
 export type FormattedComment = InferOutput<typeof ZFormattedComment>;
@@ -29,7 +30,8 @@ export type FormattedComment = InferOutput<typeof ZFormattedComment>;
  * @deprecated
  */
 export const ZFormattedLegacyComment = omit(ZFormattedComment, [
-  "layer",
+  "collisionLayer",
+  "ignoreScale",
   "user_id",
   "is_my_post",
 ]);

@@ -11,6 +11,8 @@ import {
 } from "valibot";
 
 import {
+  OWNER_DEFAULT_COLLISION_LAYER,
+  VIEWER_DEFAULT_COLLISION_LAYER,
   ZCommentDate,
   ZCommentDateUsec,
   ZCommentId,
@@ -18,9 +20,6 @@ import {
   ZCommentUserId,
   ZCommentVpos,
 } from "./format.numeric";
-
-export const VIEWER_DEFAULT_COLLISION_LAYER = -1;
-export const OWNER_DEFAULT_COLLISION_LAYER = -2;
 
 const ZFormattedCommentEntries = object({
   id: optional(ZCommentId, 0),

@@ -1,4 +1,4 @@
-import { parse } from "valibot";
+import { parse, safeParse } from "valibot";
 import { describe, expect, test } from "vitest";
 
 import {
@@ -37,5 +37,23 @@ describe("ZFormattedComment layer input", () => {
     const output = parse(ZFormattedComment, { layer: 3, collisionLayer: 7 });
 
     expect(output.collisionLayer).toBe(3);
+  });
+
+  test("accepts both sentinel values and any non-negative group id", () => {
+    expect(
+      safeParse(ZFormattedComment, { layer: VIEWER_DEFAULT_COLLISION_LAYER })
+        .success,
+    ).toBe(true);
+    expect(
+      safeParse(ZFormattedComment, { layer: OWNER_DEFAULT_COLLISION_LAYER })
+        .success,
+    ).toBe(true);
+    expect(safeParse(ZFormattedComment, { layer: 0 }).success).toBe(true);
+    expect(safeParse(ZFormattedComment, { layer: 42 }).success).toBe(true);
+  });
+
+  test("rejects a layer value outside the sentinel/group-id union", () => {
+    expect(safeParse(ZFormattedComment, { layer: -3 }).success).toBe(false);
+    expect(safeParse(ZFormattedComment, { layer: 1.5 }).success).toBe(false);
   });
 });

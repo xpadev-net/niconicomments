@@ -168,7 +168,7 @@ const updateLayerId = (filteredComments: GroupedByTime) => {
   for (const user of filteredComments) {
     for (const time of user.comments) {
       for (const comment of time.comments) {
-        comment.collisionLayer = layerId;
+        comment.layer = layerId;
         comment.ignoreScale = true;
       }
       layerId++;

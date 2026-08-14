@@ -44,7 +44,7 @@ const fromV1 = (data: V1Thread[]): FormattedComment[] => {
         premium: value.isPremium,
         mail: value.commands,
         user_id: -1,
-        collisionLayer: owner
+        layer: owner
           ? OWNER_DEFAULT_COLLISION_LAYER
           : VIEWER_DEFAULT_COLLISION_LAYER,
         ignoreScale: false,

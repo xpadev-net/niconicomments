@@ -22,7 +22,7 @@ export type FormattedCommentWithFont = {
   premium: boolean;
   mail: string[];
   user_id: number;
-  collisionLayer: number;
+  layer: number;
   ignoreScale: boolean;
   loc: CommentLoc;
   size: CommentSize;

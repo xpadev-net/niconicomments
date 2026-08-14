@@ -484,7 +484,7 @@ const buildAtButtonComment = (
     premium: true,
     mail,
     user_id: -10,
-    collisionLayer: VIEWER_DEFAULT_COLLISION_LAYER,
+    layer: VIEWER_DEFAULT_COLLISION_LAYER,
     ignoreScale: false,
     is_my_post: true,
   };

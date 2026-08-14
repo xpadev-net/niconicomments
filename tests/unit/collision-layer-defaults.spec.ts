@@ -7,36 +7,36 @@ import {
   ZFormattedComment,
 } from "@/@types";
 
-describe("ZFormattedComment layer input", () => {
-  test("renames the public layer field onto collisionLayer", () => {
+describe("ZFormattedComment layer default", () => {
+  test("keeps an explicit layer value as-is", () => {
     const output = parse(ZFormattedComment, { layer: 3 });
 
-    expect(output.collisionLayer).toBe(3);
-    expect(output).not.toHaveProperty("layer");
+    expect(output.layer).toBe(3);
   });
 
   test("defaults viewer comments to the viewer sentinel when layer is not given", () => {
     const output = parse(ZFormattedComment, { owner: false });
 
-    expect(output.collisionLayer).toBe(VIEWER_DEFAULT_COLLISION_LAYER);
+    expect(output.layer).toBe(VIEWER_DEFAULT_COLLISION_LAYER);
   });
 
   test("defaults owner comments to the owner sentinel when layer is not given", () => {
     const output = parse(ZFormattedComment, { owner: true });
 
-    expect(output.collisionLayer).toBe(OWNER_DEFAULT_COLLISION_LAYER);
+    expect(output.layer).toBe(OWNER_DEFAULT_COLLISION_LAYER);
   });
 
   test("does not override an explicit layer on owner comments", () => {
     const output = parse(ZFormattedComment, { owner: true, layer: 5 });
 
-    expect(output.collisionLayer).toBe(5);
+    expect(output.layer).toBe(5);
   });
 
-  test("ignores an unrecognized collisionLayer input key in favor of layer", () => {
-    const output = parse(ZFormattedComment, { layer: 3, collisionLayer: 7 });
+  test("preserves an explicit layer across a re-parse (addComments round-trip)", () => {
+    const first = parse(ZFormattedComment, { layer: 3 });
+    const second = parse(ZFormattedComment, first);
 
-    expect(output.collisionLayer).toBe(3);
+    expect(second.layer).toBe(3);
   });
 
   test("accepts both sentinel values and any non-negative group id", () => {

@@ -45,7 +45,7 @@ const fromLegacy = (data: unknown[]): FormattedComment[] => {
         premium: value.premium === 1,
         mail: [],
         user_id: -1,
-        collisionLayer: owner
+        layer: owner
           ? OWNER_DEFAULT_COLLISION_LAYER
           : VIEWER_DEFAULT_COLLISION_LAYER,
         ignoreScale: false,

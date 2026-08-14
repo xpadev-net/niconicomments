@@ -55,7 +55,7 @@ const fromXml2js = (data: Xml2jsPacket): FormattedComment[] => {
       premium: item.$.premium === "1",
       mail: item.$.mail.split(/\s+/g),
       user_id: -1,
-      collisionLayer: owner
+      layer: owner
         ? OWNER_DEFAULT_COLLISION_LAYER
         : VIEWER_DEFAULT_COLLISION_LAYER,
       ignoreScale: false,

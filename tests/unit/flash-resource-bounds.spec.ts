@@ -135,7 +135,7 @@ const formattedComment = (
   premium: false,
   mail,
   user_id: 1,
-  collisionLayer: -1,
+  layer: -1,
   ignoreScale: false,
   is_my_post: false,
 });

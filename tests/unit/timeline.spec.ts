@@ -107,7 +107,7 @@ const formattedComment = (
   premium: false,
   mail: ["ue"],
   user_id: id,
-  collisionLayer: -1,
+  layer: -1,
   ignoreScale: false,
   is_my_post: false,
 });
@@ -128,7 +128,7 @@ const createFixedComment = (index: number, vpos: number, long: number) =>
     flash: false,
     posY: -1,
     owner: false,
-    collisionLayer: -1,
+    layer: -1,
     ignoreScale: false,
     mail: ["ue"],
     content: `comment ${index}`,
@@ -326,10 +326,19 @@ describe("addComments", () => {
       comments: IComment[];
     };
 
-    niconiComments.addComments(formattedComment(1, 100, true));
+    // An owner comment that never had layer set (e.g. hand-built by a
+    // caller, or from a runtime source that predates the field) should
+    // still land on the owner sentinel — not the plain "unset" value it
+    // happens to be constructed with here.
+    const { layer: _layer, ...ownerCommentWithoutLayer } = formattedComment(
+      1,
+      100,
+      true,
+    );
+    niconiComments.addComments(ownerCommentWithoutLayer as FormattedComment);
 
     expect(state.comments[0]?.comment.owner).toBe(true);
-    expect(state.comments[0]?.comment.collisionLayer).toBe(
+    expect(state.comments[0]?.comment.layer).toBe(
       OWNER_DEFAULT_COLLISION_LAYER,
     );
   });

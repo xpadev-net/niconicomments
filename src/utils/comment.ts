@@ -1426,7 +1426,7 @@ const getPosY = (
   let currentPos = _currentPos;
   let isChanged = false;
   const targetIndex = targetComment.index;
-  const targetLayer = targetComment.collisionLayer;
+  const targetLayer = targetComment.layer;
   const targetHeight = targetComment.height;
   const canvasHeight = config.canvasHeight;
   const len = collision.length;
@@ -1435,7 +1435,7 @@ const getPosY = (
       const item = collision[i] as IComment;
       if (item.index === targetIndex || item.posY < 0) continue;
       if (
-        item.collisionLayer === targetLayer &&
+        item.layer === targetLayer &&
         currentPos < item.posY + item.height &&
         currentPos + targetHeight > item.posY
       ) {

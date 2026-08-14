@@ -23,7 +23,7 @@ export interface IComment {
   flash: boolean;
   posY: number;
   owner: boolean;
-  collisionLayer: number;
+  layer: number;
   ignoreScale: boolean;
   mail: string[];
   content: string;

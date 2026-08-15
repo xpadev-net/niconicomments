@@ -320,6 +320,18 @@ const localize = {
     `<p>コメント単位で不透明度を制御できます</p>
 <p>1で不透明、0で透明になります</p>`,
   ],
+  c_scale: [
+    `<p>You can control the scale per comment.</p>
+<p>This is multiplied with options.scale (the global scale).</p>`,
+    `<p>コメント単位で拡大率を制御できます</p>
+<p>optionsのscale(全体の拡大率)と乗算されます</p>`,
+  ],
+  c_ignore_global_scale: [
+    `<p>Excludes the target comment from options.scale (the global scale).</p>
+<p>When used together with nico:scale, only the nico:scale factor is applied.</p>`,
+    `<p>optionsのscale(全体の拡大率)の適用を対象コメントのみ除外します</p>
+<p>nico:scaleと併用した場合、nico:scaleの倍率のみが適用されます</p>`,
+  ],
 };
 const resources = { en: { translation: {} }, ja: { translation: {} } };
 for (const key in localize) {
@@ -332,6 +344,6 @@ i18next.use(i18nextBrowserLanguageDetector).init({
   resources: resources,
 });
 const i18nList = document.querySelectorAll("[data-i18n]");
-i18nList.forEach(function (v) {
+i18nList.forEach((v) => {
   v.innerHTML = i18next.t(v.dataset.i18n);
 });

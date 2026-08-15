@@ -520,6 +520,34 @@ nico:opacity:1</code></pre>
             <p>1で不透明、0で透明になります</p>
           </div>
         </div>
+        <h3 id="c_scale">Scale</h3>
+        <div class="item">
+          <h4>format</h4>
+          <div class="item">
+            <pre><code>nico:scale:(float &gt; 0)</code></pre>
+          </div>
+          <h4>example</h4>
+          <div class="item">
+            <pre><code>nico:scale:0.5
+nico:scale:1.5
+nico:scale:2</code></pre>
+          </div>
+          <div class="item" data-i18n="c_scale">
+            <p>コメント単位で拡大率を制御できます</p>
+            <p>optionsのscale(全体の拡大率)と乗算されます</p>
+          </div>
+        </div>
+        <h3 id="c_ignore_global_scale">Ignore Global Scale</h3>
+        <div class="item">
+          <h4>format</h4>
+          <div class="item">
+            <pre><code>nico:ignore-global-scale</code></pre>
+          </div>
+          <div class="item" data-i18n="c_ignore_global_scale">
+            <p>optionsのscale(全体の拡大率)の適用を対象コメントのみ除外します</p>
+            <p>nico:scaleと併用した場合、nico:scaleの倍率のみが適用されます</p>
+          </div>
+        </div>
       </section>
     </main>
   </body>

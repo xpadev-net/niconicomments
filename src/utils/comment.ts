@@ -49,6 +49,8 @@ const RE_STROKE = /^nico:stroke:(.+)$/;
 const RE_WAKU = /^nico:waku:(.+)$/;
 const RE_FILL = /^nico:fill:(.+)$/;
 const RE_OPACITY = /^nico:opacity:(.+)$/;
+const RE_SCALE = /^nico:scale:(.+)$/;
+const RE_IGNORE_SCALE = /^nico:ignore-global-scale$/;
 const RE_COLOR_CODE = /^#(?:[0-9a-z]{3}|[0-9a-z]{6})$/;
 export const DEFAULT_COMMENT_LONG = 300;
 export const DEFAULT_NICOSCRIPT_LONG = 30 * 100;
@@ -691,6 +693,8 @@ const parseCommandAndNicoScript = (
     wakuColor: commands.wakuColor,
     fillColor: commands.fillColor,
     opacity: commands.opacity,
+    scale: commands.scale,
+    ignoreScale: comment.ignoreScale || !!commands.ignoreScale,
     button: commands.button,
   };
 };
@@ -1077,6 +1081,15 @@ const parseCommand = (
     result.opacity ??= opacity;
     return;
   }
+  const scale = getScale(RE_SCALE.exec(command));
+  if (typeof scale === "number") {
+    result.scale ??= scale;
+    return;
+  }
+  if (RE_IGNORE_SCALE.test(command)) {
+    result.ignoreScale = true;
+    return;
+  }
   if (is(ZCommentLoc, command)) {
     result.loc ??= command;
     return;
@@ -1130,6 +1143,15 @@ const getOpacity = (match: RegExpMatchArray | null) => {
   if (!match) return;
   const value = Number(match[1]);
   if (!Number.isNaN(value) && value >= 0) {
+    return value;
+  }
+  return;
+};
+
+const getScale = (match: RegExpMatchArray | null) => {
+  if (!match) return;
+  const value = Number(match[1]);
+  if (Number.isFinite(value) && value > 0) {
     return value;
   }
   return;

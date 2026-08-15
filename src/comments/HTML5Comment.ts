@@ -115,7 +115,9 @@ class HTML5Comment extends BaseComment {
   override getCommentSize(
     parsedData: FormattedCommentWithFont,
   ): FormattedCommentWithSize {
-    const layerScale = parsedData.ignoreScale ? 1 : this.ctx.options.scale;
+    const layerScale =
+      (parsedData.ignoreScale ? 1 : this.ctx.options.scale) *
+      (parsedData.scale ?? 1);
     if (parsedData.invisible) {
       return {
         ...parsedData,

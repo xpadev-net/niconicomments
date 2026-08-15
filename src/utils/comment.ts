@@ -27,7 +27,7 @@ import {
 } from "@/@types/";
 import type { CommentInstanceContext } from "@/contexts/";
 import { colors } from "@/definition/colors";
-import typeGuard from "@/typeGuard";
+import typeGuard, { MAX_OPTION_SCALE } from "@/typeGuard";
 
 import { arrayPush } from "./array";
 import { getConfig } from "./config";
@@ -61,8 +61,6 @@ export const MAX_AT_BUTTON_TEXT_CHARS = 4096;
 export const MAX_AT_BUTTON_MAIL_ENTRIES = 16;
 export const MAX_AT_BUTTON_MAIL_CHARS = 64;
 export const MAX_AT_BUTTON_LIMIT = 100;
-export const MIN_NICO_SCALE = 0.01;
-export const MAX_NICO_SCALE = 10;
 export const MAX_PARSED_COMMAND_MAIL_ENTRIES = 64;
 export const MAX_PARSED_COMMAND_MAIL_CHARS = 128;
 export const MAX_NICOSCRIPT_COMMAND_CHARS = 16_384;
@@ -1155,8 +1153,8 @@ const getScale = (match: RegExpMatchArray | null) => {
   const value = Number(match[1]);
   if (
     Number.isFinite(value) &&
-    value >= MIN_NICO_SCALE &&
-    value <= MAX_NICO_SCALE
+    value >= Number.MIN_VALUE &&
+    value <= MAX_OPTION_SCALE
   ) {
     return value;
   }

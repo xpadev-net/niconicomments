@@ -61,6 +61,8 @@ export const MAX_AT_BUTTON_TEXT_CHARS = 4096;
 export const MAX_AT_BUTTON_MAIL_ENTRIES = 16;
 export const MAX_AT_BUTTON_MAIL_CHARS = 64;
 export const MAX_AT_BUTTON_LIMIT = 100;
+export const MIN_NICO_SCALE = 0.01;
+export const MAX_NICO_SCALE = 10;
 export const MAX_PARSED_COMMAND_MAIL_ENTRIES = 64;
 export const MAX_PARSED_COMMAND_MAIL_CHARS = 128;
 export const MAX_NICOSCRIPT_COMMAND_CHARS = 16_384;
@@ -1151,7 +1153,11 @@ const getOpacity = (match: RegExpMatchArray | null) => {
 const getScale = (match: RegExpMatchArray | null) => {
   if (!match) return;
   const value = Number(match[1]);
-  if (Number.isFinite(value) && value > 0) {
+  if (
+    Number.isFinite(value) &&
+    value >= MIN_NICO_SCALE &&
+    value <= MAX_NICO_SCALE
+  ) {
     return value;
   }
   return;

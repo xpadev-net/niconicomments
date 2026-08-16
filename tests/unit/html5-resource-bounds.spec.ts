@@ -394,60 +394,60 @@ describe("HTML5 comment resource bounds", () => {
     );
   });
 
-  test.each(["ue", "shita"] as const)(
-    "keeps %s fixed-comment resize measurement bounded for huge text",
-    (loc) => {
-      const renderer = new RecordingRenderer();
-      const comment = new TestHTML5Comment(
-        formattedComment(1, "x".repeat(5000), [loc]),
-        renderer,
-        0,
-        createContext(),
-      );
-      const widthLimit =
-        defaultConfig.commentStageSize.html5.width *
-        defaultConfig.commentScale.html5;
+  test.each([
+    "ue",
+    "shita",
+  ] as const)("keeps %s fixed-comment resize measurement bounded for huge text", (loc) => {
+    const renderer = new RecordingRenderer();
+    const comment = new TestHTML5Comment(
+      formattedComment(1, "x".repeat(5000), [loc]),
+      renderer,
+      0,
+      createContext(),
+    );
+    const widthLimit =
+      defaultConfig.commentStageSize.html5.width *
+      defaultConfig.commentScale.html5;
 
-      expect(comment.comment.resizedX).toBe(true);
-      expect(comment.comment.charSize).toBeLessThan(1);
-      expect(comment.comment.width).toBeLessThanOrEqual(widthLimit);
-      expect(renderer.measureCalls).toBeLessThanOrEqual(80);
+    expect(comment.comment.resizedX).toBe(true);
+    expect(comment.comment.charSize).toBeLessThan(1);
+    expect(comment.comment.width).toBeLessThanOrEqual(widthLimit);
+    expect(renderer.measureCalls).toBeLessThanOrEqual(80);
 
-      const image = comment.exposeTextImage() as RecordingRenderer | null;
+    const image = comment.exposeTextImage() as RecordingRenderer | null;
 
-      expect(image).not.toBeNull();
-      expect(image?.getSize().width).toBeLessThanOrEqual(widthLimit);
-      expect(image?.getSize().height).toBeGreaterThan(0);
-    },
-  );
+    expect(image).not.toBeNull();
+    expect(image?.getSize().width).toBeLessThanOrEqual(widthLimit);
+    expect(image?.getSize().height).toBeGreaterThan(0);
+  });
 
-  test.each(["ue", "shita"] as const)(
-    "reserves and offsets HTML5 offscreen top padding for long %s comments",
-    (loc) => {
-      const renderer = new RecordingRenderer();
-      const comment = new TestHTML5Comment(
-        formattedComment(1, "x".repeat(5000), [loc]),
-        renderer,
-        0,
-        createContext(),
-      );
+  test.each([
+    "ue",
+    "shita",
+  ] as const)("reserves and offsets HTML5 offscreen top padding for long %s comments", (loc) => {
+    const renderer = new RecordingRenderer();
+    const comment = new TestHTML5Comment(
+      formattedComment(1, "x".repeat(5000), [loc]),
+      renderer,
+      0,
+      createContext(),
+    );
 
-      const image = comment.exposeTextImage() as RecordingRenderer | null;
+    const image = comment.exposeTextImage() as RecordingRenderer | null;
 
-      expect(image).not.toBeNull();
-      const paddingHeight =
-        (image?.getSize().height ?? 0) - comment.comment.height;
-      expect(paddingHeight).toBeGreaterThan(0);
-      expect(image?.fillTextCallsByPosition[0]?.y).toBeGreaterThan(0);
+    expect(image).not.toBeNull();
+    const paddingHeight =
+      (image?.getSize().height ?? 0) - comment.comment.height;
+    expect(paddingHeight).toBeGreaterThan(0);
+    expect(image?.fillTextCallsByPosition[0]?.y).toBeGreaterThan(0);
 
-      comment.drawBodyForTest();
+    comment.drawBodyForTest();
 
-      expect(renderer.drawImageCalls).toHaveLength(1);
-      expect(renderer.drawImageCalls[0]?.image).toBe(image);
-      expect(renderer.drawImageCalls[0]?.x).toBe(0);
-      expect(renderer.drawImageCalls[0]?.y).toBeCloseTo(-paddingHeight, 5);
-    },
-  );
+    expect(renderer.drawImageCalls).toHaveLength(1);
+    expect(renderer.drawImageCalls[0]?.image).toBe(image);
+    expect(renderer.drawImageCalls[0]?.x).toBe(0);
+    expect(renderer.drawImageCalls[0]?.y).toBeCloseTo(-paddingHeight, 5);
+  });
 
   test("uses v0.2.76 fixed-comment resize step when scaled text still exceeds the stage", () => {
     const renderer = new ThresholdWidthRenderer();
@@ -744,6 +744,25 @@ describe("HTML5 comment resource bounds", () => {
     expect(commaImage).not.toBeNull();
     expect(separateImage).not.toBeNull();
     expect(commaImage).not.toBe(separateImage);
+  });
+
+  test("keeps nico:scale commandScale in layerScale after content setter re-measurement", () => {
+    const renderer = new RecordingRenderer();
+    const comment = new TestHTML5Comment(
+      formattedComment(1, "before", ["nico:scale:2"]),
+      renderer,
+      0,
+      createContext(),
+    );
+
+    expect(comment.comment.commandScale).toBe(2);
+    expect(comment.comment.scale).not.toBe(comment.comment.commandScale);
+    expect(comment.comment.layerScale).toBe(2);
+
+    comment.content = "after";
+
+    expect(comment.comment.commandScale).toBe(2);
+    expect(comment.comment.layerScale).toBe(2);
   });
 
   test("clamps backing canvas dimensions including padding", () => {

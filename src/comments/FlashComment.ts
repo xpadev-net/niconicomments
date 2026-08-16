@@ -3,13 +3,13 @@ import type {
   ButtonParams,
   CommentContentItem,
   CommentSize,
-  FormattedComment,
   FormattedCommentWithFont,
   FormattedCommentWithSize,
   IRenderer,
   MeasureTextInput,
   MeasureTextResult,
   Position,
+  ResolvedFormattedComment,
 } from "@/@types/";
 import type { CommentInstanceContext } from "@/contexts/";
 import { TypeGuardError } from "@/errors/TypeGuardError";
@@ -69,7 +69,7 @@ class FlashComment extends BaseComment {
   };
   override readonly pluginName: string = "FlashComment";
   constructor(
-    comment: FormattedComment,
+    comment: ResolvedFormattedComment,
     renderer: IRenderer,
     index: number,
     ctx: CommentInstanceContext,
@@ -119,7 +119,9 @@ class FlashComment extends BaseComment {
     this._buttonImageState = undefined;
   }
 
-  override convertComment(comment: FormattedComment): FormattedCommentWithSize {
+  override convertComment(
+    comment: ResolvedFormattedComment,
+  ): FormattedCommentWithSize {
     this._globalScale = getConfig(this.config.commentScale, true);
     return getButtonParts(
       this.getCommentSize(this.parseCommandAndNicoscript(comment)),
@@ -186,7 +188,7 @@ class FlashComment extends BaseComment {
   }
 
   override parseCommandAndNicoscript(
-    comment: FormattedComment,
+    comment: ResolvedFormattedComment,
   ): FormattedCommentWithFont {
     const data = parseCommandAndNicoScript(comment, this.ctx);
     const { content, lineCount, lineOffset } = this.parseContent(

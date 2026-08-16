@@ -54,12 +54,16 @@ export const ZFormattedComment = pipe(
     };
   }),
 );
-export type FormattedComment = InferOutput<typeof ZFormattedComment>;
 /**
- * `FormattedComment` の入力用の型。`id` や `ignoreScale` など default 付きの
- * フィールドは省略できる。`addComments` など公開APIの引数型として使う。
+ * 公開APIの入出力型。`id` や `ignoreScale` など default 付きのフィールドは
+ * 省略できる。`addComments` やコンストラクタなど公開APIの引数型として使う。
  */
-export type FormattedCommentInput = InferInput<typeof ZFormattedComment>;
+export type FormattedComment = InferInput<typeof ZFormattedComment>;
+/**
+ * パース済み・正規化済みのコメントの型。default 付きのフィールドも含めて
+ * 全プロパティが確定している。ライブラリ内部でのみ使う。
+ */
+export type ResolvedFormattedComment = InferOutput<typeof ZFormattedComment>;
 
 /**
  * @deprecated
@@ -73,13 +77,11 @@ export const ZFormattedLegacyComment = omit(ZFormattedCommentEntries, [
 /**
  * @deprecated
  */
-export type FormattedLegacyComment = InferOutput<
-  typeof ZFormattedLegacyComment
->;
+export type FormattedLegacyComment = InferInput<typeof ZFormattedLegacyComment>;
 /**
  * @deprecated
  */
-export type FormattedLegacyCommentInput = InferInput<
+export type ResolvedFormattedLegacyComment = InferOutput<
   typeof ZFormattedLegacyComment
 >;
 

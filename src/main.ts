@@ -4,7 +4,6 @@ import type {
   Collision,
   CommentEventHandlerMap,
   FormattedComment,
-  FormattedCommentInput,
   FrameActiveState,
   IComment,
   InputFormat,
@@ -12,6 +11,7 @@ import type {
   IRenderer,
   Options,
   Position,
+  ResolvedFormattedComment,
   Timeline,
 } from "@/@types/";
 import { ZFormattedComment } from "@/@types/";
@@ -380,7 +380,7 @@ class NiconiComments {
    * @param _rawData コメントデータ
    * @returns コメントのインスタンス配列
    */
-  private preRendering(_rawData: FormattedComment[]) {
+  private preRendering(_rawData: ResolvedFormattedComment[]) {
     let rawData = _rawData;
     const preRenderingStart = performance.now();
     if (this.ctx.options.keepCA) {
@@ -533,12 +533,15 @@ class NiconiComments {
    * ※すでに存在するコメントの位置はvposに関係なく更新されません
    * @param rawComments コメントデータ
    */
-  public addComments(...rawComments: FormattedCommentInput[]) {
-    const validComments = rawComments.reduce<FormattedComment[]>((pv, val) => {
-      const parsedComment = safeParse(ZFormattedComment, val);
-      if (parsedComment.success) pv.push(parsedComment.output);
-      return pv;
-    }, []);
+  public addComments(...rawComments: FormattedComment[]) {
+    const validComments = rawComments.reduce<ResolvedFormattedComment[]>(
+      (pv, val) => {
+        const parsedComment = safeParse(ZFormattedComment, val);
+        if (parsedComment.success) pv.push(parsedComment.output);
+        return pv;
+      },
+      [],
+    );
     if (validComments.length === 0) return;
     this.ctx.rangeCache.reset();
     const touchedTimeline = new Set<number>();

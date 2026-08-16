@@ -1,9 +1,9 @@
 import { parse } from "valibot";
 
 import {
-  type FormattedComment,
   type InputParser,
   OWNER_DEFAULT_COLLISION_LAYER,
+  type ResolvedFormattedComment,
   toFiniteNumberInRange,
   VIEWER_DEFAULT_COLLISION_LAYER,
   type Xml2jsPacket,
@@ -19,8 +19,8 @@ export const Xml2jsParser: InputParser = {
   },
 };
 
-const fromXml2js = (data: Xml2jsPacket): FormattedComment[] => {
-  const data_: FormattedComment[] = [];
+const fromXml2js = (data: Xml2jsPacket): ResolvedFormattedComment[] => {
+  const data_: ResolvedFormattedComment[] = [];
   const userIdMap = new Map<string, number>();
   let index = data.packet.chat.length;
   for (const item of data.packet.chat) {
@@ -45,7 +45,7 @@ const fromXml2js = (data: Xml2jsPacket): FormattedComment[] => {
       continue;
     }
     const owner = !(item.$.owner === "0" || item.$.user_id);
-    const tmpParam: FormattedComment = {
+    const tmpParam: ResolvedFormattedComment = {
       id,
       vpos,
       content: item._,

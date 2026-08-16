@@ -1,4 +1,4 @@
-import type { FormattedComment, IRenderer } from "@/@types";
+import type { IRenderer, ResolvedFormattedComment } from "@/@types";
 import { HTML5Comment } from "@/comments";
 import type { CommentInstanceContext } from "@/contexts/";
 
@@ -11,7 +11,7 @@ import type { CommentInstanceContext } from "@/contexts/";
  * @returns プラグインまたは内臓のコメントインスタンス
  */
 const createCommentInstance = (
-  comment: FormattedComment,
+  comment: ResolvedFormattedComment,
   renderer: IRenderer,
   index: number,
   ctx: CommentInstanceContext,

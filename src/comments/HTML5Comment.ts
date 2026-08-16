@@ -1,6 +1,5 @@
 import type {
   CommentContentItemText,
-  FormattedComment,
   FormattedCommentWithFont,
   FormattedCommentWithSize,
   HTML5Fonts,
@@ -9,6 +8,7 @@ import type {
   MeasureTextInput,
   MeasureTextResult,
   Position,
+  ResolvedFormattedComment,
 } from "@/@types/";
 import type { CommentInstanceContext } from "@/contexts/";
 import { TypeGuardError } from "@/errors/TypeGuardError";
@@ -83,7 +83,7 @@ class HTML5Comment extends BaseComment {
   >();
 
   constructor(
-    comment: FormattedComment,
+    comment: ResolvedFormattedComment,
     context: IRenderer,
     index: number,
     ctx: CommentInstanceContext,
@@ -109,7 +109,9 @@ class HTML5Comment extends BaseComment {
     this.image = undefined;
   }
 
-  override convertComment(comment: FormattedComment): FormattedCommentWithSize {
+  override convertComment(
+    comment: ResolvedFormattedComment,
+  ): FormattedCommentWithSize {
     return this.getCommentSize(this.parseCommandAndNicoscript(comment));
   }
   override getCommentSize(
@@ -164,7 +166,7 @@ class HTML5Comment extends BaseComment {
   }
 
   override parseCommandAndNicoscript(
-    comment: FormattedComment,
+    comment: ResolvedFormattedComment,
   ): FormattedCommentWithFont {
     const data = parseCommandAndNicoScript(comment, this.ctx);
     const { content, lineCount, lineOffset } = this.parseContent(

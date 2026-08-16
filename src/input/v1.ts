@@ -2,8 +2,8 @@ import { array, parse } from "valibot";
 
 import type { InputParser } from "@/@types";
 import {
-  type FormattedComment,
   OWNER_DEFAULT_COLLISION_LAYER,
+  type ResolvedFormattedComment,
   type V1Thread,
   VIEWER_DEFAULT_COLLISION_LAYER,
   ZV1Thread,
@@ -24,8 +24,8 @@ export const V1Parser: InputParser = {
  * @param data v1 apiから帰ってきたデータ
  * @returns 変換後のデータ
  */
-const fromV1 = (data: V1Thread[]): FormattedComment[] => {
-  const data_: FormattedComment[] = [];
+const fromV1 = (data: V1Thread[]): ResolvedFormattedComment[] => {
+  const data_: ResolvedFormattedComment[] = [];
   const userIdMap = new Map<string, number>();
   for (const item of data) {
     const val = item.comments;
@@ -34,7 +34,7 @@ const fromV1 = (data: V1Thread[]): FormattedComment[] => {
     for (const value of val) {
       const date = date2time(value.postedAt);
       if (date === undefined) continue;
-      const tmpParam: FormattedComment = {
+      const tmpParam: ResolvedFormattedComment = {
         id: value.no,
         vpos: Math.floor(value.vposMs / 10),
         content: value.body,

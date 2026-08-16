@@ -1,10 +1,10 @@
 import { array, parse } from "valibot";
 
 import {
-  type FormattedComment,
   type InputParser,
   OWNER_DEFAULT_COLLISION_LAYER,
   type OwnerComment,
+  type ResolvedFormattedComment,
   toFiniteNumberInRange,
   ZOwnerComment,
 } from "@/@types";
@@ -21,14 +21,14 @@ export const OwnerParser: InputParser = {
  * @param data 投米のデータ
  * @returns 変換後のデータ
  */
-const fromOwner = (data: OwnerComment[]): FormattedComment[] => {
-  const data_: FormattedComment[] = [];
+const fromOwner = (data: OwnerComment[]): ResolvedFormattedComment[] => {
+  const data_: ResolvedFormattedComment[] = [];
   for (let i = 0, n = data.length; i < n; i++) {
     const value = data[i];
     if (!value) continue;
     const vpos = time2vpos(value.time);
     if (vpos === undefined) continue;
-    const tmpParam: FormattedComment = {
+    const tmpParam: ResolvedFormattedComment = {
       id: i,
       vpos,
       content: value.comment,

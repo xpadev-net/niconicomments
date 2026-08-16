@@ -1,4 +1,4 @@
-import type { BaseConfig, FormattedComment } from "@/@types";
+import type { BaseConfig, ResolvedFormattedComment } from "@/@types";
 
 const RE_CA_FILTER = /@[\d.]+|184|device:.+|patissier|ca/;
 const HASH_OFFSET_A = 0x811c9dc5;
@@ -8,7 +8,7 @@ const HASH_PRIME_B = 0x85ebca6b;
 const HASH_SEPARATOR = 0x1f;
 
 type GroupedByUser = {
-  comments: FormattedComment[];
+  comments: ResolvedFormattedComment[];
   userId: number;
 }[];
 type GroupedByTime = {
@@ -16,7 +16,7 @@ type GroupedByTime = {
   userId: number;
 }[];
 type GroupedByTimeItem = {
-  comments: FormattedComment[];
+  comments: ResolvedFormattedComment[];
   range: {
     start: number;
     end: number;
@@ -35,9 +35,9 @@ type IndexedGroupedByTimeItem = GroupedByTimeItem & {
  * @returns レイヤー分離後のコメントデータ
  */
 const changeCALayer = (
-  rawData: FormattedComment[],
+  rawData: ResolvedFormattedComment[],
   config: BaseConfig,
-): FormattedComment[] => {
+): ResolvedFormattedComment[] => {
   const userScoreList = getUsersScore(rawData);
   const filteredComments = removeDuplicateCommentArt(rawData, config);
   const commentArts = filteredComments.filter(
@@ -60,7 +60,7 @@ const changeCALayer = (
  * @returns ユーザーIDごとのスコア
  */
 const getUsersScore = (
-  comments: FormattedComment[],
+  comments: ResolvedFormattedComment[],
 ): { [key: string]: number } => {
   const userScoreList: { [key: number]: number } = {};
   for (const comment of comments) {
@@ -91,10 +91,10 @@ const getUsersScore = (
  * @returns 重複を排除したコメントデータ
  */
 const removeDuplicateCommentArt = (
-  comments: FormattedComment[],
+  comments: ResolvedFormattedComment[],
   config: BaseConfig,
 ) => {
-  const index = new Map<string, FormattedComment>();
+  const index = new Map<string, ResolvedFormattedComment>();
   return comments.filter((comment) => {
     const key = getCommentArtDuplicateKey(comment);
     const lastComment = index.get(key);
@@ -113,7 +113,7 @@ const removeDuplicateCommentArt = (
   });
 };
 
-const getCommentArtDuplicateKey = (comment: FormattedComment) => {
+const getCommentArtDuplicateKey = (comment: ResolvedFormattedComment) => {
   const normalizedMail = Array.from(
     new Set(comment.mail.filter((mail) => !RE_CA_FILTER.test(mail))),
   ).sort((a, b) => a.localeCompare(b));
@@ -181,10 +181,12 @@ const updateLayerId = (filteredComments: GroupedByTime) => {
  * @param comments コメントデータ
  * @returns ユーザーごとにグループ化したコメントデータ
  */
-const groupCommentsByUser = (comments: FormattedComment[]): GroupedByUser => {
+const groupCommentsByUser = (
+  comments: ResolvedFormattedComment[],
+): GroupedByUser => {
   const userMap = new Map<
     number,
-    { comments: FormattedComment[]; userId: number }
+    { comments: ResolvedFormattedComment[]; userId: number }
   >();
   for (const comment of comments) {
     let user = userMap.get(comment.user_id);
@@ -217,7 +219,7 @@ const groupCommentsByTime = (comments: GroupedByUser, config: BaseConfig) => {
  * @returns 時間ごとにグループ化したコメントデータ
  */
 const groupUserCommentsByTime = (
-  comments: FormattedComment[],
+  comments: ResolvedFormattedComment[],
   config: BaseConfig,
 ) => {
   const result: IndexedGroupedByTimeItem[] = [];

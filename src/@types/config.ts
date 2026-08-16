@@ -1,8 +1,8 @@
 import type {
   CommentSize,
-  FormattedComment,
   IPluginConstructor,
   PlatformFont,
+  ResolvedFormattedComment,
 } from "@/@types/";
 import type { BaseComment } from "@/comments/";
 import type { BaseOptions } from "./options";
@@ -77,7 +77,7 @@ export type BaseConfig = {
   commentPlugins: {
     class: typeof BaseComment;
     condition: (
-      comment: FormattedComment,
+      comment: ResolvedFormattedComment,
       config: BaseConfig,
       options: BaseOptions,
     ) => boolean;

@@ -1,8 +1,8 @@
-import type { FormattedComment, InputParser } from "@/@types";
+import type { InputParser, ResolvedFormattedComment } from "@/@types";
 
 export const EmptyParser: InputParser = {
   key: ["empty"],
-  parse: (): FormattedComment[] => {
+  parse: (): ResolvedFormattedComment[] => {
     return [];
   },
 };

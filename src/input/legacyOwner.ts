@@ -1,7 +1,7 @@
 import {
-  type FormattedComment,
   type InputParser,
   OWNER_DEFAULT_COLLISION_LAYER,
+  type ResolvedFormattedComment,
   toFiniteNumberInRange,
 } from "@/@types";
 import { InvalidFormatError } from "@/errors";
@@ -20,8 +20,8 @@ export const LegacyOwnerParser: InputParser = {
  * @param data 旧投米のテキストデータ
  * @returns 変換後のデータ
  */
-const fromLegacyOwner = (data: string): FormattedComment[] => {
-  const data_: FormattedComment[] = [];
+const fromLegacyOwner = (data: string): ResolvedFormattedComment[] => {
+  const data_: ResolvedFormattedComment[] = [];
   const comments = data.split(/\r\n|\r|\n/);
   for (let i = 0, n = comments.length; i < n; i++) {
     const value = comments[i] ?? "";
@@ -39,7 +39,7 @@ const fromLegacyOwner = (data: string): FormattedComment[] => {
       max: Math.floor(Number.MAX_SAFE_INTEGER / 100),
     });
     if (seconds === undefined) continue;
-    const tmpParam: FormattedComment = {
+    const tmpParam: ResolvedFormattedComment = {
       id: i,
       vpos: seconds * 100,
       content: commentData[2] ?? "",

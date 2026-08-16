@@ -1,7 +1,7 @@
 import {
-  type FormattedComment,
   type InputParser,
   OWNER_DEFAULT_COLLISION_LAYER,
+  type ResolvedFormattedComment,
   toFiniteNumberInRange,
   VIEWER_DEFAULT_COLLISION_LAYER,
 } from "@/@types";
@@ -22,7 +22,7 @@ export const assignUserId = (
 
 export const XmlDocumentParser: InputParser = {
   key: ["XMLDocument", "niconicome"],
-  parse: (input: unknown): FormattedComment[] => {
+  parse: (input: unknown): ResolvedFormattedComment[] => {
     let isXmlDocument = false;
     if (typeof input === "object" && input !== null) {
       try {
@@ -43,8 +43,8 @@ export const XmlDocumentParser: InputParser = {
  * @param data 吐き出されたxmlをDOMParserでparseFromStringしたもの
  * @returns 変換後のデータ
  */
-const parseXMLDocument = (data: XMLDocument): FormattedComment[] => {
-  const data_: FormattedComment[] = [];
+const parseXMLDocument = (data: XMLDocument): ResolvedFormattedComment[] => {
+  const data_: ResolvedFormattedComment[] = [];
   const userIdMap = new Map<string, number>();
   let index = Array.from(data.documentElement.children).length;
   for (const item of Array.from(data.documentElement.children)) {
@@ -71,7 +71,7 @@ const parseXMLDocument = (data: XMLDocument): FormattedComment[] => {
       continue;
     }
     const owner = !item.getAttribute("user_id");
-    const tmpParam: FormattedComment = {
+    const tmpParam: ResolvedFormattedComment = {
       id,
       vpos,
       content: item.textContent ?? "",

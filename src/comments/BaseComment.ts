@@ -1,6 +1,5 @@
 import type {
   BaseConfig,
-  FormattedComment,
   FormattedCommentWithFont,
   FormattedCommentWithSize,
   FrameActiveState,
@@ -10,6 +9,7 @@ import type {
   MeasureTextResult,
   ParseContentResult,
   Position,
+  ResolvedFormattedComment,
 } from "@/@types/";
 import type { CommentInstanceContext } from "@/contexts";
 import { NotImplementedError } from "@/errors/";
@@ -98,7 +98,7 @@ class BaseComment implements IComment {
    * @param ctx インスタンスコンテキスト
    */
   constructor(
-    comment: FormattedComment,
+    comment: ResolvedFormattedComment,
     renderer: IRenderer,
     index: number,
     ctx: CommentInstanceContext,
@@ -171,7 +171,7 @@ class BaseComment implements IComment {
    * @returns 処理結果
    */
   protected parseCommandAndNicoscript(
-    comment: FormattedComment,
+    comment: ResolvedFormattedComment,
   ): FormattedCommentWithFont {
     console.error(
       "parseCommandAndNicoscript method is not implemented",
@@ -207,7 +207,7 @@ class BaseComment implements IComment {
    * @returns 描画サイズを含むコメント
    */
   protected convertComment(
-    comment: FormattedComment,
+    comment: ResolvedFormattedComment,
   ): FormattedCommentWithSize {
     console.error("convertComment method is not implemented", comment);
     throw new NotImplementedError(this.pluginName, "convertComment");

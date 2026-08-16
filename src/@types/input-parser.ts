@@ -1,6 +1,6 @@
-import type { FormattedComment } from "@/@types/";
+import type { ResolvedFormattedComment } from "@/@types/";
 
 export interface InputParser {
   key: string[];
-  parse: (input: unknown) => FormattedComment[];
+  parse: (input: unknown) => ResolvedFormattedComment[];
 }

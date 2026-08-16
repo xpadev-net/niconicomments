@@ -1,9 +1,9 @@
 import { array, parse, safeParse, unknown as unknownSchema } from "valibot";
 
 import {
-  type FormattedComment,
   type InputParser,
   OWNER_DEFAULT_COLLISION_LAYER,
+  type ResolvedFormattedComment,
   VIEWER_DEFAULT_COLLISION_LAYER,
   ZApiChat,
 } from "@/@types";
@@ -22,8 +22,8 @@ export const LegacyParser: InputParser = {
  * @param data legacy apiから帰ってきたデータ
  * @returns 変換後のデータ
  */
-const fromLegacy = (data: unknown[]): FormattedComment[] => {
-  const data_: FormattedComment[] = [];
+const fromLegacy = (data: unknown[]): ResolvedFormattedComment[] => {
+  const data_: ResolvedFormattedComment[] = [];
   const userIdMap = new Map<string, number>();
   for (const _val of data) {
     const chat =
@@ -35,7 +35,7 @@ const fromLegacy = (data: unknown[]): FormattedComment[] => {
     const value = val.output;
     if (value.deleted !== 1) {
       const owner = !value.user_id;
-      const tmpParam: FormattedComment = {
+      const tmpParam: ResolvedFormattedComment = {
         id: value.no,
         vpos: value.vpos,
         content: value.content || "",

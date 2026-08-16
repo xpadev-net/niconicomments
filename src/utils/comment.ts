@@ -9,7 +9,6 @@ import type {
   CommentLoc,
   CommentSize,
   DefaultCommand,
-  FormattedComment,
   FormattedCommentWithSize,
   IComment,
   MeasureTextInput,
@@ -17,6 +16,7 @@ import type {
   NicoScriptReplace,
   ParseCommandAndNicoScriptResult,
   ParsedCommand,
+  ResolvedFormattedComment,
   Timeline,
 } from "@/@types/";
 import {
@@ -595,7 +595,7 @@ const getDefaultCommand = (
  * @returns コメントが@置換の処理対象かどうか
  */
 const nicoscriptReplaceIgnoreable = (
-  comment: FormattedComment,
+  comment: ResolvedFormattedComment,
   item: NicoScriptReplace,
 ) => {
   const targetMatches =
@@ -621,7 +621,7 @@ const nicoscriptReplaceIgnoreable = (
  * @param nicoScripts ニコスクリプト
  */
 const applyNicoScriptReplace = (
-  comment: FormattedComment,
+  comment: ResolvedFormattedComment,
   commands: ParsedCommand,
   nicoScripts: NicoScript,
 ) => {
@@ -666,7 +666,7 @@ const applyNicoScriptReplace = (
  * @returns パース後のコメント
  */
 const parseCommandAndNicoScript = (
-  comment: FormattedComment,
+  comment: ResolvedFormattedComment,
   ctx: CommentInstanceContext,
 ): ParseCommandAndNicoScriptResult => {
   const { config, options, nicoScripts, rangeCache } = ctx;
@@ -745,7 +745,7 @@ const parseBrackets = (input: string) => {
  * @param nicoScripts ニコスクリプト
  */
 const addNicoscriptReplace = (
-  comment: FormattedComment,
+  comment: ResolvedFormattedComment,
   commands: ParsedCommand,
   nicoScripts: NicoScript,
   commandInput: string,
@@ -801,7 +801,7 @@ const sortNicoscriptReplace = (nicoScripts: NicoScript) => {
  * @param rangeCache レンジキャッシュ
  */
 const processNicoscript = (
-  comment: FormattedComment,
+  comment: ResolvedFormattedComment,
   commands: ParsedCommand,
   nicoScripts: NicoScript,
   rangeCache: RangeCacheContext,
@@ -858,7 +858,7 @@ const processNicoscript = (
  * @param nicoScripts ニコスクリプト
  */
 const processDefaultScript = (
-  comment: FormattedComment,
+  comment: ResolvedFormattedComment,
   commands: ParsedCommand,
   nicoScripts: NicoScript,
 ) => {
@@ -880,7 +880,7 @@ const processDefaultScript = (
  * @param rangeCache レンジキャッシュ
  */
 const processReverseScript = (
-  comment: FormattedComment,
+  comment: ResolvedFormattedComment,
   commands: ParsedCommand,
   nicoScripts: NicoScript,
   rangeCache: RangeCacheContext,
@@ -907,7 +907,7 @@ const processReverseScript = (
  * @param rangeCache レンジキャッシュ
  */
 const processBanScript = (
-  comment: FormattedComment,
+  comment: ResolvedFormattedComment,
   commands: ParsedCommand,
   nicoScripts: NicoScript,
   rangeCache: RangeCacheContext,
@@ -927,7 +927,7 @@ const processBanScript = (
  * @param nicoScripts ニコスクリプト
  */
 const processSeekDisableScript = (
-  comment: FormattedComment,
+  comment: ResolvedFormattedComment,
   commands: ParsedCommand,
   nicoScripts: NicoScript,
 ) => {
@@ -946,7 +946,7 @@ const processSeekDisableScript = (
  * @param nicoScripts ニコスクリプト
  */
 const processJumpScript = (
-  comment: FormattedComment,
+  comment: ResolvedFormattedComment,
   commands: ParsedCommand,
   input: string,
   nicoScripts: NicoScript,
@@ -969,7 +969,7 @@ const processJumpScript = (
  * @param commands 対象のコマンド
  */
 const processAtButton = (
-  comment: FormattedComment,
+  comment: ResolvedFormattedComment,
   commands: ParsedCommand,
 ) => {
   const args = parseBrackets(
@@ -1008,7 +1008,7 @@ const processAtButton = (
  * @returns パースしたコマンド
  */
 const parseCommands = (
-  comment: FormattedComment,
+  comment: ResolvedFormattedComment,
   config: BaseConfig,
   options: BaseOptions,
 ): ParsedCommand => {
@@ -1049,7 +1049,7 @@ const parseCommands = (
  * @param config インスタンス設定
  */
 const parseCommand = (
-  comment: FormattedComment,
+  comment: ResolvedFormattedComment,
   _command: string,
   result: ParsedCommand,
   isFlash: boolean,
@@ -1169,7 +1169,7 @@ const getScale = (match: RegExpMatchArray | null) => {
  * @returns Flash適用対象かどうか
  */
 const isFlashComment = (
-  comment: FormattedComment,
+  comment: ResolvedFormattedComment,
   config: BaseConfig,
   options: BaseOptions,
 ): boolean =>

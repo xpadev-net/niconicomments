@@ -6,8 +6,8 @@ import type {
   CommentContentItem,
   CommentFlashFont,
   CommentFlashFontParsed,
-  FormattedComment,
   FormattedCommentWithSize,
+  ResolvedFormattedComment,
 } from "@/@types";
 import { VIEWER_DEFAULT_COLLISION_LAYER } from "@/@types";
 import { getConfig } from "@/utils/config";
@@ -467,7 +467,7 @@ const getButtonParts = (
 const buildAtButtonComment = (
   comment: FormattedCommentWithSize,
   vpos: number,
-): FormattedComment | undefined => {
+): ResolvedFormattedComment | undefined => {
   if (!comment.button || comment.button.limit <= 0) return;
   comment.button.limit -= 1;
   const mail = [...comment.button.commentMail, "from_button"];

@@ -3,8 +3,8 @@ import { literal, union } from "valibot";
 
 import type {
   Config,
-  FormattedCommentInput,
-  FormattedLegacyCommentInput,
+  FormattedComment,
+  FormattedLegacyComment,
   OwnerComment,
   RawApiResponse,
   V1Thread,
@@ -28,8 +28,8 @@ export type InputFormatType = InferOutput<typeof ZInputFormatType>;
 export type InputFormat =
   | XMLDocument
   | Xml2jsPacket
-  | FormattedCommentInput[]
-  | FormattedLegacyCommentInput[]
+  | FormattedComment[]
+  | FormattedLegacyComment[]
   | RawApiResponse[]
   | OwnerComment[]
   | V1Thread[]

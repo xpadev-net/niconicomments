@@ -33,7 +33,7 @@ export type FormattedCommentWithFont = {
   wakuColor?: string;
   fillColor?: string;
   opacity?: number;
-  scale?: number;
+  commandScale?: number;
   full: boolean;
   ender: boolean;
   _live: boolean;
@@ -76,7 +76,7 @@ export type ParseCommandAndNicoScriptResult = {
   wakuColor?: string;
   fillColor?: string;
   opacity?: number;
-  scale?: number;
+  commandScale?: number;
   ignoreScale: boolean;
   font: CommentFont;
   full: boolean;
@@ -293,7 +293,7 @@ export type ParsedCommand = {
   wakuColor?: string;
   fillColor?: string;
   opacity?: number;
-  scale?: number;
+  commandScale?: number;
   ignoreScale?: boolean;
   font: CommentFont | undefined;
   full: boolean;

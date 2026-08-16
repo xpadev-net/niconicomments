@@ -242,6 +242,25 @@ describe("Flash and at-button resource bounds", () => {
     expect(image?.strokeTextCalls).toBeLessThanOrEqual(8);
   });
 
+  test("keeps nico:scale commandScale in layerScale after content setter re-measurement", () => {
+    const renderer = new RecordingRenderer();
+    const comment = new TestFlashComment(
+      formattedComment("one\ntwo\nthree\nfour\nfive", ["nico:scale:2"]),
+      renderer,
+      0,
+      createContext(),
+    );
+
+    expect(comment.comment.commandScale).toBe(2);
+    expect(comment.comment.scale).not.toBe(comment.comment.commandScale);
+    expect(comment.comment.layerScale).toBe(2);
+
+    comment.content = "six\nseven\neight\nnine\nten";
+
+    expect(comment.comment.commandScale).toBe(2);
+    expect(comment.comment.layerScale).toBe(2);
+  });
+
   test("reports Flash comments as Flash instances", () => {
     const comment = new TestFlashComment(
       formattedComment("flash"),

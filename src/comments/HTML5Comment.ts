@@ -117,7 +117,7 @@ class HTML5Comment extends BaseComment {
   ): FormattedCommentWithSize {
     const layerScale =
       (parsedData.ignoreScale ? 1 : this.ctx.options.scale) *
-      (parsedData.scale ?? 1);
+      (parsedData.commandScale ?? 1);
     if (parsedData.invisible) {
       return {
         ...parsedData,

@@ -693,7 +693,7 @@ const parseCommandAndNicoScript = (
     wakuColor: commands.wakuColor,
     fillColor: commands.fillColor,
     opacity: commands.opacity,
-    scale: commands.scale,
+    commandScale: commands.commandScale,
     ignoreScale: comment.ignoreScale || !!commands.ignoreScale,
     button: commands.button,
   };
@@ -1083,7 +1083,7 @@ const parseCommand = (
   }
   const scale = getScale(RE_SCALE.exec(command));
   if (typeof scale === "number") {
-    result.scale ??= scale;
+    result.commandScale ??= scale;
     return;
   }
   if (RE_IGNORE_SCALE.test(command)) {

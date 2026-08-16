@@ -3,9 +3,8 @@ import { array, parse } from "valibot";
 import type { InputParser } from "@/@types";
 import {
   type FormattedComment,
-  OWNER_DEFAULT_COLLISION_LAYER,
+  getDefaultCollisionLayer,
   type V1Thread,
-  VIEWER_DEFAULT_COLLISION_LAYER,
   ZV1Thread,
 } from "@/@types";
 
@@ -44,9 +43,7 @@ const fromV1 = (data: V1Thread[]): FormattedComment[] => {
         premium: value.isPremium,
         mail: value.commands,
         user_id: -1,
-        layer: owner
-          ? OWNER_DEFAULT_COLLISION_LAYER
-          : VIEWER_DEFAULT_COLLISION_LAYER,
+        layer: getDefaultCollisionLayer(owner),
         ignoreScale: false,
         is_my_post: value.isMyPost,
       };

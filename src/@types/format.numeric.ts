@@ -40,6 +40,8 @@ export const ZCommentUserId = rangedNumber({ min: -1 });
 // changeCALayer (see src/utils/commentArt.ts).
 export const VIEWER_DEFAULT_COLLISION_LAYER = -1;
 export const OWNER_DEFAULT_COLLISION_LAYER = -2;
+export const getDefaultCollisionLayer = (owner: boolean) =>
+  owner ? OWNER_DEFAULT_COLLISION_LAYER : VIEWER_DEFAULT_COLLISION_LAYER;
 export const ZCommentLayer = union([
   literal(VIEWER_DEFAULT_COLLISION_LAYER),
   literal(OWNER_DEFAULT_COLLISION_LAYER),

@@ -188,6 +188,7 @@ type MovableCollisionIndex = {
   buckets: Map<number, IComment[]>;
   durations: Set<number>;
   registeredComments: WeakSet<IComment>;
+  pending: IComment[];
 };
 
 const movableCollisionIndexes = new WeakMap<Collision, MovableCollisionIndex>();
@@ -199,6 +200,7 @@ const getMovableCollisionIndex = (collision: Collision) => {
     buckets: new Map(),
     durations: new Set(),
     registeredComments: new WeakSet(),
+    pending: [],
   };
   movableCollisionIndexes.set(collision, created);
   return created;
@@ -249,14 +251,10 @@ const forEachMovableCollisionBucket = (
   }
 };
 
-const registerMovableCollisionComment = (
-  collision: Collision,
+const addMovableCollisionCommentToBuckets = (
+  index: MovableCollisionIndex,
   comment: IComment,
 ) => {
-  const index = getMovableCollisionIndex(collision);
-  if (index.registeredComments.has(comment)) return;
-  index.registeredComments.add(comment);
-  index.durations.add(comment.long);
   forEachMovableCollisionBucket(comment, (bucket) => {
     const comments = index.buckets.get(bucket);
     if (comments) {
@@ -265,6 +263,32 @@ const registerMovableCollisionComment = (
       index.buckets.set(bucket, [comment]);
     }
   });
+};
+
+// durations が1種類しかない間はバケットへの登録を遅延させ、
+// 異なる長さのコメントが現れて実際に候補検索が必要になった時点でまとめてバケット化する
+const flushPendingMovableCollisionComments = (index: MovableCollisionIndex) => {
+  if (index.pending.length === 0) return;
+  for (const comment of index.pending) {
+    addMovableCollisionCommentToBuckets(index, comment);
+  }
+  index.pending = [];
+};
+
+const registerMovableCollisionComment = (
+  collision: Collision,
+  comment: IComment,
+) => {
+  const index = getMovableCollisionIndex(collision);
+  if (index.registeredComments.has(comment)) return;
+  index.registeredComments.add(comment);
+  index.durations.add(comment.long);
+  if (index.durations.size === 1) {
+    index.pending.push(comment);
+    return;
+  }
+  flushPendingMovableCollisionComments(index);
+  addMovableCollisionCommentToBuckets(index, comment);
 };
 
 const doMovableTrajectoriesIntersect = (
@@ -319,6 +343,7 @@ const getAnalyticMovableCollisionCandidates = (
   if (index.durations.size === 1 && index.durations.has(comment.long)) {
     return undefined;
   }
+  flushPendingMovableCollisionComments(index);
   const commentRange = getMovableCommentActiveRange(comment);
   const commentSpeed =
     (config.commentDrawRange + comment.width * config.nakaCommentSpeedOffset) /

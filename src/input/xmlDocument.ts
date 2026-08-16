@@ -1,9 +1,8 @@
 import {
   type FormattedComment,
+  getDefaultCollisionLayer,
   type InputParser,
-  OWNER_DEFAULT_COLLISION_LAYER,
   toFiniteNumberInRange,
-  VIEWER_DEFAULT_COLLISION_LAYER,
 } from "@/@types";
 import { InvalidFormatError } from "@/errors";
 import typeGuard from "@/typeGuard";
@@ -81,9 +80,7 @@ const parseXMLDocument = (data: XMLDocument): FormattedComment[] => {
       premium: item.getAttribute("premium") === "1",
       mail: [],
       user_id: -1,
-      layer: owner
-        ? OWNER_DEFAULT_COLLISION_LAYER
-        : VIEWER_DEFAULT_COLLISION_LAYER,
+      layer: getDefaultCollisionLayer(owner),
       ignoreScale: false,
       is_my_post: false,
     };

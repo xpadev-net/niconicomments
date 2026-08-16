@@ -1,4 +1,4 @@
-import type { InferOutput } from "valibot";
+import type { InferInput, InferOutput } from "valibot";
 import {
   array,
   boolean,
@@ -55,6 +55,11 @@ export const ZFormattedComment = pipe(
   }),
 );
 export type FormattedComment = InferOutput<typeof ZFormattedComment>;
+/**
+ * `FormattedComment` の入力用の型。`id` や `ignoreScale` など default 付きの
+ * フィールドは省略できる。`addComments` など公開APIの引数型として使う。
+ */
+export type FormattedCommentInput = InferInput<typeof ZFormattedComment>;
 
 /**
  * @deprecated
@@ -69,6 +74,12 @@ export const ZFormattedLegacyComment = omit(ZFormattedCommentEntries, [
  * @deprecated
  */
 export type FormattedLegacyComment = InferOutput<
+  typeof ZFormattedLegacyComment
+>;
+/**
+ * @deprecated
+ */
+export type FormattedLegacyCommentInput = InferInput<
   typeof ZFormattedLegacyComment
 >;
 

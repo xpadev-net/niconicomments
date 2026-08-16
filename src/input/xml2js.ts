@@ -2,10 +2,9 @@ import { parse } from "valibot";
 
 import {
   type FormattedComment,
+  getDefaultCollisionLayer,
   type InputParser,
-  OWNER_DEFAULT_COLLISION_LAYER,
   toFiniteNumberInRange,
-  VIEWER_DEFAULT_COLLISION_LAYER,
   type Xml2jsPacket,
 } from "@/@types";
 import { ZXml2jsPacket } from "@/@types/";
@@ -55,9 +54,7 @@ const fromXml2js = (data: Xml2jsPacket): FormattedComment[] => {
       premium: item.$.premium === "1",
       mail: item.$.mail.split(/\s+/g),
       user_id: -1,
-      layer: owner
-        ? OWNER_DEFAULT_COLLISION_LAYER
-        : VIEWER_DEFAULT_COLLISION_LAYER,
+      layer: getDefaultCollisionLayer(owner),
       ignoreScale: false,
       is_my_post: false,
     };

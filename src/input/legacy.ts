@@ -2,9 +2,8 @@ import { array, parse, safeParse, unknown as unknownSchema } from "valibot";
 
 import {
   type FormattedComment,
+  getDefaultCollisionLayer,
   type InputParser,
-  OWNER_DEFAULT_COLLISION_LAYER,
-  VIEWER_DEFAULT_COLLISION_LAYER,
   ZApiChat,
 } from "@/@types";
 
@@ -45,9 +44,7 @@ const fromLegacy = (data: unknown[]): FormattedComment[] => {
         premium: value.premium === 1,
         mail: [],
         user_id: -1,
-        layer: owner
-          ? OWNER_DEFAULT_COLLISION_LAYER
-          : VIEWER_DEFAULT_COLLISION_LAYER,
+        layer: getDefaultCollisionLayer(owner),
         ignoreScale: false,
         is_my_post: false,
       };

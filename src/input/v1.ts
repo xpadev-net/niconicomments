@@ -1,7 +1,12 @@
 import { array, parse } from "valibot";
 
 import type { InputParser } from "@/@types";
-import { type FormattedComment, type V1Thread, ZV1Thread } from "@/@types";
+import {
+  type FormattedComment,
+  getDefaultCollisionLayer,
+  type V1Thread,
+  ZV1Thread,
+} from "@/@types";
 
 import { assignUserId } from "./xmlDocument";
 
@@ -24,6 +29,7 @@ const fromV1 = (data: V1Thread[]): FormattedComment[] => {
   for (const item of data) {
     const val = item.comments;
     const forkName = item.fork;
+    const owner = forkName === "owner";
     for (const value of val) {
       const date = date2time(value.postedAt);
       if (date === undefined) continue;
@@ -33,11 +39,12 @@ const fromV1 = (data: V1Thread[]): FormattedComment[] => {
         content: value.body,
         date,
         date_usec: 0,
-        owner: forkName === "owner",
+        owner,
         premium: value.isPremium,
         mail: value.commands,
         user_id: -1,
-        layer: -1,
+        layer: getDefaultCollisionLayer(owner),
+        ignoreScale: false,
         is_my_post: value.isMyPost,
       };
       if (tmpParam.content.startsWith("/") && tmpParam.owner) {

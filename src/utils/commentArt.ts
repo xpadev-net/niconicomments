@@ -29,7 +29,7 @@ type IndexedGroupedByTimeItem = GroupedByTimeItem & {
 };
 
 /**
- * CAと思われるコメントのレイヤーを分離する
+ * CAと思われるコメントの衝突レイヤーを分離し、スケール除外フラグを立てる
  * @param rawData コメントデータ
  * @param config インスタンス設定
  * @returns レイヤー分離後のコメントデータ
@@ -160,7 +160,7 @@ const mixHashCode = (
 const toBase36 = (value: number) => (value >>> 0).toString(36);
 
 /**
- * レイヤーIDを更新する
+ * CAクラスタごとに衝突レイヤーとスケール除外フラグを更新する
  * @param filteredComments 更新対象のコメントデータ
  */
 const updateLayerId = (filteredComments: GroupedByTime) => {
@@ -169,6 +169,7 @@ const updateLayerId = (filteredComments: GroupedByTime) => {
     for (const time of user.comments) {
       for (const comment of time.comments) {
         comment.layer = layerId;
+        comment.ignoreScale = true;
       }
       layerId++;
     }

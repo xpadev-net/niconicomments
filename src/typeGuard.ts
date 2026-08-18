@@ -68,7 +68,7 @@ import {
 } from "@/@types/";
 import { colors } from "@/definition/colors";
 
-const MAX_OPTION_SCALE = 8;
+export const MAX_OPTION_SCALE = 8;
 const MAX_CANVAS_DIMENSION = 8192;
 const MAX_CANVAS_AREA = 16_777_216;
 const MAX_FONT_SIZE = 512;

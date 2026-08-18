@@ -137,6 +137,7 @@ const generateComments = (count: number, seed = 42): FormattedComment[] => {
       mail: [],
       user_id: Math.floor(rng() * 100),
       layer: -1,
+      ignoreScale: false,
       is_my_post: false,
     });
   }
@@ -167,6 +168,7 @@ const generateCommentInstances = (
       mail: loc === "naka" ? [] : [loc],
       user_id: Math.floor(rng() * 50),
       layer: -1,
+      ignoreScale: false,
       is_my_post: false,
     };
     const instance = new HTML5Comment(base, renderer, i, ctx);

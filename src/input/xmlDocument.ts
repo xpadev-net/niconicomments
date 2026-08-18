@@ -1,5 +1,6 @@
 import {
   type FormattedComment,
+  getDefaultCollisionLayer,
   type InputParser,
   toFiniteNumberInRange,
 } from "@/@types";
@@ -68,17 +69,19 @@ const parseXMLDocument = (data: XMLDocument): FormattedComment[] => {
     ) {
       continue;
     }
+    const owner = !item.getAttribute("user_id");
     const tmpParam: FormattedComment = {
       id,
       vpos,
       content: item.textContent ?? "",
       date,
       date_usec: dateUsec,
-      owner: !item.getAttribute("user_id"),
+      owner,
       premium: item.getAttribute("premium") === "1",
       mail: [],
       user_id: -1,
-      layer: -1,
+      layer: getDefaultCollisionLayer(owner),
+      ignoreScale: false,
       is_my_post: false,
     };
     if (item.getAttribute("mail")) {

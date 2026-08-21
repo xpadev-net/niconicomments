@@ -2,6 +2,7 @@ import { parse } from "valibot";
 
 import {
   type FormattedComment,
+  getDefaultCollisionLayer,
   type InputParser,
   toFiniteNumberInRange,
   type Xml2jsPacket,
@@ -42,17 +43,19 @@ const fromXml2js = (data: Xml2jsPacket): FormattedComment[] => {
     ) {
       continue;
     }
+    const owner = !(item.$.owner === "0" || item.$.user_id);
     const tmpParam: FormattedComment = {
       id,
       vpos,
       content: item._,
       date,
       date_usec: dateUsec,
-      owner: !(item.$.owner === "0" || item.$.user_id),
+      owner,
       premium: item.$.premium === "1",
       mail: item.$.mail.split(/\s+/g),
       user_id: -1,
-      layer: -1,
+      layer: getDefaultCollisionLayer(owner),
+      ignoreScale: false,
       is_my_post: false,
     };
     if (tmpParam.content.startsWith("/") && tmpParam.owner) {

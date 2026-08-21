@@ -208,10 +208,11 @@ class TestHTML5Comment extends HTML5Comment {
 
 type FormattedCommentOverride = Pick<
   Partial<FormattedComment>,
+  | "layer"
   | "date"
   | "date_usec"
+  | "ignoreScale"
   | "is_my_post"
-  | "layer"
   | "owner"
   | "premium"
   | "user_id"
@@ -234,6 +235,7 @@ const formattedComment = (
   mail,
   user_id: overrides.user_id ?? id,
   layer: overrides.layer ?? -1,
+  ignoreScale: overrides.ignoreScale ?? false,
   is_my_post: overrides.is_my_post ?? false,
 });
 
@@ -742,6 +744,25 @@ describe("HTML5 comment resource bounds", () => {
     expect(commaImage).not.toBeNull();
     expect(separateImage).not.toBeNull();
     expect(commaImage).not.toBe(separateImage);
+  });
+
+  test("keeps nico:scale commandScale in layerScale after content setter re-measurement", () => {
+    const renderer = new RecordingRenderer();
+    const comment = new TestHTML5Comment(
+      formattedComment(1, "before", ["nico:scale:2"]),
+      renderer,
+      0,
+      createContext(),
+    );
+
+    expect(comment.comment.commandScale).toBe(2);
+    expect(comment.comment.scale).not.toBe(comment.comment.commandScale);
+    expect(comment.comment.layerScale).toBe(2);
+
+    comment.content = "after";
+
+    expect(comment.comment.commandScale).toBe(2);
+    expect(comment.comment.layerScale).toBe(2);
   });
 
   test("clamps backing canvas dimensions including padding", () => {

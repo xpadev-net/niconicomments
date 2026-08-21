@@ -27,7 +27,7 @@ import {
 } from "@/@types/";
 import type { CommentInstanceContext } from "@/contexts/";
 import { colors } from "@/definition/colors";
-import typeGuard from "@/typeGuard";
+import typeGuard, { MAX_OPTION_SCALE } from "@/typeGuard";
 
 import { arrayPush } from "./array";
 import { getConfig } from "./config";
@@ -49,6 +49,8 @@ const RE_STROKE = /^nico:stroke:(.+)$/;
 const RE_WAKU = /^nico:waku:(.+)$/;
 const RE_FILL = /^nico:fill:(.+)$/;
 const RE_OPACITY = /^nico:opacity:(.+)$/;
+const RE_SCALE = /^nico:scale:(.+)$/;
+const RE_IGNORE_SCALE = /^nico:ignore-global-scale$/;
 const RE_COLOR_CODE = /^#(?:[0-9a-z]{3}|[0-9a-z]{6})$/;
 export const DEFAULT_COMMENT_LONG = 300;
 export const DEFAULT_NICOSCRIPT_LONG = 30 * 100;
@@ -186,6 +188,7 @@ type MovableCollisionIndex = {
   buckets: Map<number, IComment[]>;
   durations: Set<number>;
   registeredComments: WeakSet<IComment>;
+  pending: IComment[];
 };
 
 const movableCollisionIndexes = new WeakMap<Collision, MovableCollisionIndex>();
@@ -197,6 +200,7 @@ const getMovableCollisionIndex = (collision: Collision) => {
     buckets: new Map(),
     durations: new Set(),
     registeredComments: new WeakSet(),
+    pending: [],
   };
   movableCollisionIndexes.set(collision, created);
   return created;
@@ -247,14 +251,10 @@ const forEachMovableCollisionBucket = (
   }
 };
 
-const registerMovableCollisionComment = (
-  collision: Collision,
+const addMovableCollisionCommentToBuckets = (
+  index: MovableCollisionIndex,
   comment: IComment,
 ) => {
-  const index = getMovableCollisionIndex(collision);
-  if (index.registeredComments.has(comment)) return;
-  index.registeredComments.add(comment);
-  index.durations.add(comment.long);
   forEachMovableCollisionBucket(comment, (bucket) => {
     const comments = index.buckets.get(bucket);
     if (comments) {
@@ -263,6 +263,32 @@ const registerMovableCollisionComment = (
       index.buckets.set(bucket, [comment]);
     }
   });
+};
+
+// durations が1種類しかない間はバケットへの登録を遅延させ、
+// 異なる長さのコメントが現れて実際に候補検索が必要になった時点でまとめてバケット化する
+const flushPendingMovableCollisionComments = (index: MovableCollisionIndex) => {
+  if (index.pending.length === 0) return;
+  for (const comment of index.pending) {
+    addMovableCollisionCommentToBuckets(index, comment);
+  }
+  index.pending = [];
+};
+
+const registerMovableCollisionComment = (
+  collision: Collision,
+  comment: IComment,
+) => {
+  const index = getMovableCollisionIndex(collision);
+  if (index.registeredComments.has(comment)) return;
+  index.registeredComments.add(comment);
+  index.durations.add(comment.long);
+  if (index.durations.size === 1) {
+    index.pending.push(comment);
+    return;
+  }
+  flushPendingMovableCollisionComments(index);
+  addMovableCollisionCommentToBuckets(index, comment);
 };
 
 const doMovableTrajectoriesIntersect = (
@@ -317,6 +343,7 @@ const getAnalyticMovableCollisionCandidates = (
   if (index.durations.size === 1 && index.durations.has(comment.long)) {
     return undefined;
   }
+  flushPendingMovableCollisionComments(index);
   const commentRange = getMovableCommentActiveRange(comment);
   const commentSpeed =
     (config.commentDrawRange + comment.width * config.nakaCommentSpeedOffset) /
@@ -691,6 +718,8 @@ const parseCommandAndNicoScript = (
     wakuColor: commands.wakuColor,
     fillColor: commands.fillColor,
     opacity: commands.opacity,
+    commandScale: commands.commandScale,
+    ignoreScale: comment.ignoreScale || !!commands.ignoreScale,
     button: commands.button,
   };
 };
@@ -1077,6 +1106,15 @@ const parseCommand = (
     result.opacity ??= opacity;
     return;
   }
+  const scale = getScale(RE_SCALE.exec(command));
+  if (typeof scale === "number") {
+    result.commandScale ??= scale;
+    return;
+  }
+  if (RE_IGNORE_SCALE.test(command)) {
+    result.ignoreScale = true;
+    return;
+  }
   if (is(ZCommentLoc, command)) {
     result.loc ??= command;
     return;
@@ -1130,6 +1168,19 @@ const getOpacity = (match: RegExpMatchArray | null) => {
   if (!match) return;
   const value = Number(match[1]);
   if (!Number.isNaN(value) && value >= 0) {
+    return value;
+  }
+  return;
+};
+
+const getScale = (match: RegExpMatchArray | null) => {
+  if (!match) return;
+  const value = Number(match[1]);
+  if (
+    Number.isFinite(value) &&
+    value >= Number.MIN_VALUE &&
+    value <= MAX_OPTION_SCALE
+  ) {
     return value;
   }
   return;
@@ -1426,7 +1477,6 @@ const getPosY = (
   let currentPos = _currentPos;
   let isChanged = false;
   const targetIndex = targetComment.index;
-  const targetOwner = targetComment.owner;
   const targetLayer = targetComment.layer;
   const targetHeight = targetComment.height;
   const canvasHeight = config.canvasHeight;
@@ -1436,7 +1486,6 @@ const getPosY = (
       const item = collision[i] as IComment;
       if (item.index === targetIndex || item.posY < 0) continue;
       if (
-        item.owner === targetOwner &&
         item.layer === targetLayer &&
         currentPos < item.posY + item.height &&
         currentPos + targetHeight > item.posY

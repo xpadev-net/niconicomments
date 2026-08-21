@@ -4,6 +4,7 @@ import type {
   Collision,
   CommentEventHandlerMap,
   FormattedComment,
+  FormattedCommentInput,
   FrameActiveState,
   IComment,
   InputFormat,
@@ -532,7 +533,7 @@ class NiconiComments {
    * ※すでに存在するコメントの位置はvposに関係なく更新されません
    * @param rawComments コメントデータ
    */
-  public addComments(...rawComments: FormattedComment[]) {
+  public addComments(...rawComments: FormattedCommentInput[]) {
     const validComments = rawComments.reduce<FormattedComment[]>((pv, val) => {
       const parsedComment = safeParse(ZFormattedComment, val);
       if (parsedComment.success) pv.push(parsedComment.output);

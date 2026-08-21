@@ -24,6 +24,7 @@ export interface IComment {
   posY: number;
   owner: boolean;
   layer: number;
+  ignoreScale: boolean;
   mail: string[];
   content: string;
   image?: IRenderer | null;

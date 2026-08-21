@@ -137,6 +137,15 @@ class BaseComment implements IComment {
   get layer() {
     return this.comment.layer;
   }
+  get ignoreScale() {
+    return this.comment.ignoreScale;
+  }
+  protected getLayerScale(parsedData: FormattedCommentWithFont) {
+    return (
+      (parsedData.ignoreScale ? 1 : this.ctx.options.scale) *
+      (parsedData.commandScale ?? 1)
+    );
+  }
   get owner() {
     return this.comment.owner;
   }

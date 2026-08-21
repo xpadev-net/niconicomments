@@ -1,4 +1,4 @@
-import { check, number, pipe } from "valibot";
+import { check, literal, number, pipe, union } from "valibot";
 
 type NumberRangeOptions = {
   min?: number;
@@ -34,7 +34,20 @@ export const ZCommentVpos = rangedNumber({ min: MIN_SAFE_TIMELINE_VALUE });
 export const ZCommentDate = rangedNumber();
 export const ZCommentDateUsec = rangedNumber({ max: 999_999 });
 export const ZCommentUserId = rangedNumber({ min: -1 });
-export const ZCommentLayer = rangedNumber({ min: -1 });
+
+// A comment's collision-grouping id: either the viewer/owner default
+// sentinel, or a non-negative comment-art group id assigned by
+// changeCALayer (see src/utils/commentArt.ts).
+export const VIEWER_DEFAULT_COLLISION_LAYER = -1;
+export const OWNER_DEFAULT_COLLISION_LAYER = -2;
+export const getDefaultCollisionLayer = (owner: boolean) =>
+  owner ? OWNER_DEFAULT_COLLISION_LAYER : VIEWER_DEFAULT_COLLISION_LAYER;
+export const ZCommentLayer = union([
+  literal(VIEWER_DEFAULT_COLLISION_LAYER),
+  literal(OWNER_DEFAULT_COLLISION_LAYER),
+  rangedNumber({ min: 0 }),
+]);
+
 export const ZCommentScore = rangedNumber({ min: MIN_SAFE_TIMELINE_VALUE });
 
 export const toFiniteNumberInRange = (

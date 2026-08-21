@@ -23,6 +23,7 @@ export type FormattedCommentWithFont = {
   mail: string[];
   user_id: number;
   layer: number;
+  ignoreScale: boolean;
   loc: CommentLoc;
   size: CommentSize;
   fontSize: number;
@@ -32,6 +33,7 @@ export type FormattedCommentWithFont = {
   wakuColor?: string;
   fillColor?: string;
   opacity?: number;
+  commandScale?: number;
   full: boolean;
   ender: boolean;
   _live: boolean;
@@ -56,6 +58,7 @@ export type FormattedCommentWithSize = FormattedCommentWithFont & {
   charSize: number;
   scale: number;
   scaleX: number;
+  layerScale: number;
   buttonObjects?: ButtonList;
 };
 export type ParseContentResult = {
@@ -73,6 +76,8 @@ export type ParseCommandAndNicoScriptResult = {
   wakuColor?: string;
   fillColor?: string;
   opacity?: number;
+  commandScale?: number;
+  ignoreScale: boolean;
   font: CommentFont;
   full: boolean;
   ender: boolean;
@@ -288,6 +293,8 @@ export type ParsedCommand = {
   wakuColor?: string;
   fillColor?: string;
   opacity?: number;
+  commandScale?: number;
+  ignoreScale?: boolean;
   font: CommentFont | undefined;
   full: boolean;
   ender: boolean;
@@ -304,6 +311,7 @@ export type MeasureTextInput = FormattedCommentWithFont & {
   lineHeight?: number;
   charSize?: number;
   scale: number;
+  layerScale: number;
 };
 
 export const ZMeasureInput = object({

@@ -128,6 +128,24 @@ describe("NicoScript range boundaries", () => {
     expect(parseViewerContent(ctx, END_VPOS, "needle end")).toBe("needle end");
   });
 
+  test("@置換 accepts omitted optional arguments", () => {
+    const ctx = createContext();
+    parseScript(ctx, '@置換 "needle" "hit"');
+
+    expect(parseViewerContent(ctx, START_VPOS, "needle viewer")).toBe(
+      "hit viewer",
+    );
+  });
+
+  test("@置換 treats an omitted replacement as an empty string", () => {
+    const ctx = createContext();
+    parseScript(ctx, '@置換 "needle"');
+
+    expect(parseViewerContent(ctx, START_VPOS, "remove needle")).toBe(
+      "remove ",
+    );
+  });
+
   test("@逆 is active on [start, end)", () => {
     const ctx = createContext();
     parseScript(ctx, "@逆 全");
@@ -388,33 +406,27 @@ describe("@置換 target semantics", () => {
     ["含まない", true, "needle owner", "needle owner"],
     ["含まない", false, "plain viewer", "hit"],
     ["含まない", true, "plain owner", "hit"],
-  ] as const)(
-    "%s target maps owner=%s content %j to %j",
-    (target, owner, content, expected) => {
-      expect(applyReplace(target, owner, content)).toBe(expected);
-    },
-  );
+  ] as const)("%s target maps owner=%s content %j to %j", (target, owner, content, expected) => {
+    expect(applyReplace(target, owner, content)).toBe(expected);
+  });
 
   test.each([
     ["含む", "needle", "hit"],
     ["含む", "needle plus", "needle plus"],
     ["含まない", "needle", "needle"],
     ["含まない", "needle plus", "hit"],
-  ] as const)(
-    "%s target honors 完全一致 for %j",
-    (target, content, expected) => {
-      const ctx = createContext();
-      parseScript(ctx, `@置換 "needle" "hit" 全 ${target} 完全一致`);
-      const comment = createComment({
-        id: 4,
-        vpos: START_VPOS,
-        content,
-        owner: false,
-      });
+  ] as const)("%s target honors 完全一致 for %j", (target, content, expected) => {
+    const ctx = createContext();
+    parseScript(ctx, `@置換 "needle" "hit" 全 ${target} 完全一致`);
+    const comment = createComment({
+      id: 4,
+      vpos: START_VPOS,
+      content,
+      owner: false,
+    });
 
-      parseCommandAndNicoScript(comment, ctx);
+    parseCommandAndNicoScript(comment, ctx);
 
-      expect(comment.content).toBe(expected);
-    },
-  );
+    expect(comment.content).toBe(expected);
+  });
 });

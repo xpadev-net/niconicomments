@@ -759,7 +759,7 @@ const parseBrackets = (input: string) => {
 
     lastChar = i;
   }
-  result.push(string);
+  if (string !== "") result.push(string);
   return result;
 };
 

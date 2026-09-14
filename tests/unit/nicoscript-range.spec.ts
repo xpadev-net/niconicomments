@@ -128,6 +128,24 @@ describe("NicoScript range boundaries", () => {
     expect(parseViewerContent(ctx, END_VPOS, "needle end")).toBe("needle end");
   });
 
+  test("@置換 accepts omitted optional arguments", () => {
+    const ctx = createContext();
+    parseScript(ctx, '@置換 "needle" "hit"');
+
+    expect(parseViewerContent(ctx, START_VPOS, "needle viewer")).toBe(
+      "hit viewer",
+    );
+  });
+
+  test("@置換 treats an omitted replacement as an empty string", () => {
+    const ctx = createContext();
+    parseScript(ctx, '@置換 "needle"');
+
+    expect(parseViewerContent(ctx, START_VPOS, "remove needle")).toBe(
+      "remove ",
+    );
+  });
+
   test("@逆 is active on [start, end)", () => {
     const ctx = createContext();
     parseScript(ctx, "@逆 全");

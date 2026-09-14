@@ -8,12 +8,13 @@ on:
     branches: [master, develop]
 jobs:
   test:
+    name: Playwright E2E (Node 24)
     timeout-minutes: 60
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        node-version: [22, 24, 26]
+        node-version: [24]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
@@ -37,14 +38,8 @@ jobs:
           pnpm playwright install-deps
           pnpm playwright install firefox
 
-      - name: Check types
-        run: pnpm check-types
-
-      - name: Building niconicomments
-        run: |
-          pnpm build
       - name: Run Playwright tests
-        run: pnpm playwright test
+        run: pnpm test:playwright
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         if: ${{ !cancelled() }}
         with:

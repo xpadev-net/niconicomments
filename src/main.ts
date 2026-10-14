@@ -38,7 +38,10 @@ import {
   processFixedComment,
   processMovableComment,
 } from "@/utils";
-import { getLazyCommentLookahead } from "@/utils/comment";
+import {
+  extendMovableCommentTimeline,
+  getLazyCommentLookahead,
+} from "@/utils/comment";
 import { createCommentInstance } from "@/utils/plugins";
 import { RangeCacheContext } from "@/utils/rangeCache";
 
@@ -158,6 +161,9 @@ class NiconiComments {
   private lastCursor?: Position;
   private lastFrameBanActive: boolean;
   private frameDirty: boolean;
+  private lastRendererWidth: number;
+  private lastRendererHeight: number;
+  private timelineExpansion: number;
   private get lastVposInt() {
     return Math.floor(this.lastVpos);
   }
@@ -214,7 +220,17 @@ class NiconiComments {
     const imageCache = new ImageCacheContext();
     const rangeCache = new RangeCacheContext();
 
-    this.ctx = { config, options, nicoScripts, imageCache, rangeCache };
+    this.ctx = {
+      config,
+      options,
+      nicoScripts,
+      imageCache,
+      rangeCache,
+      viewport: {
+        width: config.canvasWidth,
+        offsetX: 0,
+      },
+    };
     this.eventHandler = new EventHandler();
 
     let renderer = _renderer;
@@ -230,10 +246,11 @@ class NiconiComments {
     this._log(`renderer: ${renderer.rendererName}`);
     this.renderer.setLineWidth(getConfig(config.contextLineWidth, false));
     const rendererSize = this.renderer.getSize();
-    this.renderer.setScale(
-      rendererSize.width / config.canvasWidth,
-      rendererSize.height / config.canvasHeight,
-    );
+    this.lastRendererWidth = rendererSize.width;
+    this.lastRendererHeight = rendererSize.height;
+    this.renderer.setScale(rendererSize.height / config.canvasHeight);
+    this.updateViewport(rendererSize, false);
+    this.timelineExpansion = Math.max(0, this.ctx.viewport?.offsetX ?? 0);
 
     let formatType = options.format;
 
@@ -448,6 +465,7 @@ class NiconiComments {
           false,
           this.ctx.config,
           touchedTimeline,
+          Math.max(0, this.ctx.viewport?.offsetX ?? 0),
         );
       } else {
         processFixedComment(
@@ -470,6 +488,40 @@ class NiconiComments {
     );
   }
 
+  private updateViewport(
+    size: { width: number; height: number },
+    markDirty: boolean,
+  ) {
+    if (size.height <= 0 || !Number.isFinite(size.height)) return;
+    const scale = size.height / this.ctx.config.canvasHeight;
+    const width = size.width / scale;
+    const viewport = this.ctx.viewport;
+    if (!viewport) return;
+    viewport.width = width;
+    viewport.offsetX = (width - this.ctx.config.canvasWidth) / 2;
+    if (markDirty) this.frameDirty = true;
+  }
+
+  private extendTimelineForViewport() {
+    const expansion = Math.max(0, this.ctx.viewport?.offsetX ?? 0);
+    if (expansion <= this.timelineExpansion) return;
+    const touchedTimeline = new Set<number>();
+    for (let i = 0; i <= this.processedCommentIndex; i++) {
+      const comment = this.comments[i];
+      if (!comment || comment.invisible) continue;
+      extendMovableCommentTimeline(
+        comment,
+        this.timeline,
+        this.ctx.config,
+        this.timelineExpansion,
+        expansion,
+        touchedTimeline,
+      );
+    }
+    this.sortTimelineComment(touchedTimeline);
+    this.timelineExpansion = expansion;
+  }
+
   private resolveLazyCommentWindow(vpos: number, resolutionBudget?: number) {
     if (!this.ctx.options.lazy) return false;
     const scanStartIndex = this.nextUnprocessedCommentIndex;
@@ -483,7 +535,12 @@ class NiconiComments {
     );
     if (startIndex >= scanEndIndex) return false;
     const resolveUntil =
-      vpos + getLazyCommentLookahead(this.ctx.config.canvasWidth);
+      vpos +
+      getLazyCommentLookahead(
+        this.ctx.config.canvasWidth,
+        Math.max(0, this.ctx.viewport?.offsetX ?? 0),
+        this.ctx.config.commentDrawRange,
+      );
     let endIndex = startIndex - 1;
     for (let i = startIndex; i < scanEndIndex; i++) {
       const comment = this.comments[i];
@@ -570,6 +627,7 @@ class NiconiComments {
           false,
           this.ctx.config,
           touchedTimeline,
+          Math.max(0, this.ctx.viewport?.offsetX ?? 0),
         );
       } else {
         processFixedComment(
@@ -621,6 +679,18 @@ class NiconiComments {
     cursor?: Position,
   ): boolean {
     if (!isFiniteVpos(vpos)) return false;
+    const size = this.renderer.getSize();
+    if (
+      size.width !== this.lastRendererWidth ||
+      size.height !== this.lastRendererHeight
+    ) {
+      this.renderer.setSize(size.width, size.height);
+      this.renderer.setScale(size.height / this.ctx.config.canvasHeight);
+      this.updateViewport(size, true);
+      this.lastRendererWidth = size.width;
+      this.lastRendererHeight = size.height;
+      this.extendTimelineForViewport();
+    }
     const profile: DrawCanvasProfile | undefined = this.ctx.options.debug
       ? {
           triggerHandler: 0,
@@ -708,7 +778,7 @@ class NiconiComments {
     this.renderer.clearRect(
       0,
       0,
-      this.ctx.config.canvasWidth,
+      this.ctx.viewport?.width ?? this.ctx.config.canvasWidth,
       this.ctx.config.canvasHeight,
     );
 

@@ -80,17 +80,30 @@ export const MAX_LAZY_COMMENT_LOOKAHEAD =
       STANDARD_LAZY_LOOKAHEAD_TRAVEL_WIDTH,
   ) + LAZY_LOOKAHEAD_SAFETY_BUFFER;
 
-export const getLazyCommentLookahead = (canvasWidth: number) => {
+export const getLazyCommentLookahead = (
+  canvasWidth: number,
+  viewportExpansion = 0,
+  commentDrawRange = 1530,
+) => {
   if (!Number.isFinite(canvasWidth) || canvasWidth <= 0) {
-    return MAX_LAZY_COMMENT_LOOKAHEAD;
+    return (
+      MAX_LAZY_COMMENT_LOOKAHEAD + Math.max(0, Math.ceil(viewportExpansion))
+    );
   }
-  return (
+  const standardLookahead =
     Math.ceil(
       (LAZY_LOOKAHEAD_LEAD_IN *
         (MAX_COMMENT_LONG + LAZY_LOOKAHEAD_MOTION_MARGIN) *
         (STANDARD_LAZY_LOOKAHEAD_CANVAS_WIDTH / canvasWidth)) /
         STANDARD_LAZY_LOOKAHEAD_TRAVEL_WIDTH,
-    ) + LAZY_LOOKAHEAD_SAFETY_BUFFER
+    ) + LAZY_LOOKAHEAD_SAFETY_BUFFER;
+  if (viewportExpansion <= 0) return standardLookahead;
+  if (!Number.isFinite(commentDrawRange) || commentDrawRange <= 0) {
+    return MAX_LAZY_COMMENT_LOOKAHEAD + viewportExpansion;
+  }
+  return (
+    standardLookahead +
+    Math.ceil((viewportExpansion * (MAX_COMMENT_LONG + 100)) / commentDrawRange)
   );
 };
 
@@ -1319,6 +1332,7 @@ const processMovableComment = (
   lazy = false,
   config: BaseConfig,
   touchedTimeline?: Set<number>,
+  viewportExpansion = 0,
 ) => {
   if (!isValidMovableCommentRange(comment)) {
     rejectInvalidTimelineComment(comment);
@@ -1337,23 +1351,28 @@ const processMovableComment = (
   const collisionLeft = config.collisionRange.left;
 
   const beforeVpos = getMovableCommentBeforeVpos(comment);
+  const viewportFrames = Math.ceil(Math.max(0, viewportExpansion) / speed);
   const posY = lazy
     ? -1
     : getMovablePosY(comment, collision, beforeVpos, config, speed);
   const n = commentLong + 125;
   if (!isTimelineProcessed(timeline, comment)) {
-    for (let j = beforeVpos; j < n; j++) {
+    for (let j = beforeVpos - viewportFrames; j < n + viewportFrames; j++) {
       const vpos = commentVpos + j;
       const leftPos = drawPadding + drawRange - (j + 100) * speed;
       arrayPush(timeline, vpos, comment);
       touchedTimeline?.add(vpos);
       if (
+        j >= beforeVpos &&
+        j < n &&
         leftPos + commentWidth + collisionPadding >= collisionRight &&
         leftPos <= collisionRight
       ) {
         arrayPush(collision.right, vpos, comment);
       }
       if (
+        j >= beforeVpos &&
+        j < n &&
         leftPos + commentWidth + collisionPadding >= collisionLeft &&
         leftPos <= collisionLeft
       ) {
@@ -1566,6 +1585,36 @@ const parseFont = (
       return `${config.fonts.html5[font].weight} ${size}px ${config.fonts.html5[font].font}`;
     default:
       return `${config.fonts.html5.defont.weight} ${size}px ${config.fonts.html5.defont.font}`;
+  }
+};
+
+export const extendMovableCommentTimeline = (
+  comment: IComment,
+  timeline: Timeline,
+  config: BaseConfig,
+  previousExpansion: number,
+  nextExpansion: number,
+  touchedTimeline?: Set<number>,
+) => {
+  if (nextExpansion <= previousExpansion || comment.loc !== "naka") return;
+  const speed =
+    (config.commentDrawRange + comment.width * config.nakaCommentSpeedOffset) /
+    (comment.long + 100);
+  if (!Number.isFinite(speed) || speed <= 0) return;
+  const before = getMovableCommentBeforeVpos(comment);
+  const end = comment.long + 125;
+  const previousFrames = Math.ceil(previousExpansion / speed);
+  const nextFrames = Math.ceil(nextExpansion / speed);
+  const commentVpos = comment.vpos;
+  for (let j = before - nextFrames; j < before - previousFrames; j++) {
+    const vpos = commentVpos + j;
+    arrayPush(timeline, vpos, comment);
+    touchedTimeline?.add(vpos);
+  }
+  for (let j = end + previousFrames; j < end + nextFrames; j++) {
+    const vpos = commentVpos + j;
+    arrayPush(timeline, vpos, comment);
+    touchedTimeline?.add(vpos);
   }
 };
 

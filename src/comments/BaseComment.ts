@@ -56,7 +56,8 @@ const isOutsideStage = (
   posY: number,
   width: number,
   height: number,
-  config: BaseConfig,
+  canvasWidth: number,
+  canvasHeight: number,
 ) =>
   !Number.isFinite(posX) ||
   !Number.isFinite(posY) ||
@@ -64,8 +65,8 @@ const isOutsideStage = (
   !Number.isFinite(height) ||
   width <= 0 ||
   height <= 0 ||
-  posX >= config.canvasWidth ||
-  posY >= config.canvasHeight ||
+  posX >= canvasWidth ||
+  posY >= canvasHeight ||
   posX + width <= 0 ||
   posY + height <= 0;
 
@@ -241,7 +242,9 @@ class BaseComment implements IComment {
         isReverseActive(vpos, true, nicoScripts, rangeCache))
       : (frameActiveState?.reverseActiveViewer ??
         isReverseActive(vpos, false, nicoScripts, rangeCache));
-    const posX = getPosX(this.comment, vpos, this.config, reverse);
+    const posX =
+      getPosX(this.comment, vpos, this.config, reverse) +
+      (this.ctx.viewport?.offsetX ?? 0);
     const posY =
       this.comment.loc === "shita"
         ? this.config.canvasHeight - this.posY - this.comment.height
@@ -256,7 +259,8 @@ class BaseComment implements IComment {
         posY,
         this.comment.width,
         this.comment.height,
-        this.config,
+        this.ctx.viewport?.width ?? this.config.canvasWidth,
+        this.config.canvasHeight,
       )
     ) {
       return;

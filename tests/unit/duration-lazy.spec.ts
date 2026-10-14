@@ -356,6 +356,12 @@ describe("duration bounds and lazy timeline expansion", () => {
     ).toBeGreaterThan(MAX_LAZY_COMMENT_LOOKAHEAD);
   });
 
+  test("widens lazy lookahead for extended horizontal viewports", () => {
+    expect(
+      getLazyCommentLookahead(defaultConfig.canvasWidth, 100, 1530),
+    ).toBeGreaterThan(getLazyCommentLookahead(defaultConfig.canvasWidth));
+  });
+
   test("lazy constructor defers timeline expansion until the visible window", () => {
     const farVpos = MAX_LAZY_COMMENT_LOOKAHEAD + MAX_COMMENT_LONG + 500;
     const instance = new NiconiComments(

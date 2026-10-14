@@ -39,6 +39,7 @@ type ModeType = "default" | "html5" | "flash";
 export type BaseOptions = {
   config: Config;
   debug: boolean;
+  enableCustomCommands: boolean;
   enableLegacyPiP: boolean;
   format: InputFormatType;
   formatted: boolean;

@@ -618,6 +618,7 @@ const typeGuard = {
         showCommentCount: isBoolean,
         drawAllImageOnLoad: isBoolean,
         debug: isBoolean,
+        enableCustomCommands: isBoolean,
         enableLegacyPiP: isBoolean,
         keepCA: isBoolean,
         lazy: isBoolean,

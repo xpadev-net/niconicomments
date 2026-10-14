@@ -239,11 +239,12 @@ const formattedComment = (
   is_my_post: overrides.is_my_post ?? false,
 });
 
-const createContext = () => ({
+const createContext = (enableCustomCommands = false) => ({
   config: defaultConfig,
   options: {
     config: {},
     debug: false,
+    enableCustomCommands,
     enableLegacyPiP: false,
     format: "formatted" as const,
     formatted: false,
@@ -752,7 +753,7 @@ describe("HTML5 comment resource bounds", () => {
       formattedComment(1, "before", ["nico:scale:2"]),
       renderer,
       0,
-      createContext(),
+      createContext(true),
     );
 
     expect(comment.comment.commandScale).toBe(2);

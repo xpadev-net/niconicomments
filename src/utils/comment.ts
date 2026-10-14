@@ -1057,6 +1057,11 @@ const parseCommands = (
     const command = comment.mail[i];
     if (command === undefined) continue;
     if (command.length > MAX_PARSED_COMMAND_MAIL_CHARS) continue;
+    if (
+      !options.enableCustomCommands &&
+      command.toLowerCase().startsWith("nico:")
+    )
+      continue;
     parseCommand(comment, command, result, isFlash, config);
   }
   if (comment.content.startsWith("/")) {
@@ -1206,7 +1211,8 @@ const isFlashComment = (
       hasParsedMailCommand(comment.mail, "mincho")
     ) &&
     (comment.date < config.flashThreshold ||
-      hasParsedMailCommand(comment.mail, "nico:flash")));
+      (options.enableCustomCommands &&
+        hasParsedMailCommand(comment.mail, "nico:flash"))));
 
 /**
  * コメントが逆コマンド適用対象かを返す

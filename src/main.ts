@@ -163,6 +163,7 @@ class NiconiComments {
   private frameDirty: boolean;
   private lastRendererWidth: number;
   private lastRendererHeight: number;
+  private rendererScale: number;
   private timelineExpansion: number;
   private get lastVposInt() {
     return Math.floor(this.lastVpos);
@@ -248,7 +249,13 @@ class NiconiComments {
     const rendererSize = this.renderer.getSize();
     this.lastRendererWidth = rendererSize.width;
     this.lastRendererHeight = rendererSize.height;
-    this.renderer.setScale(rendererSize.height / config.canvasHeight);
+    this.rendererScale =
+      rendererSize.height > 0 && Number.isFinite(rendererSize.height)
+        ? rendererSize.height / config.canvasHeight
+        : 1;
+    if (rendererSize.height > 0 && Number.isFinite(rendererSize.height)) {
+      this.renderer.setScale(this.rendererScale);
+    }
     this.updateViewport(rendererSize, false);
     this.timelineExpansion = Math.max(0, this.ctx.viewport?.offsetX ?? 0);
 
@@ -465,7 +472,7 @@ class NiconiComments {
           false,
           this.ctx.config,
           touchedTimeline,
-          Math.max(0, this.ctx.viewport?.offsetX ?? 0),
+          Math.max(this.timelineExpansion, this.ctx.viewport?.offsetX ?? 0),
         );
       } else {
         processFixedComment(
@@ -506,9 +513,14 @@ class NiconiComments {
     const expansion = Math.max(0, this.ctx.viewport?.offsetX ?? 0);
     if (expansion <= this.timelineExpansion) return;
     const touchedTimeline = new Set<number>();
-    for (let i = 0; i <= this.processedCommentIndex; i++) {
-      const comment = this.comments[i];
-      if (!comment || comment.invisible) continue;
+    for (const comment of this.comments) {
+      if (
+        !comment ||
+        comment.invisible ||
+        !this.timeline[comment.vpos]?.includes(comment)
+      ) {
+        continue;
+      }
       extendMovableCommentTimeline(
         comment,
         this.timeline,
@@ -627,7 +639,7 @@ class NiconiComments {
           false,
           this.ctx.config,
           touchedTimeline,
-          Math.max(0, this.ctx.viewport?.offsetX ?? 0),
+          Math.max(this.timelineExpansion, this.ctx.viewport?.offsetX ?? 0),
         );
       } else {
         processFixedComment(
@@ -681,11 +693,28 @@ class NiconiComments {
     if (!isFiniteVpos(vpos)) return false;
     const size = this.renderer.getSize();
     if (
+      !Number.isFinite(size.width) ||
+      !Number.isFinite(size.height) ||
+      size.width <= 0 ||
+      size.height <= 0
+    ) {
+      return false;
+    }
+    if (
       size.width !== this.lastRendererWidth ||
       size.height !== this.lastRendererHeight
     ) {
+      const nextScale = size.height / this.ctx.config.canvasHeight;
       this.renderer.setSize(size.width, size.height);
-      this.renderer.setScale(size.height / this.ctx.config.canvasHeight);
+      this.renderer.setScale(
+        this.renderer.rendererName === "HTML5CSSRenderer"
+          ? nextScale / this.rendererScale
+          : nextScale,
+      );
+      this.rendererScale = nextScale;
+      this.renderer.setLineWidth(
+        getConfig(this.ctx.config.contextLineWidth, false),
+      );
       this.updateViewport(size, true);
       this.lastRendererWidth = size.width;
       this.lastRendererHeight = size.height;
@@ -793,7 +822,13 @@ class NiconiComments {
         if (isUpdated !== false) {
           this.renderer.invalidateImage(plugin.canvas);
         }
-        this.renderer.drawImage(plugin.canvas, 0, 0);
+        const pluginSize = plugin.canvas.getSize();
+        const pluginOffsetX =
+          pluginSize.width === this.ctx.config.canvasWidth &&
+          pluginSize.height === this.ctx.config.canvasHeight
+            ? (this.ctx.viewport?.offsetX ?? 0)
+            : 0;
+        this.renderer.drawImage(plugin.canvas, pluginOffsetX, 0);
       } catch (e) {
         console.error("Failed to draw comments", e);
       }

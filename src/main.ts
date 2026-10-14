@@ -692,17 +692,15 @@ class NiconiComments {
   ): boolean {
     if (!isFiniteVpos(vpos)) return false;
     const size = this.renderer.getSize();
+    const hasValidSurface =
+      Number.isFinite(size.width) &&
+      Number.isFinite(size.height) &&
+      size.width > 0 &&
+      size.height > 0;
     if (
-      !Number.isFinite(size.width) ||
-      !Number.isFinite(size.height) ||
-      size.width <= 0 ||
-      size.height <= 0
-    ) {
-      return false;
-    }
-    if (
-      size.width !== this.lastRendererWidth ||
-      size.height !== this.lastRendererHeight
+      hasValidSurface &&
+      (size.width !== this.lastRendererWidth ||
+        size.height !== this.lastRendererHeight)
     ) {
       const nextScale = size.height / this.ctx.config.canvasHeight;
       this.renderer.setSize(size.width, size.height);
@@ -802,6 +800,12 @@ class NiconiComments {
       frameBanActive === this.lastFrameBanActive
     ) {
       if (arrayEqual(timelineRange, lastTimelineRange)) return false;
+    }
+    if (!hasValidSurface) {
+      this.lastVpos = vpos;
+      this.lastFrameBanActive = frameBanActive;
+      this.frameDirty = true;
+      return false;
     }
     this.frameDirty = true;
     this.renderer.clearRect(

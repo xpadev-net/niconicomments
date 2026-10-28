@@ -55,7 +55,7 @@
   "license": "MIT",
   "devDependencies": {
     "@biomejs/biome": "^2.4.16",
-    "@codspeed/vitest-plugin": "^5.5.0",
+    "@codspeed/vitest-plugin": "^6.0.0",
     "@playwright/test": "^1.60.0",
     "@types/node": "^26.0.0",
     "@types/pngjs": "^6.0.5",

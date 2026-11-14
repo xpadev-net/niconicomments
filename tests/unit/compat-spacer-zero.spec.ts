@@ -31,6 +31,21 @@ describe("compatSpacer: undefined は未指定、0 は幅 0 (flash / html5 共�
     expect(spacers[0]).toMatchObject({ char: "　", charWidth: 0, count: 1 });
   });
 
+  test("flash: 継承したフォントの幅が 0 の場合も幅 0 に更新される", () => {
+    const config: BaseConfig = {
+      ...defaultConfig,
+      compatSpacer: {
+        ...defaultConfig.compatSpacer,
+        flash: { "\u3000": { defont: 1, gulim: 0 } },
+      },
+    };
+    // 先頭の text が gulim になり、フォント未確定だった spacer(defont: 1)が gulim を継承する
+    const content = parseFlashContent("한a\u3000", config);
+    expect(content[0]).toMatchObject({ type: "text", font: "gulim" });
+    const spacer = content.find((i) => i.type === "spacer");
+    expect(spacer).toMatchObject({ font: "gulim", charWidth: 0 });
+  });
+
   test("html5: 0 指定は幅 0 の spacer になる", () => {
     const config: BaseConfig = {
       ...defaultConfig,

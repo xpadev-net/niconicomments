@@ -535,7 +535,7 @@ class HTML5Comment extends BaseComment {
       let cursorX = 0;
       for (const item of this.comment.content) {
         if (item?.type === "spacer") {
-          cursorX += item.count * item.charWidth * this.comment.fontSize;
+          cursorX += item.count * item.charWidth * fontSize;
           continue;
         }
         const lines = item.slicedContent;

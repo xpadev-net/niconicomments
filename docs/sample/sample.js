@@ -1,4 +1,4 @@
-const DEFAULT_NC_VERSION = "0.4.1";
+const DEFAULT_NC_VERSION = "0.5.0";
 const DEFAULT_PLUGIN_VERSION = "0.0.13";
 const DEFAULT_NIWANGO_VERSION = "0.0.1-canary.20231002-1";
 // Manual local-development switch; do not derive this from URL query params.
@@ -153,7 +153,9 @@ Promise.all([
 // --- Video data ---
 const videos = [
   {
-    title: i18next.t("general"),
+    get title() {
+      return i18next.t("general");
+    },
     items: [
       {
         id: 0,
@@ -164,7 +166,9 @@ const videos = [
       {
         id: 1,
         nc: "sm9",
-        title: i18next.t("sm9_2"),
+        get title() {
+          return i18next.t("sm9_2");
+        },
         scale: 75,
       },
       {
@@ -176,7 +180,9 @@ const videos = [
       {
         id: 3,
         nc: "sm2959233",
-        title: i18next.t("sm2959233_2"),
+        get title() {
+          return i18next.t("sm2959233_2");
+        },
         scale: 75,
       },
     ],
@@ -286,7 +292,9 @@ const videos = [
       {
         id: 19,
         nc: "sm500873",
-        title: i18next.t("sm500873"),
+        get title() {
+          return i18next.t("sm500873");
+        },
         scale: 75,
       },
       {
@@ -303,7 +311,9 @@ const videos = [
     ],
   },
   {
-    title: i18next.t("script_art"),
+    get title() {
+      return i18next.t("script_art");
+    },
     items: [
       {
         id: 23,
@@ -353,13 +363,19 @@ const videos = [
     ],
   },
   {
-    title: i18next.t("debug"),
+    get title() {
+      return i18next.t("debug");
+    },
     items: [
       {
         id: -1,
-        nc: i18next.t("operation_check"),
+        get nc() {
+          return i18next.t("operation_check");
+        },
         yt: "m2M2piEMWAE",
-        title: i18next.t("debug_ca"),
+        get title() {
+          return i18next.t("debug_ca");
+        },
       },
     ],
   },
@@ -1027,6 +1043,26 @@ window.addEventListener("message", (e) => {
 
 document.addEventListener("visibilitychange", updateRenderLoop);
 window.addEventListener("pagehide", stopRenderLoop);
+
+// --- Language change: relabel without reloading (keeps playback state) ---
+document.addEventListener("i18n:change", (e) => {
+  // 以降の URL 更新で古い lang が書き戻されないようにする
+  urlParams.set("lang", e.detail);
+  const groupElements = controlVideoElement.querySelectorAll("optgroup");
+  videos.forEach((group, i) => {
+    const groupElement = groupElements[i];
+    if (!groupElement) return;
+    groupElement.label = group.title;
+    group.items.forEach((item, j) => {
+      const optionElement = groupElement.children[j];
+      if (optionElement) optionElement.text = `${item.title}(${item.nc})`;
+    });
+  });
+  const videoItem = getVideoItem();
+  if (videoItem) {
+    document.title = `${videoItem.title}(${videoItem.nc}) - niconicomments sample`;
+  }
+});
 
 // --- Main initialization ---
 const onYouTubeIframeAPIReady = async () => {

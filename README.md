@@ -2,7 +2,6 @@
 
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/xpadev-net/niconicomments/blob/master/LICENSE)
 [![CodeQL](https://github.com/xpadev-net/niconicomments/actions/workflows/codeql-analysis.yml/badge.svg?branch=master)](https://github.com/xpadev-net/niconicomments/actions/workflows/codeql-analysis.yml)
-[![TypeDoc](https://github.com/xpadev-net/niconicomments/actions/workflows/typedoc.yml/badge.svg?branch=master)](https://github.com/xpadev-net/niconicomments/actions/workflows/typedoc.yml)
 
 [[English](https://github.com/xpadev-net/niconicomments/blob/develop/README.en.md)]
 
@@ -18,7 +17,7 @@ npm： https://www.npmjs.com/package/@xpadev-net/niconicomments
 CDN から読み込む場合は、可変エイリアスではなく固定バージョンを指定してください。
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@xpadev-net/niconicomments@0.4.1/dist/bundle.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@xpadev-net/niconicomments@0.5.0/dist/bundle.js"></script>
 ```
 
 or

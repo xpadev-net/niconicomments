@@ -250,6 +250,7 @@ const initConfig = () => {
      * 参考: https://w.atwiki.jp/commentart/pages/44.html
      */
     flashMode: "vista",
+    html5SpecialSpaceCompat: false,
 
     /**
      * Flash版の上付き・下付き文字

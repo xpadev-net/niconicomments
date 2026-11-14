@@ -1,10 +1,17 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
-import type { BaseConfig, FormattedComment, IRenderer } from "@/@types";
+import type {
+  BaseConfig,
+  FormattedComment,
+  IComment,
+  IRenderer,
+  Timeline,
+} from "@/@types";
 import { defaultConfig } from "@/definition/config";
 import { initConfig } from "@/definition/initConfig";
 import { InvalidOptionError } from "@/errors";
 import NiconiComments from "@/main";
+import { MAX_VIEWPORT_EXTENSION_FRAMES } from "@/utils/comment";
 
 type MultiFontSizeConfig = Extract<BaseConfig["fontSize"], { html5: unknown }>;
 
@@ -208,6 +215,14 @@ describe("init option and config bounds", () => {
       () =>
         new NiconiComments(new FakeRenderer(), [], {
           format: "formatted",
+          enableCustomCommands: "true" as unknown as boolean,
+          mode: "html5",
+        }),
+    ).toThrow(InvalidOptionError);
+    expect(
+      () =>
+        new NiconiComments(new FakeRenderer(), [], {
+          format: "formatted",
           mode: "legacy" as "html5",
         }),
     ).toThrow(InvalidOptionError);
@@ -404,6 +419,126 @@ describe("init option and config bounds", () => {
         }),
     ).not.toThrow();
   });
+
+  test.each(
+    (["html5", "flash"] as const).flatMap((mode) =>
+      [1920, 2560].flatMap((width) =>
+        [false, true].map((lazy) => ({ mode, width, lazy })),
+      ),
+    ),
+  )(
+    "draws zero-speed comments with mode=$mode, width=$width, lazy=$lazy",
+    ({ mode, width, lazy }) => {
+      const renderer = new FakeRenderer();
+      renderer.setSize(width, 1080);
+      const instance = new NiconiComments(
+        renderer,
+        [{ ...createComment(1), mail: [] }],
+        {
+          format: "formatted",
+          mode,
+          lazy,
+          config: { commentDrawRange: 0, nakaCommentSpeedOffset: 0 },
+        },
+      );
+      const state = instance as unknown as {
+        comments: IComment[];
+        timeline: Timeline;
+      };
+
+      try {
+        for (const vpos of [0, 100, 300]) {
+          renderer.drawImageCalls = 0;
+          instance.drawCanvas(vpos, true);
+          expect(renderer.drawImageCalls).toBeGreaterThan(0);
+        }
+
+        expect(Object.keys(state.timeline).length).toBeGreaterThan(0);
+        expect(Object.keys(state.timeline).length).toBeLessThan(1000);
+        expect(state.timeline[0]).toContain(state.comments[0]);
+        expect(
+          Object.keys(state.timeline).every((key) =>
+            Number.isFinite(Number(key)),
+          ),
+        ).toBe(true);
+      } finally {
+        instance.destroy();
+      }
+    },
+  );
+
+  test.each(
+    (["html5", "flash"] as const).flatMap((mode) =>
+      [1920, 2560].flatMap((width) =>
+        [false, true].flatMap((lazy) =>
+          [1e-307, 1e-320, 0.01].map((commentDrawRange) => ({
+            mode,
+            width,
+            lazy,
+            commentDrawRange,
+          })),
+        ),
+      ),
+    ),
+  )(
+    "bounds slow comment timelines with mode=$mode, width=$width, lazy=$lazy, range=$commentDrawRange",
+    ({ mode, width, lazy, commentDrawRange }) => {
+      const renderer = new FakeRenderer();
+      renderer.setSize(width, 1080);
+      const instance = new NiconiComments(
+        renderer,
+        [{ ...createComment(1), mail: [] }],
+        {
+          format: "formatted",
+          mode,
+          lazy,
+          config: { commentDrawRange, nakaCommentSpeedOffset: 0 },
+        },
+      );
+      const state = instance as unknown as {
+        comments: IComment[];
+        timeline: Timeline;
+      };
+
+      try {
+        instance.drawCanvas(0, true);
+        const initialFrames = Object.keys(state.timeline).length;
+        expect(initialFrames).toBeGreaterThan(0);
+        expect(initialFrames).toBeLessThan(
+          1000 + 2 * MAX_VIEWPORT_EXTENSION_FRAMES,
+        );
+        if (width === 1920) expect(initialFrames).toBeLessThan(1000);
+
+        let extendedKeys: string[] | undefined;
+        for (const nextWidth of [2560, 3200, 1920, 3840]) {
+          renderer.setSize(nextWidth, 1080);
+          renderer.drawImageCalls = 0;
+          instance.drawCanvas(0, true);
+
+          expect(renderer.drawImageCalls).toBeGreaterThan(0);
+          const keys = Object.keys(state.timeline);
+          const baseFrames =
+            width === 1920
+              ? initialFrames
+              : initialFrames - 2 * MAX_VIEWPORT_EXTENSION_FRAMES;
+          expect(keys).toHaveLength(
+            baseFrames + 2 * MAX_VIEWPORT_EXTENSION_FRAMES,
+          );
+          expect(keys.every((key) => Number.isFinite(Number(key)))).toBe(true);
+          expect(
+            Object.values(state.timeline).every(
+              (comments) =>
+                comments.length === 1 && comments[0] === state.comments[0],
+            ),
+          ).toBe(true);
+          if (extendedKeys) expect(keys).toEqual(extendedKeys);
+          extendedKeys = keys;
+        }
+      } finally {
+        instance.destroy();
+      }
+    },
+  );
 
   test("treats commentLimit 0 as drawing zero comments", () => {
     const zeroLimitRenderer = new FakeRenderer();

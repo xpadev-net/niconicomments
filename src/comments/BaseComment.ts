@@ -56,7 +56,8 @@ const isOutsideStage = (
   posY: number,
   width: number,
   height: number,
-  config: BaseConfig,
+  canvasWidth: number,
+  canvasHeight: number,
 ) =>
   !Number.isFinite(posX) ||
   !Number.isFinite(posY) ||
@@ -64,8 +65,8 @@ const isOutsideStage = (
   !Number.isFinite(height) ||
   width <= 0 ||
   height <= 0 ||
-  posX >= config.canvasWidth ||
-  posY >= config.canvasHeight ||
+  posX >= canvasWidth ||
+  posY >= canvasHeight ||
   posX + width <= 0 ||
   posY + height <= 0;
 
@@ -236,27 +237,16 @@ class BaseComment implements IComment {
     const banActive =
       frameActiveState?.banActive ?? isBanActive(vpos, nicoScripts, rangeCache);
     if (banActive) return;
-    const reverse = this.comment.owner
-      ? (frameActiveState?.reverseActiveOwner ??
-        isReverseActive(vpos, true, nicoScripts, rangeCache))
-      : (frameActiveState?.reverseActiveViewer ??
-        isReverseActive(vpos, false, nicoScripts, rangeCache));
-    const posX = getPosX(this.comment, vpos, this.config, reverse);
-    const posY =
-      this.comment.loc === "shita"
-        ? this.config.canvasHeight - this.posY - this.comment.height
-        : this.posY;
-    this.pos = {
-      x: posX,
-      y: posY,
-    };
+    const { x: posX, y: posY } = this.getDrawPosition(vpos, frameActiveState);
+    this.pos = { x: posX, y: posY };
     if (
       isOutsideStage(
         posX,
         posY,
-        this.comment.width,
-        this.comment.height,
-        this.config,
+        this.width,
+        this.height,
+        this.ctx.viewport?.width ?? this.config.canvasWidth,
+        this.config.canvasHeight,
       )
     ) {
       return;
@@ -266,6 +256,41 @@ class BaseComment implements IComment {
     this._drawRectColor(posX, posY);
     this._drawCollision(posX, posY, showCollision);
     this._drawDebugInfo(posX, posY);
+  }
+
+  public isVisible(vpos: number, frameActiveState?: FrameActiveState): boolean {
+    const { x, y } = this.getDrawPosition(vpos, frameActiveState);
+    return (
+      !this.invisible &&
+      !isOutsideStage(
+        x,
+        y,
+        this.width,
+        this.height,
+        this.ctx.viewport?.width ?? this.config.canvasWidth,
+        this.config.canvasHeight,
+      )
+    );
+  }
+
+  protected getDrawPosition(
+    vpos: number,
+    frameActiveState?: FrameActiveState,
+  ): Position {
+    const { nicoScripts, rangeCache } = this.ctx;
+    const reverse = this.comment.owner
+      ? (frameActiveState?.reverseActiveOwner ??
+        isReverseActive(vpos, true, nicoScripts, rangeCache))
+      : (frameActiveState?.reverseActiveViewer ??
+        isReverseActive(vpos, false, nicoScripts, rangeCache));
+    const posX =
+      getPosX(this.comment, vpos, this.config, reverse) +
+      (this.ctx.viewport?.offsetX ?? 0);
+    const posY =
+      this.comment.loc === "shita"
+        ? this.config.canvasHeight - this.posY - this.comment.height
+        : this.posY;
+    return { x: posX, y: posY };
   }
 
   /**

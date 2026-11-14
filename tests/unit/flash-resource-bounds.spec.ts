@@ -162,9 +162,13 @@ const sizedComment = (
     scaleX: 1,
   }) as FormattedCommentWithSize;
 
-const createContext = () => ({
+const createContext = (enableCustomCommands = false) => ({
   config: defaultConfig,
-  options: { ...defaultOptions, mode: "flash" as const },
+  options: {
+    ...defaultOptions,
+    enableCustomCommands,
+    mode: "flash" as const,
+  },
   nicoScripts: createNicoScripts(),
   imageCache: new ImageCacheContext(),
   rangeCache: new RangeCacheContext(),
@@ -248,7 +252,7 @@ describe("Flash and at-button resource bounds", () => {
       formattedComment("one\ntwo\nthree\nfour\nfive", ["nico:scale:2"]),
       renderer,
       0,
-      createContext(),
+      createContext(true),
     );
 
     expect(comment.comment.commandScale).toBe(2);

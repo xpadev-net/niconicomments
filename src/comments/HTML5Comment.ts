@@ -531,9 +531,11 @@ class HTML5Comment extends BaseComment {
         (this.comment.charSize - this.comment.lineHeight) / 2 +
         this.comment.lineHeight * -0.16 +
         (this.config.fonts.html5[this.comment.font]?.offset || 0);
+      // spacer は横方向に進め、実際の改行でのみ行を進める
+      let cursorX = 0;
       for (const item of this.comment.content) {
         if (item?.type === "spacer") {
-          lineCount += item.count * item.charWidth * this.comment.fontSize;
+          cursorX += item.count * item.charWidth * fontSize;
           continue;
         }
         const lines = item.slicedContent;
@@ -543,9 +545,14 @@ class HTML5Comment extends BaseComment {
           const posY =
             (this.comment.lineHeight * (lineCount + 1 + paddingTop) + offsetY) /
             scale;
-          image.strokeText(line, 0, posY);
-          image.fillText(line, 0, posY);
-          lineCount += 1;
+          image.strokeText(line, cursorX, posY);
+          image.fillText(line, cursorX, posY);
+          if (j < n - 1) {
+            lineCount += 1;
+            cursorX = 0;
+          } else {
+            cursorX += item.width[j] ?? 0;
+          }
         }
       }
     } catch (e) {

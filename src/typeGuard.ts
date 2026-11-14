@@ -423,6 +423,7 @@ const isValidConfig = (item: unknown): boolean => {
     flashLetterSpacing: (i) =>
       isFiniteNumberInRange(i, { max: MAX_CONFIG_SPACING }),
     flashMode: isValidFlashMode,
+    html5SpecialSpaceCompat: isBoolean,
     flashCommentYPaddingTop: (i) => isBoundedResizedItem(i, isBoundedSpacing),
     flashCommentYOffset: (i) =>
       isBoundedSizeItem(i, (sizeValue) =>
@@ -618,6 +619,7 @@ const typeGuard = {
         showCommentCount: isBoolean,
         drawAllImageOnLoad: isBoolean,
         debug: isBoolean,
+        enableCustomCommands: isBoolean,
         enableLegacyPiP: isBoolean,
         keepCA: isBoolean,
         lazy: isBoolean,

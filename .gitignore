@@ -4,8 +4,9 @@
 /dist
 /test
 /.DS_Store
-/docs/type
 .reg
 test-results
 .husky
 z/
+/docs/.vitepress/dist
+/docs/.vitepress/cache

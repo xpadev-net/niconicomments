@@ -11,7 +11,11 @@ import { OWNER_DEFAULT_COLLISION_LAYER } from "@/@types";
 import { defaultConfig } from "@/definition/config";
 import { initConfig } from "@/definition/initConfig";
 import NiconiComments from "@/main";
-import { processFixedComment, processMovableComment } from "@/utils/comment";
+import {
+  extendMovableCommentTimeline,
+  processFixedComment,
+  processMovableComment,
+} from "@/utils/comment";
 
 const emptyTextMetrics = (width: number): TextMetrics =>
   ({
@@ -207,6 +211,56 @@ describe("timeline construction", () => {
 
     expect(includesCalls).toBe(0);
     expect(timeline[200]).toHaveLength(500);
+  });
+
+  test("incremental viewport extensions match initial registration across the frame limit", () => {
+    const timeline: Timeline = {};
+    const collision: Collision = { ue: {}, shita: {}, left: {}, right: {} };
+    const comment = createMovableComment(1, 100, 300);
+    processMovableComment(comment, collision, timeline, false, defaultConfig);
+    const collisionKeys = {
+      left: Object.keys(collision.left),
+      right: Object.keys(collision.right),
+    };
+
+    let previousExpansion = 0;
+    for (const expansion of [320, 640, 1e6, 2e6]) {
+      const touchedTimeline = new Set<number>();
+      const previousKeyCount = Object.keys(timeline).length;
+      extendMovableCommentTimeline(
+        comment,
+        timeline,
+        defaultConfig,
+        previousExpansion,
+        expansion,
+        touchedTimeline,
+      );
+      const freshTimeline: Timeline = {};
+      processMovableComment(
+        createMovableComment(1, 100, 300),
+        { ue: {}, shita: {}, left: {}, right: {} },
+        freshTimeline,
+        false,
+        defaultConfig,
+        undefined,
+        expansion,
+      );
+
+      expect(Object.keys(timeline).sort()).toEqual(
+        Object.keys(freshTimeline).sort(),
+      );
+      expect(touchedTimeline.size).toBe(
+        Object.keys(timeline).length - previousKeyCount,
+      );
+      expect(
+        Object.values(timeline).every(
+          (comments) => comments.length === 1 && comments[0] === comment,
+        ),
+      ).toBe(true);
+      expect(Object.keys(collision.left)).toEqual(collisionKeys.left);
+      expect(Object.keys(collision.right)).toEqual(collisionKeys.right);
+      previousExpansion = expansion;
+    }
   });
 
   test.each([

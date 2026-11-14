@@ -12,6 +12,7 @@ import type {
 import { VIEWER_DEFAULT_COLLISION_LAYER } from "@/@types";
 import { getConfig } from "@/utils/config";
 import { nativeSort } from "@/utils/sort";
+import { getCompatSpacerWidth } from "@/utils/spacer";
 
 export const MAX_FLASH_COMMENT_CHARS = 16_384;
 export const MAX_FLASH_COMMENT_LINES = 256;
@@ -128,10 +129,11 @@ const parseContent = (content: string, config: BaseConfig) => {
         ...lineContent.map((val) => {
           val.font ??= defaultFont;
           if (val.type === "spacer") {
-            const spacer = config.compatSpacer.flash[val.char];
-            if (!spacer) return val;
-            const width = spacer[val.font];
-            if (!width) return val;
+            const width = getCompatSpacerWidth(
+              config.compatSpacer.flash[val.char],
+              val.font,
+            );
+            if (width === undefined) return val;
             val.charWidth = width;
           }
           return val;
@@ -221,8 +223,11 @@ const addPartToResult = (
         }
       | undefined;
     for (const key of spacerKeys) {
-      const spacerWidth = config.compatSpacer.flash[key]?.[fontName];
-      if (!spacerWidth) continue;
+      const spacerWidth = getCompatSpacerWidth(
+        config.compatSpacer.flash[key],
+        fontName,
+      );
+      if (spacerWidth === undefined) continue;
       const compatIndex = task.value.indexOf(key);
       if (compatIndex < 0) continue;
       let count = 0;

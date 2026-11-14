@@ -18,6 +18,7 @@ const setConfig = updateConfig;
 const createDefaultOptions = (): BaseOptions => ({
   config: {},
   debug: false,
+  enableCustomCommands: false,
   enableLegacyPiP: false,
   format: "default",
   formatted: false,

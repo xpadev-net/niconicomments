@@ -1357,7 +1357,11 @@ const processMovableComment = (
   const collisionLeft = config.collisionRange.left;
 
   const beforeVpos = getMovableCommentBeforeVpos(comment);
-  const viewportFrames = Math.ceil(Math.max(0, viewportExpansion) / speed);
+  // Stationary comments keep their normal lifetime, regardless of viewport width.
+  const viewportFrames =
+    Number.isFinite(speed) && speed > 0
+      ? Math.ceil(Math.max(0, viewportExpansion) / speed)
+      : 0;
   const posY = lazy
     ? -1
     : getMovablePosY(comment, collision, beforeVpos, config, speed);

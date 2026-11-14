@@ -96,19 +96,23 @@ export const getLazyCommentLookahead = (
 ) => {
   if (!Number.isFinite(canvasWidth) || canvasWidth <= 0) {
     return (
-      MAX_LAZY_COMMENT_LOOKAHEAD + Math.max(0, Math.ceil(viewportExpansion))
+      MAX_LAZY_COMMENT_LOOKAHEAD +
+      getViewportExtensionFrames(viewportExpansion, 1)
     );
   }
-  const standardLookahead =
+  // The timeline lead-in does not shrink with canvasWidth.
+  const standardLookahead = Math.max(
+    MAX_LAZY_COMMENT_LOOKAHEAD,
     Math.ceil(
       (LAZY_LOOKAHEAD_LEAD_IN *
         (MAX_COMMENT_LONG + LAZY_LOOKAHEAD_MOTION_MARGIN) *
         (STANDARD_LAZY_LOOKAHEAD_CANVAS_WIDTH / canvasWidth)) /
         STANDARD_LAZY_LOOKAHEAD_TRAVEL_WIDTH,
-    ) + LAZY_LOOKAHEAD_SAFETY_BUFFER;
+    ) + LAZY_LOOKAHEAD_SAFETY_BUFFER,
+  );
   if (viewportExpansion <= 0) return standardLookahead;
   if (!Number.isFinite(commentDrawRange) || commentDrawRange <= 0) {
-    return MAX_LAZY_COMMENT_LOOKAHEAD + viewportExpansion;
+    return standardLookahead + getViewportExtensionFrames(viewportExpansion, 1);
   }
   return (
     standardLookahead +

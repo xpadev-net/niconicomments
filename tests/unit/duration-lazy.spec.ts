@@ -15,6 +15,7 @@ import {
   MAX_COMMENT_LONG,
   MAX_LAZY_COMMENT_LOOKAHEAD,
   MAX_NICOSCRIPT_LONG,
+  MAX_VIEWPORT_EXTENSION_FRAMES,
   parseCommandAndNicoScript,
 } from "@/utils/comment";
 import { RangeCacheContext } from "@/utils/rangeCache";
@@ -45,6 +46,7 @@ class FakeRenderer implements IRenderer {
   public readonly rendererName = "FakeRenderer";
   public readonly canvas = {} as HTMLCanvasElement;
   public clearRectCalls = 0;
+  public drawImageCalls = 0;
   public fillTextCalls: string[] = [];
   private font = "";
   private size = { width: 1920, height: 1080 };
@@ -94,7 +96,9 @@ class FakeRenderer implements IRenderer {
   getCanvas() {
     return this;
   }
-  drawImage() {}
+  drawImage() {
+    this.drawImageCalls++;
+  }
   flush() {}
   invalidateImage() {}
 }
@@ -361,6 +365,137 @@ describe("duration bounds and lazy timeline expansion", () => {
       getLazyCommentLookahead(defaultConfig.canvasWidth, 100, 1530),
     ).toBeGreaterThan(getLazyCommentLookahead(defaultConfig.canvasWidth));
   });
+
+  test.each(
+    [4096, 8192].flatMap((canvasWidth) =>
+      (["html5", "flash"] as const).flatMap((mode) =>
+        [60, 120].map((duration) => ({ canvasWidth, mode, duration })),
+      ),
+    ),
+  )(
+    "prepares slow comments by their first active frame on a wide stage (width=$canvasWidth, mode=$mode, duration=$duration)",
+    ({ canvasWidth, mode, duration }) => {
+      let firstFrame = 0;
+      for (const lazy of [false, true]) {
+        const renderer = new FakeRenderer();
+        renderer.setSize(canvasWidth + 2048, 1080);
+        const instance = new NiconiComments(
+          renderer,
+          [
+            createComment({
+              vpos: 50000,
+              mail: [`@${duration}`],
+            }),
+          ],
+          {
+            format: "formatted",
+            mode,
+            lazy,
+            config: {
+              canvasWidth,
+              commentDrawRange: 0.01,
+              nakaCommentSpeedOffset: 0,
+            },
+          },
+        );
+        const state = instance as unknown as {
+          comments: IComment[];
+          timeline: Record<number, IComment[]>;
+        };
+        try {
+          if (!lazy) {
+            firstFrame = Object.keys(state.timeline).reduce(
+              (first, key) => Math.min(first, Number(key)),
+              Infinity,
+            );
+            expect(Number.isFinite(firstFrame)).toBe(true);
+          }
+          renderer.drawImageCalls = 0;
+          instance.drawCanvas(firstFrame, true);
+          expect(state.comments[0]?.long).toBe(duration * 100);
+          expect(state.comments[0]?.posY).not.toBe(-1);
+          expect(state.timeline[firstFrame]).toContain(state.comments[0]);
+          expect(renderer.drawImageCalls).toBeGreaterThan(0);
+        } finally {
+          instance.destroy();
+        }
+      }
+    },
+  );
+
+  test("caps lazy lookahead for zero draw range and a large viewport expansion", () => {
+    expect(getLazyCommentLookahead(1920, 20000, 0)).toBe(
+      MAX_LAZY_COMMENT_LOOKAHEAD + MAX_VIEWPORT_EXTENSION_FRAMES,
+    );
+    const renderer = new FakeRenderer();
+    renderer.setSize(41920, 1080);
+    const instance = new NiconiComments(
+      renderer,
+      [
+        createComment(),
+        createComment({
+          id: 2,
+          vpos: MAX_LAZY_COMMENT_LOOKAHEAD + MAX_VIEWPORT_EXTENSION_FRAMES + 1,
+        }),
+      ],
+      {
+        format: "formatted",
+        mode: "html5",
+        lazy: true,
+        config: { commentDrawRange: 0, nakaCommentSpeedOffset: 0 },
+      },
+    );
+    const state = instance as unknown as { comments: IComment[] };
+    try {
+      instance.drawCanvas(0, true);
+      expect(state.comments[0]?.posY).not.toBe(-1);
+      expect(state.comments[1]?.posY).toBe(-1);
+    } finally {
+      instance.destroy();
+    }
+  });
+
+  test.each([1e-307, 1e-320, 0.01])(
+    "bounds lazy lookahead and defers distant comments for draw range %s",
+    (commentDrawRange) => {
+      expect(getLazyCommentLookahead(1920, 320, commentDrawRange)).toBe(
+        MAX_LAZY_COMMENT_LOOKAHEAD + MAX_VIEWPORT_EXTENSION_FRAMES,
+      );
+      const renderer = new FakeRenderer();
+      renderer.setSize(2560, 1080);
+      const instance = new NiconiComments(
+        renderer,
+        [
+          createComment(),
+          createComment({ id: 2, vpos: 5000 }),
+          createComment({
+            id: 3,
+            vpos:
+              MAX_LAZY_COMMENT_LOOKAHEAD + MAX_VIEWPORT_EXTENSION_FRAMES + 1,
+          }),
+        ],
+        {
+          format: "formatted",
+          lazy: true,
+          mode: "html5",
+          config: { commentDrawRange, nakaCommentSpeedOffset: 0 },
+        },
+      );
+      const state = instance as unknown as {
+        comments: IComment[];
+        timeline: Record<number, IComment[]>;
+      };
+      try {
+        instance.drawCanvas(0, true);
+        expect(state.comments[0]?.posY).not.toBe(-1);
+        expect(state.comments[1]?.posY).not.toBe(-1);
+        expect(state.timeline[0]).toContain(state.comments[1]);
+        expect(state.comments[2]?.posY).toBe(-1);
+      } finally {
+        instance.destroy();
+      }
+    },
+  );
 
   test("lazy constructor defers timeline expansion until the visible window", () => {
     const farVpos = MAX_LAZY_COMMENT_LOOKAHEAD + MAX_COMMENT_LONG + 500;

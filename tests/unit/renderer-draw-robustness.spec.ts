@@ -649,6 +649,33 @@ describe("renderer draw robustness", () => {
     },
   );
 
+  test("invalid surfaces clear button hit targets before an unchanged-frame cache hit", () => {
+    const renderer = new RecordingRenderer();
+    const instance = new NiconiComments(
+      renderer,
+      [createComment({ content: '@ボタン "[Push]" "posted" "表示" "" "3"' })],
+      { format: "formatted", mode: "flash", config: { commentLimit: 1 } },
+    );
+    const state = instance as unknown as { comments: IComment[] };
+    const button = state.comments[0];
+    const cursor = { x: 882, y: 14 };
+    expect(instance.drawCanvas(100)).toBe(true);
+    expect(button?.isHovered(cursor)).toBe(true);
+    expect(instance.drawCanvas(100)).toBe(false);
+
+    renderer.setSize(0, 0);
+    expect(instance.drawCanvas(100)).toBe(false);
+    instance.click(100, cursor);
+    expect(button?.comment.button?.limit).toBe(3);
+    expect(state.comments).toHaveLength(1);
+
+    renderer.setSize(1920, 1080);
+    expect(instance.drawCanvas(100)).toBe(true);
+    instance.click(100, cursor);
+    expect(button?.comment.button?.limit).toBe(2);
+    instance.destroy();
+  });
+
   test.each([Number.NaN, Infinity, -Infinity])(
     "ignores non-finite drawCanvas vpos %s before lazy work",
     (vpos) => {

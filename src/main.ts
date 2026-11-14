@@ -699,6 +699,10 @@ class NiconiComments {
       Number.isFinite(size.height) &&
       size.width > 0 &&
       size.height > 0;
+    if (!hasValidSurface) {
+      this.drawnComments.clear();
+      this.frameDirty = true;
+    }
     if (
       hasValidSurface &&
       (size.width !== this.lastRendererWidth ||
@@ -804,10 +808,8 @@ class NiconiComments {
       if (arrayEqual(timelineRange, lastTimelineRange)) return false;
     }
     if (!hasValidSurface) {
-      this.drawnComments.clear();
       this.lastVpos = vpos;
       this.lastFrameBanActive = frameBanActive;
-      this.frameDirty = true;
       return false;
     }
     this.frameDirty = true;

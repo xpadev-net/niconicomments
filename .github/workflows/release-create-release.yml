@@ -108,7 +108,12 @@ jobs:
             packageCdnUrl,
           );
           replaceExpected(
-            'docs/index.html',
+            'docs/content/index.md',
+            /https:\/\/cdn\.jsdelivr\.net\/npm\/@xpadev-net\/niconicomments@[^/"'<>]+\/dist\/bundle\.js/g,
+            packageCdnUrl,
+          );
+          replaceExpected(
+            'docs/content/en/index.md',
             /https:\/\/cdn\.jsdelivr\.net\/npm\/@xpadev-net\/niconicomments@[^/"'<>]+\/dist\/bundle\.js/g,
             packageCdnUrl,
           );
@@ -123,7 +128,7 @@ jobs:
             `$1<option value="${version}">${version}</option>`,
           );
           NODE
-          git add package.json README.md README.en.md docs/index.html docs/sample/sample.js docs/sample/index.html
+          git add package.json README.md README.en.md docs/content/index.md docs/content/en/index.md docs/sample/sample.js docs/sample/index.html
           git commit -m "chore: bump version to v${{ needs.calculate-version.outputs.new_version }}"
 
       - name: Push version bump

@@ -26,24 +26,24 @@ const localize = {
   ],
   class_main: ["The main body of this library.", "このライブラリの本体です"],
   p_canvas: [
-    `<p>Pass a class or object conforming to <a href="./type/interfaces/_types_renderer.IRenderer.html">IRenderer</a> or Canvas Element for comment drawing</p>
-<p><a href="./type/classes/renderer_canvas.CanvasRenderer.html">CanvasRender</a> used by default can be used from NiconiComments.internal.renderer.CanvasRenderer</p>
+    `<p>Pass a class or object conforming to IRenderer or Canvas Element for comment drawing</p>
+<p>CanvasRender used by default can be used from NiconiComments.internal.renderer.CanvasRenderer</p>
 <p>The comment layout is based on a 1920x1080 (16:9) stage, and the canvas is scaled so that its height matches the stage height.</p>
 <p>The canvas does not have to be 16:9. The visible area is determined by the canvas aspect ratio, and the stage is always centered.</p>
 <ul>
 <li>Wider than 16:9: the visible area extends horizontally, and moving comments are also drawn in the extended area</li>
 <li>Narrower than 16:9: both sides of the stage are cropped</li>
 </ul>
-<p>Changing <code>canvas.width</code> / <code>canvas.height</code> directly is not detected. To change the size after initialization, pass a renderer such as <a href="./type/classes/renderer_canvas.CanvasRenderer.html">CanvasRenderer</a> and call its <code>setSize(width, height)</code> before calling <a href="#m_drawCanvas">drawCanvas</a>.</p>`,
-    `<p>コメント描画用のCanvasElementか、 <a href="./type/interfaces/_types_renderer.IRenderer.html">IRenderer</a> に適合するクラス、オブジェクトなどを渡してください</p>
-<p>デフォルトで使用される <a href="./type/classes/renderer_canvas.CanvasRenderer.html">CanvasRender</a> は NiconiComments.internal.renderer.CanvasRenderer から使用することができます</p>
+<p>Changing <code>canvas.width</code> / <code>canvas.height</code> directly is not detected. To change the size after initialization, pass a renderer such as CanvasRenderer and call its <code>setSize(width, height)</code> before calling <a href="#m_drawCanvas">drawCanvas</a>.</p>`,
+    `<p>コメント描画用のCanvasElementか、 IRenderer に適合するクラス、オブジェクトなどを渡してください</p>
+<p>デフォルトで使用される CanvasRender は NiconiComments.internal.renderer.CanvasRenderer から使用することができます</p>
 <p>コメントのレイアウトは1920x1080(16:9)のステージを基準とし、キャンバスの高さがステージの高さに一致するように拡大縮小されます</p>
 <p>キャンバスのアスペクト比は16:9でなくても構いません。表示範囲はキャンバスのアスペクト比で決まり、ステージは常に中央に配置されます</p>
 <ul>
 <li>16:9より横長の場合: 表示範囲が左右に広がり、流れるコメントは広がった範囲にも描画されます</li>
 <li>16:9より縦長の場合: ステージの左右が切り取られます</li>
 </ul>
-<p><code>canvas.width</code> / <code>canvas.height</code>を直接変更しても検知されません。初期化後にサイズを変更する場合は、<a href="./type/classes/renderer_canvas.CanvasRenderer.html">CanvasRenderer</a>などのレンダラーを渡し、<a href="#m_drawCanvas">drawCanvas</a>を呼び出す前にそのレンダラーの<code>setSize(width, height)</code>を呼び出してください</p>`,
+<p><code>canvas.width</code> / <code>canvas.height</code>を直接変更しても検知されません。初期化後にサイズを変更する場合は、CanvasRendererなどのレンダラーを渡し、<a href="#m_drawCanvas">drawCanvas</a>を呼び出す前にそのレンダラーの<code>setSize(width, height)</code>を呼び出してください</p>`,
   ],
   p_data: [
     `<p>Please pass comment data or undefined.</p>
@@ -102,22 +102,22 @@ const localize = {
     </tr>
     <tr>
       <td>xml2js</td>
-      <td class="type"><a href="./type/types/_types_format_xml2js.Xml2jsPacket.html">Xml2jsPacket</a></td>
+      <td class="type">Xml2jsPacket</td>
       <td>Pass object parsed with xml2js</td>
     </tr>
     <tr>
         <td>formatted</td>
-        <td class="type"><a href="./type/types/_types_format_formatted.formattedComment.html">formattedComment</a>[] |<a href="./type/types/_types_format_formatted.formattedLegacyComment.html">formattedLegacyComment</a>[]</td>
+        <td class="type">formattedComment[] |formattedLegacyComment[]</td>
         <td>If user_id and layer are not included, it will be formattedLegacyComment</td>
     </tr>
     <tr>
       <td>legacy</td>
-      <td class="type"><a href="./type/types/_types_format_legacy.rawApiResponse.html">rawApiResponse</a>[]</td>
+      <td class="type">rawApiResponse[]</td>
       <td>Pass the legacy api response with JSON.parse</td>
     </tr>
     <tr>
       <td>owner</td>
-      <td class="type"><a href="./type/types/_types_format_owner.ownerComment.html">ownerComment</a>[]</td>
+      <td class="type">ownerComment[]</td>
       <td>Please JSON.parase and pass the json of the editor on the owner comment edit screen</td>
     </tr>
     <tr>
@@ -127,7 +127,7 @@ const localize = {
     </tr>
     <tr>
       <td>v1</td>
-      <td class="type"><a href="./type/types/_types_format_v1.v1Thread.html">v1Thread</a>[]</td>
+      <td class="type">v1Thread[]</td>
       <td>Pass the contents of the threads under data in the v1 api</td>
     </tr>
   </tbody>
@@ -149,22 +149,22 @@ const localize = {
     </tr>
     <tr>
       <td>xml2js</td>
-      <td class="type"><a href="./type/types/_types_format_xml2js.Xml2jsPacket.html">Xml2jsPacket</a></td>
+      <td class="type">Xml2jsPacket</td>
       <td>xml形式のコメントをxml2jsでパースしたオブジェクトを渡してください</td>
     </tr>
     <tr>
       <td>formatted</td>
-      <td class="type"><a href="./type/types/_types_format_formatted.formattedComment.html">formattedComment</a>[] |<a href="./type/types/_types_format_formatted.formattedLegacyComment.html">formattedLegacyComment</a>[]</td>
+      <td class="type">formattedComment[] |formattedLegacyComment[]</td>
       <td>user_idとlayerが含まれない場合はformattedLegacyCommentになります</td>
     </tr>
     <tr>
       <td>legacy</td>
-      <td class="type"><a href="./type/types/_types_format_legacy.rawApiResponse.html">rawApiResponse</a>[]</td>
+      <td class="type">rawApiResponse[]</td>
       <td>legacy apiのレスポンスをJSON.parseしたものを渡してください</td>
     </tr>
     <tr>
       <td>owner</td>
-      <td class="type"><a href="./type/types/_types_format_owner.ownerComment.html">ownerComment</a>[]</td>
+      <td class="type">ownerComment[]</td>
       <td>投稿者コメント編集画面のエディータのjsonをJSON.parseしたものを渡してください</td>
     </tr>
     <tr>
@@ -174,7 +174,7 @@ const localize = {
     </tr>
     <tr>
       <td>v1</td>
-      <td class="type"><a href="./type/types/_types_format_v1.v1Thread.html">v1Thread</a>[]</td>
+      <td class="type">v1Thread[]</td>
       <td>v1 apiのdata以下threadsの内容を渡してください</td>
     </tr>
   </tbody>

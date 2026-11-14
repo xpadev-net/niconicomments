@@ -18,9 +18,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Run tests**: `npm test` or `docker-compose run --rm pw` - Run Playwright visual regression tests
 - **Test server**: `npm run test-server` - Start HTTP server for manual testing
 
-### Documentation
-- **Generate docs**: `npm run typedoc` - Generate TypeDoc documentation
-
 ## Architecture
 
 This is a high-performance comment rendering library for Niconico-style danmaku comments, compatible with the official Niconico video player.

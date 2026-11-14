@@ -34,7 +34,7 @@ const localize = {
 <li>Wider than 16:9: the visible area extends horizontally, and moving comments are also drawn in the extended area</li>
 <li>Narrower than 16:9: both sides of the stage are cropped</li>
 </ul>
-<p>If the canvas size changes, the new size is applied the next time <a href="#m_drawCanvas">drawCanvas</a> is called.</p>`,
+<p>Changing <code>canvas.width</code> / <code>canvas.height</code> directly is not detected. To change the size after initialization, pass a renderer such as <a href="./type/classes/renderer_canvas.CanvasRenderer.html">CanvasRenderer</a> and call its <code>setSize(width, height)</code> before calling <a href="#m_drawCanvas">drawCanvas</a>.</p>`,
     `<p>コメント描画用のCanvasElementか、 <a href="./type/interfaces/_types_renderer.IRenderer.html">IRenderer</a> に適合するクラス、オブジェクトなどを渡してください</p>
 <p>デフォルトで使用される <a href="./type/classes/renderer_canvas.CanvasRenderer.html">CanvasRender</a> は NiconiComments.internal.renderer.CanvasRenderer から使用することができます</p>
 <p>コメントのレイアウトは1920x1080(16:9)のステージを基準とし、キャンバスの高さがステージの高さに一致するように拡大縮小されます</p>
@@ -43,7 +43,7 @@ const localize = {
 <li>16:9より横長の場合: 表示範囲が左右に広がり、流れるコメントは広がった範囲にも描画されます</li>
 <li>16:9より縦長の場合: ステージの左右が切り取られます</li>
 </ul>
-<p>キャンバスのサイズを変更した場合は、次に<a href="#m_drawCanvas">drawCanvas</a>を呼び出した時点で反映されます</p>`,
+<p><code>canvas.width</code> / <code>canvas.height</code>を直接変更しても検知されません。初期化後にサイズを変更する場合は、<a href="./type/classes/renderer_canvas.CanvasRenderer.html">CanvasRenderer</a>などのレンダラーを渡し、<a href="#m_drawCanvas">drawCanvas</a>を呼び出す前にそのレンダラーの<code>setSize(width, height)</code>を呼び出してください</p>`,
   ],
   p_data: [
     `<p>Please pass comment data or undefined.</p>

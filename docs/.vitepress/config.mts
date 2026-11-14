@@ -4,13 +4,14 @@ import { fileURLToPath } from "node:url";
 import { defineConfig } from "vitepress";
 
 const docsDir = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+const BASE = "/niconicomments/";
 const repoUrl = "https://github.com/xpadev-net/niconicomments";
 
 /** sample は VitePress 管理外の静的ページなので、SPA 遷移させず通常の遷移にする */
 const isStaticPage = (href: string) => /^\/sample\//.test(href);
 
 const LEGACY_HASH_REDIRECT = `(() => {
-  const base = ${JSON.stringify("/niconicomments/")};
+  const base = ${JSON.stringify(BASE)};
   const { pathname, hash } = location;
   if (pathname !== base && pathname !== base + "en/") return;
   let page = "";
@@ -51,7 +52,7 @@ const themeFor = (prefix: "" | "/en", lang: "ja" | "en") => {
 
 export default defineConfig({
   srcDir: "content",
-  base: "/niconicomments/",
+  base: BASE,
   cleanUrls: true,
   title: "niconicomments",
   // sample は別途ビルド後にコピーするため、リンク切れ判定から除外する
@@ -90,7 +91,11 @@ export default defineConfig({
         ((tokens, idx, options, _env, self) => self.renderToken(tokens, idx, options));
       md.renderer.rules.link_open = (tokens, idx, options, env, self) => {
         const href = tokens[idx].attrGet("href") ?? "";
-        if (isStaticPage(href)) tokens[idx].attrSet("target", "_self");
+        if (isStaticPage(href)) {
+          // VitePress は md ページ以外のリンクに base を付与しないため手動で付ける
+          tokens[idx].attrSet("href", BASE.slice(0, -1) + href);
+          tokens[idx].attrSet("target", "_self");
+        }
         return defaultRender(tokens, idx, options, env, self);
       };
     },

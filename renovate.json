@@ -4,6 +4,11 @@
   "minimumReleaseAge": "7 days",
   "packageRules": [
     {
+      "description": "Keep VitePress 1.x on the Vite major supported by its Vue plugin",
+      "matchDepNames": ["vitepress@1>vite"],
+      "allowedVersions": "^6.4.6"
+    },
+    {
       "matchUpdateTypes": ["patch"],
       "enabled": false
     }

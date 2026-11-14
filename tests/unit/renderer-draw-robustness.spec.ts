@@ -513,6 +513,142 @@ describe("renderer draw robustness", () => {
     instance.destroy();
   });
 
+  test("does not activate a previously drawn Flash button hidden by the limit", () => {
+    const renderer = new RecordingRenderer();
+    const instance = new NiconiComments(
+      renderer,
+      [createComment({ content: '@ボタン "[Push]" "posted" "表示" "" "3"' })],
+      { format: "formatted", mode: "flash", config: { commentLimit: 1 } },
+    );
+    const state = instance as unknown as { comments: IComment[] };
+    const button = state.comments[0];
+    const cursor = { x: 882, y: 14 };
+    instance.drawCanvas(100, true);
+    expect(button?.image).toBeDefined();
+    expect(button?.isHovered(cursor)).toBe(true);
+
+    instance.addComments(
+      createComment({ id: 2, content: "newer", mail: ["ue"] }),
+    );
+    renderer.drawImageCalls = 0;
+    instance.drawCanvas(100, true);
+    expect(renderer.drawImageCalls).toBe(1);
+    // Its last rendered position still intersects the cursor.
+    expect(button?.isHovered(cursor)).toBe(true);
+    instance.click(100, cursor);
+    expect(button?.comment.button?.limit).toBe(3);
+    expect(state.comments).toHaveLength(2);
+
+    // A later frame can show and activate the same button again.
+    const newer = state.comments[1];
+    if (newer) newer.comment.invisible = true;
+    instance.drawCanvas(100, true);
+    instance.click(100, cursor);
+    expect(button?.comment.button?.limit).toBe(2);
+    instance.destroy();
+  });
+
+  test.each(["asc", "desc"] as const)(
+    "keeps drawing and flushes when a visibility check throws (%s)",
+    (hideCommentOrder) => {
+      const renderer = new RecordingRenderer();
+      const instance = new NiconiComments(
+        renderer,
+        [
+          createComment({ id: 1, content: "broken", mail: ["ue"] }),
+          createComment({ id: 2, content: "valid", mail: ["ue"] }),
+        ],
+        {
+          format: "formatted",
+          mode: "html5",
+          config: { commentLimit: 1, hideCommentOrder },
+        },
+      );
+      const state = instance as unknown as { comments: IComment[] };
+      const broken = state.comments[0];
+      const valid = state.comments[1];
+      if (!broken || !valid) throw new Error("missing comment fixture");
+      broken.isVisible = vi.fn(() => {
+        throw new Error("visibility failed");
+      });
+      const brokenDraw = vi.spyOn(broken, "draw");
+      const validDraw = vi.spyOn(valid, "draw");
+
+      expect(() => instance.drawCanvas(100, true)).not.toThrow();
+
+      expect(broken.isVisible).toHaveBeenCalled();
+      expect(brokenDraw).not.toHaveBeenCalled();
+      expect(validDraw).toHaveBeenCalledOnce();
+      expect(renderer.drawImageCalls).toBe(1);
+      expect(renderer.flushCalls).toBe(1);
+      instance.destroy();
+    },
+  );
+
+  test("keeps handling clicks when a custom visibility check throws", () => {
+    const instance = new NiconiComments(
+      new RecordingRenderer(),
+      [
+        createComment({
+          id: 1,
+          content: '@ボタン "[Push]" "posted" "表示" "" "3"',
+        }),
+        createComment({ id: 2, content: "custom", mail: ["ue"] }),
+      ],
+      { format: "formatted", mode: "flash", config: { commentLimit: 2 } },
+    );
+    const state = instance as unknown as { comments: IComment[] };
+    const button = state.comments[0];
+    const custom = state.comments[1];
+    if (!custom) throw new Error("missing custom comment fixture");
+    instance.drawCanvas(100, true);
+    custom.isVisible = vi.fn(() => {
+      throw new Error("visibility failed");
+    });
+
+    expect(() => instance.click(100, { x: 882, y: 14 })).not.toThrow();
+
+    expect(custom.isVisible).toHaveBeenCalled();
+    expect(button?.comment.button?.limit).toBe(2);
+    instance.destroy();
+  });
+
+  test.each(["clear", "destroy", "failed flush", "invalid surface"] as const)(
+    "does not activate a Flash button after %s",
+    (action) => {
+      const renderer = new RecordingRenderer();
+      const instance = new NiconiComments(
+        renderer,
+        [createComment({ content: '@ボタン "[Push]" "posted" "表示" "" "3"' })],
+        { format: "formatted", mode: "flash", config: { commentLimit: 1 } },
+      );
+      const button = (instance as unknown as { comments: IComment[] })
+        .comments[0];
+      const cursor = { x: 882, y: 14 };
+      expect(instance.drawCanvas(100)).toBe(true);
+      expect(button?.isHovered(cursor)).toBe(true);
+      // Skipping an unchanged frame must preserve its clickable comments.
+      expect(instance.drawCanvas(100)).toBe(false);
+      instance.click(100, cursor);
+      expect(button?.comment.button?.limit).toBe(2);
+
+      if (action === "clear") {
+        instance.clear();
+      } else if (action === "destroy") {
+        instance.destroy();
+      } else if (action === "failed flush") {
+        renderer.flushFailuresRemaining = 1;
+        expect(() => instance.drawCanvas(100, true)).toThrow("flush failed");
+      } else {
+        renderer.setSize(0, 0);
+        expect(instance.drawCanvas(100, true)).toBe(false);
+      }
+      instance.click(100, cursor);
+      expect(button?.comment.button?.limit).toBe(2);
+      instance.destroy();
+    },
+  );
+
   test.each([Number.NaN, Infinity, -Infinity])(
     "ignores non-finite drawCanvas vpos %s before lazy work",
     (vpos) => {

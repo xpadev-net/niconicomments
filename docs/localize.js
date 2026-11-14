@@ -300,6 +300,10 @@ const localize = {
     `<p>vpos(動画のcurrentTime*100)を元にキャンバスにコメントを描画します</p>`,
   ],
   m_clear: [`<p>Erase Canvas</p>`, `<p>キャンバスを消去します</p>`],
+  commands_enable: [
+    `<p>Disabled by default. To use them, set <a href="#p_enableCustomCommands">enableCustomCommands</a> to <span class="yellow">true</span></p>`,
+    `<p>デフォルトでは無効です。利用する場合は<a href="#p_enableCustomCommands">enableCustomCommands</a>を<span class="yellow">true</span>にしてください</p>`,
+  ],
   c_flash: [
     `<p>Enforces processing as a Flash version comment when in auto mode</p>
 <p>※This command is ignored except in auto mode</p>

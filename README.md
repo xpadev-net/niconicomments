@@ -77,14 +77,6 @@ document.addEventListener("visibilitychange", () => {
 });
 ```
 
-`nico:*` 形式の独自コマンド（`nico:stroke`、`nico:scale` など）は既定で無効です。利用する場合は初期化オプションで有効にできます:
-
-```javascript
-const niconiComments = new NiconiComments(canvas, res, {
-  enableCustomCommands: true,
-});
-```
-
 ## Sample
 
 [サンプル](https://xpadev-net.github.io/niconicomments/sample/)

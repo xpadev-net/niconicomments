@@ -28,12 +28,22 @@ const localize = {
   p_canvas: [
     `<p>Pass a class or object conforming to IRenderer or Canvas Element for comment drawing</p>
 <p>CanvasRender used by default can be used from NiconiComments.internal.renderer.CanvasRenderer</p>
-<p>This library assumes that the canvas size is 1920x1080.</p>
-<p>If the size is incorrectly set, the comment will not be drawn correctly.</p>`,
+<p>The comment layout is based on a 1920x1080 (16:9) stage, and the canvas is scaled so that its height matches the stage height.</p>
+<p>The canvas does not have to be 16:9. The visible area is determined by the canvas aspect ratio, and the stage is always centered.</p>
+<ul>
+<li>Wider than 16:9: the visible area extends horizontally, and moving comments are also drawn in the extended area</li>
+<li>Narrower than 16:9: both sides of the stage are cropped</li>
+</ul>
+<p>Changing <code>canvas.width</code> / <code>canvas.height</code> directly is not detected. To change the size after initialization, pass a renderer such as CanvasRenderer and call its <code>setSize(width, height)</code> before calling <a href="#m_drawCanvas">drawCanvas</a>.</p>`,
     `<p>コメント描画用のCanvasElementか、 IRenderer に適合するクラス、オブジェクトなどを渡してください</p>
 <p>デフォルトで使用される CanvasRender は NiconiComments.internal.renderer.CanvasRenderer から使用することができます</p>
-<p>このライブラリはキャンバスサイズが1920x1080である前提で描画を行います</p>
-<p>サイズ設定をミスるとコメントが正常に描画されません</p>`,
+<p>コメントのレイアウトは1920x1080(16:9)のステージを基準とし、キャンバスの高さがステージの高さに一致するように拡大縮小されます</p>
+<p>キャンバスのアスペクト比は16:9でなくても構いません。表示範囲はキャンバスのアスペクト比で決まり、ステージは常に中央に配置されます</p>
+<ul>
+<li>16:9より横長の場合: 表示範囲が左右に広がり、流れるコメントは広がった範囲にも描画されます</li>
+<li>16:9より縦長の場合: ステージの左右が切り取られます</li>
+</ul>
+<p><code>canvas.width</code> / <code>canvas.height</code>を直接変更しても検知されません。初期化後にサイズを変更する場合は、CanvasRendererなどのレンダラーを渡し、<a href="#m_drawCanvas">drawCanvas</a>を呼び出す前にそのレンダラーの<code>setSize(width, height)</code>を呼び出してください</p>`,
   ],
   p_data: [
     `<p>Please pass comment data or undefined.</p>
@@ -56,6 +66,14 @@ const localize = {
     `<p>処理の所要時間をブラウザコンソールに出力します</p>
 <p>また、各コメントの左上に適用されているコマンドを表示します</p>
 <p>デフォルト(<span class="yellow">false</span>)の場合は出力を行いません</p>`,
+  ],
+  p_enableCustomCommands: [
+    `<p>Specifies whether to enable niconicomments' own commands (<code>nico:*</code>)</p>
+<p>The default (<span class="yellow">false</span>) ignores all <code>nico:*</code> commands</p>
+<p>If <span class="yellow">true</span>, the commands described in <a href="#commands">Custom Commands</a> are enabled</p>`,
+    `<p>niconicomments独自のコマンド(<code>nico:*</code>)を有効にするかを指定します</p>
+<p>デフォルト(<span class="yellow">false</span>)の場合、<code>nico:*</code>形式のコマンドはすべて無視されます</p>
+<p><span class="yellow">true</span>の場合、<a href="#commands">Custom Commands</a>に記載されているコマンドが有効になります</p>`,
   ],
   p_enableLegacyPiP: [
     `<p><span class="note">This option is effective immediately</span></p>
@@ -282,6 +300,10 @@ const localize = {
     `<p>vpos(動画のcurrentTime*100)を元にキャンバスにコメントを描画します</p>`,
   ],
   m_clear: [`<p>Erase Canvas</p>`, `<p>キャンバスを消去します</p>`],
+  commands_enable: [
+    `<p>Disabled by default. To use them, set <a href="#p_enableCustomCommands">enableCustomCommands</a> to <span class="yellow">true</span></p>`,
+    `<p>デフォルトでは無効です。利用する場合は<a href="#p_enableCustomCommands">enableCustomCommands</a>を<span class="yellow">true</span>にしてください</p>`,
+  ],
   c_flash: [
     `<p>Enforces processing as a Flash version comment when in auto mode</p>
 <p>※This command is ignored except in auto mode</p>

@@ -37,14 +37,6 @@ setInterval(
 );
 ```
 
-Custom commands in the `nico:*` format (such as `nico:stroke` and `nico:scale`) are disabled by default. Enable them with an initialization option:
-
-```javascript
-const niconiComments = new NiconiComments(canvas, res, {
-  enableCustomCommands: true,
-});
-```
-
 ## Sample
 
 [Sample](https://xpadev-net.github.io/niconicomments/sample/)

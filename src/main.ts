@@ -702,6 +702,8 @@ class NiconiComments {
     if (!hasValidSurface) {
       this.drawnComments.clear();
       this.frameDirty = true;
+      this.lastRendererWidth = Number.NaN;
+      this.lastRendererHeight = Number.NaN;
     }
     if (
       hasValidSurface &&

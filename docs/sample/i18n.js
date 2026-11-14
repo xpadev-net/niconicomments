@@ -46,7 +46,10 @@ function initI18n({ dictionary, html = true, reloadOnChange = false }) {
   const setLanguage = async (code) => {
     await i18next.changeLanguage(code);
     if (reloadOnChange) {
-      location.reload();
+      // ?lang= が最優先で検出されるため、URL 側も更新してから読み込み直す
+      const url = new URL(location.href);
+      url.searchParams.set("lang", code);
+      location.replace(url.href);
       return;
     }
     apply();

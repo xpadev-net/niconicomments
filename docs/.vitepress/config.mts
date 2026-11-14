@@ -9,6 +9,18 @@ const repoUrl = "https://github.com/xpadev-net/niconicomments";
 /** sample は VitePress 管理外の静的ページなので、SPA 遷移させず通常の遷移にする */
 const isStaticPage = (href: string) => /^\/sample\//.test(href);
 
+const LEGACY_HASH_REDIRECT = `(() => {
+  const base = ${JSON.stringify("/niconicomments/")};
+  const { pathname, hash } = location;
+  if (pathname !== base && pathname !== base + "en/") return;
+  let page = "";
+  if (/^#(p_|m_|NiconiComments$|Parameters$|Methods$)/.test(hash)) page = "api";
+  else if (/^#(c_|commands$)/.test(hash)) page = "commands";
+  if (!page) return;
+  const en = pathname === base + "en/" || (pathname === base && /^en\\b/i.test(navigator.language));
+  location.replace(base + (en ? "en/" : "") + page + hash);
+})();`;
+
 const sidebar = (prefix: string, labels: { guide: string; api: string; commands: string }) => [
   {
     items: [
@@ -45,7 +57,12 @@ export default defineConfig({
   // sample は別途ビルド後にコピーするため、リンク切れ判定から除外する
   ignoreDeadLinks: [/^\/sample\//],
   lastUpdated: false,
-  head: [["link", { rel: "icon", href: "data:," }]],
+  head: [
+    ["link", { rel: "icon", href: "data:," }],
+    // 旧単一ページ時代の URL (/#p_format など) を、ライブラリ内のエラー/警告メッセージや
+    // ブックマークから辿れるよう、対応する API / コマンドページへ転送する
+    ["script", {}, LEGACY_HASH_REDIRECT],
+  ],
   locales: {
     root: {
       label: "日本語",

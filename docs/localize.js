@@ -26,12 +26,12 @@ const localize = {
   ],
   class_main: ["The main body of this library.", "このライブラリの本体です"],
   p_canvas: [
-    `<p>Pass a class or object conforming to <a href="./type/interfaces/_types_renderer.IRenderer.html">IRenderer</a> or Canvas Element for comment drawing</p>
-<p><a href="./type/classes/renderer_canvas.CanvasRenderer.html">CanvasRender</a> used by default can be used from NiconiComments.internal.renderer.CanvasRenderer</p>
+    `<p>Pass a class or object conforming to IRenderer or Canvas Element for comment drawing</p>
+<p>CanvasRender used by default can be used from NiconiComments.internal.renderer.CanvasRenderer</p>
 <p>This library assumes that the canvas size is 1920x1080.</p>
 <p>If the size is incorrectly set, the comment will not be drawn correctly.</p>`,
-    `<p>コメント描画用のCanvasElementか、 <a href="./type/interfaces/_types_renderer.IRenderer.html">IRenderer</a> に適合するクラス、オブジェクトなどを渡してください</p>
-<p>デフォルトで使用される <a href="./type/classes/renderer_canvas.CanvasRenderer.html">CanvasRender</a> は NiconiComments.internal.renderer.CanvasRenderer から使用することができます</p>
+    `<p>コメント描画用のCanvasElementか、 IRenderer に適合するクラス、オブジェクトなどを渡してください</p>
+<p>デフォルトで使用される CanvasRender は NiconiComments.internal.renderer.CanvasRenderer から使用することができます</p>
 <p>このライブラリはキャンバスサイズが1920x1080である前提で描画を行います</p>
 <p>サイズ設定をミスるとコメントが正常に描画されません</p>`,
   ],
@@ -84,22 +84,22 @@ const localize = {
     </tr>
     <tr>
       <td>xml2js</td>
-      <td class="type"><a href="./type/types/_types_format_xml2js.Xml2jsPacket.html">Xml2jsPacket</a></td>
+      <td class="type">Xml2jsPacket</td>
       <td>Pass object parsed with xml2js</td>
     </tr>
     <tr>
         <td>formatted</td>
-        <td class="type"><a href="./type/types/_types_format_formatted.formattedComment.html">formattedComment</a>[] |<a href="./type/types/_types_format_formatted.formattedLegacyComment.html">formattedLegacyComment</a>[]</td>
+        <td class="type">formattedComment[] |formattedLegacyComment[]</td>
         <td>If user_id and layer are not included, it will be formattedLegacyComment</td>
     </tr>
     <tr>
       <td>legacy</td>
-      <td class="type"><a href="./type/types/_types_format_legacy.rawApiResponse.html">rawApiResponse</a>[]</td>
+      <td class="type">rawApiResponse[]</td>
       <td>Pass the legacy api response with JSON.parse</td>
     </tr>
     <tr>
       <td>owner</td>
-      <td class="type"><a href="./type/types/_types_format_owner.ownerComment.html">ownerComment</a>[]</td>
+      <td class="type">ownerComment[]</td>
       <td>Please JSON.parase and pass the json of the editor on the owner comment edit screen</td>
     </tr>
     <tr>
@@ -109,7 +109,7 @@ const localize = {
     </tr>
     <tr>
       <td>v1</td>
-      <td class="type"><a href="./type/types/_types_format_v1.v1Thread.html">v1Thread</a>[]</td>
+      <td class="type">v1Thread[]</td>
       <td>Pass the contents of the threads under data in the v1 api</td>
     </tr>
   </tbody>
@@ -131,22 +131,22 @@ const localize = {
     </tr>
     <tr>
       <td>xml2js</td>
-      <td class="type"><a href="./type/types/_types_format_xml2js.Xml2jsPacket.html">Xml2jsPacket</a></td>
+      <td class="type">Xml2jsPacket</td>
       <td>xml形式のコメントをxml2jsでパースしたオブジェクトを渡してください</td>
     </tr>
     <tr>
       <td>formatted</td>
-      <td class="type"><a href="./type/types/_types_format_formatted.formattedComment.html">formattedComment</a>[] |<a href="./type/types/_types_format_formatted.formattedLegacyComment.html">formattedLegacyComment</a>[]</td>
+      <td class="type">formattedComment[] |formattedLegacyComment[]</td>
       <td>user_idとlayerが含まれない場合はformattedLegacyCommentになります</td>
     </tr>
     <tr>
       <td>legacy</td>
-      <td class="type"><a href="./type/types/_types_format_legacy.rawApiResponse.html">rawApiResponse</a>[]</td>
+      <td class="type">rawApiResponse[]</td>
       <td>legacy apiのレスポンスをJSON.parseしたものを渡してください</td>
     </tr>
     <tr>
       <td>owner</td>
-      <td class="type"><a href="./type/types/_types_format_owner.ownerComment.html">ownerComment</a>[]</td>
+      <td class="type">ownerComment[]</td>
       <td>投稿者コメント編集画面のエディータのjsonをJSON.parseしたものを渡してください</td>
     </tr>
     <tr>
@@ -156,7 +156,7 @@ const localize = {
     </tr>
     <tr>
       <td>v1</td>
-      <td class="type"><a href="./type/types/_types_format_v1.v1Thread.html">v1Thread</a>[]</td>
+      <td class="type">v1Thread[]</td>
       <td>v1 apiのdata以下threadsの内容を渡してください</td>
     </tr>
   </tbody>

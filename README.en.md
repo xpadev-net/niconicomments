@@ -13,7 +13,7 @@ npm： https://www.npmjs.com/package/@xpadev-net/niconicomments
 ## Installation
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@xpadev-net/niconicomments@0.4.1/dist/bundle.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@xpadev-net/niconicomments@0.5.0/dist/bundle.js"></script>
 ```
 
 or

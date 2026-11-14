@@ -55,6 +55,11 @@ export type BaseConfig = {
   contextStrokeOpacity: number;
   flashChar: FlashCharList;
   flashMode: FlashMode;
+  /**
+   * U+2000-U+2006 の空白幅を計測せず定数(em比例)で扱う。
+   * WebKit 等でグリフ欠落によるフォールバックで幅が縮む問題への互換処理(既定: false)
+   */
+  html5SpecialSpaceCompat: boolean;
   flashScriptChar: FlashScriptChar;
   flashThreshold: number;
   fonts: {

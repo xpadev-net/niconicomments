@@ -11,6 +11,8 @@ const serverPort = configuredBaseURL.port;
 
 const config: PlaywrightTestConfig = {
   testDir: "./src/__tests__",
+  // WebKit/macOS 専用テストは playwright.webkit.config.ts で実行する
+  testIgnore: "**/webkit-*.spec.ts",
   use: {
     baseURL,
   },

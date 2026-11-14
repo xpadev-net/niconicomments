@@ -9,3 +9,5 @@
 test-results
 .husky
 z/
+/docs/.vitepress/dist
+/docs/.vitepress/cache

@@ -63,13 +63,23 @@ const targets = [
       ),
   },
   {
-    path: "docs/index.html",
+    path: "docs/content/index.md",
     update: (content) =>
       replaceExpected(
         content,
         packageCdnUrlPattern,
         packageCdnUrl,
-        "docs/index.html",
+        "docs/content/index.md",
+      ),
+  },
+  {
+    path: "docs/content/en/index.md",
+    update: (content) =>
+      replaceExpected(
+        content,
+        packageCdnUrlPattern,
+        packageCdnUrl,
+        "docs/content/en/index.md",
       ),
   },
   {

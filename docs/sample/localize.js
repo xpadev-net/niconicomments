@@ -1,4 +1,5 @@
 const localize = {
+  title: ["niconicomments sample", "niconicomments サンプル"],
   movie: ["Movie", "動画"],
   mode: ["Mode", "モード"],
   renderer: ["Renderer", "レンダラー"],
@@ -31,17 +32,4 @@ const localize = {
   operation_check: ["for operation check", "動作確認用"],
   script_art: ["script art", "スクリプトアート"],
 };
-const resources = { en: { translation: {} }, ja: { translation: {} } };
-for (const key in localize) {
-  resources.en.translation[key] = localize[key][0];
-  resources.ja.translation[key] = localize[key][1];
-}
-i18next.use(i18nextBrowserLanguageDetector).init({
-  fallbackLng: "en",
-  debug: false,
-  resources: resources,
-});
-const i18nList = document.querySelectorAll("[data-i18n]");
-i18nList.forEach((v) => {
-  v.textContent = i18next.t(v.dataset.i18n);
-});
+initI18n({ dictionary: localize, html: false, reloadOnChange: true });

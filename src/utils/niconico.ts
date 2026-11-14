@@ -85,7 +85,7 @@ const getHTML5SpacerWidth = (
   font: CommentHTML5Font,
 ): number | undefined => {
   const explicit = config.compatSpacer.html5[char]?.[font];
-  // 0 も明示的な上書き(spacer 化しない)として扱う
+  // undefined のみ未指定。0 は幅 0 の spacer として扱う
   if (explicit !== undefined) return explicit;
   if (config.html5SpecialSpaceCompat) {
     return HTML5_SPECIAL_SPACE_EM_WIDTH[char];
@@ -126,7 +126,7 @@ const addHTML5PartToResult = (
   while (i < part.length) {
     const char = part[i] as string;
     const width = getHTML5SpacerWidth(char, config, font);
-    if (!width) {
+    if (width === undefined) {
       i++;
       continue;
     }

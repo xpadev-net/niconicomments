@@ -45,6 +45,19 @@ describe("HTML5 special space compat (#472)", () => {
     expect(out[0]).toMatchObject({ type: "spacer", charWidth: 2 });
   });
 
+  test("compatSpacer.html5 に 0 を明示するとその文字は spacer 化されない", () => {
+    const config = withFlag(true);
+    config.compatSpacer = {
+      ...config.compatSpacer,
+      html5: { "\u2001": { gothic: 0 } },
+    };
+    const out: CommentContentItem[] = [];
+    addHTML5PartToResult(out, "a\u2001b\u2000", config, "gothic");
+    expect(out.map((i) => i.type)).toEqual(["text", "spacer"]);
+    expect(out[0]).toMatchObject({ content: "a\u2001b" });
+    expect(out[1]).toMatchObject({ char: "\u2000", charWidth: 0.5 });
+  });
+
   test("幅は measureText の結果(WebKit の縮んだ値)に依存しない", () => {
     const measured: string[] = [];
     const renderer = {

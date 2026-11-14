@@ -6,6 +6,7 @@ import type {
   IRenderer,
   MeasureInput,
 } from "@/@types";
+import { HTML5_SPECIAL_SPACE_EM_WIDTH } from "@/definition/html5Spacers";
 import { TypeGuardError } from "@/errors/TypeGuardError";
 
 import { parseFont } from "./comment";
@@ -78,6 +79,19 @@ const measure = (
   };
 };
 
+const getHTML5SpacerWidth = (
+  char: string,
+  config: BaseConfig,
+  font: CommentHTML5Font,
+): number | undefined => {
+  const explicit = config.compatSpacer.html5[char]?.[font];
+  if (explicit) return explicit;
+  if (config.html5SpecialSpaceCompat) {
+    return HTML5_SPECIAL_SPACE_EM_WIDTH[char];
+  }
+  return undefined;
+};
+
 const addHTML5PartToResult = (
   lineContent: CommentContentItem[],
   part: string,
@@ -86,36 +100,48 @@ const addHTML5PartToResult = (
 ) => {
   if (part === "") return;
   const font = _font ?? "defont";
-  for (const key of Object.keys(config.compatSpacer.html5)) {
-    const spacerWidth = config.compatSpacer.html5[key]?.[font];
-    if (!spacerWidth) continue;
-    const compatIndex = part.indexOf(key);
-    if (compatIndex >= 0) {
-      addHTML5PartToResult(
-        lineContent,
-        part.slice(0, compatIndex),
-        config,
-        font,
-      );
-      let i = compatIndex;
-      for (; i < part.length && part[i] === key; i++) {
-        /* empty */
-      }
-      lineContent.push({
-        type: "spacer",
-        char: key,
-        charWidth: spacerWidth,
-        count: i - compatIndex,
-      });
-      addHTML5PartToResult(lineContent, part.slice(i), config, font);
-      return;
-    }
+  const hasCompat =
+    config.html5SpecialSpaceCompat ||
+    Object.keys(config.compatSpacer.html5).length > 0;
+  if (!hasCompat) {
+    lineContent.push({
+      type: "text",
+      content: part,
+      slicedContent: part.split("\n"),
+    });
+    return;
   }
-  lineContent.push({
-    type: "text",
-    content: part,
-    slicedContent: part.split("\n"),
-  });
+  let textStart = 0;
+  const flushText = (end: number) => {
+    if (end <= textStart) return;
+    const content = part.slice(textStart, end);
+    lineContent.push({
+      type: "text",
+      content,
+      slicedContent: content.split("\n"),
+    });
+  };
+  let i = 0;
+  while (i < part.length) {
+    const char = part[i] as string;
+    const width = getHTML5SpacerWidth(char, config, font);
+    if (!width) {
+      i++;
+      continue;
+    }
+    flushText(i);
+    let end = i + 1;
+    while (end < part.length && part[end] === char) end++;
+    lineContent.push({
+      type: "spacer",
+      char,
+      charWidth: width,
+      count: end - i,
+    });
+    i = end;
+    textStart = end;
+  }
+  flushText(part.length);
 };
 
 /**

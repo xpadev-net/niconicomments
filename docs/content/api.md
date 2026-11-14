@@ -91,7 +91,7 @@ format:inputFormatType = `"default"`
 
 | 名前 | dataのtype | 備考 |
 | --- | --- | --- |
-| default | legacy \| formatted | 既定値。非推奨の `formatted` オプションが `true` なら formatted、それ以外は legacy として扱います |
+| default | rawApiResponse\[\] \| formattedComment\[\] \| formattedLegacyComment\[\] | 既定値。非推奨の `formatted` オプションが `true` なら formatted(formattedComment\[\] \| formattedLegacyComment\[\])、それ以外は legacy(rawApiResponse\[\])として扱います |
 | empty | undefined | 動的追加コメント用 |
 | XMLDocument | XMLDocument | saccubusやniconicome等が生成したXMLをDOMParserでparseFromStringしたものを渡してください<br>後方互換のためフォーマット名「niconicome」もサポートしていますが、今後予告なく実装から削除される場合があります |
 | xml2js | Xml2jsPacket | xml形式のコメントをxml2jsでパースしたオブジェクトを渡してください |

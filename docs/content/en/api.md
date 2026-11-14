@@ -91,7 +91,7 @@ Supported formats are as follows
 
 | Name | Type | Note |
 | --- | --- | --- |
-| default | legacy \| formatted | Default. Treated as formatted if the deprecated `formatted` option is `true`, otherwise as legacy |
+| default | rawApiResponse\[\] \| formattedComment\[\] \| formattedLegacyComment\[\] | Default. If the deprecated `formatted` option is `true`, treated as formatted (formattedComment\[\] \| formattedLegacyComment\[\]); otherwise as legacy (rawApiResponse\[\]) |
 | empty | undefined | For dynamic additional comments |
 | XMLDocument | XMLDocument | Pass XML parseFromString with DOMParser |
 | xml2js | Xml2jsPacket | Pass object parsed with xml2js |

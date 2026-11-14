@@ -1045,7 +1045,9 @@ document.addEventListener("visibilitychange", updateRenderLoop);
 window.addEventListener("pagehide", stopRenderLoop);
 
 // --- Language change: relabel without reloading (keeps playback state) ---
-document.addEventListener("i18n:change", () => {
+document.addEventListener("i18n:change", (e) => {
+  // 以降の URL 更新で古い lang が書き戻されないようにする
+  urlParams.set("lang", e.detail);
   const groupElements = controlVideoElement.querySelectorAll("optgroup");
   videos.forEach((group, i) => {
     const groupElement = groupElements[i];

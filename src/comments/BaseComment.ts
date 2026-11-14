@@ -237,6 +237,47 @@ class BaseComment implements IComment {
     const banActive =
       frameActiveState?.banActive ?? isBanActive(vpos, nicoScripts, rangeCache);
     if (banActive) return;
+    const { x: posX, y: posY } = this.getDrawPosition(vpos, frameActiveState);
+    this.pos = { x: posX, y: posY };
+    if (
+      isOutsideStage(
+        posX,
+        posY,
+        this.width,
+        this.height,
+        this.ctx.viewport?.width ?? this.config.canvasWidth,
+        this.config.canvasHeight,
+      )
+    ) {
+      return;
+    }
+    this._drawBackgroundColor(posX, posY);
+    this._draw(posX, posY, cursor);
+    this._drawRectColor(posX, posY);
+    this._drawCollision(posX, posY, showCollision);
+    this._drawDebugInfo(posX, posY);
+  }
+
+  public isVisible(vpos: number, frameActiveState?: FrameActiveState): boolean {
+    const { x, y } = this.getDrawPosition(vpos, frameActiveState);
+    return (
+      !this.invisible &&
+      !isOutsideStage(
+        x,
+        y,
+        this.width,
+        this.height,
+        this.ctx.viewport?.width ?? this.config.canvasWidth,
+        this.config.canvasHeight,
+      )
+    );
+  }
+
+  protected getDrawPosition(
+    vpos: number,
+    frameActiveState?: FrameActiveState,
+  ): Position {
+    const { nicoScripts, rangeCache } = this.ctx;
     const reverse = this.comment.owner
       ? (frameActiveState?.reverseActiveOwner ??
         isReverseActive(vpos, true, nicoScripts, rangeCache))
@@ -249,27 +290,7 @@ class BaseComment implements IComment {
       this.comment.loc === "shita"
         ? this.config.canvasHeight - this.posY - this.comment.height
         : this.posY;
-    this.pos = {
-      x: posX,
-      y: posY,
-    };
-    if (
-      isOutsideStage(
-        posX,
-        posY,
-        this.comment.width,
-        this.comment.height,
-        this.ctx.viewport?.width ?? this.config.canvasWidth,
-        this.config.canvasHeight,
-      )
-    ) {
-      return;
-    }
-    this._drawBackgroundColor(posX, posY);
-    this._draw(posX, posY, cursor);
-    this._drawRectColor(posX, posY);
-    this._drawCollision(posX, posY, showCollision);
-    this._drawDebugInfo(posX, posY);
+    return { x: posX, y: posY };
   }
 
   /**

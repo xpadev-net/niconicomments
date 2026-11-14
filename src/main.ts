@@ -177,6 +177,7 @@ class NiconiComments {
   private commentArrayIndexMap: WeakMap<IComment, number>;
   private processedCommentIndex: number;
   private comments: IComment[];
+  private readonly drawnComments = new Set<IComment>();
   private destroyed = false;
   private readonly renderer: IRenderer;
   private readonly collision: Collision;
@@ -316,6 +317,7 @@ class NiconiComments {
   public destroy() {
     if (this.destroyed) return;
     this.destroyed = true;
+    this.drawnComments.clear();
     for (const comment of this.comments) {
       try {
         comment.destroy?.();
@@ -697,6 +699,10 @@ class NiconiComments {
       Number.isFinite(size.height) &&
       size.width > 0 &&
       size.height > 0;
+    if (!hasValidSurface) {
+      this.drawnComments.clear();
+      this.frameDirty = true;
+    }
     if (
       hasValidSurface &&
       (size.width !== this.lastRendererWidth ||
@@ -804,10 +810,10 @@ class NiconiComments {
     if (!hasValidSurface) {
       this.lastVpos = vpos;
       this.lastFrameBanActive = frameBanActive;
-      this.frameDirty = true;
       return false;
     }
     this.frameDirty = true;
+    this.drawnComments.clear();
     this.renderer.clearRect(
       0,
       0,
@@ -861,7 +867,12 @@ class NiconiComments {
     setProfile("drawCommentCount", drawCommentCountStart);
 
     const flushStart = profile ? performance.now() : 0;
-    this.renderer.flush();
+    try {
+      this.renderer.flush();
+    } catch (e) {
+      this.drawnComments.clear();
+      throw e;
+    }
     setProfile("flush", flushStart);
     this.lastVpos = vpos;
     this.lastFrameBanActive = frameBanActive;
@@ -905,24 +916,8 @@ class NiconiComments {
       frameBanActive ?? isBanActive(vpos, nicoScripts, rangeCache);
     if (banActive) return 0;
 
-    let startIndex = 0;
-    let endIndex = timelineRange.length;
-    if (config.commentLimit !== undefined) {
-      if (config.commentLimit === 0) {
-        endIndex = 0;
-      } else if (config.hideCommentOrder === "asc") {
-        ({ startIndex, endIndex } = getSliceBounds(
-          timelineRange.length,
-          -config.commentLimit,
-        ));
-      } else {
-        ({ startIndex, endIndex } = getSliceBounds(
-          timelineRange.length,
-          0,
-          config.commentLimit,
-        ));
-      }
-    }
+    if (config.commentLimit === 0) return 0;
+
     const frameActiveState: FrameActiveState = {
       banActive,
       reverseActiveOwner: isReverseActive(vpos, true, nicoScripts, rangeCache),
@@ -935,7 +930,7 @@ class NiconiComments {
     };
     let maxCommentOffset = -1;
     let requiresFullScan = false;
-    for (let i = startIndex; i < endIndex; i++) {
+    for (let i = 0; i < timelineRange.length; i++) {
       const comment = timelineRange[i];
       if (!comment || comment.invisible) continue;
       const commentOffset = this.commentArrayIndexMap.get(comment);
@@ -963,9 +958,32 @@ class NiconiComments {
       this.getCommentPos(this.comments, maxCommentOffset + 1);
     }
     const guardUnregisteredUnresolved = requiresFullScan;
+    // Timeline registration includes off-stage lead-in/out. Apply the limit
+    // only after layout and the same visibility check used by comment.draw().
+    const drawableRange =
+      config.commentLimit === undefined
+        ? timelineRange
+        : timelineRange.filter(
+            (comment) =>
+              !comment.invisible &&
+              !(
+                guardUnregisteredUnresolved &&
+                !this.commentArrayIndexMap.has(comment) &&
+                comment.posY < 0
+              ) &&
+              this.isCommentVisible(comment, vpos, frameActiveState),
+          );
+    let startIndex = 0;
+    let endIndex = drawableRange.length;
+    if (config.commentLimit !== undefined) {
+      ({ startIndex, endIndex } =
+        config.hideCommentOrder === "asc"
+          ? getSliceBounds(drawableRange.length, -config.commentLimit)
+          : getSliceBounds(drawableRange.length, 0, config.commentLimit));
+    }
     let drawnCount = 0;
     for (let i = startIndex; i < endIndex; i++) {
-      const comment = timelineRange[i];
+      const comment = drawableRange[i];
       if (!comment || comment.invisible) {
         continue;
       }
@@ -980,6 +998,7 @@ class NiconiComments {
       }
       try {
         comment.draw(vpos, this.showCollision, cursor, frameActiveState);
+        this.drawnComments.add(comment);
         drawnCount += 1;
       } catch (e) {
         const message = e instanceof Error ? e.message : String(e);
@@ -989,6 +1008,22 @@ class NiconiComments {
       }
     }
     return drawnCount;
+  }
+
+  private isCommentVisible(
+    comment: IComment,
+    vpos: number,
+    frameActiveState?: FrameActiveState,
+  ): boolean {
+    try {
+      return comment.isVisible?.(vpos, frameActiveState) ?? true;
+    } catch (e) {
+      const message = e instanceof Error ? e.message : String(e);
+      this._log(
+        `isCommentVisible: failed to check comment index=${comment.index}: ${message}`,
+      );
+      return false;
+    }
   }
 
   /**
@@ -1100,6 +1135,7 @@ class NiconiComments {
    * キャンバスを消去する
    */
   public clear() {
+    this.drawnComments.clear();
     const clear = getRendererClear(this.renderer);
     if (clear) {
       clear.call(this.renderer);
@@ -1121,7 +1157,12 @@ class NiconiComments {
     if (!_comments) return;
     for (let i = _comments.length - 1; i >= 0; i--) {
       const comment = _comments[i];
-      if (!comment) continue;
+      if (
+        !comment ||
+        !this.drawnComments.has(comment) ||
+        !this.isCommentVisible(comment, vpos)
+      )
+        continue;
       if (comment.isHovered(pos)) {
         const newComment = buildAtButtonComment(comment.comment, vpos);
         if (!newComment) continue;

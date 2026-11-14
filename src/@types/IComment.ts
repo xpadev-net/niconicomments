@@ -34,6 +34,8 @@ export interface IComment {
     cursor?: Position,
     frameActiveState?: FrameActiveState,
   ) => void;
+  /** Whether the comment intersects the stage at this frame, after layout. */
+  isVisible?: (vpos: number, frameActiveState?: FrameActiveState) => boolean;
   /**
    * Release comment-owned renderer surfaces and pending timeout handles.
    *

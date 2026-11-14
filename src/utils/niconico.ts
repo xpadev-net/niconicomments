@@ -11,6 +11,7 @@ import { TypeGuardError } from "@/errors/TypeGuardError";
 
 import { parseFont } from "./comment";
 import { getConfig } from "./config";
+import { getCompatSpacerWidth } from "./spacer";
 
 /**
  * 各サイズの行高を返す
@@ -84,8 +85,7 @@ const getHTML5SpacerWidth = (
   config: BaseConfig,
   font: CommentHTML5Font,
 ): number | undefined => {
-  const explicit = config.compatSpacer.html5[char]?.[font];
-  // undefined のみ未指定。0 は幅 0 の spacer として扱う
+  const explicit = getCompatSpacerWidth(config.compatSpacer.html5[char], font);
   if (explicit !== undefined) return explicit;
   if (config.html5SpecialSpaceCompat) {
     return HTML5_SPECIAL_SPACE_EM_WIDTH[char];

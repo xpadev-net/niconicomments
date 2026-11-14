@@ -43,6 +43,9 @@ jobs:
       - name: Building niconicomments
         run: pnpm build
 
+      - name: Build docs
+        run: pnpm exec vitepress build docs
+
       - name: Check package artifacts
         run: pnpm check-package-artifacts
 

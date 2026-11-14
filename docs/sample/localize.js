@@ -32,4 +32,4 @@ const localize = {
   operation_check: ["for operation check", "動作確認用"],
   script_art: ["script art", "スクリプトアート"],
 };
-initI18n({ dictionary: localize, html: false, reloadOnChange: true });
+initI18n({ dictionary: localize, html: false });

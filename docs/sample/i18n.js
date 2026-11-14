@@ -11,7 +11,7 @@ const I18N_LANGUAGES = [
   { code: "ja", label: "日本語" },
 ];
 
-function initI18n({ dictionary, html = true, reloadOnChange = false }) {
+function initI18n({ dictionary, html = true }) {
   const codes = I18N_LANGUAGES.map((l) => l.code);
   const resources = Object.fromEntries(
     codes.map((code) => [code, { translation: {} }]),
@@ -45,14 +45,12 @@ function initI18n({ dictionary, html = true, reloadOnChange = false }) {
 
   const setLanguage = async (code) => {
     await i18next.changeLanguage(code);
-    if (reloadOnChange) {
-      // ?lang= が最優先で検出されるため、URL 側も更新してから読み込み直す
-      const url = new URL(location.href);
-      url.searchParams.set("lang", code);
-      location.replace(url.href);
-      return;
-    }
+    // 再読み込み時も選択を維持するため、?lang= を更新する (状態を保つためリロードはしない)
+    const url = new URL(location.href);
+    url.searchParams.set("lang", code);
+    history.replaceState(history.state, "", url);
     apply();
+    document.dispatchEvent(new CustomEvent("i18n:change", { detail: code }));
   };
 
   const mountSwitcher = () => {

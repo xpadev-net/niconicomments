@@ -73,7 +73,12 @@ const readDistText = async (path) => {
   }
 };
 
-const cdnTargets = ["README.md", "README.en.md", "docs/index.html"];
+const cdnTargets = [
+  "README.md",
+  "README.en.md",
+  "docs/content/index.md",
+  "docs/content/en/index.md",
+];
 const cdnPattern =
   /https:\/\/cdn\.jsdelivr\.net\/npm\/@xpadev-net\/niconicomments@([^/"'<>`]+)\/dist\/(bundle(?:\.min)?\.js)/g;
 

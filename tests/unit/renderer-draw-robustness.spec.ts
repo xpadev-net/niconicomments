@@ -7,6 +7,7 @@ import type {
   IRenderer,
 } from "@/@types";
 import { BaseComment } from "@/comments";
+import type { CommentInstanceContext } from "@/contexts";
 import { initConfig } from "@/definition/initConfig";
 import NiconiComments from "@/main";
 import { WebGL2Renderer } from "@/renderer/webgl2";
@@ -312,6 +313,204 @@ describe("renderer draw robustness", () => {
 
     expect(renderer.children).toHaveLength(0);
     expect(renderer.drawImageCalls).toBe(0);
+  });
+
+  for (const mode of ["html5", "flash"] as const) {
+    for (const lazy of [false, true]) {
+      for (const reverse of [false, true]) {
+        test.each([
+          ["lead-in", "asc"],
+          ["lead-in", "desc"],
+          ["lead-out", "asc"],
+          ["lead-out", "desc"],
+        ] as const)(
+          `limits visible ${mode} comments during %s (%s, lazy=${lazy}, reverse=${reverse})`,
+          (phase, hideCommentOrder) => {
+            const renderer = new RecordingRenderer();
+            const vpos = phase === "lead-in" ? 750 : 400;
+            const instance = new NiconiComments(
+              renderer,
+              [
+                ...[2, 3, 4].map((id) =>
+                  createComment({
+                    id,
+                    content: `visible ${id}`,
+                    vpos: phase === "lead-in" ? 500 : 100,
+                    mail: ["ue", "@10"],
+                  }),
+                ),
+                ...[10, 11, 12].map((id) =>
+                  createComment({
+                    id,
+                    vpos: phase === "lead-in" ? 1000 : 0,
+                    content: "offstage",
+                    mail: [phase === "lead-in" ? "@10" : "@3"],
+                  }),
+                ),
+              ],
+              {
+                format: "formatted",
+                mode,
+                lazy,
+                config: { commentLimit: 2, hideCommentOrder },
+              },
+            );
+            const state = instance as unknown as {
+              comments: IComment[];
+              timeline: Record<number, IComment[]>;
+              ctx: CommentInstanceContext;
+            };
+            if (reverse) {
+              state.ctx.nicoScripts.reverse.push({
+                start: 0,
+                end: 2000,
+                target: "全",
+              });
+            }
+            const drawn: number[] = [];
+            for (const comment of state.comments) {
+              const draw = comment.draw.bind(comment);
+              vi.spyOn(comment, "draw").mockImplementation((...args) => {
+                drawn.push(comment.comment.id);
+                draw(...args);
+              });
+            }
+
+            instance.drawCanvas(vpos, true);
+
+            // Off-stage comments remain registered for collision and future frames.
+            expect(state.timeline[vpos]).toHaveLength(6);
+            expect(drawn).toEqual(hideCommentOrder === "asc" ? [3, 4] : [2, 3]);
+            expect(renderer.drawImageCalls).toBe(2);
+            expect(renderer.children).toHaveLength(2);
+            expect(
+              state.comments
+                .filter((comment) => comment.comment.id >= 10)
+                .every((comment) => comment.image === undefined),
+            ).toBe(true);
+
+            if (phase === "lead-in") {
+              drawn.length = 0;
+              renderer.drawImageCalls = 0;
+              instance.drawCanvas(1000, true);
+              expect(drawn).toEqual(
+                hideCommentOrder === "asc" ? [11, 12] : [2, 3],
+              );
+              expect(renderer.drawImageCalls).toBe(2);
+            }
+            instance.destroy();
+          },
+        );
+      }
+    }
+  }
+
+  test.each([
+    ["html5", false],
+    ["html5", true],
+    ["flash", false],
+    ["flash", true],
+  ] as const)(
+    "limits visible %s comments after widening the viewport (lazy=%s)",
+    (mode, lazy) => {
+      const renderer = new RecordingRenderer();
+      const instance = new NiconiComments(
+        renderer,
+        [
+          createComment({ id: 1, vpos: 500, mail: ["ue", "@10"] }),
+          createComment({
+            id: 2,
+            vpos: mode === "html5" ? 1560 : 1600,
+            content: "offstage",
+            mail: ["@10"],
+          }),
+        ],
+        {
+          format: "formatted",
+          mode,
+          lazy,
+          config: { commentLimit: 1 },
+        },
+      );
+      const state = instance as unknown as {
+        comments: IComment[];
+        timeline: Record<number, IComment[]>;
+      };
+      renderer.setSize(3840, 1080);
+
+      instance.drawCanvas(750, true);
+
+      expect(state.timeline[750]).toHaveLength(2);
+      expect(renderer.drawImageCalls).toBe(1);
+      expect(state.comments[0]?.image).toBeDefined();
+      expect(state.comments[1]?.image).toBeUndefined();
+      instance.destroy();
+    },
+  );
+
+  test.each([undefined, 1])(
+    "does not activate an off-stage Flash button with commentLimit %s",
+    (commentLimit) => {
+      const instance = new NiconiComments(
+        new RecordingRenderer(),
+        [
+          createComment({
+            content: '@ボタン "[Push]" "posted" "表示" "" "3"',
+          }),
+        ],
+        {
+          format: "formatted",
+          mode: "flash",
+          config: { commentLimit },
+        },
+      );
+      const state = instance as unknown as {
+        comments: IComment[];
+        timeline: Record<number, IComment[]>;
+      };
+      const comment = state.comments[0];
+      const cursor = { x: 882, y: 14 };
+      instance.drawCanvas(100, true);
+      expect(comment?.isHovered(cursor)).toBe(true);
+      expect(comment?.comment.button?.limit).toBe(3);
+
+      instance.drawCanvas(400, true);
+      expect(state.timeline[400]).toContain(comment);
+      instance.click(400, cursor);
+
+      expect(comment?.comment.button?.limit).toBe(3);
+      expect(state.comments).toHaveLength(1);
+      instance.destroy();
+    },
+  );
+
+  test("visibility checks do not activate a Flash button hidden by the limit", () => {
+    const instance = new NiconiComments(
+      new RecordingRenderer(),
+      [
+        createComment({
+          id: 1,
+          content: '@ボタン "[Push]" "posted" "表示" "" "3"',
+        }),
+        createComment({ id: 2, content: "visible", mail: ["ue"] }),
+      ],
+      {
+        format: "formatted",
+        mode: "flash",
+        config: { commentLimit: 1 },
+      },
+    );
+    const state = instance as unknown as { comments: IComment[] };
+    const button = state.comments[0];
+
+    instance.drawCanvas(100, true);
+    expect(button?.image).toBeUndefined();
+    expect(button?.comment.button?.limit).toBe(3);
+    instance.click(100, { x: 882, y: 14 });
+
+    expect(button?.comment.button?.limit).toBe(3);
+    expect(state.comments).toHaveLength(2);
+    instance.destroy();
   });
 
   test.each([Number.NaN, Infinity, -Infinity])(

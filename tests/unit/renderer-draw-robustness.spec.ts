@@ -42,6 +42,7 @@ class RecordingRenderer implements IRenderer {
   public flushFailuresRemaining = 0;
   public rendererNeedsRedraw = false;
   public saveDepth = 0;
+  public scale = 1;
   private font = "10px sans-serif";
   private size = { width: 1920, height: 1080 };
 
@@ -55,7 +56,9 @@ class RecordingRenderer implements IRenderer {
   getFillStyle() {
     return "#000000";
   }
-  setScale() {}
+  setScale(scale: number) {
+    this.scale *= scale;
+  }
   fillRect() {}
   strokeRect() {}
   fillText() {}
@@ -73,6 +76,7 @@ class RecordingRenderer implements IRenderer {
   setGlobalAlpha() {}
   setSize(width: number, height: number) {
     this.size = { width, height };
+    this.scale = 1;
   }
   getSize() {
     return this.size;
@@ -675,6 +679,34 @@ describe("renderer draw robustness", () => {
     expect(button?.comment.button?.limit).toBe(2);
     instance.destroy();
   });
+
+  test.each([
+    [0, 0],
+    [0, 540],
+    [960, 0],
+  ])(
+    "restores renderer scale after a %s × %s surface returns to its previous size",
+    (width, height) => {
+      const renderer = new RecordingRenderer();
+      renderer.setSize(960, 540);
+      const instance = new NiconiComments(renderer, [createComment()], {
+        format: "formatted",
+      });
+      expect(instance.drawCanvas(100)).toBe(true);
+      expect(renderer.scale).toBe(0.5);
+
+      renderer.setSize(width, height);
+      expect(instance.drawCanvas(100)).toBe(false);
+
+      renderer.setSize(960, 540);
+      expect(renderer.scale).toBe(1);
+      expect(instance.drawCanvas(100)).toBe(true);
+      expect(renderer.scale).toBe(0.5);
+      expect(instance.drawCanvas(100)).toBe(false);
+      expect(renderer.scale).toBe(0.5);
+      instance.destroy();
+    },
+  );
 
   test.each([Number.NaN, Infinity, -Infinity])(
     "ignores non-finite drawCanvas vpos %s before lazy work",

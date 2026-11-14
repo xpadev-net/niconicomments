@@ -2,7 +2,7 @@
 
 ## NiconiComments {#NiconiComments}
 
-class NiconiComments(canvas:HTMLCanvasElement | [IRenderer](/type/interfaces/_types_renderer.IRenderer.html), data:[inputFormat](/type/types/_types_options.inputFormat.html), options:[InitOptions](/type/modules/_types_types.html#InitOptions))
+class NiconiComments(canvas:HTMLCanvasElement | IRenderer, data:inputFormat, options:InitOptions)
 
 The main body of this library.
 
@@ -10,11 +10,11 @@ The main body of this library.
 
 #### canvas {#p_canvas}
 
-canvas:HTMLCanvasElement | [IRenderer](/type/interfaces/_types_renderer.IRenderer.html)
+canvas:HTMLCanvasElement | IRenderer
 
-Pass a class or object conforming to [IRenderer](/type/interfaces/_types_renderer.IRenderer.html) or Canvas Element for comment drawing
+Pass a class or object conforming to IRenderer or Canvas Element for comment drawing
 
-[CanvasRender](/type/classes/renderer_canvas.CanvasRenderer.html) used by default can be used from NiconiComments.internal.renderer.CanvasRenderer
+CanvasRender used by default can be used from NiconiComments.internal.renderer.CanvasRenderer
 
 The comment layout is based on a 1920x1080 (16:9) stage, and the canvas is scaled so that its height matches the stage height.
 
@@ -23,11 +23,11 @@ The canvas does not have to be 16:9. The visible area is determined by the canva
 -   Wider than 16:9: the visible area extends horizontally, and moving comments are also drawn in the extended area
 -   Narrower than 16:9: both sides of the stage are cropped
 
-Changing `canvas.width` / `canvas.height` directly is not detected. To change the size after initialization, pass a renderer such as [CanvasRenderer](/type/classes/renderer_canvas.CanvasRenderer.html) and call its `setSize(width, height)` before calling [drawCanvas](#m_drawCanvas).
+Changing `canvas.width` / `canvas.height` directly is not detected. To change the size after initialization, pass a renderer such as CanvasRenderer and call its `setSize(width, height)` before calling [drawCanvas](#m_drawCanvas).
 
 #### data {#p_data}
 
-data:[inputFormat](/type/types/_types_options.inputFormat.html)
+data:inputFormat
 
 Please pass comment data or undefined.
 
@@ -35,11 +35,11 @@ Please check the [format](#p_format) for supported formats.
 
 #### options {#p_options}
 
-options:[InitOptions](/type/types/_types_options.InitOptions.html)
+options:InitOptions
 
 ##### config {#p_config}
 
-config[:Config](/type/types/_types_config.Config.html) = {}
+config:Config = {}
 
 ::: warning
 It is recommended not to change this option. It may cause drawing corruption.
@@ -83,7 +83,7 @@ If `true`, the video will be drawn so that it fits entirely within the screen
 
 ##### format {#p_format}
 
-format:[inputFormatType](/type/modules/_types_types.html#inputFormatType) = `"legacy"`
+format:inputFormatType = `"legacy"`
 
 Specify input format
 
@@ -93,12 +93,12 @@ Supported formats are as follows
 | --- | --- | --- |
 | empty | undefined | For dynamic additional comments |
 | XMLDocument | XMLDocument | Pass XML parseFromString with DOMParser |
-| xml2js | [Xml2jsPacket](/type/types/_types_format_xml2js.Xml2jsPacket.html) | Pass object parsed with xml2js |
-| formatted | [formattedComment](/type/types/_types_format_formatted.formattedComment.html)\[\] \| [formattedLegacyComment](/type/types/_types_format_formatted.formattedLegacyComment.html)\[\] | If user_id and layer are not included, it will be formattedLegacyComment |
-| legacy | [rawApiResponse](/type/types/_types_format_legacy.rawApiResponse.html)\[\] | Pass the legacy api response with JSON.parse |
-| owner | [ownerComment](/type/types/_types_format_owner.ownerComment.html)\[\] | Please JSON.parase and pass the json of the editor on the owner comment edit screen |
+| xml2js | Xml2jsPacket | Pass object parsed with xml2js |
+| formatted | formattedComment\[\] \| formattedLegacyComment\[\] | If user_id and layer are not included, it will be formattedLegacyComment |
+| legacy | rawApiResponse\[\] | Pass the legacy api response with JSON.parse |
+| owner | ownerComment\[\] | Please JSON.parase and pass the json of the editor on the owner comment edit screen |
 | legacyOwner | string | Please pass the editor's string (including line breaks) from the old owner's comment edit screen as a string |
-| v1 | [v1Thread](/type/types/_types_format_v1.v1Thread.html)\[\] | Pass the contents of the threads under data in the v1 api |
+| v1 | v1Thread\[\] | Pass the contents of the threads under data in the v1 api |
 
 ##### formatted {#p_formatted}
 
@@ -128,7 +128,7 @@ It also has the effect of suppressing the scaling of the corresponding CA.
 
 ##### mode {#p_mode}
 
-mode[:modeType](/type/types/_types_options.modeType.html) = `"default"`
+mode:modeType = `"default"`
 
 Specifies the drawing mode
 
@@ -223,7 +223,7 @@ By applying this function, you can also display comments on Picture in Picture.
 
 #### addComments() {#m_addComments}
 
-addComments(...comments[:formattedComment](/type/types/_types_format_formatted.formattedComment.html)):void
+addComments(...comments:formattedComment):void
 
 This is a feature to dynamically add comments, mainly for live broadcasts.
 
@@ -233,7 +233,7 @@ Comments may overlap with each other when placed between already generated comme
 
 #### addEventListener() {#m_addEventListener}
 
-addEventListener(eventName[:CommentEventName](/type/types/_types_event.CommentEventName.html), eventHandler[:CommentEventHandler](/type/interfaces/_types_event.CommentEventHandlerMap.html)):void
+addEventListener(eventName:CommentEventName, eventHandler:CommentEventHandler):void
 
 Add an event handler
 
@@ -241,7 +241,7 @@ Check the type definition for event details
 
 #### removeEventListener() {#m_removeEventListener}
 
-removeEventListener(eventName[:CommentEventName](/type/types/_types_event.CommentEventName.html), eventHandler[:CommentEventHandler](/type/interfaces/_types_event.CommentEventHandlerMap.html)):void
+removeEventListener(eventName:CommentEventName, eventHandler:CommentEventHandler):void
 
 Remove an event handler
 

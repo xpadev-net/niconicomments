@@ -8,7 +8,6 @@ Comment rendering library that is somewhat compatible with the official Nico Nic
 
 ## Links
 
-- TypeDoc: <https://xpadev-net.github.io/niconicomments/type/>
 - Repository: <https://github.com/xpadev-net/niconicomments>
 - npm: <https://www.npmjs.com/package/@xpadev-net/niconicomments>
 - [Sample](/sample/?lang=en)

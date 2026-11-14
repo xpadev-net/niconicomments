@@ -8,7 +8,6 @@ title: はじめに
 
 ## リンク
 
-- TypeDoc: <https://xpadev-net.github.io/niconicomments/type/>
 - リポジトリ: <https://github.com/xpadev-net/niconicomments>
 - npm: <https://www.npmjs.com/package/@xpadev-net/niconicomments>
 - [サンプル](/sample/?lang=ja)

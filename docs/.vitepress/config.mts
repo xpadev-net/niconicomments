@@ -6,8 +6,8 @@ import { defineConfig } from "vitepress";
 const docsDir = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const repoUrl = "https://github.com/xpadev-net/niconicomments";
 
-/** TypeDoc / sample は VitePress 管理外の静的ページなので、SPA 遷移させず通常の遷移にする */
-const isStaticPage = (href: string) => /^\/(type|sample)\//.test(href);
+/** sample は VitePress 管理外の静的ページなので、SPA 遷移させず通常の遷移にする */
+const isStaticPage = (href: string) => /^\/sample\//.test(href);
 
 const sidebar = (prefix: string, labels: { guide: string; api: string; commands: string }) => [
   {
@@ -27,7 +27,6 @@ const themeFor = (prefix: "" | "/en", lang: "ja" | "en") => {
       { text: "API", link: `${prefix}/api` },
       { text: "Custom Commands", link: `${prefix}/commands` },
       { text: ja ? "サンプル" : "Sample", link: `/sample/?lang=${lang}`, target: "_self" },
-      { text: "TypeDoc", link: "/type/", target: "_self" },
     ],
     sidebar: sidebar(prefix, {
       guide: ja ? "はじめに" : "Getting Started",
@@ -43,8 +42,8 @@ export default defineConfig({
   base: "/niconicomments/",
   cleanUrls: true,
   title: "niconicomments",
-  // TypeDoc / sample は別途ビルド後にコピーするため、リンク切れ判定から除外する
-  ignoreDeadLinks: [/^\/(type|sample)\//],
+  // sample は別途ビルド後にコピーするため、リンク切れ判定から除外する
+  ignoreDeadLinks: [/^\/sample\//],
   lastUpdated: false,
   head: [["link", { rel: "icon", href: "data:," }]],
   locales: {
@@ -80,12 +79,11 @@ export default defineConfig({
     },
   },
   async buildEnd(siteConfig) {
-    // VitePress のビルド成果物へ静的アセットを統合する
+    // VitePress のビルド成果物へ sample と bundle を統合する
     const out = siteConfig.outDir;
     const repoRoot = resolve(docsDir, "..");
     for (const [from, to] of [
       [resolve(docsDir, "sample"), "sample"],
-      [resolve(docsDir, "type"), "type"],
     ] as const) {
       if (existsSync(from)) cpSync(from, resolve(out, to), { recursive: true });
       else console.warn(`[docs] skipped (not found): ${from}`);

@@ -2,7 +2,7 @@
 
 ## NiconiComments {#NiconiComments}
 
-class NiconiComments(canvas:HTMLCanvasElement | [IRenderer](/type/interfaces/_types_renderer.IRenderer.html), data:[inputFormat](/type/types/_types_options.inputFormat.html), options:[InitOptions](/type/modules/_types_types.html#InitOptions))
+class NiconiComments(canvas:HTMLCanvasElement | IRenderer, data:inputFormat, options:InitOptions)
 
 このライブラリの本体です
 
@@ -10,11 +10,11 @@ class NiconiComments(canvas:HTMLCanvasElement | [IRenderer](/type/interfaces/_ty
 
 #### canvas {#p_canvas}
 
-canvas:HTMLCanvasElement | [IRenderer](/type/interfaces/_types_renderer.IRenderer.html)
+canvas:HTMLCanvasElement | IRenderer
 
-コメント描画用のCanvasElementか、 [IRenderer](/type/interfaces/_types_renderer.IRenderer.html) に適合するクラス、オブジェクトなどを渡してください
+コメント描画用のCanvasElementか、 IRenderer に適合するクラス、オブジェクトなどを渡してください
 
-デフォルトで使用される [CanvasRender](/type/classes/renderer_canvas.CanvasRenderer.html) は NiconiComments.internal.renderer.CanvasRenderer から使用することができます
+デフォルトで使用される CanvasRender は NiconiComments.internal.renderer.CanvasRenderer から使用することができます
 
 コメントのレイアウトは1920x1080(16:9)のステージを基準とし、キャンバスの高さがステージの高さに一致するように拡大縮小されます
 
@@ -23,11 +23,11 @@ canvas:HTMLCanvasElement | [IRenderer](/type/interfaces/_types_renderer.IRendere
 -   16:9より横長の場合: 表示範囲が左右に広がり、流れるコメントは広がった範囲にも描画されます
 -   16:9より縦長の場合: ステージの左右が切り取られます
 
-`canvas.width` / `canvas.height`を直接変更しても検知されません。初期化後にサイズを変更する場合は、[CanvasRenderer](/type/classes/renderer_canvas.CanvasRenderer.html)などのレンダラーを渡し、[drawCanvas](#m_drawCanvas)を呼び出す前にそのレンダラーの`setSize(width, height)`を呼び出してください
+`canvas.width` / `canvas.height`を直接変更しても検知されません。初期化後にサイズを変更する場合は、CanvasRendererなどのレンダラーを渡し、[drawCanvas](#m_drawCanvas)を呼び出す前にそのレンダラーの`setSize(width, height)`を呼び出してください
 
 #### data {#p_data}
 
-data:[inputFormat](/type/types/_types_options.inputFormat.html)
+data:inputFormat
 
 コメントデータまたはundefinedを渡してください
 
@@ -35,11 +35,11 @@ data:[inputFormat](/type/types/_types_options.inputFormat.html)
 
 #### options {#p_options}
 
-options:[InitOptions](/type/types/_types_options.InitOptions.html)
+options:InitOptions
 
 ##### config {#p_config}
 
-config[:Config](/type/types/_types_config.Config.html) = {}
+config:Config = {}
 
 ::: warning
 このオプションは弄らないことを推奨します。描画が崩れる場合があります
@@ -83,7 +83,7 @@ PiPの出力形式を変更します
 
 ##### format {#p_format}
 
-format:[inputFormatType](/type/modules/_types_types.html#inputFormatType) = `"legacy"`
+format:inputFormatType = `"legacy"`
 
 入力フォーマットを指定します
 
@@ -94,12 +94,12 @@ format:[inputFormatType](/type/modules/_types_types.html#inputFormatType) = `"le
 | empty | undefined | 動的追加コメント用 |
 | XMLDocument | XMLDocument | saccubusやniconicome等が生成したXMLをDOMParserでparseFromStringしたものを渡してください  
 後方互換のためフォーマット名「niconicome」もサポートしていますが、今後予告なく実装から削除される場合があります |
-| xml2js | [Xml2jsPacket](/type/types/_types_format_xml2js.Xml2jsPacket.html) | xml形式のコメントをxml2jsでパースしたオブジェクトを渡してください |
-| formatted | [formattedComment](/type/types/_types_format_formatted.formattedComment.html)\[\] \| [formattedLegacyComment](/type/types/_types_format_formatted.formattedLegacyComment.html)\[\] | user_idとlayerが含まれない場合はformattedLegacyCommentになります |
-| legacy | [rawApiResponse](/type/types/_types_format_legacy.rawApiResponse.html)\[\] | legacy apiのレスポンスをJSON.parseしたものを渡してください |
-| owner | [ownerComment](/type/types/_types_format_owner.ownerComment.html)\[\] | 投稿者コメント編集画面のエディータのjsonをJSON.parseしたものを渡してください |
+| xml2js | Xml2jsPacket | xml形式のコメントをxml2jsでパースしたオブジェクトを渡してください |
+| formatted | formattedComment\[\] \| formattedLegacyComment\[\] | user_idとlayerが含まれない場合はformattedLegacyCommentになります |
+| legacy | rawApiResponse\[\] | legacy apiのレスポンスをJSON.parseしたものを渡してください |
+| owner | ownerComment\[\] | 投稿者コメント編集画面のエディータのjsonをJSON.parseしたものを渡してください |
 | legacyOwner | string | 旧投稿者コメント編集画面のエディータの文字列(改行含む)をそのまま渡してください |
-| v1 | [v1Thread](/type/types/_types_format_v1.v1Thread.html)\[\] | v1 apiのdata以下threadsの内容を渡してください |
+| v1 | v1Thread\[\] | v1 apiのdata以下threadsの内容を渡してください |
 
 ##### formatted {#p_formatted}
 
@@ -129,7 +129,7 @@ keepCA:boolean = `false`
 
 ##### mode {#p_mode}
 
-mode[:modeType](/type/types/_types_options.modeType.html) = `"default"`
+mode:modeType = `"default"`
 
 描画モードを指定します
 
@@ -224,7 +224,7 @@ CanvasRenderer を使用している場合は第二引数に VideoElement を渡
 
 #### addComments() {#m_addComments}
 
-addComments(...comments[:formattedComment](/type/types/_types_format_formatted.formattedComment.html)):void
+addComments(...comments:formattedComment):void
 
 主に生配信向けの、コメントを動的に追加する機能です
 
@@ -234,7 +234,7 @@ addComments(...comments[:formattedComment](/type/types/_types_format_formatted.f
 
 #### addEventListener() {#m_addEventListener}
 
-addEventListener(eventName[:CommentEventName](/type/types/_types_event.CommentEventName.html), eventHandler[:CommentEventHandler](/type/interfaces/_types_event.CommentEventHandlerMap.html)):void
+addEventListener(eventName:CommentEventName, eventHandler:CommentEventHandler):void
 
 イベントハンドラを追加します
 
@@ -242,7 +242,7 @@ addEventListener(eventName[:CommentEventName](/type/types/_types_event.CommentEv
 
 #### removeEventListener() {#m_removeEventListener}
 
-removeEventListener(eventName[:CommentEventName](/type/types/_types_event.CommentEventName.html), eventHandler[:CommentEventHandler](/type/interfaces/_types_event.CommentEventHandlerMap.html)):void
+removeEventListener(eventName:CommentEventName, eventHandler:CommentEventHandler):void
 
 addEventListenerで追加されたイベントハンドラを削除します
 

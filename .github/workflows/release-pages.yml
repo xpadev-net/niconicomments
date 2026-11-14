@@ -1,7 +1,7 @@
-name: TypeDoc
+name: Pages
 
 concurrency:
-  group: ${{ github.repository }}-typedoc
+  group: ${{ github.repository }}-pages
   cancel-in-progress: true
 
 on:
@@ -42,9 +42,6 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install
-
-      - name: Generate TypeDoc
-        run: pnpm typedoc
 
       - name: Build
         run: pnpm build
